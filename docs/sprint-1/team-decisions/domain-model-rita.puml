@@ -1,0 +1,131 @@
+@startuml
+skinparam classAttributeIconSize 0
+hide empty attributes
+skinparam classBackgroundColor beige
+skinparam ArrowColor #222222
+
+
+class FirstName <<(V,#FF8B40)value object>> {}
+class LastName <<(V,#FF8B40)value object>> {}
+class FullName <<(V,#FF8B40)value object>> {}
+class ContactInfo <<(V,#FF8B40)value object>> {}
+class Phone <<(V,#FF8B40)value object>> {}
+class Email <<(V,#FF8B40)value object>> {}
+class Slot <<(V,#FF8B40)value object>> {}
+class Date <<(V,#FF8B40)value object>> {}
+class TimeInterval <<(V,#FF8B40)value object>> {}
+note "See if there is any rules\nfor these infos. Like: if \ndate is business day, etc" as N2
+Date .. N2
+N2 .. TimeInterval
+
+package "<<aggregate>> Patient" {
+    entity Patient <<entity>> <<root>> {}
+    class DateBirth <<(V,#FF8B40)value object>> {}
+    class Gender <<(V,#FF8B40)value object>> {}
+
+    class EmergencyContact <<(V,#FF8B40)value object>> {}
+    class MRN <<(V,#FF8B40)value object>> <<identifier>> {}
+    class MedicalCondition <<(V,#FF8B40)value object>> {}
+    class AppoitmentHistory <<(V,#FF8B40)value object>> {}
+}
+
+package "<<aggregate Staff>>" {
+    entity Staff <<entity>><<root>>{}
+    class LicenseNumber <<(V,#FF8B40)value object>> <<identifier>> {}
+    class Function <<(V,#FF8B40)value object>>  {}
+}
+
+
+package "<<aggregate OperationRequest>>"{
+    entity OperationRequest <<entity>> <<root>> {}
+    class OperationRequestId <<(V,#FF8B40)value object>> <<identifier>> {}
+    class Priority <<(V,#FF8B40)value object>> <<identifier>> {}
+}
+
+package "<<aggregate OperationType>>"{
+    entity OperationType <<entity>> <<root>> {}
+    class OperationTypeId <<(V,#FF8B40)value object>> <<identifier>> {}
+    class Name <<(V,#FF8B40)value object>>  {}
+    class RequiredStaff <<(V,#FF8B40)value object>>  {}
+    note left: review this
+    class EstimatedDuration <<(V,#FF8B40)value object>>  {}
+}
+
+package "<<aggregate Appointment>>"{
+    entity Appointment <<entity>> <<root>> {}
+    class AppointmentId <<(V,#FF8B40)value object>> <<identifier>> {}
+    class Status <<(V,#FF8B40)value object>>  {}
+    class AppointmentType <<(V,#FF8B40)value object>>  {}
+    note left: can this be qualified\nas specialization??
+}
+
+package "<<aggregate Room>>"{
+    entity Room <<entity>> <<root>> {}
+    class RoomNumber <<(V,#FF8B40)value object>> <<identifier>> {}
+    class RoomType <<(V,#FF8B40)value object>>  {}
+    class Capacity <<(V,#FF8B40)value object>>  {}
+    class MaxStaff <<(V,#FF8B40)value object>>  {}
+    class MaxPatient <<(V,#FF8B40)value object>>  {}
+    class CurrentStatus <<(V,#FF8B40)value object>>  {}
+    class AvailableEquipment <<(V,#FF8B40)value object>>  {}
+}
+
+Room --> "1" RoomNumber
+Room --> "1" RoomType
+Room --> "1" Capacity
+Capacity --> "1" MaxStaff
+Capacity --> "1" MaxPatient
+Room --> "1" CurrentStatus
+Room --> "1" AvailableEquipment
+Room --> "0..*" Slot
+
+Appointment -> "1" Room
+
+OperationType --> "1" OperationTypeId
+OperationType --> "1" Name
+OperationType ---> "1" RequiredStaff
+OperationType ---> "1" EstimatedDuration
+
+OperationRequest -> "1" OperationRequestId
+OperationRequest --> "1" Priority
+OperationRequest --> "1" Patient : made for
+OperationRequest ---> "1" OperationType : defined by
+OperationRequest --> "1" Date
+
+Appointment --> "1" OperationRequest : associated to
+Appointment --> "1" Slot
+Appointment --> "1" AppointmentId
+Appointment --> "1" Status
+Appointment --> "1" AppointmentType
+Appointment --> "1..*" Staff
+
+
+Patient -> "1" FirstName
+Patient --> "1" LastName
+Patient --> "1" FullName
+Patient --> "1" DateBirth
+Patient --> "1" Gender
+Patient ---> "1" ContactInfo
+Patient ---> "1" EmergencyContact
+Patient --> "1" MRN
+Patient --> "0..*" MedicalCondition
+Patient --> "1" AppoitmentHistory
+ContactInfo --> "1" Email
+ContactInfo --> "1" Phone
+EmergencyContact --> "1" Phone
+
+
+Staff --> "1" FirstName
+Staff --> "1" LastName
+Staff --> "1" FullName
+Staff ---> "1" Function
+Staff ---> "1" ContactInfo
+Staff --> "1" LicenseNumber
+Staff ----> "1..*" Slot
+Staff ---> "1" Specialization
+
+Specialization --> "1" SpecializationDenomination : defined by
+Slot --> "1" Date
+Slot --> "1" TimeInterval
+
+@enduml

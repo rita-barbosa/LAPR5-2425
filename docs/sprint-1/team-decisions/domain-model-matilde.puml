@@ -1,0 +1,169 @@
+@startuml
+
+title BackOffice Module Domain Model
+
+package "<<aggregate>> User" {
+
+    entity User <<entity>> <<root>>
+
+    class Credentials <<(V,#FF8B40) value object>>
+
+    class Password <<(V,#FF8B40) value object>>
+
+    class Username <<(V,#FF8B40) value object>>
+
+    class Email <<(V,#FF8B40) value object>>
+
+    class Role <<(V,#FF8B40) value object>>
+
+}
+
+package "<<aggregate>> User Profile" {
+
+    entity Profile <<entity>> <<root>>
+
+}
+
+package "<<aggregate>> Staff" {
+
+    entity Staff
+
+    class "Staff Availability Slot" as staff_avail_slot <<(V,#FF8B40) value object>>
+
+    class "Specialization Type" as Spec_Type <<(V,#FF8B40) value object>>
+
+}
+
+package "<<aggregate>> Patient" {
+
+    entity Patient
+
+    class "Medical Record" as M_Record <<(V,#FF8B40) value object>>
+
+    class Allergies <<(V,#FF8B40) value object>>
+
+    class "Medical Condition" as Med_Cond <<(V,#FF8B40) value object>>
+
+}
+
+package "<<aggregate>> Operation Room" {
+
+    entity Room <<entity>> <<root>>
+
+    class "Room Status" as room_stats <<(V,#FF8B40) value object>>
+
+    class "Room Availability Slot" as Room_Avail <<(V,#FF8B40) value object>>
+
+    class "Room Maintenance Slot" as Room_Main <<(V,#FF8B40) value object>>
+
+    class "Room Type" as Room_Type <<(V,#FF8B40) value object>>
+
+    entity Schedule
+
+    class Capacity <<(V,#FF8B40) value object>>
+
+}
+
+package "<<aggregate>> Equipment" {
+
+    entity Equipment <<entity>> <<root>>
+
+    class "Equipment Availability Slot" as Equip_Avail <<(V,#FF8B40) value object>>
+
+}
+
+package "<<aggregate>> Operation / Appointment" {
+
+    class "Operation Type" as Oper_Type <<(V,#FF8B40) value object>>
+
+    class "Operation Status" as Oper_Status <<(V,#FF8B40) value object>>
+
+    class Priority <<(V,#FF8B40) value object>>
+
+    entity "Appointment" as Appoint <<entity>> <<root>>
+
+}
+
+package "<<aggregate>> Operation Requisition" {
+
+    entity "Operation Requisition" as Operation_Request <<entity>> <<root>>
+
+}
+
+'Shared Value Objects
+
+class "Appointment History" as Appointment_History <<(V,#FF8B40) value object>>
+
+class "Appointment Slot" as appoint_slot <<(V,#FF8B40) value object>>
+
+'Relations
+
+Credentials *-- "1" Username : contains >
+
+Credentials *-- "1" Password : contains >
+
+User *-- "1" Email : has >
+
+User "1" *-- "1" Profile : owns >
+
+User "1" o-- "1" Role : assigned to >
+
+User *-- "1" Credentials : holds >
+
+Patient *-- "1" Appointment_History : has >
+
+Patient --  M_Record : stores >
+
+Patient "1" -up-> Profile : associated with <
+
+Patient --- "1" Med_Cond : tracks >
+
+Patient --- "1" Allergies : tracks >
+
+Staff "1" -up-> Profile : linked to <
+
+Staff o-- "1" Spec_Type : specializes in >
+
+Staff "1" --> "*" Operation_Request : (Doctor only) performs >
+
+Staff -- "1" staff_avail_slot : has availability for >
+
+Staff .. Appoint : involved in >
+
+Staff o-- "1" Appointment_History : manages >
+
+Operation_Request .. Patient : requested by >
+
+Operation_Request "1" *-- "1" appoint_slot : scheduled in >
+
+Appoint "*" <-- "1" Patient : made by >
+
+Appoint "1" <-right- "1" Operation_Request : requested in >
+
+Appoint o-- "1" Oper_Type : includes >
+
+Appoint *-- "1" appoint_slot : occurs in >
+
+Appoint o-- "1" Oper_Status : has status of >
+
+Appoint o-- "1" Priority : assigned >
+
+Appoint o-- "1" Room : takes place in >
+
+Room o-- "1" room_stats : has status >
+
+Room *-- "1" Capacity : limited by >
+
+Room o-- "1" Room_Type : categorized by >
+
+Room "1" o-- "*" Equipment : equipped with >
+
+Equipment -- "1" Equip_Avail : availability checked >
+
+Room <-- Schedule : included in >
+
+Schedule -- "1" Room_Avail : available for >
+
+Schedule -- "1" Room_Main : maintained by >
+
+@enduml
