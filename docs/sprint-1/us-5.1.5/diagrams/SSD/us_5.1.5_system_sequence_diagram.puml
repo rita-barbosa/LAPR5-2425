@@ -10,18 +10,18 @@ PAT -> SYS : requests the deletion of the account
 activate PAT
 activate SYS
 
-SYS -> PAT : sends confirmation email to the patient's inbox
+SYS --> PAT : sends confirmation email to the patient's inbox
 
 PAT -> SYS : confirms the decision to delete their account
+deactivate PAT
 
-SYS -> SYS : deletes identifiable data\n within the legal time frame
+SYS --> SYS : deletes identifiable data\n within the legal time frame
 
 SYS -> SYS : registers account deletion\n on the system log
 
 autonumber stop
 SYS -[#white]> PAT
 
-deactivate PAT
 deactivate SYS
 
 @enduml
