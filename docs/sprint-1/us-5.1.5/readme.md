@@ -57,6 +57,35 @@ This feature is related to the creation on a patient's account (US 5.1.3) and it
 
 ## 3. Analysis
 
+This functionality centers around the patient's profile and their personal data, which contains plenty of information, such as:
+
+>**Identifiable Data**
+>- name
+>- phone number
+>- email
+>
+>**Non-Identifiable Data**
+>- appointment history
+>- medical records
+>- settings/preferences
+
+Once on the profile page, the patient can request to delete their account through the settings.
+
+Upon initiating the request, the system sends a confirmation email to the patient's registered email address. After the
+patient verifies the request, the system begins by permanently deleting all personal data within the legally defined time
+frame of 30 days.
+
+Some anonymized data can be retained for legal or research purposes, but none of this information will identify the patient
+in any way.
+Upon concluding the account deletion, the system logs the action following GDPR requirements, ensuring compliance and
+auditability.
+
+
+### System Sequence Diagram
+
+The following diagram depicts the interaction between the user (Patient) and the system.
+
+![us_5.1.5_system_sequence_diagram.svg](diagrams/SSD/us_5.1.5_system_sequence_diagram.svg)
 
 ### Domain Model
 
