@@ -20,23 +20,31 @@
 
 ## 1. Context
 
-_// To do //_
+This is the first time this user story is presented.
+
+Identity and Access Management (IAM) is a system that manages and controls the access to a company's resources by entities,
+that have their identities verified and their access permissions are clearly defined and enforced.
 
 ## 2. Requirements
 
-**US XXX:** /_// To do //_
+**US 5.1.7:**  As a Patient, I want to log in to the healthcare system using my external IAM credentials, so that I can
+access my appointments, medical records, and other features securely.
 
 **Acceptance Criteria:**
 
-- XXX.1. _// To do //_
+- 5.1.7.1. | Patients log in via an external Identity and Access Management (IAM) provider (e.g., Google, Facebook, or 
+- hospital SSO).
 
-- XXX.2. _// To do //_
+- 5.1.7.2. | After successful authentication via the IAM, patients are redirected to the healthcare system with a valid session.
 
-- XXX.3 _// To do //_
+- 5.1.7.3 | Patients have access to their appointment history, medical records, and other features relevant to their profile.
+
+- 5.1.7.4 | Sessions expire after a defined period of inactivity, requiring re-authentication.
+
 
 **Dependencies/References:**
 
-_// To do //_
+This functionality is dependent on the creation of patient profile by the Admin (5.1.8).
 
 **Client Clarifications:**
 
