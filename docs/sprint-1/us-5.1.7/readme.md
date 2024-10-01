@@ -44,7 +44,7 @@ access my appointments, medical records, and other features securely.
 
 **Dependencies/References:**
 
-This functionality is dependent on the creation of patient profile by the Admin (5.1.8).
+This functionality is dependent on the creation of a patient profile by the Admin (5.1.8).
 
 **Client Clarifications:**
 
@@ -55,11 +55,21 @@ This functionality is dependent on the creation of patient profile by the Admin 
 
 ## 3. Analysis
 
-_// To do //_
+In this feature, patients can log in to the healthcare system using an external Identity and Access Management (IAM) provider.
+The patient's identity is verified by the external IAM service, and upon successful authentication, they are granted a 
+valid session within the healthcare system.
+
+The patient has then access to their account and profile, along with all their data.
+
+After a defined time of inactivity has been detected, the session is closed, requiring the patient to authenticate again.
+
+> define inactivity
 
 ### System Sequence Diagram
 
-_// To do - if justified //_
+The following diagram depicts the interaction between the user (Patient) and the system.
+
+![us_5.1.7_system_sequence_diagram.svg](diagrams/SSD/us_5.1.7_system_sequence_diagram.svg)
 
 ### Domain Model
 
