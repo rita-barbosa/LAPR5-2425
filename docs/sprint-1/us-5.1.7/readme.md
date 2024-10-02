@@ -20,10 +20,16 @@
 
 ## 1. Context
 
-This is the first time this user story is presented.
+* This is the first time this user story is presented.
 
-Identity and Access Management (IAM) is a system that manages and controls the access to a company's resources by entities,
+
+* Identity and Access Management (IAM) is a system that manages and controls the access to a company's resources by entities,
 that have their identities verified and their access permissions are clearly defined and enforced.
+
+
+* Single Sign-on (SSO) is an authentication scheme that combines multiple applications log in screens and allows the user 
+to log in a single time to access the resources and services of those applications.
+
 
 ## 2. Requirements
 
