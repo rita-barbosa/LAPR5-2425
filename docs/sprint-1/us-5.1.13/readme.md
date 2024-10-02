@@ -20,23 +20,26 @@
 
 ## 1. Context
 
-_// To do //_
+This is the first time this user story is being requested.
 
 ## 2. Requirements
 
-**US XXX:** /_// To do //_
+**US 5.1.13:** As an Admin, I want to edit a staff's profile, so that I can update their information.
 
 **Acceptance Criteria:**
 
-- XXX.1. _// To do //_
+- **5.1.13.1.** Admins can search for and select a staff profile to edit.
 
-- XXX.2. _// To do //_
+- **5.1.13.2.** Editable fields include contact information, availability slots, and specialization.
 
-- XXX.3 _// To do //_
+- **5.1.13.3** The system logs all profile changes, and any changes to contact information trigger a confirmation email
+to the staff member.
+
+- **5.1.13.4** The edited data is updated in real-time across the system.
 
 **Dependencies/References:**
 
-_// To do //_
+**5.1.12:** The Admin must create first the staff profile, so that it can be edited.
 
 **Client Clarifications:**
 

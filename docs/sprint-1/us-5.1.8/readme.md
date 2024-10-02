@@ -20,29 +20,32 @@
 
 ## 1. Context
 
-_// To do //_
+This is the first time this user story is worked on.
 
 ## 2. Requirements
 
-**US XXX:** /_// To do //_
+**US 5.1.8:** As an Admin, I want to create a new patient profile, so that I can register their personal details and medical history.
 
 **Acceptance Criteria:**
 
-- XXX.1. _// To do //_
+- 5.1.8.1:  Admins can input patient details such as first name, last name, date of birth, contact information, and medical history.
 
-- XXX.2. _// To do //_
+- 5.1.8.2: A unique patient ID (Medical Record Number) is generated upon profile creation.
 
-- XXX.3 _// To do //_
+- 5.1.8.3: The system validates that the patient’s email and phone number are unique.
+ 
+- 5.1.8.4: The profile is stored securely in the system, and access is governed by role-based permissions.
 
 **Dependencies/References:**
 
-_// To do //_
+This user story does not have dependencies.
+
 
 **Client Clarifications:**
 
-> **Question:** 
+> **Question:** How are duplicate patient profiles handled when registered by both the patient and admin?
 >
-> **Answer:** 
+> **Answer:** The system checks the email for uniqueness. The admin must first create the patient record, and then the patient can register using the same email.
 
 
 ## 3. Analysis

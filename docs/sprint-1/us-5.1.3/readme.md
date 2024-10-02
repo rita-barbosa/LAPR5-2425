@@ -20,29 +20,42 @@
 
 ## 1. Context
 
-_// To do //_
+This is the first time this user story is being requested.
 
 ## 2. Requirements
 
-**US XXX:** /_// To do //_
+**US 5.1.3:** As a Patient, I want to register for the healthcare application, so that I can create a user profile and
+book appointments online.
 
 **Acceptance Criteria:**
 
-- XXX.1. _// To do //_
+- **5.1.3.1.** Patients can self-register using the external IAM system.
 
-- XXX.2. _// To do //_
+- **5.1.3.2.** During registration, patients provide personal details (e.g., name, email, phone) and create a profile.
 
-- XXX.3 _// To do //_
+- **5.1.3.3** The system validates the email address by sending a verification email with a confirmation link.
+
+- **5.1.3.4** Patients cannot list their appointments without completing the registration process.
 
 **Dependencies/References:**
 
-_// To do //_
+**5.1.8:** The Admin must create first the patient record, so that the patient can register using the same email.
 
 **Client Clarifications:**
 
-> **Question:** 
+> **Question:** How are duplicate patient profiles handled when registered by both the patient and admin?
 >
-> **Answer:** 
+> **Answer:** The system checks the email for uniqueness. The admin must first create the patient record, and then the patient can register using the same email.
+
+> **Question:** Can the same user have both a patient and a healthcare profile?
+>
+> **Answer:** No. When it comes to patients and healthcare staff, they both have one of the rules that says that some of
+> their, like, attributes need to be unique, and they both need their email to be unique.
+
+> **Question:** Is the email the identifying attribute or is it the username?
+>
+> **Answer:** I's the username. But typically, nowadays, most of the usernames that you have in all the systems are your email.
+
 
 
 ## 3. Analysis
