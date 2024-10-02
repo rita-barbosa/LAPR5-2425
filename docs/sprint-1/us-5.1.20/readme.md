@@ -20,29 +20,31 @@
 
 ## 1. Context
 
-_// To do //_
+This is the first time this user story is presented.
 
 ## 2. Requirements
 
-**US XXX:** /_// To do //_
+**US 5.1.20:**  As an Admin, I want to add new types of operations, so that I can reflect the available medical procedures 
+in the system.
 
 **Acceptance Criteria:**
 
-- XXX.1. _// To do //_
+- 5.1.20.1. | Admins can add new operation types with attributes like: Operation Name, Required Staff by Specialization, Estimated Duration.
 
-- XXX.2. _// To do //_
+- 5.1.20.2. | The system validates that the operation name is unique.
 
-- XXX.3 _// To do //_
+- 5.1.20.3. | The system logs the creation of new operation types and makes them available for scheduling immediately.
+
 
 **Dependencies/References:**
 
-_// To do //_
+This functionality does not have dependencies.
 
 **Client Clarifications:**
 
-> **Question:** 
+> **Question:** Will there be a list of specializations in the system?
 >
-> **Answer:** 
+> **Answer:** Yes, a predefined list of specializations will be provided, but the system should allow for future additions.
 
 
 ## 3. Analysis
