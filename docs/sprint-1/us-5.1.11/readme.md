@@ -20,23 +20,26 @@
 
 ## 1. Context
 
-_// To do //_
+This is the first time this user story is presented.
 
 ## 2. Requirements
 
-**US XXX:** /_// To do //_
+**US 5.1.11:** As an Admin, I want to list/search patient profiles by different attributes, so that I can view the details, edit, and remove patient profiles.
 
 **Acceptance Criteria:**
 
-- XXX.1. _// To do //_
+- 5.1.11.1. | Admins can search patient profiles by various attributes, including name, email, date of birth, or medical record number.
 
-- XXX.2. _// To do //_
+- 5.1.11.2. | The system displays search results in a list view with key patient information (name, email, date of birth).
 
-- XXX.3 _// To do //_
+- 5.1.11.3. | Admins can select a profile from the list to view, edit, or delete the patient record.
+
+- 5.1.11.4. | The search results are paginated, and filters are available to refine the search results.
 
 **Dependencies/References:**
 
-_// To do //_
+This feature is dependent on the existence of patient profiles previously created by the Admin (5.1.8), as well as the functionalities
+to edit (5.1.9) and remove (5.1.10) them.
 
 **Client Clarifications:**
 
