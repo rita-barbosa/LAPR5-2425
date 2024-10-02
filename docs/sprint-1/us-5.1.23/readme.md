@@ -20,27 +20,30 @@
 
 ## 1. Context
 
-_// To do //_
+This is the first time this user story is being requested.
 
 ## 2. Requirements
 
-**US XXX:** /_// To do //_
+**US 5.1.23:** As an Admin, I want to list/search operation types, so that I can sse the details, edit, and remove
+operation types.
 
 **Acceptance Criteria:**
 
-- XXX.1. _// To do //_
+- **5.1.23.1.** Admin can search and filter operation types by name, specialization, or status (active/inactive).
 
-- XXX.2. _// To do //_
+- **5.1.23.2.** The system displays operation types in a searchable list with attributes such as name, required staff,
+- and estimated duration.
 
-- XXX.3 _// To do //_
+- **5.1.23.3** Admins can select an operation type to view, edit, or deactivate it.
 
 **Dependencies/References:**
 
-_// To do //_
+**5.1.20:** There must exist operation types, so they can be listed and removed.
 
 **Client Clarifications:**
 
-> **Question:** 
+> **Question:** What filters are you looking for in the search/list of staff and patient profiles? 
+> And what about operation types?
 >
 > **Answer:** 
 
