@@ -20,29 +20,45 @@
 
 ## 1. Context
 
-_// To do //_
+This is the first time this user story worked on.
 
 ## 2. Requirements
 
-**US XXX:** /_// To do //_
+**US 5.1.4:** As a Patient, I want to update my user profile, so that I can change my personal 
+details and preferences.
+
 
 **Acceptance Criteria:**
 
-- XXX.1. _// To do //_
+- **5.1.4.1:** Patients can log in and update their profile details (e.g., name, contact information, preferences).
 
-- XXX.2. _// To do //_
+- **5.1.4.2:** Changes to sensitive data, such as email, trigger an additional verification step (e.g., confirmation email).
 
-- XXX.3 _// To do //_
+- **5.1.4.3:** All profile updates are securely stored in the system.
+
+- **5.1.4.4:** The system logs all changes made to the patient's profile for audit purposes.
 
 **Dependencies/References:**
 
-_// To do //_
+This user story is dependent on US-5.1.3, as a patient must have a user profile in order to update it.
 
 **Client Clarifications:**
 
-> **Question:** 
+> **Question:** Can the same user have both a patient and a healthcare profile? 
 >
-> **Answer:** 
+> **Answer:** No. When it comes to patients and healthcare staff, they both have one of the rules that says that some of their, like, attributes need to be unique, and they both need their email to be unique.
+
+> **Question:** Is the email the identifying attribute or is it the username? 
+>
+> **Answer:** I's the username. But typically, nowadays, most of the usernames that you have in all the systems are your email.
+
+> **Question:** The first acceptance criterion mentions contact information. This attribute belongs to the patient profile, not the user profile. Therefore, my question is whether patients can also update their patient profile information in addition to their user profile information. And if so, is there any information of the patient profile that can't be updated?
+>
+> **Answer:** _Waiting for client clarification_
+
+> **Question:** What does the term "preferences" refer to?
+>
+> **Answer:** _Waiting for client clarification_
 
 
 ## 3. Analysis
