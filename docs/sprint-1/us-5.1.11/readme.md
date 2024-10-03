@@ -50,11 +50,17 @@ to edit (5.1.9) and remove (5.1.10) them.
 
 ## 3. Analysis
 
-_// To do //_
+The Admin has access to all the profiles within the healthcare system, including Patient profiles, that can be consulted in
+a list. In this list, the Admin selects a profile to see its details, update and remove it.
+
+The Admin can search profiles by the patient's name, email or specialization, and the search results are presented through
+a paginated list, with search filters to refine the selection of listed profiles.
 
 ### System Sequence Diagram
 
-_// To do - if justified //_
+The following diagram depicts the interaction between the Admin and the system.
+
+![us_5.1.11_system_sequence_diagram.svg](diagrams/SSD/us_5.1.11_system_sequence_diagram.svg)
 
 ### Domain Model
 
