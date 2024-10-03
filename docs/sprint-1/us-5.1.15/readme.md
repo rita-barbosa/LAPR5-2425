@@ -51,11 +51,17 @@ to edit (5.1.13) and remove/deactivate (5.1.14) them.
 
 ## 3. Analysis
 
-_// To do //_
+The Admin has access to all the profiles within the healthcare system, including Staff profiles, that can be consulted in
+a list. In this list, the Admin selects a profile to see its details, update and remove/deactivate it.
+
+The Admin can search profiles by the staff's name, email or specialization, and the search results are presented through
+a paginated list, with search filters to refine the selection of listed profiles.
 
 ### System Sequence Diagram
 
-_// To do - if justified //_
+The following diagram depicts the interaction between the Admin and the system.
+
+![us_5.1.15_system_sequence_diagram.svg](diagrams/SSD/us_5.1.15_system_sequence_diagram.svg)
 
 ### Domain Model
 
