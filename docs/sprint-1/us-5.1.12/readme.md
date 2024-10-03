@@ -20,29 +20,41 @@
 
 ## 1. Context
 
-_// To do //_
+This is the first time this user story is worked on.
 
 ## 2. Requirements
 
-**US XXX:** /_// To do //_
+**US 5.1.12:**  As an Admin, I want to create a new staff profile, so that I can add them to the hospital’s roster.
 
 **Acceptance Criteria:**
 
-- XXX.1. _// To do //_
+- 5.1.12.1: Admins can input staff details such as first name, last name, contact information, and specialization.
 
-- XXX.2. _// To do //_
+- 5.1.12.2: A unique staff ID (License Number) is generated upon profile creation.
 
-- XXX.3 _// To do //_
+- 5.1.12.3: The system ensures that the staff’s email and phone number are unique.
+
+- 5.1.12.4: The profile is stored securely, and access is based on role-based permissions.
+
 
 **Dependencies/References:**
 
-_// To do //_
+This user story does not have dependencies.
 
 **Client Clarifications:**
 
-> **Question:** 
+> **Question:** Can a user have both patient and healthcare staff profiles?
 >
-> **Answer:** 
+> **Answer:** No, a user cannot have both profiles. Staff and patients have separate identifications.
+
+> **Question:** Are healthcare staff IDs unique across roles?
+>
+> **Answer:** Yes, staff IDs are unique and not role-specific (e.g., a doctor and nurse can share the same ID format).
+
+
+> **Question:** Will there be a list of specializations in the system?
+>
+> **Answer:** Yes, a predefined list of specializations will be provided, but the system should allow for future additions.
 
 
 ## 3. Analysis

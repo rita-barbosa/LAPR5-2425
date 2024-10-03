@@ -20,30 +20,40 @@
 
 ## 1. Context
 
-_// To do //_
+This is the first time this User Story is being worked on. 
+This User Story is related to the Doctor.
 
 ## 2. Requirements
 
-**US XXX:** /_// To do //_
+**US 5.1.18:** As a Doctor, I want to remove an operation requisition, so that the healthcare activities are provided as necessary. 
 
 **Acceptance Criteria:**
 
-- XXX.1. _// To do //_
+- **5.1.18.1. -** Doctors can delete operation requests they created if the operation has not yet been scheduled. 
 
-- XXX.2. _// To do //_
+- **5.1.18.2. -** A confirmation prompt is displayed before deletion. 
 
-- XXX.3 _// To do //_
+- **5.1.18.3. -** Once deleted, the operation request is removed from the patient’s medical record and cannot be recovered. 
+
+- **5.1.18.4. -** The system notifies the Planning Module and updates any schedules that were relying on this request. 
 
 **Dependencies/References:**
 
-_// To do //_
+- **US 5.1.1. -** US 5.1.18. is dependent on this User Story as it depends on an existing account of a staff in the system.
+
+- **US 5.1.6. -** US 5.1.18. is dependent on this User Story as it depends on an existing account of a staff in the system with the right permissions.
+
+- **US 5.1.12. -** US 5.1.18. is dependent on this User Story as it depends on an existing profile of a staff in the system.
+
+- **US 5.1.16. -** US 5.1.18. is dependent on this User Story as it depends on an existing operation request in the system.
+
+- **US 5.1.19. -** This User Story is dependent on US 5.1.18 as it needs it's functionality to work as intended.
+
+- **US 5.1.20. -** US 5.1.18. is dependent on this User Story as it depends on an existing operation type in the system.
 
 **Client Clarifications:**
 
-> **Question:** 
->
-> **Answer:** 
-
+> None yet.
 
 ## 3. Analysis
 
