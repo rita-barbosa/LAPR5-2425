@@ -20,30 +20,34 @@
 
 ## 1. Context
 
-_// To do //_
+This is the first time this User Story is being worked on. 
+This User Story is related to the Admin.
 
 ## 2. Requirements
 
-**US XXX:** /_// To do //_
+**US 5.1.21:** As an Admin, I want to edit existing operation types, so that I can update or correct information about the procedure. 
 
 **Acceptance Criteria:**
 
-- XXX.1. _// To do //_
+- **5.1.21.1. -** Admins can search for and select an existing operation type to edit. 
 
-- XXX.2. _// To do //_
+- **5.1.21.2. -** Editable fields include operation name, required staff by specialization, and estimated duration. 
 
-- XXX.3 _// To do //_
+- **5.1.21.3. -** Changes are reflected in the system immediately for future operation requests. 
+
+- **5.1.21.4. -** Historical data is maintained, but new operation requests will use the updated operation type information. 
 
 **Dependencies/References:**
 
-_// To do //_
+- **US 5.1.1. -** US 5.1.21. is dependent on this User Story as it depends on an existing account of a staff in the system.
+
+- **US 5.1.20. -** US 5.1.21. is dependent on this User Story as it depends on an existing operation type in the system.
+
+- **US 5.1.23. -** This User Story is dependent on US 5.1.21 as it needs it's functionality to work as intended.
 
 **Client Clarifications:**
 
-> **Question:** 
->
-> **Answer:** 
-
+> None yet.
 
 ## 3. Analysis
 

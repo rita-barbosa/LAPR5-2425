@@ -21,7 +21,7 @@
 ## 1. Context
 
 This is the first time this User Story is being worked on. 
-This User Story is related to the Admin.
+This User Story is related to the Doctor.
 
 ## 2. Requirements
 
