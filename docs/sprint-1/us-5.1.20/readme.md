@@ -29,7 +29,8 @@ in the system.
 
 **Acceptance Criteria:**
 
-- 5.1.20.1. | Admins can add new operation types with attributes like: Operation Name, Required Staff by Specialization, Estimated Duration.
+- 5.1.20.1. | Admins can add new operation types with attributes like: Operation Name, Required Staff by Specialization,
+Estimated Duration.
 
 - 5.1.20.2. | The system validates that the operation name is unique.
 
@@ -49,11 +50,22 @@ This functionality does not have dependencies.
 
 ## 3. Analysis
 
-_// To do //_
+
+The system has a predefined operation types list that  reflect the available procedures at the clinic/hospital. The Admin
+has the permissions to add new ones as it is required, with the following attributes:
+
+- Operation Name, it has to be unique
+- Required Staff by Specialization
+- Estimated Duration
+
+After the operation type has been created, the system registers the event in the system logs.
+
 
 ### System Sequence Diagram
 
-_// To do - if justified //_
+The following diagram depicts the interaction between the Admin and the system.
+
+![us_5.1.20_system_sequence_diagram.svg](diagrams/SSD/us_5.1.20_system_sequence_diagram.svg)
 
 ### Domain Model
 
