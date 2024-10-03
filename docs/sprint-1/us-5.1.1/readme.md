@@ -49,7 +49,6 @@ This User Story is related to the Admin.
 
 > None yet.
 
-
 ## 3. Analysis
 
 _// To do //_

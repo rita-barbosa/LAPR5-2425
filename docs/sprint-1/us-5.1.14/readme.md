@@ -39,6 +39,8 @@ This User Story is related to the Admin.
 
 - **US 5.1.1. -** US 5.1.14. is dependent on this User Story as it depends on an existing account of a staff in the system.
 
+- **US 5.1.6. -** US 5.1.14. is dependent on this User Story as it depends on an existing account of a staff in the system with the right permissions.
+
 - **US 5.1.12. -** US 5.1.14. is dependent on this User Story as it depends on an existing profile of a staff in the system.
 
 - **US 5.1.15. -** This User Story is dependent on US 5.1.14 as it needs it's functionality to work as intended.

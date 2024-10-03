@@ -39,7 +39,10 @@ This User Story is related to the Admin.
 
 **Dependencies/References:**
 
-- **US 5.1.3. -** US 5.1.10. is dependent on this User Story as it depends on an existing profile of a patient in the system.
+- **US 5.1.3. -** US 5.1.10. is dependent on this User Story as it depends on an existing profile of a patient in the 
+system.
+
+- **US 5.1.6. -** US 5.1.18. is dependent on this User Story as it depends on an existing account of a staff in the system with the right permissions.
 
 - **US 5.1.11. -** This User Story is dependent on US 5.1.10 as it needs it's functionality to work as intended.
 
