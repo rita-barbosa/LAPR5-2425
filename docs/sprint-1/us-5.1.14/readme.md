@@ -20,30 +20,34 @@
 
 ## 1. Context
 
-_// To do //_
+This is the first time this User Story is being worked on. 
+This User Story is related to the Admin.
 
 ## 2. Requirements
 
-**US XXX:** /_// To do //_
+**US 5.1.14:** As an Admin, I want to deactivate a staff profile, so that I can remove them from the hospital’s active roster without losing their historical data. 
 
 **Acceptance Criteria:**
 
-- XXX.1. _// To do //_
+- **5.1.14.1. -** Admins can search for and select a staff profile to deactivate. 
 
-- XXX.2. _// To do //_
+- **5.1.14.2. -** Deactivating a staff profile removes them from the active roster, but their historical data (e.g., appointments) remains accessible. 
 
-- XXX.3 _// To do //_
+- **5.1.14.3. -** The system confirms deactivation and records the action for audit purposes. 
 
 **Dependencies/References:**
 
-_// To do //_
+- **US 5.1.1. -** US 5.1.14. is dependent on this User Story as it depends on an existing account of a staff in the system.
+
+- **US 5.1.6. -** US 5.1.14. is dependent on this User Story as it depends on an existing account of a staff in the system with the right permissions.
+
+- **US 5.1.12. -** US 5.1.14. is dependent on this User Story as it depends on an existing profile of a staff in the system.
+
+- **US 5.1.15. -** This User Story is dependent on US 5.1.14 as it needs it's functionality to work as intended.
 
 **Client Clarifications:**
 
-> **Question:** 
->
-> **Answer:** 
-
+> None yet.
 
 ## 3. Analysis
 
