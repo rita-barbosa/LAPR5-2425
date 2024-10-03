@@ -1,0 +1,41 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+title "US 5.1.17 - System Sequence Diagram"
+
+autonumber
+
+participant Doctor as DOC
+participant System as SYS
+
+DOC -> SYS : requests the edition/update of an operation requisition
+activate DOC
+activate SYS
+
+SYS --> DOC : lists the operation requisitions created by the doctor
+
+DOC -> SYS : selects the desired requisition
+
+SYS --> DOC : presents the operation requisition data
+
+loop until the Doctor desires
+
+DOC -> SYS : edits/updates an information of the operation requisition
+
+SYS --> SYS : registers the data\n update on the system log
+
+SYS --> SYS : updates data in the system\n and Planning Module
+
+end loop
+
+DOC -> SYS : confirms the end of the editions/updates
+
+SYS --> DOC : confirms the data was saved
+
+autonumber stop
+SYS -[#white]> DOC
+
+deactivate DOC
+deactivate SYS
+
+@enduml

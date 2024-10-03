@@ -24,7 +24,7 @@ This is the first time this user story is presented.
 
 ## 2. Requirements
 
-**US 5.1.17:** As a Doctor, I want to update an operation requisition, so that the Patient has access to the necessary healthcare
+**US 5.1.17:** As a Doctor, I want to update an operation requisition, so that the Patient has access to the necessary healthcare.
 
 **Acceptance Criteria:**
 
@@ -51,11 +51,22 @@ system (US 5.1.12 and US 5.1.1).
 
 ## 3. Analysis
 
-_// To do //_
+Upon the Doctor creating an operation requisition, they can also edit/update it, to ensure the patient's access to appropriate
+healthcare. This constrain is checked by the system.
+
+The information that can be edited is the following one:
+- deadline
+- priority
+
+> CHECK WHAT INFO CAN BE EDITED
+
+Each single data edition is registered in the system logs and immediately reflected in the system and planning module.
 
 ### System Sequence Diagram
 
-_// To do - if justified //_
+The following diagram depicts the interaction between the Doctor and the system.
+
+![us_5.1.17_system_sequence_diagram.svg](diagrams/SSD/us_5.1.17_system_sequence_diagram.svg)
 
 ### Domain Model
 
