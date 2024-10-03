@@ -20,30 +20,32 @@
 
 ## 1. Context
 
-_// To do //_
+This is the first time this User Story is being worked on. 
+This User Story is related to the Admin.
 
 ## 2. Requirements
 
-**US XXX:** /_// To do //_
+**US 5.1.10:**  As an Admin, I want to delete a patient profile, so that I can remove patients who are no longer under care. 
 
 **Acceptance Criteria:**
 
-- XXX.1. _// To do //_
+- **5.1.10.1. -** Admins can search for a patient profile and mark it for deletion. 
 
-- XXX.2. _// To do //_
+- **5.1.10.2. -** Before deletion, the system prompts the admin to confirm the action. 
 
-- XXX.3 _// To do //_
+- **5.1.10.3. -** Once deleted, all patient data is permanently removed from the system within a predefined time frame. 
+
+- **5.1.10.4. -** The system logs the deletion for audit and GDPR compliance purposes. 
 
 **Dependencies/References:**
 
-_// To do //_
+- **US 5.1.3. -** US 5.1.10. is dependent on this User Story as it depends on an existing profile of a patient in the system.
+
+- **US 5.1.11. -** This User Story is dependent on US 5.1.10 as it needs it's functionality to work as intended.
 
 **Client Clarifications:**
 
-> **Question:** 
->
-> **Answer:** 
-
+> None yet.
 
 ## 3. Analysis
 
