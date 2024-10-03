@@ -5,8 +5,8 @@
   - [1. Context](#1-context)
   - [2. Requirements](#2-requirements)
   - [3. Analysis](#3-analysis)
-    - [System Sequence Diagram](#system-sequence-diagram)
-    - [Domain Model](#domain-model)
+    - [3.1 System Sequence Diagram](#31-system-sequence-diagram)
+    - [3.2 Domain Model](#32-domain-model)
   - [4. Design](#4-design)
     - [4.1. Realization](#41-realization)
     - [4.2. Class Diagram](#42-class-diagram)
@@ -20,29 +20,34 @@
 
 ## 1. Context
 
-_// To do //_
+This is the first time this User Story is being worked on. 
+This User Story is related to the Admin.
 
 ## 2. Requirements
 
-**US XXX:** /_// To do //_
+**US 5.1.1:** As an Admin, I want to register new backoffice users (e.g., doctors, nurses, technicians, admins) via an out-of-band process, so that they can access the backoffice system with appropriate permissions.
 
 **Acceptance Criteria:**
 
-- XXX.1. _// To do //_
+- **5.1.1.1. -** Backoffice users (e.g., doctors, nurses, technicians) are registered by an Admin via an internal process, not via self-registration. 
 
-- XXX.2. _// To do //_
+- **5.1.1.2. -** Admin assigns roles (e.g., Doctor, Nurse, Technician) during the registration process.
 
-- XXX.3 _// To do //_
+- **5.1.1.3. -** Registered users receive a one-time setup link via email to set their password and activate their account. 
+
+- **5.1.1.4. -** The system enforces strong password requirements for security. 
+
+- **5.1.1.5. -** A confirmation email is sent to verify the user’s registration. 
 
 **Dependencies/References:**
 
-_// To do //_
+- **US 5.1.2. -** This user story depends on US 5.1.1. as it depends on an existing account in the system.
+- **US 5.1.6. -** This user story depends on US 5.1.1. as it depends on an existing account in the system so that certain permissions may be granted.
+- **US 5.1.12. to 5.1.23. -** These user stories depends on US 5.1.1. as it depends on an existing account in the system with certain role-based permissions.
 
 **Client Clarifications:**
 
-> **Question:** 
->
-> **Answer:** 
+> None yet.
 
 
 ## 3. Analysis
