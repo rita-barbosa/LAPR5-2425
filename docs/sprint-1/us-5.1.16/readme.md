@@ -19,30 +19,49 @@
 
 ## 1. Context
 
-_// To do //_
+This is the first time this user story is being requested.
 
 ## 2. Requirements
 
-**US XXX:** /_// To do //_
+**US 5.1.16:** As a Doctor, I want to request and operation, so that the Patient has access to the necessary healthcare.
 
 **Acceptance Criteria:**
 
-- XXX.1. _// To do //_
+- **5.1.16.1.** Doctors can create and operation request by selecting the patient, operation type, priority, and
+suggested deadline.
 
-- XXX.2. _// To do //_
+- **5.1.16.2.** The system validates that the operation type matches the doctor's specialization.
 
-- XXX.3 _// To do //_
+- **5.1.16.3** The operation request includes:
+
+  - Patient ID
+  - Doctor ID
+  - Operation Type
+  - Deadline
+  - Priority
+
+- **5.1.16.4** The system confirms successful submission of the operation request and logs the request in the patient's
+medical history.
 
 **Dependencies/References:**
 
-_// To do //_
+This user story does not have dependencies.
 
 **Client Clarifications:**
 
-> **Question:** 
+> **Question:** Is it mandatory for patients to have a user account to schedule a surgery?
 >
-> **Answer:** 
+> **Answer:** No, patients are not required to have a user account. The system administrator creates patient profiles.
 
+> **Question:** What is the difference between appointment, surgery, and operation?
+>
+> **Answer:** Surgery is a medical procedure (e.g., hip surgery), while an operation request is when a doctor
+> schedules that surgery for a patient. An appointment is the scheduled date for the operation, determined by the
+> planning module
+
+> **Question:** Can the same doctor who requests a surgery perform it?
+>
+> **Answer:**  Not necessarily. The planning module may assign different doctors based on availability and optimization.
 
 ## 3. Analysis
 

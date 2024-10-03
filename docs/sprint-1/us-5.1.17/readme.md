@@ -20,23 +20,27 @@
 
 ## 1. Context
 
-_// To do //_
+This is the first time this user story is presented.
 
 ## 2. Requirements
 
-**US XXX:** /_// To do //_
+**US 5.1.17:** As a Doctor, I want to update an operation requisition, so that the Patient has access to the necessary healthcare
 
 **Acceptance Criteria:**
 
-- XXX.1. _// To do //_
+- 5.1.17.1. | Doctors can update operation requests they created (e.g., change the deadline or priority).
 
-- XXX.2. _// To do //_
+- 5.1.17.2. | The system checks that only the requesting doctor can update the operation request.
 
-- XXX.3 _// To do //_
+- 5.1.17.3. | The system logs all updates to the operation request (e.g., changes to priority or deadline).
+
+- 5.1.17.4. | Updated requests are reflected immediately in the system and notify the Planning Module of any changes.
+
 
 **Dependencies/References:**
 
-_// To do //_
+This functionality is dependent on the creation of a operation requisition (US 5.1.16) by a Doctor registered in the healthcare 
+system (US 5.1.12 and US 5.1.1).
 
 **Client Clarifications:**
 

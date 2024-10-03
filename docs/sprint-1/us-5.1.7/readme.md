@@ -20,23 +20,37 @@
 
 ## 1. Context
 
-_// To do //_
+* This is the first time this user story is presented.
+
+
+* Identity and Access Management (IAM) is a system that manages and controls the access to a company's resources by entities,
+that have their identities verified and their access permissions are clearly defined and enforced.
+
+
+* Single Sign-on (SSO) is an authentication scheme that combines multiple applications log in screens and allows the user 
+to log in a single time to access the resources and services of those applications.
+
 
 ## 2. Requirements
 
-**US XXX:** /_// To do //_
+**US 5.1.7:**  As a Patient, I want to log in to the healthcare system using my external IAM credentials, so that I can
+access my appointments, medical records, and other features securely.
 
 **Acceptance Criteria:**
 
-- XXX.1. _// To do //_
+- 5.1.7.1. | Patients log in via an external Identity and Access Management (IAM) provider (e.g., Google, Facebook, or 
+- hospital SSO).
 
-- XXX.2. _// To do //_
+- 5.1.7.2. | After successful authentication via the IAM, patients are redirected to the healthcare system with a valid session.
 
-- XXX.3 _// To do //_
+- 5.1.7.3 | Patients have access to their appointment history, medical records, and other features relevant to their profile.
+
+- 5.1.7.4 | Sessions expire after a defined period of inactivity, requiring re-authentication.
+
 
 **Dependencies/References:**
 
-_// To do //_
+This functionality is dependent on the creation of a patient profile by the Admin (5.1.8).
 
 **Client Clarifications:**
 
@@ -47,11 +61,21 @@ _// To do //_
 
 ## 3. Analysis
 
-_// To do //_
+In this feature, patients can log in to the healthcare system using an external Identity and Access Management (IAM) provider.
+The patient's identity is verified by the external IAM service, and upon successful authentication, they are granted a 
+valid session within the healthcare system.
+
+The patient has then access to their account and profile, along with all their data.
+
+After a defined time of inactivity has been detected, the session is closed, requiring the patient to authenticate again.
+
+> define inactivity
 
 ### System Sequence Diagram
 
-_// To do - if justified //_
+The following diagram depicts the interaction between the user (Patient) and the system.
+
+![us_5.1.7_system_sequence_diagram.svg](diagrams/SSD/us_5.1.7_system_sequence_diagram.svg)
 
 ### Domain Model
 

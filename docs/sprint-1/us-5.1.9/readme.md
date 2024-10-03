@@ -20,23 +20,25 @@
 
 ## 1. Context
 
-_// To do //_
+This is the first time this user story is being requested.
 
 ## 2. Requirements
 
-**US XXX:** /_// To do //_
+**US 5.1.9:** As an Admin, I want to edit an existing patient profile, so that I can update their information when needed.
 
 **Acceptance Criteria:**
 
-- XXX.1. _// To do //_
+- **5.1.9.1.** Admins can search for and select a patient profile to edit.
 
-- XXX.2. _// To do //_
+- **5.1.9.2.** Editable fields include name, contact information, medical history, and allergies.
 
-- XXX.3 _// To do //_
+- **5.1.9.3** Changes to sensitive data (e.g., contact information) trigger and email notification to the patient.
+
+- **5.1.9.4** The system logs all profile changes for auditing purposes.
 
 **Dependencies/References:**
 
-_// To do //_
+**5.1.8:** The Admin must create first the patient record, so that it can be edited.
 
 **Client Clarifications:**
 

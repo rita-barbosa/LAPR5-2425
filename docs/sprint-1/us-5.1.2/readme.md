@@ -20,27 +20,30 @@
 
 ## 1. Context
 
-_// To do //_
+This is the first time this user story is being requested.
 
 ## 2. Requirements
 
-**US XXX:** /_// To do //_
+**US 5.1.2:** As a Backoffice User (Admin, Doctor, Nurse, Technician), I want to reset my password if I forget it, so
+that I can regain access to the system securely.
 
 **Acceptance Criteria:**
 
-- XXX.1. _// To do //_
+- **5.1.2.1.** Backoffice users can request a password reset by providing their email.
 
-- XXX.2. _// To do //_
+- **5.1.2.2.** The system sends a password rest link via email.
 
-- XXX.3 _// To do //_
+- **5.1.2.3** The reset link expires after a predefined period (e.g., 24 hours) for security.
+
+- **5.1.2.4** Users must provide a new password that meets the system's password complexity rules.
 
 **Dependencies/References:**
 
-_// To do //_
+**5.1.1:** The Backoffice User needs to be created first, so they can change their password.
 
 **Client Clarifications:**
 
-> **Question:** 
+> **Question:** What are the system's password requirements?
 >
 > **Answer:** 
 
