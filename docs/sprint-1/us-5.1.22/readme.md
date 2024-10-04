@@ -20,19 +20,19 @@
 
 ## 1. Context
 
-_// To do //_
+This is the first time this user story is worked on.
 
 ## 2. Requirements
 
-**US XXX:** /_// To do //_
+**US 5.1.22:** As an Admin, I want to remove obsolete or no longer performed operation types, so that the system stays current with hospital practices.
 
 **Acceptance Criteria:**
 
-- XXX.1. _// To do //_
+- 5.1.22.1: Admins can search for and mark operation types as inactive (rather than deleting them) to preserve historical records.
 
-- XXX.2. _// To do //_
+- 5.1.22.2: Inactive operation types are no longer available for future scheduling but remain in historical data.
 
-- XXX.3 _// To do //_
+- 5.1.22.3: A confirmation prompt is shown before deactivating an operation type.
 
 **Dependencies/References:**
 
@@ -40,10 +40,13 @@ _// To do //_
 
 **Client Clarifications:**
 
-> **Question:** 
+> **Question:** The removal of an operation type is mentioned in the listing us-5.1.23, which indicates that the admin can select an operation type to carry out one of the specified actions. With this in mind, should the removal—or any other actions—of operation types be accessible only through this method? This question also pertains to operation requisitions.
 >
 > **Answer:** 
 
+> **Question:** The acceptance criteria refer to deactivating the operation type. In this context, is "removing" being used to describe the deactivation of a specific operation type, or is there a mix-up?
+>
+> **Answer:**
 
 ## 3. Analysis
 
