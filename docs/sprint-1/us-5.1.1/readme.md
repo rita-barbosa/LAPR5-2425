@@ -51,11 +51,19 @@ This User Story is related to the Admin.
 
 ## 3. Analysis
 
-_// To do //_
+According to our analysis of this User Story and it's acceptance criterias, we have achieved the following understanding of the order of events that are supposed to happen in order for this functionality to be achieved completly:
 
-### System Sequence Diagram
+### System Sequence Diagram - Admin
 
-_// To do - if justified //_
+The following diagram describes the first part of this User Story, what the admin must do to start the registration process.
+
+![SSD - Admin](Diagrams/SSD/system-sequence-diagram-admin.svg)
+
+### System Sequence Diagram - Staff
+
+The following diagram describes the second part of this User Story, what the staff must do to finish their registration process.
+
+![SSD - Staff](Diagrams/SSD/system-sequence-diagram-user.svg)
 
 ### Domain Model
 
