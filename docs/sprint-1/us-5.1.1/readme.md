@@ -49,7 +49,9 @@ This User Story is related to the Admin.
 
 **Client Clarifications:**
 
-> None yet.
+> Question: What are the system's password requirements?
+>
+> Answer: At least 10 characters long, at least a digit, a capital letter and a special character
 
 ## 3. Analysis
 
