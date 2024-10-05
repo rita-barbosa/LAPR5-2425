@@ -1,0 +1,34 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+autonumber
+actor "Admin" as ADMIN
+participant "System" as SYS
+
+activate ADMIN
+
+ADMIN --> SYS : Asks to delete a patient's profile.
+
+activate SYS
+
+SYS --> ADMIN : Shows a list of all patients under care.
+
+ADMIN --> SYS : Chooses a patient to delete.
+
+SYS --> ADMIN : Asks for confirmation.
+
+ADMIN --> SYS : Confirms action.
+
+SYS --> SYS : Tags the patient's profile \nto be deleted after a certain \namount of time.
+
+SYS --> ADMIN : Sends success message.
+
+deactivate ADMIN
+
+== After the predefined amount of time == 
+
+SYS --> SYS : Removes the patient's\n profile permenantely.
+
+SYS --> SYS : Logs the deletion.
+
+@enduml
