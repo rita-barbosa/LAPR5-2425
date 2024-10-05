@@ -17,16 +17,14 @@
   - [7. Observations](#7-observations)
 <!-- TOC -->
 
-
 ## 1. Context
 
-This is the first time this user story worked on.
+This is the first time this user story is worked on.
 
 ## 2. Requirements
 
-**US 5.1.4:** As a Patient, I want to update my user profile, so that I can change my personal 
+**US 5.1.4:** As a Patient, I want to update my user profile, so that I can change my personal
 details and preferences.
-
 
 **Acceptance Criteria:**
 
@@ -44,26 +42,39 @@ This user story is dependent on US-5.1.3, as a patient must have a user profile 
 
 **Client Clarifications:**
 
-> **Question:** Can the same user have both a patient and a healthcare profile? 
+> **Question:** Can the same user have both a patient and a healthcare profile?
 >
 > **Answer:** No. When it comes to patients and healthcare staff, they both have one of the rules that says that some of their, like, attributes need to be unique, and they both need their email to be unique.
 
-> **Question:** Is the email the identifying attribute or is it the username? 
+> **Question:** Is the email the identifying attribute or is it the username?
 >
-> **Answer:** I's the username. But typically, nowadays, most of the usernames that you have in all the systems are your email.
+> **Answer:** It's the username. But typically, nowadays, most of the usernames that you have in all the systems are your email.
 
-> **Question:** The first acceptance criterion mentions contact information. This attribute belongs to the patient profile, not the user profile. Therefore, my question is whether patients can also update their patient profile information in addition to their user profile information. And if so, is there any information of the patient profile that can't be updated?
+> **Question:**  Can patients update both their user and patient profile information?
 >
-> **Answer:** _Waiting for client clarification_
+> **Answer:** Patients can update contact information but not medical details. Changes must be verified and validated.
 
 > **Question:** What does the term "preferences" refer to?
 >
-> **Answer:** _Waiting for client clarification_
-
+> **Answer:** Preferences are for now related to marketing consent or not by the patient, or other related GDPR preferences
 
 ## 3. Analysis
 
-_// To do //_
+In this functionality, the patient will have the ability to update their user profile and the non-medical information associated with their patient profile, as clarified by the client.
+
+It's important to highlight that patients cannot update every aspect of their profiles. The following diagram illustrates which information they are allowed to modify.
+
+![Information patient is able to update.](diagrams/info-can-update.svg)
+
+It's important to highlight that patients cannot update every aspect of their profiles. The following diagram illustrates which information they are allowed to modify.
+
+- Email
+- Phone number
+- Username
+
+A confirmation email must be sent to ensure the changes are legitimate.
+
+Lastly, all the made changes must be be logged for traceability.
 
 ### System Sequence Diagram
 
@@ -89,8 +100,7 @@ _// To do //_
 
 ### 4.4. Tests
 
-_// To do - layout still in development //_ 
-
+_// To do - layout still in development //_
 
 ## 5. Implementation
 
