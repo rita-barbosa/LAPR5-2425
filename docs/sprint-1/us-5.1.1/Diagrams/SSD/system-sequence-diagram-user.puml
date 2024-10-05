@@ -1,0 +1,21 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+autonumber
+actor "User" as USER
+participant "System" as SYS
+
+activate SYS
+activate USER
+
+SYS --> USER : Sends an email with a one-time setup link.
+
+USER --> USER : Goes to the page.
+
+USER --> SYS : Sets their strong password.
+
+SYS --> SYS : Activates their account.
+
+SYS --> USER : Sends an email to confirm the registration.
+
+@enduml
