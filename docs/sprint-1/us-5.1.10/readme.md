@@ -52,11 +52,19 @@ system.
 
 ## 3. Analysis
 
-_// To do //_
+After reviewing the documentation and carefully analyzing the acceptance criteria, we agreed upon an order of events of this User Story as follows:
+
+- The admin will request to delete a pacient's profile.
+- The admin will see a list of all patients and will be able to choose one and select to delete said profile.
+- They will be given the option to confirm or cancel said action. 
+- If the request goes forward then the patient's profile will be tagged for deletion and after a predetermined amount of time, it will be removed permenantely from the system.
+- When the data is removed the system will log the deletion and add it to the database as said in acceptance criteria 5.1.10.4.
+
+This order of events is also described in the System Sequence Diagram shown below:
 
 ### System Sequence Diagram
 
-_// To do - if justified //_
+![SSD](Diagrams/SSD/system-sequence-diagram-admin.svg)
 
 ### Domain Model
 
