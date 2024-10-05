@@ -39,6 +39,8 @@ This User Story is related to the Admin.
 
 - **5.1.1.5. -** A confirmation email is sent to verify the user’s registration. 
 
+- **5.1.1.6. -** The strong password requirements are: 10 or more characters long, 1 or more digits, 1 or more capital letter and 1 or more special character.
+
 **Dependencies/References:**
 
 - **US 5.1.2. -** This user story depends on US 5.1.1. as it depends on an existing account in the system.
