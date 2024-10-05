@@ -1,0 +1,25 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+autonumber
+actor "Admin" as ADMIN
+participant "System" as SYS
+
+activate ADMIN
+
+ADMIN --> SYS : Asks to deactivate a staff's profile.
+
+activate SYS
+
+SYS --> ADMIN : Shows a list of active roster.
+
+ADMIN --> SYS : Chooses a staff's profile to deactivate.
+
+SYS --> SYS : Deactivates the staff's profile.
+
+SYS --> SYS : Logs action into the database for audit
+
+SYS --> ADMIN : Sends success message.
+
+
+@enduml
