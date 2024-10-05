@@ -51,11 +51,19 @@ This User Story is related to the Admin.
 
 ## 3. Analysis
 
-_// To do //_
+This functionality talks about the deactivation of the profile of a staff member, and after some analysis of the documentation, acceptance criterias and client clarifications, it is our understanding that this User Story would follow this order of actions:
+
+- The admin would go to a management page and would request to see a list of the active roster of staff and their profiles.
+- After analyzing the list and deciding on the staff profile, the admin will select the profile and deactivate it.
+- The system will then deactivate the profile and save that change onto the database, while also removing the staff in question from the active roster as to not cause further confusion to the Planning module.
+- After having deactivated the staff account, the system will log that action for audit purposes as explained by acceptance criteria 5.1.14.3
+
+It is important to note that for the sake of this project, **historical data** is considered to be:
+**All types of appointments and/or requests made and/or taken part by the staff.**
 
 ### System Sequence Diagram
 
-_// To do - if justified //_
+![SSD](Diagrams/SSD/system-sequence-diagram-admin.svg)
 
 ### Domain Model
 
