@@ -19,8 +19,6 @@ SYS --> ADMIN : Asks for the role.
 
 ADMIN --> SYS : Inputs the role \n(Technician, Admin, Doctor, Nurse).
 
-SYS --> SYS : Sends email to staff \nfor out-of-band registration.
-
 SYS --> ADMIN : Sends success message.
 
 @enduml
