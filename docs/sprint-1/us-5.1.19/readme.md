@@ -5,7 +5,6 @@
   - [1. Context](#1-context)
   - [2. Requirements](#2-requirements)
   - [3. Analysis](#3-analysis)
-    - [System Sequence Diagram](#system-sequence-diagram)
     - [Domain Model](#domain-model)
   - [4. Design](#4-design)
     - [4.1. Realization](#41-realization)
@@ -17,10 +16,9 @@
   - [7. Observations](#7-observations)
 <!-- TOC -->
 
-
 ## 1. Context
 
-_// To do //_
+This is the first time this user story is worked on.
 
 ## 2. Requirements
 
@@ -32,7 +30,7 @@ _// To do //_
 
 - 5.1.19.2: The system displays a list of operation requests in a searchable and filterable view.
 
-- 5.1.19.3: Each entry in the list includes operation request details (e.g., patient name, operation type, 
+- 5.1.19.3: Each entry in the list includes operation request details (e.g., patient name, operation type,
 status).
 
 - 5.1.19.1: Doctors can select an operation request to view, update, or delete it.
@@ -45,29 +43,36 @@ This user story is connected to user stories 5.1.17 and 5.1.18, as they pertain 
 
 > **Question:** One of the acceptance criteria mentions that doctors can search for operation requests by status. What does "status" refer to in this context?
 >
-> **Answer:** _Waiting for client clarifications._
-
+> **Answer:** Status refers to whether the operation is planned or requested.
 
 > **Question:** When listing operation requests, should only those associated with the specific doctor be displayed?
 >
 > **Answer:** _Waiting for client clarifications._
 
-> **Question:** What information needs to be displayed when listing the operation requests—should it correspond to the filtering criteria? If so, when selecting the operation request to view the only new attribute is the deadline date.
->
-> **Answer:** _Waiting for client clarifications._
-
-
 ## 3. Analysis
 
-_// To do //_
+In this feature, operation requests will be displayed for the doctor to select from, allowing them to view, [update](../us-5.1.17/readme.md) or [delete](../us-5.1.18/readme.md) specific requests.
 
-### System Sequence Diagram
+With this functionality, the doctor will have the ability to filter operation requests based on the following criteria:
 
-_// To do - if justified //_
+- Patient Name
+- Operation Type
+- Priority:
+  - Elective Surgery: A scheduled procedure that is not life-threatening and can be arranged at a convenient time (e.g., joint replacement, cataract surgery).
+  - Urgent Surgery: Requires timely intervention but is not an immediate emergency, typically within a few days (e.g., certain cancer surgeries).
+  - Emergency Surgery: Demands immediate action to preserve life, limb, or function, generally performed within hours (e.g., ruptured aneurysm, trauma).
+- Status:
+  - Indicates whether the operation is planned or merely requested.
+
+Each entry in the list will include essential operation details, such as the patient's name, the type of operation, and its status.
+
+t is crucial for the doctor to always have the option to select any operation request from the list to execute one of the following actions: view, update, or delete. The last two actions are part of features [US-5.1.17](../us-5.1.17/readme.md) and [US-5.1.18](../us-5.1.18/readme.md) respectively. The view action will provide all relevant information regarding the selected operation request, ensuring the doctor has access to complete and accurate details.
 
 ### Domain Model
 
-_// To do //_
+![Domain Model](diagrams/domain-model.svg)
+
+**Note:** Some attributes of the aggregate _Patient_ have been omitted. To view the complete domain model, click [here](../team-decisions/domain-model.svg).
 
 ## 4. Design
 
@@ -85,8 +90,7 @@ _// To do //_
 
 ### 4.4. Tests
 
-_// To do - layout still in development //_ 
-
+_// To do - layout still in development //_
 
 ## 5. Implementation
 
