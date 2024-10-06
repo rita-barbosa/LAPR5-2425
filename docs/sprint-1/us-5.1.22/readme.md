@@ -5,8 +5,6 @@
   - [1. Context](#1-context)
   - [2. Requirements](#2-requirements)
   - [3. Analysis](#3-analysis)
-    - [System Sequence Diagram](#system-sequence-diagram)
-    - [Domain Model](#domain-model)
   - [4. Design](#4-design)
     - [4.1. Realization](#41-realization)
     - [4.2. Class Diagram](#42-class-diagram)
@@ -36,29 +34,19 @@ This is the first time this user story is worked on.
 
 **Dependencies/References:**
 
-_// To do //_
+This user story is related to US-5.1.23, as it involves selecting an operation type for removal.
 
 **Client Clarifications:**
 
-> **Question:** The removal of an operation type is mentioned in the listing us-5.1.23, which indicates that the admin can select an operation type to carry out one of the specified actions. With this in mind, should the removal—or any other actions—of operation types be accessible only through this method? This question also pertains to operation requisitions.
->
-> **Answer:** 
-
 > **Question:** The acceptance criteria refer to deactivating the operation type. In this context, is "removing" being used to describe the deactivation of a specific operation type, or is there a mix-up?
 >
-> **Answer:**
+> **Answer:** Yes, deactivating makes the operation type unavailable for future use but retains historical data.
 
 ## 3. Analysis
 
-_// To do //_
+This feature primarily involves deactivating a specific operation type, preventing it from being selected when creating future operation requests. However, if there are existing operations of that type, no changes will be made, thereby preserving the historical data.
 
-### System Sequence Diagram
-
-_// To do - if justified //_
-
-### Domain Model
-
-_// To do //_
+Keeping this in mind, all active operation types will be displayed for the admin to select from. Additionally, before proceeding with the deactivation, a confirmation prompt will appear, showing the selected operation type to verify whether the admin truly wishes to deactivate it. Upon confirmation, the deactivation process will proceed.
 
 ## 4. Design
 
