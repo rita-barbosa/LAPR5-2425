@@ -44,6 +44,7 @@ package "<<aggregate OperationRequest>>"{
     entity OperationRequest <<entity>> <<root>> {}
     class OperationRequestId <<(V,#FF8B40)value object>> <<identifier>> {}
     class Priority <<(V,#FF8B40)value object>> <<identifier>> {}
+    class Status <<(V,#FF8B40)value object>> <<identifier>> {}
 }
 
 package "<<aggregate OperationType>>"{
@@ -58,7 +59,7 @@ package "<<aggregate OperationType>>"{
 package "<<aggregate Appointment>>"{
     entity Appointment <<entity>> <<root>> {}
     class AppointmentId <<(V,#FF8B40)value object>> <<identifier>> {}
-    class Status <<(V,#FF8B40)value object>>  {}
+    class   AppointmentStatus <<(V,#FF8B40)value object>>  {}
     class AppointmentType <<(V,#FF8B40)value object>>  {}
     note left: can this be qualified\nas specialization??
 }
@@ -79,7 +80,6 @@ package "<<aggregate Room>>"{
 package "<<aggregate>> User" {
     entity User <<entity>> <<root>>
     class Username <<(V,#FF8B40) value object>>
-    class Email <<(V,#FF8B40) value object>>
     class Role <<(V,#FF8B40) value object>>
 }
 
@@ -115,11 +115,12 @@ OperationRequest --> "1" Patient : made for
 OperationRequest --> "1" Doctor : registed by
 OperationRequest ---> "1" OperationType : defined by
 OperationRequest --> "1" Date
+OperationRequest --> "1" Status
 
 Appointment --> "1" OperationRequest : associated to
 Appointment --> "1" Slot
 Appointment --> "1" AppointmentId
-Appointment --> "1" Status
+Appointment --> "1" AppointmentStatus
 Appointment --> "1" AppointmentType
 Appointment --> "1..*" Staff
 
@@ -130,7 +131,7 @@ Patient --> "1" Gender
 Patient ---> "1" ContactInfo
 Patient ---> "1" EmergencyContact
 Patient --> "1" MRN
-Patient --> "0..*" MedicalCondition
+Patient --> "0..1" MedicalCondition
 Patient --> "1" AppoitmentHistory
 ContactInfo --> "1" Email
 ContactInfo --> "1" Phone
