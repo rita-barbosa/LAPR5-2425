@@ -40,9 +40,17 @@ sent to the admin.
 
 This user story is related to US-5.1.1, as the backoffice user must be registered by the admin beforehand.
 
+**Client Clarifications:**
+
+> **Question**: What defines session inactivity?
+> **Answer**: Inactivity is defined as no interaction with the API. After 20 minutes of inactivity, the session should disconnect.
+
+
 ## 3. Analysis
 
-_// To do //_
+In this user story, backoffice users, such as doctors, nurses, admins, and technicians, can log into the system using their credentials (username and password) to access features based on their assigned roles. Role-based access control ensures that each user only has access to the specific functionalities relevant to their position.
+
+A security measure is implemented where, after five failed login attempts, the user account is temporarily locked, and the admin is notified. Additionally, to maintain security, login sessions are disconnected after 20 minutes of inactivity, defined as no interaction with the API.
 
 ### System Sequence Diagram
 
