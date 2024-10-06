@@ -28,25 +28,52 @@ This is the first time this user story is presented.
 
 **Acceptance Criteria:**
 
-- 5.1.17.1. | Doctors can update operation requests they created (e.g., change the deadline or priority).
+- **5.1.17.1.** | Doctors can update operation requests they created (e.g., change the deadline or priority).
 
-- 5.1.17.2. | The system checks that only the requesting doctor can update the operation request.
+- **5.1.17.2.** | The system checks that only the requesting doctor can update the operation request.
 
-- 5.1.17.3. | The system logs all updates to the operation request (e.g., changes to priority or deadline).
+- **5.1.17.3.** | The system logs all updates to the operation request (e.g., changes to priority or deadline).
 
-- 5.1.17.4. | Updated requests are reflected immediately in the system and notify the Planning Module of any changes.
+- **5.1.17.4.** | Updated requests are reflected immediately in the system and notify the Planning Module of any changes.
 
 
 **Dependencies/References:**
 
-This functionality is dependent on the creation of a operation requisition (US 5.1.16) by a Doctor registered in the healthcare 
-system (US 5.1.12 and US 5.1.1).
+This functionality is dependent on the creation of an operation requisition (**US 5.1.16**) by a Doctor registered in the healthcare 
+system (**US 5.1.12** and **US 5.1.1**).
 
 **Client Clarifications:**
 
-> **Question:** 
+> **Question:** What information can physicians update on an operating requisition?
 >
-> **Answer:** 
+> **Answer:** Physicians can update the operating time, priority, and description text, but not change the patient.
+
+
+> **Question:** An operation request has a priority attribute. What priorities exist?
+>
+> **Answer:** Elective, Urgent, and Emergency Surgery Classifications
+>
+> >**Elective Surgery:** A planned procedure that is not life-threatening and can be scheduled at a convenient time (e.g., joint replacement, cataract surgery).
+> >
+> >**Urgent Surgery:** Needs to be done sooner but is not an immediate emergency. Typically, within days (e.g., certain types of cancer surgeries).
+> >
+> >**Emergency Surgery:** Needs immediate intervention to save life, limb, or function. Typically performed within hours (e.g., ruptured aneurysm, trauma)
+
+
+> **Question:** How does a Doctor suggests a deadline date for an appointment? Does it have any criteria? Or do they just wing it?
+>
+> **Answer:** The doctor will decide the "best" due date based on their experience. they will enter it in the system as 
+> an indication so that the planning module eventually takes that into account alongside priority and other criteria
+
+
+> **Question:** What does “status” refer to in the context of searching for operating requisitions?
+>
+> **Answer:** Status refers to whether the operation is planned or requested.
+
+
+> **Question:** What is the difference between appointment, surgery, and operation?
+>
+> **Answer:** Surgery is a medical procedure (e.g., hip surgery), while an operation request is when a doctor schedules that surgery for a patient. An appointment is the scheduled date for the operation, determined by the planning module.
 
 
 ## 3. Analysis
@@ -57,10 +84,12 @@ healthcare. This constrain is checked by the system.
 The information that can be edited is the following one:
 - deadline
 - priority
+- description text
 
-> CHECK WHAT INFO CAN BE EDITED
+While the priority must be one of the types already in the system (Elective < Urgent < Emergency), the deadline is provided by the doctor, that defines it
+based on their experience as staff.
 
-Each single data edition is registered in the system logs and immediately reflected in the system and planning module.
+Each single data edition is registered in the system logs and immediately reflected in the system and Planning Module.
 
 ### System Sequence Diagram
 
@@ -70,7 +99,9 @@ The following diagram depicts the interaction between the Doctor and the system.
 
 ### Domain Model
 
-_// To do //_
+![domain-model.svg](diagrams/DM/domain-model.svg)
+
+**Observation:** MRN refers to the medical record number.
 
 ## 4. Design
 

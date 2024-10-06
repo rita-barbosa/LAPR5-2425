@@ -20,20 +20,12 @@ SYS --> DOC : presents the operation requisition data
 
 loop until the Doctor desires
 
-DOC -> SYS : edits/updates an information of the operation requisition
-
-SYS --> SYS : registers the data\n update on the system log
-
-SYS --> SYS : updates data in the system\n and Planning Module
-
+DOC -> SYS : edits/updates an information of the selected operation requisition
 end loop
 
 DOC -> SYS : confirms the end of the editions/updates
 
 SYS --> DOC : confirms the data was saved
-
-autonumber stop
-SYS -[#white]> DOC
 
 deactivate DOC
 deactivate SYS
