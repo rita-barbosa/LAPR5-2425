@@ -57,11 +57,19 @@ This User Story is related to the Doctor.
 
 ## 3. Analysis
 
-_// To do //_
+This functionality talks about the removal of a operation requisition by a doctor, and after some analysis of the documentation, acceptance criterias and client clarifications, it is our understanding that this User Story would follow this order of actions:
+
+- The doctor is able to see the requisitions they have made and if that requisition has not been scheduled then they can ask to remove it from the system.
+- After choosing to remove a certain requisition, the system will ask for a confirmation, as a lot of data will be changed if that were to happen
+- The doctor can then confirm and after having done so, the system will remove the requisition from the system.
+- For the sake of this User Story, removing from the system will mean removing from a patient's file and the requisition list.
+- The system will then inform the Planning module of that change and updates the schedule if that were relying on this requisition.
+
+As explained by the client and acceptance criteria, after having removed this requistion from the system, it is not possible to revert that process.
 
 ### System Sequence Diagram
 
-_// To do - if justified //_
+![SSD](Diagrams/SSD/system-sequence-diagram-doctor.svg)
 
 ### Domain Model
 
