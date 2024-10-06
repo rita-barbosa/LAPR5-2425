@@ -6,7 +6,6 @@
   * [2. Requirements](#2-requirements)
   * [3. Analysis](#3-analysis)
     * [System Sequence Diagram](#system-sequence-diagram)
-    * [Domain Model](#domain-model)
   * [4. Design](#4-design)
     * [4.1. Realization](#41-realization)
     * [4.2. Class Diagram](#42-class-diagram)
@@ -29,13 +28,16 @@ that I can regain access to the system securely.
 
 **Acceptance Criteria:**
 
-- **5.1.2.1.** Backoffice users can request a password reset by providing their email.
+- **5.1.2.1:** Backoffice users can request a password reset by providing their email.
 
-- **5.1.2.2.** The system sends a password rest link via email.
+- **5.1.2.2:** The system sends a password reset link via email.
 
-- **5.1.2.3** The reset link expires after a predefined period (e.g., 24 hours) for security.
+- **5.1.2.3:** The reset link expires after a predefined period (e.g., 24 hours) for security.
 
-- **5.1.2.4** Users must provide a new password that meets the system's password complexity rules.
+- **5.1.2.4:** Users must provide a new password that meets the system's password complexity rules.
+
+- **5.1.2.5:** The password requirements are: 10 or more characters long, 1 or more digits, 1 or more capital letter and
+1 or more special character.
 
 **Dependencies/References:**
 
@@ -45,20 +47,18 @@ that I can regain access to the system securely.
 
 > **Question:** What are the system's password requirements?
 >
-> **Answer:** 
+> **Answer:**  At least 10 characters long, at least a digit, a capital letter and a special character.
 
 
 ## 3. Analysis
 
-_// To do //_
+In this functionality, the backoffice user will be able to reset their password, by providing their email. The system
+will send a password reset link via email, and the user will have a predefined period to access the link and provide a
+password that meets the system password complexity rules.
 
 ### System Sequence Diagram
 
-_// To do - if justified //_
-
-### Domain Model
-
-_// To do //_
+![us-5.1.2-ssd.svg](diagrams/ssd/us-5.1.2-ssd.svg)
 
 ## 4. Design
 
