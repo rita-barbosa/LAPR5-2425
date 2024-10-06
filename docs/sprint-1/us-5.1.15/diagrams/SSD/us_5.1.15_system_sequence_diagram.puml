@@ -29,13 +29,14 @@ SYS --> ADM : lists the staff profiles
     ADM -> SYS : selects a profile
     SYS --> ADM : shows profile
 
-        alt
+autonumber stop
+        alt edit profile
 
-        ref over ADM, SYS : US 5.1.13 (edit profile)
+        ADM --> SYS : US 5.1.13
 
-        else
+        else deactivate profile
 
-            ref over ADM, SYS : US 5.1.14 (deactivate profile)
+            ADM --> SYS : US 5.1.14
 
         end alt
 

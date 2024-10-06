@@ -6,7 +6,6 @@
   * [2. Requirements](#2-requirements)
   * [3. Analysis](#3-analysis)
     * [System Sequence Diagram](#system-sequence-diagram)
-    * [Domain Model](#domain-model)
   * [4. Design](#4-design)
     * [4.1. Realization](#41-realization)
     * [4.2. Class Diagram](#42-class-diagram)
@@ -29,24 +28,31 @@ This is the first time this user story is being presented.
 
 **Acceptance Criteria:**
 
-- 5.1.15.1. | Admins can search staff profiles by attributes such as name, email, or specialization.
+- **5.1.15.1.** | Admins can search staff profiles by attributes such as name, email, or specialization.
 
-- 5.1.15.2. | The system displays search results in a list view with key staff information (name, email, specialization).
+- **5.1.15.2.** | The system displays search results in a list view with key staff information (name, email, specialization).
 
-- 5.1.15.3. | Admins can select a profile from the list to view, edit, or deactivate.
+- **5.1.15.3.** | Admins can select a profile from the list to view, edit, or deactivate.
 
-- 5.1.15.4. | The search results are paginated, and filters are available for refining the search results.
+- **5.1.15.4.** | The search results are paginated, and filters are available for refining the search results.
+
+- **5.1.15.5.** | It is possible to apply multiple filters to a search result.
 
 **Dependencies/References:**
 
-This feature is dependent on the existence of staff profiles previously created by the Admin (5.1.12), as well as the functionalities
-to edit (5.1.13) and remove/deactivate (5.1.14) them.
+This feature is dependent on the existence of staff profiles previously created by the Admin (**US 5.1.12**), as well as the functionalities
+to edit (**US 5.1.13**) and remove/deactivate (**US 5.1.14**) them.
 
 **Client Clarifications:**
 
-> **Question:** 
+
+> **Question:** What types of filters can be applied when searching for profiles?
 >
-> **Answer:** 
+> **Answer:** Filters can include doctor specialization, name, or email to refine search results
+>
+> **Client Words:** I want to list everything, so there are no filters. So I want to have a filter where I only list doctors,
+> or only list doctors who belong to a specialization, whether it's a doctor or a physician. Or I want to have a combination
+> of that. I want to look for whether this is a doctor or a physician, or what specialization this person is in.
 
 
 ## 3. Analysis
@@ -57,15 +63,13 @@ a list. In this list, the Admin selects a profile to see its details, update and
 The Admin can search profiles by the staff's name, email or specialization, and the search results are presented through
 a paginated list, with search filters to refine the selection of listed profiles.
 
+Multiple filters can be used simultaneously.
+
 ### System Sequence Diagram
 
 The following diagram depicts the interaction between the Admin and the system.
 
 ![us_5.1.15_system_sequence_diagram.svg](diagrams/SSD/us_5.1.15_system_sequence_diagram.svg)
-
-### Domain Model
-
-_// To do //_
 
 ## 4. Design
 
