@@ -5,7 +5,6 @@
   * [1. Context](#1-context)
   * [2. Requirements](#2-requirements)
   * [3. Analysis](#3-analysis)
-    * [System Sequence Diagram](#system-sequence-diagram)
     * [Domain Model](#domain-model)
   * [4. Design](#4-design)
     * [4.1. Realization](#41-realization)
@@ -20,7 +19,15 @@
 
 ## 1. Context
 
-This is the first time this user story is being requested, related to the GDPR (General Data Protection Regulation).
+* This is the first time this user story is being requested, related to the GDPR (General Data Protection Regulation).
+
+
+* General Data Protection Regulation (GDPR) is a regulation regarding the information privacy in the European Union (EU)
+and the European Economic Area (EEA). It's an important component of EU privacy law and human rights law, governing the 
+transfer of personal data outside the EU and EEA. It plays a crucial role in EU privacy and human rights laws, especially
+when it comes to managing the transfer of personal data outside these regions. The primary objectives of GDPR are to give
+individuals more control over their personal data and to streamline privacy regulations for businesses operating internationally.
+
 
 ## 2. Requirements
 
@@ -28,20 +35,21 @@ This is the first time this user story is being requested, related to the GDPR (
 
 **Acceptance Criteria:**
 
-- 5.1.5.1. | Patients can request to delete their account through the profile settings.
+- **5.1.5.1.** | Patients can request to delete their account through the profile settings.
 
-- 5.1.5.2. | The system sends a confirmation email to the patient before proceeding with account deletion.
+- **5.1.5.2.** | The system sends a confirmation email to the patient before proceeding with account deletion.
 
-- 5.1.5.3 | Upon confirmation, all personal data is permanently deleted from the system within the legally required time frame (30 days).
+- **5.1.5.3.** | Upon confirmation, all personal data is permanently deleted from the system within the legally required time frame (30 days).
 
-- 5.1.5.4 | Patients are notified once the deletion is complete, and the system logs the action for GDPR compliance.
+- **5.1.5.4.** | Patients are notified once the deletion is complete, and the system logs the action for GDPR compliance.
 
-- 5.1.5.5 | Some anonymized data may be retained for legal or research purposes, but all identifiable information is erased.
+- **5.1.5.5.** | Some anonymized data may be retained for legal or research purposes, but all identifiable information is erased.
 
+- **5.1.5.6.** | Before proceeding with the creation of a new profile, the system checks if the associated email is unique.
 
 **Dependencies/References:**
 
-This feature is related to the creation on a patient's account (US 5.1.3) and its profile creation (US 5.1.8) too.
+This feature is related to the creation on a patient's account (**US 5.1.3**) and its profile creation (**US 5.1.8**) too.
 
 **Client Clarifications:**
 
@@ -81,15 +89,11 @@ Upon concluding the account deletion, the system logs the action following GDPR 
 auditability.
 
 
-### System Sequence Diagram
-
-The following diagram depicts the interaction between the user (Patient) and the system.
-
-![us_5.1.5_system_sequence_diagram.svg](diagrams/SSD/us_5.1.5_system_sequence_diagram.svg)
-
 ### Domain Model
 
-_// To do //_
+![domain-model.svg](diagrams/DM/domain-model.svg)
+
+**Observation:** MRN refers to the medical record number.
 
 ## 4. Design
 
