@@ -5,8 +5,6 @@
   - [1. Context](#1-context)
   - [2. Requirements](#2-requirements)
   - [3. Analysis](#3-analysis)
-    - [System Sequence Diagram](#system-sequence-diagram)
-    - [Domain Model](#domain-model)
   - [4. Design](#4-design)
     - [4.1. Realization](#41-realization)
     - [4.2. Class Diagram](#42-class-diagram)
@@ -75,14 +73,6 @@ It's important to highlight that patients cannot update every aspect of their pr
 A confirmation email must be sent to ensure the changes are legitimate.
 
 Lastly, all the made changes must be be logged for traceability.
-
-### System Sequence Diagram
-
-_// To do - if justified //_
-
-### Domain Model
-
-_// To do //_
 
 ## 4. Design
 
