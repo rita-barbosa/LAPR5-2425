@@ -28,12 +28,12 @@ This is the first time this user story is being requested.
 
 **Acceptance Criteria:**
 
-- **5.1.16.1.** Doctors can create an operation request by selecting the patient, operation type, priority, and
+- **5.1.16.1:** Doctors can create an operation request by selecting the patient, operation type, priority, and
 suggested deadline.
 
-- **5.1.16.2.** The system validates that the operation type matches the doctor's specialization.
+- **5.1.16.2:** The system validates that the operation type matches the doctor's specialization.
 
-- **5.1.16.3** The operation request includes:
+- **5.1.16.3:** The operation request includes:
 
   - Patient ID
   - Doctor ID
