@@ -6,7 +6,6 @@
   * [2. Requirements](#2-requirements)
   * [3. Analysis](#3-analysis)
     * [System Sequence Diagram](#system-sequence-diagram)
-    * [Domain Model](#domain-model)
   * [4. Design](#4-design)
     * [4.1. Realization](#41-realization)
     * [4.2. Class Diagram](#42-class-diagram)
@@ -54,9 +53,9 @@ This functionality does not have dependencies.
 The system has a predefined operation types list that  reflect the available procedures at the clinic/hospital. The Admin
 has the permissions to add new ones as it is required, with the following attributes:
 
-- Operation Name, it has to be unique
-- Required Staff by Specialization
-- Estimated Duration
+- **Operation Name** | it has to be unique
+- **Required Staff by Specialization** | a list of the healthcare professionals needed to proceed with the surgery
+- **Estimated Duration** | in hours
 
 After the operation type has been created, the system registers the event in the system logs.
 
@@ -66,10 +65,6 @@ After the operation type has been created, the system registers the event in the
 The following diagram depicts the interaction between the Admin and the system.
 
 ![us_5.1.20_system_sequence_diagram.svg](diagrams/SSD/us_5.1.20_system_sequence_diagram.svg)
-
-### Domain Model
-
-_// To do //_
 
 ## 4. Design
 

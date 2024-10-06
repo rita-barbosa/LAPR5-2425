@@ -28,13 +28,9 @@ SYS --> ADM : asks to indicate an estimated duration
 
 ADM -> SYS : provides an estimated duration
 
+SYS --> ADM : confirms the creation of a new operation type
+
 deactivate ADM
-
-SYS --> SYS : registers an operation type\n creation on the system logs
-
-autonumber stop
-SYS -[#white]> ADM
-
 deactivate SYS
 
 @enduml
