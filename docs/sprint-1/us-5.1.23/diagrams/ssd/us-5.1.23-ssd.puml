@@ -5,11 +5,12 @@ title "US 5.1.23 - System Sequence Diagram"
 
 autonumber
 
-participant Admin as ADM
+actor Admin as ADM
 participant System as SYS
 
-ADM -> SYS : requests the list of the operation types
 activate ADM
+
+ADM -> SYS : requests the list of the operation types
 activate SYS
 
 SYS --> ADM : lists the operation types
@@ -29,14 +30,13 @@ opt search filters appliance
     SYS --> ADM : shows operation type
 
         alt view, edit or remove operation types
-        |||
 
         ADM -> SYS : asks to see operation type details
         SYS --> ADM : show operation type details
         else
         |||
         ref over ADM, SYS : US 5.1.21 (edit operation type)
-        |||
+
         else
         |||
             ref over ADM, SYS : US 5.1.22 (deactivate operation type)

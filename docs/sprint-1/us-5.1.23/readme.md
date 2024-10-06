@@ -28,12 +28,12 @@ operation types.
 
 **Acceptance Criteria:**
 
-- **5.1.23.1.** Admin can search and filter operation types by name, specialization, or status (active/inactive).
+- **5.1.23.1:** Admin can search and filter operation types by name, specialization, or status (active/inactive).
 
-- **5.1.23.2.** The system displays operation types in a searchable list with attributes such as name, required staff,
+- **5.1.23.2:** The system displays operation types in a searchable list with attributes such as name, required staff,
 and estimated duration.
 
-- **5.1.23.3** Admins can select an operation type to view, edit, or deactivate it.
+- **5.1.23.3:** Admins can select an operation type to view, edit, or deactivate it.
 
 **Dependencies/References:**
 
