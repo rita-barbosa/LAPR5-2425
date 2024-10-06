@@ -51,7 +51,6 @@ This user story does not have dependencies.
 >
 > **Answer:** Yes, staff IDs are unique and not role-specific (e.g., a doctor and nurse can share the same ID format).
 
-
 > **Question:** Will there be a list of specializations in the system?
 >
 > **Answer:** Yes, a predefined list of specializations will be provided, but the system should allow for future additions.
@@ -59,15 +58,21 @@ This user story does not have dependencies.
 
 ## 3. Analysis
 
-_// To do //_
+In this functionality, the admin can create a staff profile by inputting the following information:
 
-### System Sequence Diagram
+- Name (first and last name)
+- Contact information (email and phone number)
+- Specialization
 
-_// To do - if justified //_
+It’s important to note that specializations are selected from a predefined list, so the admin will need to choose one of the available options.
+
+Upon creating the profile, a unique license number will be generated and assigned to the staff member, which will serve as the identifiable attribute for each profile. This license number is not role-specific, meaning all staff will share the same ID format.
+
+Finally, as specified in the acceptance criteria, the contact information (email and phone number) must be unique. Consequently, the system must verify that no other profile exists with the same email or phone number.
 
 ### Domain Model
 
-_// To do //_
+![Domain Model](diagrams/domain-model.svg)
 
 ## 4. Design
 
