@@ -43,22 +43,38 @@ to the staff member.
 
 **Client Clarifications:**
 
-> **Question:** 
+> **Question:** Good afternoon, I would like to know if the system's objective is to differentiate specializations for
+> each type of staff. In other words, do we need to ensure that a specific specialization can only be assigned,
+> for example, to a staff member who is a doctor, or do we consider that any specialization existing in the system
+> can be assigned to any staff member, leaving it to the responsibility of the person creating the profiles to assign
+> valid specializations according to the staff's role?
 >
-> **Answer:** 
+> **Answer:** The specializations are independent of whether the professional is a doctor or a nurse.
 
 
 ## 3. Analysis
 
-_// To do //_
+This functionality centers in the edit of a staff's profile by the Admin, so he can update the staff information.
+
+First the Admin will search for the staff profile he wants to edit and then select it. Then can be selected the follow
+editable fields:
+- contact information (email and phone)
+- availability slots
+- specialization
+
+In the case of choosing to change sensitive data, such as contact information, triggers and email notification to the
+staff member.
+
+All the edited data that is changed, will be updated in real-time across the system.
+
 
 ### System Sequence Diagram
 
-_// To do - if justified //_
+![us-5.1.13-ssd.svg](diagrams/ssd/us-5.1.13-ssd.svg)
 
 ### Domain Model
 
-_// To do //_
+![us-5.1.13-dm.svg](diagrams/dm/us-5.1.13-dm.svg)
 
 ## 4. Design
 
