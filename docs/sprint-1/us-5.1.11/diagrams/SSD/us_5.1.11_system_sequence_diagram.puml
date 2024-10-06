@@ -29,13 +29,14 @@ SYS --> ADM : lists the patient profiles
     ADM -> SYS : selects a profile
     SYS --> ADM : shows profile
 
-        alt
+autonumber stop
+        alt edit profile
 
-        ref over ADM, SYS : US 5.1.9 (edit profile)
+        ADM --> SYS : US 5.1.9
 
-        else
+        else deactivate profile
 
-            ref over ADM, SYS : US 5.1.10 (deactivate profile)
+            ADM --> SYS : US 5.1.10
 
         end alt
 
