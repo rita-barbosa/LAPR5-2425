@@ -51,11 +51,23 @@ This User Story is related to the Admin.
 
 ## 3. Analysis
 
-_// To do //_
+This functionality talks about the updating or editting of an existing operation type, and after some analysis of the documentation (most common operation types), acceptance criterias and client clarifications, it is our understanding that this User Story would follow this order of actions:
+
+- The admin would request to see the list of current available operation types.
+- After choosing an operation type, it can choose to edit the operation's **editable data**.
+- After having done so the system will update the operation requirements for future requests.
+- Finally, the system will inform the Admin of a succeful change.
+
+It is important to note that for the sake of this project, **editable data of the operation type is:** 
+- Operation Type's Name
+- Required Staff by Specialization
+- Estimated Duration. 
+
+As explained by the acceptance criterias, the changes only affect future requests and all data relevant to old operations is still kept while the new requests have updated information.
 
 ### System Sequence Diagram
 
-_// To do - if justified //_
+![SSD](Diagrams/SSD/system-sequence-diagram-admin.svg)
 
 ### Domain Model
 
