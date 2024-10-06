@@ -69,10 +69,6 @@ The following diagram describes the second part of this User Story, what the sta
 
 ![SSD - Staff](Diagrams/SSD/system-sequence-diagram-user.svg)
 
-### Domain Model
-
-_// To do //_
-
 ## 4. Design
 
 ### 4.1. Realization
