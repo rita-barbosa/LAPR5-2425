@@ -59,19 +59,15 @@ This functionality talks about the updating or editting of an existing operation
 - Finally, the system will inform the Admin of a succeful change.
 
 It is important to note that for the sake of this project, **editable data of the operation type is:** 
-- Operation Type's Name
-- Required Staff by Specialization
-- Estimated Duration. 
+- **Operation Type's Name**
+- **Required Staff by Specialization**
+- **Estimated Duration**
 
-As explained by the acceptance criterias, the changes only affect future requests and all data relevant to old operations is still kept while the new requests have updated information.
+As explained by the acceptance criterias, **the changes only affect future requests** and all data relevant to old operations is still kept while the **new requests have updated information.**
 
 ### System Sequence Diagram
 
 ![SSD](Diagrams/SSD/system-sequence-diagram-admin.svg)
-
-### Domain Model
-
-_// To do //_
 
 ## 4. Design
 

@@ -71,10 +71,6 @@ As explained by the client and acceptance criteria, after having removed this re
 
 ![SSD](Diagrams/SSD/system-sequence-diagram-doctor.svg)
 
-### Domain Model
-
-_// To do //_
-
 ## 4. Design
 
 ### 4.1. Realization

@@ -17,7 +17,6 @@
   - [7. Observations](#7-observations)
 <!-- TOC -->
 
-
 ## 1. Context
 
 This is the first time this User Story is being worked on. 
@@ -60,15 +59,7 @@ After reviewing the documentation and carefully analyzing the acceptance criteri
 - If the request goes forward then the patient's profile will be tagged for deletion and after a predetermined amount of time, it will be removed permenantely from the system.
 - When the data is removed the system will log the deletion and add it to the database as said in acceptance criteria 5.1.10.4.
 
-This order of events is also described in the System Sequence Diagram shown below:
-
-### System Sequence Diagram
-
-![SSD](Diagrams/SSD/system-sequence-diagram-admin.svg)
-
-### Domain Model
-
-_// To do //_
+The predefined amount of time for the data to be deleted permanently and the extent of the data that will be deleted is a subject that will further explored in the Design section as it also pertains to GDPR regulation.
 
 ## 4. Design
 

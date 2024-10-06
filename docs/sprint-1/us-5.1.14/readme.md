@@ -61,14 +61,6 @@ This functionality talks about the deactivation of the profile of a staff member
 It is important to note that for the sake of this project, **historical data** is considered to be:
 **All types of appointments and/or requests made and/or taken part by the staff.**
 
-### System Sequence Diagram
-
-![SSD](Diagrams/SSD/system-sequence-diagram-admin.svg)
-
-### Domain Model
-
-_// To do //_
-
 ## 4. Design
 
 ### 4.1. Realization
