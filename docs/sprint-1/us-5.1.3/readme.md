@@ -29,13 +29,13 @@ book appointments online.
 
 **Acceptance Criteria:**
 
-- **5.1.3.1.** Patients can self-register using the external IAM system.
+- **5.1.3.1:** Patients can self-register using the external IAM system.
 
-- **5.1.3.2.** During registration, patients provide personal details (e.g., name, email, phone) and create a profile.
+- **5.1.3.2:** During registration, patients provide personal details (e.g., name, email, phone) and create a profile.
 
-- **5.1.3.3** The system validates the email address by sending a verification email with a confirmation link.
+- **5.1.3.3:** The system validates the email address by sending a verification email with a confirmation link.
 
-- **5.1.3.4** Patients cannot list their appointments without completing the registration process.
+- **5.1.3.4:** Patients cannot list their appointments without completing the registration process.
 
 **Dependencies/References:**
 
@@ -45,7 +45,8 @@ book appointments online.
 
 > **Question:** How are duplicate patient profiles handled when registered by both the patient and admin?
 >
-> **Answer:** The system checks the email for uniqueness. The admin must first create the patient record, and then the patient can register using the same email.
+> **Answer:** The system checks the email for uniqueness. The admin must first create the patient record, and then the
+> patient can register using the same email.
 
 > **Question:** Can the same user have both a patient and a healthcare profile?
 >
@@ -54,17 +55,34 @@ book appointments online.
 
 > **Question:** Is the email the identifying attribute or is it the username?
 >
-> **Answer:** I's the username. But typically, nowadays, most of the usernames that you have in all the systems are your email.
+> **Answer:** It's the username. But typically, nowadays, most of the usernames that you have in all the systems are your
+> email.
+
+> **Question:** The user has contact information, email and phone, they are booth obligatory?
+>
+> **Answer:** Yes.
+
 
 
 
 ## 3. Analysis
 
-_// To do //_
+This functionality has the objective of allowing the patient to register for the healthcare application, so he can create
+their respective profile and book appointments.
+
+The first process is for the patient to register itself using the external IAM, but also to provides some personal 
+information, such as:
+- name
+- email
+- phone number
+
+After this registration, will occur the verification of the email address, by sending a verification email with a 
+confirmation link.
+
 
 ### System Sequence Diagram
 
-_// To do - if justified //_
+![us-5.1.3-ssd.svg](diagrams/ssd/us-5.1.3-ssd.svg)
 
 ### Domain Model
 
