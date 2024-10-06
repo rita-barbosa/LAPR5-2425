@@ -1,0 +1,18 @@
+@startuml
+
+component User 
+component Staff
+component Patient 
+component Doctor
+component Appointment
+component OperationRequest
+component OperationType
+component Room
+component Specialization
+
+
+
+
+
+
+@enduml
