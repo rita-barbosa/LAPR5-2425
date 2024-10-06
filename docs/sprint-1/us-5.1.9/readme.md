@@ -32,9 +32,9 @@ This is the first time this user story is being requested.
 
 - **5.1.9.2.** Editable fields include name, contact information, medical history, and allergies.
 
-- **5.1.9.3** Changes to sensitive data (e.g., contact information) trigger and email notification to the patient.
+- **5.1.9.3:** Changes to sensitive data (e.g., contact information) trigger an email notification to the patient.
 
-- **5.1.9.4** The system logs all profile changes for auditing purposes.
+- **5.1.9.4:** The system logs all profile changes for auditing purposes.
 
 **Dependencies/References:**
 
@@ -42,22 +42,54 @@ This is the first time this user story is being requested.
 
 **Client Clarifications:**
 
-> **Question:** 
+> **Question:** In an allergy record, is it necessary to include the date of diagnosis and the name of the doctor who made it?
+> What defines an allergy and one medical condition?
+>
+> **Answer:** Allergies is a free text field. The doctor will fill it in as best-suited.
+
+> **Question:** As I understand it, a patient's profile has plenty of information about the user, such as name, contact
+> information (phone and email), preferences, appointment history, medical records, etc.
+>
+> What data do you consider to be identifiable? Are medical and appointment records deemed identifiable from your 
+> perspective? What data from the user's profile can be retained in the system after the legal time frame related to the
+> GDPR has passed?
+>
+> Also, how much time do you want to be set as the time frame for deletion and retention of data in the system? Is the 
+> user informed on how many days are left for the deletion of its data? Like by email or somewhere in the UI of their
+> account?
+>
+> **Answer:** It is part of the team's work for the GDPR module to define the policy
+
+> **Question:** In the context of US 5.1.9, second acceptance criteria "Changes to sensitive data (e.g., contact
+> information) trigger an email notification to the patient.", what classifies as "sensitive data".
 >
 > **Answer:** 
 
 
 ## 3. Analysis
 
-_// To do //_
+This functionality centers in the edit of a patient profile by the Admin, so he can update the patient information.
+
+First the Admin will search for the patient profile he wants to edit and then select it. Then can be selected the follow
+editable fields:
+- name
+- contact information (email and phone)
+- medical history
+- allergies
+
+In the case of choosing to change sensitive data, such as contact information, triggers and email notification to the
+patient. 
+
+The system will log all the profile changes for auditing purposes.
+
 
 ### System Sequence Diagram
 
-_// To do - if justified //_
+![us-5.1.9-ssd.svg](diagrams/ssd/us-5.1.9-ssd.svg)
 
 ### Domain Model
 
-_// To do //_
+![us-5.1.9-dm.svg](diagrams/dm/us-5.1.9-dm.svg)
 
 ## 4. Design
 
