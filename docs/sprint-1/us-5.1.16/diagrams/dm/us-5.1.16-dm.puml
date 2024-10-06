@@ -1,0 +1,72 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+title "US 5.1.16 - Domain Model"
+
+class Name <<(V,#FF8B40)value object>> {}
+class FirstName <<(V,#FF8B40)value object>> {}
+class LastName <<(V,#FF8B40)value object>> {}
+class FullName <<(V,#FF8B40)value object>> {}
+class ContactInfo <<(V,#FF8B40)value object>> {}
+class Phone <<(V,#FF8B40)value object>> {}
+class Email <<(V,#FF8B40)value object>> {}
+class Date <<(V,#FF8B40)value object>> {}
+
+package "<<aggregate>> Patient" {
+    entity Patient <<entity>> <<root>> {}
+    class DateBirth <<(V,#FF8B40)value object>> {}
+    class Gender <<(V,#FF8B40)value object>> {}
+
+    class EmergencyContact <<(V,#FF8B40)value object>> {}
+    class MRN <<(V,#FF8B40)value object>> <<identifier>> {}
+    class MedicalCondition <<(V,#FF8B40)value object>> {}
+    class AppointmentHistory <<(V,#FF8B40)value object>> {}
+}
+
+package "<<aggregate Doctor>>" {
+    entity Doctor <<entity>><<root>>{}
+}
+
+package "<<aggregate OperationRequest>>"{
+    entity OperationRequest <<entity>> <<root>> {}
+    class OperationRequestId <<(V,#FF8B40)value object>> <<identifier>> {}
+    class Priority <<(V,#FF8B40)value object>> <<identifier>> {}
+}
+
+package "<<aggregate OperationType>>"{
+    entity OperationType <<entity>> <<root>> {}
+    class OperationTypeId <<(V,#FF8B40)value object>> <<identifier>> {}
+    class OperationTypeName <<(V,#FF8B40)value object>>  {}
+    class RequiredStaff <<(V,#FF8B40)value object>>  {}
+    class EstimatedDuration <<(V,#FF8B40)value object>>  {}
+}
+
+Name --> FirstName
+Name -> LastName
+Name --> FullName
+
+OperationType --> "1" OperationTypeId
+OperationType --> "1" OperationTypeName
+OperationType ---> "1" RequiredStaff
+OperationType ---> "1" EstimatedDuration
+
+OperationRequest -> "1" OperationRequestId
+OperationRequest --> "1" Priority
+OperationRequest --> "1" Patient : made for
+OperationRequest --> "1" Doctor : registed by
+OperationRequest ---> "1" OperationType : defined by
+OperationRequest --> "1" Date
+
+Patient -> "1" Name
+Patient --> "1" DateBirth
+Patient --> "1" Gender
+Patient ---> "1" ContactInfo
+Patient ---> "1" EmergencyContact
+Patient --> "1" MRN
+Patient --> "0..*" MedicalCondition
+Patient --> "1" AppointmentHistory
+ContactInfo --> "1" Email
+ContactInfo --> "1" Phone
+EmergencyContact --> "1" Phone
+
+@enduml
