@@ -4,6 +4,7 @@ hide empty attributes
 skinparam classBackgroundColor beige
 skinparam ArrowColor #222222
 
+class Name <<(V,#FF8B40)value object>> {}
 
 class FirstName <<(V,#FF8B40)value object>> {}
 class LastName <<(V,#FF8B40)value object>> {}
@@ -32,7 +33,10 @@ package "<<aggregate>> Patient" {
 package "<<aggregate Staff>>" {
     entity Staff <<entity>><<root>>{}
     class LicenseNumber <<(V,#FF8B40)value object>> <<identifier>> {}
-    class Function <<(V,#FF8B40)value object>>  {}
+}
+
+package "<<aggregate Doctor>>" {
+    entity Doctor <<entity>><<root>>{}
 }
 
 
@@ -45,7 +49,7 @@ package "<<aggregate OperationRequest>>"{
 package "<<aggregate OperationType>>"{
     entity OperationType <<entity>> <<root>> {}
     class OperationTypeId <<(V,#FF8B40)value object>> <<identifier>> {}
-    class Name <<(V,#FF8B40)value object>>  {}
+    class OperationTypeName <<(V,#FF8B40)value object>>  {}
     class RequiredStaff <<(V,#FF8B40)value object>>  {}
     note left: review this
     class EstimatedDuration <<(V,#FF8B40)value object>>  {}
@@ -58,23 +62,42 @@ package "<<aggregate Appointment>>"{
     class AppointmentType <<(V,#FF8B40)value object>>  {}
     note left: can this be qualified\nas specialization??
 }
+package "<<aggregate Specialization>>"{
+    entity Specialization <<entity>> <<root>> {}
+    class SpecializationDenomination <<(V,#FF8B40)value object>>  {}
+}
 
 package "<<aggregate Room>>"{
     entity Room <<entity>> <<root>> {}
     class RoomNumber <<(V,#FF8B40)value object>> <<identifier>> {}
     class RoomType <<(V,#FF8B40)value object>>  {}
     class Capacity <<(V,#FF8B40)value object>>  {}
-    class MaxStaff <<(V,#FF8B40)value object>>  {}
-    class MaxPatient <<(V,#FF8B40)value object>>  {}
     class CurrentStatus <<(V,#FF8B40)value object>>  {}
     class AvailableEquipment <<(V,#FF8B40)value object>>  {}
 }
 
+package "<<aggregate>> User" {
+    entity User <<entity>> <<root>>
+    class Username <<(V,#FF8B40) value object>>
+    class Email <<(V,#FF8B40) value object>>
+    class Role <<(V,#FF8B40) value object>>
+}
+
+User -> "0..1" Patient
+User -> "1" Staff
+User --> Username
+User --> Email
+User --> Role
+
+Doctor -> "1" Staff : is a
+
+Name --> FirstName
+Name -> LastName
+Name --> FullName
+
 Room --> "1" RoomNumber
 Room --> "1" RoomType
 Room --> "1" Capacity
-Capacity --> "1" MaxStaff
-Capacity --> "1" MaxPatient
 Room --> "1" CurrentStatus
 Room --> "1" AvailableEquipment
 Room --> "0..*" Slot
@@ -82,13 +105,14 @@ Room --> "0..*" Slot
 Appointment -> "1" Room
 
 OperationType --> "1" OperationTypeId
-OperationType --> "1" Name
+OperationType --> "1" OperationTypeName
 OperationType ---> "1" RequiredStaff
 OperationType ---> "1" EstimatedDuration
 
 OperationRequest -> "1" OperationRequestId
 OperationRequest --> "1" Priority
 OperationRequest --> "1" Patient : made for
+OperationRequest --> "1" Doctor : registed by
 OperationRequest ---> "1" OperationType : defined by
 OperationRequest --> "1" Date
 
@@ -100,9 +124,7 @@ Appointment --> "1" AppointmentType
 Appointment --> "1..*" Staff
 
 
-Patient -> "1" FirstName
-Patient --> "1" LastName
-Patient --> "1" FullName
+Patient -> "1" Name
 Patient --> "1" DateBirth
 Patient --> "1" Gender
 Patient ---> "1" ContactInfo
@@ -115,14 +137,11 @@ ContactInfo --> "1" Phone
 EmergencyContact --> "1" Phone
 
 
-Staff --> "1" FirstName
-Staff --> "1" LastName
-Staff --> "1" FullName
-Staff ---> "1" Function
+Staff --> "1" Name
 Staff ---> "1" ContactInfo
 Staff --> "1" LicenseNumber
-Staff ----> "1..*" Slot
-Staff ---> "1" Specialization
+Staff ---> "1..*" Slot
+Staff --> "1" Specialization
 
 Specialization --> "1" SpecializationDenomination : defined by
 Slot --> "1" Date
