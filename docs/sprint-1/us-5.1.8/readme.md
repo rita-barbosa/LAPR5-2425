@@ -51,7 +51,7 @@ This user story does not have dependencies.
 
 > **Question:**  It is specified that the admin can input some of the patient's information (name, date of birth, contact information, and medical history.). Do they also input the omitted information (gender, emergency contact and allergies/medical condition)? 
 >
-> **Answer:** _Waiting for client clarifications._
+> **Answer:** The admin can not input medical history nor allergies. they can however input gender and emergency contact.
 
 > **Question:** What's the difference between Medical Records and Appointment History?
 >
@@ -66,19 +66,16 @@ What defines an allergy and one medical condition?
 >
 > **Asnwer:** Since this system is mostly concerned with surgery, the medical record information is mostly free text. (see: [patient medical record example](patient-record-example.txt) )
 
-> **Question:** Does the medical history that the admin inputs refer to the patient's medical record, or is it referring to the appointment history?
->
-> **Answer:** _Waiting for client clarifications._
 
 ## 3. Analysis
 
-In this functionality, the admin can create a patient profile by registering their personal details and medical history. The admin is required to input the following information:
+In this functionality, the admin can create a patient profile by registering their personal details. The admin is required to input the following information:
 
 - Name (first and last name)
 - Date of birth
 - Contact information (email and phone number)
-- Medical history
-- … _(pending clarifications)_
+- Gender
+- Emergency Contact
 
 Upon creating the profile, a unique medical record number will be generated and assigned to the patient, serving as the identifiable attribute for each profile.
 
