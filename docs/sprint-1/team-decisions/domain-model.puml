@@ -45,6 +45,8 @@ package "<<aggregate OperationRequest>>"{
     class OperationRequestId <<(V,#FF8B40)value object>> <<identifier>> {}
     class Priority <<(V,#FF8B40)value object>> <<identifier>> {}
     class Status <<(V,#FF8B40)value object>> <<identifier>> {}
+    class DateOfRequest <<(V,#FF8B40)value object>> <<identifier>> {}
+    class DeadlineDate <<(V,#FF8B40)value object>> <<identifier>> {}
 }
 
 package "<<aggregate OperationType>>"{
@@ -114,7 +116,8 @@ OperationRequest --> "1" Priority
 OperationRequest --> "1" Patient : made for
 OperationRequest --> "1" Doctor : registed by
 OperationRequest ---> "1" OperationType : defined by
-OperationRequest --> "1" Date
+OperationRequest --> "1" DateOfRequest
+OperationRequest --> "1" DeadlineDate
 OperationRequest --> "1" Status
 
 Appointment --> "1" OperationRequest : associated to
