@@ -15,15 +15,11 @@ class Email <<(V,#FF8B40)value object>> {}
 class Slot <<(V,#FF8B40)value object>> {}
 class Date <<(V,#FF8B40)value object>> {}
 class TimeInterval <<(V,#FF8B40)value object>> {}
-note "See if there is any rules\nfor these infos. Like: if \ndate is business day, etc" as N2
-Date .. N2
-N2 .. TimeInterval
 
 package "<<aggregate>> Patient" {
     entity Patient <<entity>> <<root>> {}
     class DateBirth <<(V,#FF8B40)value object>> {}
     class Gender <<(V,#FF8B40)value object>> {}
-
     class EmergencyContact <<(V,#FF8B40)value object>> {}
     class MRN <<(V,#FF8B40)value object>> <<identifier>> {}
     class MedicalCondition <<(V,#FF8B40)value object>> {}
@@ -33,6 +29,7 @@ package "<<aggregate>> Patient" {
 package "<<aggregate Staff>>" {
     entity Staff <<entity>><<root>>{}
     class LicenseNumber <<(V,#FF8B40)value object>> <<identifier>> {}
+    class Function <<(V,#FF8B40)value object>> {}
 }
 
 package "<<aggregate Doctor>>" {
@@ -43,10 +40,11 @@ package "<<aggregate Doctor>>" {
 package "<<aggregate OperationRequest>>"{
     entity OperationRequest <<entity>> <<root>> {}
     class OperationRequestId <<(V,#FF8B40)value object>> <<identifier>> {}
-    class Priority <<(V,#FF8B40)value object>> <<identifier>> {}
-    class Status <<(V,#FF8B40)value object>> <<identifier>> {}
-    class DateOfRequest <<(V,#FF8B40)value object>> <<identifier>> {}
-    class DeadlineDate <<(V,#FF8B40)value object>> <<identifier>> {}
+    class Priority <<(V,#FF8B40)value object>> {}
+    class Status <<(V,#FF8B40)value object>>  {}
+    class DateOfRequest <<(V,#FF8B40)value object>>  {}
+    class DeadlineDate <<(V,#FF8B40)value object>>  {}
+
 }
 
 package "<<aggregate OperationType>>"{
@@ -56,6 +54,9 @@ package "<<aggregate OperationType>>"{
     class RequiredStaff <<(V,#FF8B40)value object>>  {}
     note left: review this
     class EstimatedDuration <<(V,#FF8B40)value object>>  {}
+    class Phase <<(V,#FF8B40)value object>>  {}
+    class PhaseDuration <<(V,#FF8B40)value object>>  {}
+    class PhaseDescription <<(V,#FF8B40)value object>> {}
 }
 
 package "<<aggregate Appointment>>"{
@@ -67,7 +68,7 @@ package "<<aggregate Appointment>>"{
 }
 package "<<aggregate Specialization>>"{
     entity Specialization <<entity>> <<root>> {}
-    class SpecializationDenomination <<(V,#FF8B40)value object>>  {}
+    class SpecializationDenomination <<(V,#FF8B40)value object>> <<identifier>> {}
 }
 
 package "<<aggregate Room>>"{
@@ -81,14 +82,14 @@ package "<<aggregate Room>>"{
 
 package "<<aggregate>> User" {
     entity User <<entity>> <<root>>
-    class Username <<(V,#FF8B40) value object>>
+    class Username <<(V,#FF8B40) value object>> <<identifier>>
     class Role <<(V,#FF8B40) value object>>
 }
 
-User -> "0..1" Patient
+User ---> "0..1" Patient
 User -> "1" Staff
 User --> Username
-User --> Email
+User ----> Email
 User --> Role
 
 Doctor -> "1" Staff : is a
@@ -110,6 +111,9 @@ OperationType --> "1" OperationTypeId
 OperationType --> "1" OperationTypeName
 OperationType ---> "1" RequiredStaff
 OperationType ---> "1" EstimatedDuration
+OperationType ---> "3" Phase
+Phase --> "1" PhaseDuration
+Phase --> "1" PhaseDescription
 
 OperationRequest -> "1" OperationRequestId
 OperationRequest --> "1" Priority
@@ -142,6 +146,7 @@ EmergencyContact --> "1" Phone
 
 
 Staff --> "1" Name
+Staff --> "1" Function
 Staff ---> "1" ContactInfo
 Staff --> "1" LicenseNumber
 Staff ---> "1..*" Slot
