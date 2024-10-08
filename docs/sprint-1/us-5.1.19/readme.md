@@ -47,13 +47,14 @@ This user story is connected to user stories 5.1.17 and 5.1.18, as they pertain 
 
 > **Question:** When listing operation requests, should only those associated with the specific doctor be displayed?
 >
-> **Answer:** _Waiting for client clarifications._
+> **Answer:** A doctor can see the operation requests they have submitted as well as the operation requests of a certain patient. An Admin will be able to list all operation requests and filter by doctor it should be possible to filter by date of request, priority and expected due date.
 
 ## 3. Analysis
 
-In this feature, operation requests will be displayed for the doctor to select from, allowing them to view, [update](../us-5.1.17/readme.md) or [delete](../us-5.1.18/readme.md) specific requests.
+In this feature, operation requests will be displayed for the doctor to select from, allowing them to view, [update](../us-5.1.17/readme.md) or [delete](../us-5.1.18/readme.md) specific requests.  The displayed operation requests will only include those submitted by the doctor.
+As clarified by the client, in addition to the doctor, an Admin will have the capability to list all operation requests and filter them specifically by doctor.
 
-With this functionality, the doctor will have the ability to filter operation requests based on the following criteria:
+With this functionality, both the doctor and the admin will be able to filter operation requests based on the following criteria:
 
 - Patient Name
 - Operation Type
@@ -63,10 +64,12 @@ With this functionality, the doctor will have the ability to filter operation re
   - Emergency Surgery: Demands immediate action to preserve life, limb, or function, generally performed within hours (e.g., ruptured aneurysm, trauma).
 - Status:
   - Indicates whether the operation is planned or merely requested.
+- Date of Request
+- Deadline Date
 
 Each entry in the list will include essential operation details, such as the patient's name, the type of operation, and its status.
 
-t is crucial for the doctor to always have the option to select any operation request from the list to execute one of the following actions: view, update, or delete. The last two actions are part of features [US-5.1.17](../us-5.1.17/readme.md) and [US-5.1.18](../us-5.1.18/readme.md) respectively. The view action will provide all relevant information regarding the selected operation request, ensuring the doctor has access to complete and accurate details.
+It is crucial for the doctor to always have the option to select any operation request from the list to execute one of the following actions: view, update, or delete. The last two actions are part of features [US-5.1.17](../us-5.1.17/readme.md) and [US-5.1.18](../us-5.1.18/readme.md) respectively. The view action will provide all relevant information regarding the selected operation request, ensuring the doctor has access to complete and accurate details.
 
 ### Domain Model
 
