@@ -25,7 +25,7 @@ pipelines:
             caches:
               - dotnetcore
             script:
-              - export SOLUTION_NAME=DDDNetCore
+              - export SOLUTION_NAME=sem5pi-24-25-dg38
               - export REPORTS_PATH=linter-reports
               - dotnet new tool-manifest
               - dotnet tool install JetBrains.ReSharper.GlobalTools
