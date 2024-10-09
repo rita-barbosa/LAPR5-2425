@@ -1,16 +1,25 @@
 @startuml
 
-component User 
-component Staff
-component Patient 
-component Doctor
-component Appointment
-component OperationRequest
-component OperationType
-component Room
-component Specialization
+class User  <<entity>>{}
+class Staff <<entity>>{}
+class Patient  <<entity>>{}
+class Doctor <<entity>>{}
+class Appointment <<entity>>{}
+class OperationRequest <<entity>>{}
+class OperationType <<entity>> {}
+class Room <<entity>>{}
+class Specialization <<entity>> {}
 
 
+
+User -> "1" Staff
+User -> "0..1" Patient
+Doctor -> "1" Staff
+Staff -> "1" Specialization
+OperationRequest --> "1" Doctor
+Appointment -> "1" OperationRequest
+OperationRequest -> "1" OperationType
+Appointment -> "1" Room
 
 
 
