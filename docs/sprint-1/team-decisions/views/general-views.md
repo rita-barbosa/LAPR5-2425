@@ -115,15 +115,15 @@ _//To do//_
 
 ### 4.1. Level 1
 
-_//To do//_
+N/A
 
 ### 4.2. Level 2
 
-_//To do//_
+![pg-vl2.drawio.svg](physical-view\physical-vl2.svg)
 
 ### 4.3. Level 3
 
-_//To do//_
+N/A
 
 ---
 
