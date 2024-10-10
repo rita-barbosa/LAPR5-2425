@@ -1,0 +1,40 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+title US 5.1.20 Process View (Level 2)
+
+autonumber
+
+actor Admin
+participant "<<component>>\n Visualization (UI)" as UI
+participant "<<component>>\n Backoffice" as BACK
+
+
+Admin -> UI : create new operation type
+activate UI
+
+UI -> BACK : get staff
+activate BACK
+
+BACK --> UI : staff list
+deactivate BACK
+
+UI --> Admin : shows staff list
+deactivate UI
+activate Admin
+
+Admin -> UI : provides operation type data (name,\n estimated duration and required staff)
+deactivate Admin
+activate UI
+
+UI -> BACK : OperationType(name, estimatedDuration, requiredStaff)
+activate BACK
+
+BACK --> UI : success/error
+deactivate BACK
+
+UI --> Admin : shows success/error message
+deactivate UI
+
+
+@enduml

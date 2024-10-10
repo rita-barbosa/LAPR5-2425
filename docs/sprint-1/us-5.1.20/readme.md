@@ -8,7 +8,10 @@
     * [System Sequence Diagram](#system-sequence-diagram)
   * [4. Design](#4-design)
     * [4.1. Realization](#41-realization)
-    * [4.2. Class Diagram](#42-class-diagram)
+    * [Process View](#process-view)
+      * [Level 1](#level-1)
+      * [Level 2](#level-2)
+      * [Level 3](#level-3)
     * [4.3. Applied Patterns](#43-applied-patterns)
     * [4.4. Tests](#44-tests)
   * [5. Implementation](#5-implementation)
@@ -70,11 +73,24 @@ The following diagram depicts the interaction between the Admin and the system.
 
 ### 4.1. Realization
 
-_// To do //_
+The logical, physical, development and scenario views diagrams are generic for all the use cases of the backoffice component.
+These diagrams can be found in the [generic views diagrams compilation file](../team-decisions/views/general-views.md).
 
-### 4.2. Class Diagram
+The process view levels are here represented as they represent a process specific to each user story.
 
-_// To do //_
+### Process View
+
+#### Level 1
+
+![us20-process-view-level1.svg](diagrams/Process_View/Level-1/us20-process-view-level1.svg)
+
+#### Level 2
+
+![us20-process-view-level2.svg](diagrams/Process_View/Level-2/us20-process-view-level2.svg)
+
+#### Level 3
+
+![us20-process-view-level3.svg](diagrams/Process_View/Level-3/us20-process-view-level3.svg)
 
 ### 4.3. Applied Patterns
 

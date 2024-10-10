@@ -1,0 +1,104 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+title US 5.1.20 Process View (Level 3)
+
+autonumber
+
+participant "<<component>>\n Routing" as ROUTE
+participant "<<component>>\n Controller" as CONTROL
+
+participant "<<component>>\n StaffManagementService" as STAFFServ
+participant "<<component>>\n StaffRepo" as STAFFRepo
+participant "<<component>>\n StaffMapper" as STAFFMapper
+participant "<<component>>\n StaffDTO" as STAFFDTO
+
+participant "<<component>>\n OperationTypeDTO" as OPTYDTO
+participant "<<component>>\n OperationTypeManagementService" as OPTYServ
+participant "<<component>>\n OperationTypeRepo" as OPTYRepo
+participant "<<component>>\n OperationType" as OPTY
+
+participant "<<component>>\n Persistence" as PERSISTENCE
+
+
+[o-> ROUTE : GET()
+activate ROUTE
+
+ROUTE -> CONTROL : getAllStaff()
+activate CONTROL
+
+CONTROL -> STAFFServ : getAllStaffList()
+activate STAFFServ
+
+STAFFServ -> STAFFRepo : findAll()
+activate STAFFRepo
+
+STAFFRepo --> STAFFServ : staffList
+deactivate STAFFRepo
+
+loop for all staff in the staff list
+
+STAFFServ -> STAFFMapper : toDTO(staff)
+activate STAFFMapper
+
+STAFFMapper -> STAFFDTO ** : staffMember
+
+STAFFMapper --> STAFFServ : staffMemberDTO
+deactivate STAFFMapper
+end loop
+
+STAFFServ --> CONTROL : staffListDTO
+deactivate STAFFServ
+
+
+CONTROL --> ROUTE : staffListDTO
+deactivate CONTROL
+
+<- ROUTE : staffListDTO
+deactivate ROUTE
+
+|||
+
+'probably json
+[o-> ROUTE : POST(operationTypeData)
+activate ROUTE
+
+ROUTE -> CONTROL : registerOperationType(operationTypeData)
+activate CONTROL
+
+CONTROL -> OPTYDTO ** : toDTO(operationTypeData)
+
+CONTROL -> OPTYServ : registerOperationType(operationTypeDTO)
+activate OPTYServ
+
+OPTYServ -> OPTYRepo : findByName(OperationTypeName)
+activate OPTYRepo
+
+OPTYRepo --> OPTYServ : return
+deactivate OPTYRepo
+
+|||
+
+OPTYServ -> OPTY ** : OperationType(operationTypeDTO)
+
+OPTYServ -> OPTYRepo : save(operationType)
+activate OPTYRepo
+
+OPTYRepo -> PERSISTENCE : save(operationType)
+activate PERSISTENCE
+deactivate PERSISTENCE
+
+OPTYRepo --> OPTYServ : success
+deactivate OPTYRepo
+
+OPTYServ --> CONTROL : return
+deactivate OPTYServ
+
+CONTROL --> ROUTE : return
+deactivate CONTROL
+
+<-- ROUTE : return
+deactivate ROUTE
+
+
+@enduml
