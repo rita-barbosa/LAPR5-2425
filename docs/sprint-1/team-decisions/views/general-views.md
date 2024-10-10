@@ -127,6 +127,6 @@ N/A
 
 ### 5.1. Level 1
 
-![use-case-diagram.svg](use-case-diagram.svg)
+![use-case-diagram.svg](scenario-view/use-case-diagram.svg)
 
 > Justify why having more levels of the scenario view isn't relevant to the project
