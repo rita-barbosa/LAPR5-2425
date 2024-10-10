@@ -1,0 +1,126 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+title "US 5.1.17. Process View (Level 3)"
+
+autonumber
+
+participant "<<component>>\n Routing" as ROUTE
+participant "<<component>>\n Controller" as CONTROL
+
+participant "<<component>>\n StaffManagementService" as STAFFServ
+participant "<<component>>\n StaffRepo" as STAFFRepo
+participant "<<component>>\n StaffMapper" as STAFFMapper
+participant "<<component>>\n StaffDTO" as STAFFDTO
+
+participant "<<component>>\n AuthManagementService" as AUTHServ
+participant "<<component>>\n AuthRepo" as AUTHRepo
+
+participant "<<component>>\n OperationRequisitionManagementService" as OPREQServ
+participant "<<component>>\n OperationRequisitionRepo" as OPREQRepo
+participant "<<component>>\n OperationRequisitionMapper" as OPREQMapper
+participant "<<component>>\n OperationRequisitionDTO" as OPREQDTO
+
+participant "<<component>>\n Persistence" as PERSISTENCE
+
+
+[o-> ROUTE : GET()
+activate ROUTE
+
+ROUTE -> CONTROL : getOperationRequisitionsByDoctor()
+activate CONTROL
+
+CONTROL -> STAFFServ : findSessionDoctor()
+activate STAFFServ
+
+STAFFServ -> AUTHServ : getSessionUser()
+activate AUTHServ
+
+AUTHServ -> AUTHRepo : getUserbyID()
+activate AUTHRepo
+
+AUTHRepo --> AUTHServ : user
+deactivate AUTHRepo
+
+AUTHServ --> STAFFServ : user
+deactivate AUTHServ
+
+STAFFServ -> STAFFRepo : getDoctorByUser(user)
+activate STAFFRepo
+
+STAFFRepo --> STAFFServ : doctor
+deactivate STAFFRepo
+
+STAFFServ --> STAFFMapper : toDTO(doctor)
+activate STAFFMapper
+
+STAFFMapper -> STAFFDTO **
+
+STAFFMapper --> STAFFServ : doctorDTO
+deactivate STAFFMapper
+
+STAFFServ --> CONTROL : doctorDTO
+deactivate STAFFServ
+
+CONTROL -> OPREQServ : getOperationRequisitionsByDoctor(doctorDTO)
+activate OPREQServ
+
+OPREQServ -> OPREQRepo : findAllByDoctor(doctorDTO)
+activate OPREQRepo
+
+OPREQRepo --> OPREQServ : operationRequisitionList
+deactivate OPREQRepo
+
+loop for all the elements in the list
+OPREQServ -> OPREQMapper : toDTO(operationRequisition)
+activate OPREQMapper
+
+OPREQMapper -> OPREQDTO **
+
+OPREQMapper --> OPREQServ : operationRequisitionDTO
+deactivate OPREQMapper
+end loop
+
+OPREQServ --> CONTROL : operationRequisitionDTOList
+deactivate OPREQServ
+
+CONTROL --> ROUTE : operationRequisitionDTOList
+deactivate CONTROL
+
+<- ROUTE : operationRequisitionDTOList
+deactivate ROUTE
+
+|||
+
+[o-> ROUTE : POST(updatedData)
+activate ROUTE
+
+ROUTE -> CONTROL : updateOperationRequisition(updatedData)
+activate CONTROL
+
+CONTROL -> OPREQDTO ** : toDTO(updatedData)
+
+CONTROL -> OPREQServ : updateOperationRequisition(operationRequisitionDTO)
+activate OPREQServ
+
+OPREQServ -> OPREQRepo : save(operationRequisitionDTO)
+activate OPREQRepo
+
+OPREQRepo -> PERSISTENCE : save(operationRequisitionDTO)
+activate PERSISTENCE
+deactivate PERSISTENCE
+
+OPREQRepo --> OPREQServ : return
+deactivate OPREQRepo
+
+OPREQServ --> CONTROL : return
+deactivate OPREQServ
+
+CONTROL --> ROUTE : return
+deactivate CONTROL
+
+<-- ROUTE : success/error
+deactivate ROUTE
+
+
+@enduml

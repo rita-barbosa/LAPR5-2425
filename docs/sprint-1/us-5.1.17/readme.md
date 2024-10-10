@@ -9,8 +9,12 @@
     * [Domain Model](#domain-model)
   * [4. Design](#4-design)
     * [4.1. Realization](#41-realization)
-    * [4.2. Class Diagram](#42-class-diagram)
+    * [Process View](#process-view)
+      * [Level 1](#level-1)
+      * [Level 2](#level-2)
+      * [Level 3](#level-3)
     * [4.3. Applied Patterns](#43-applied-patterns)
+    * [4.3. Applied Patterns](#43-applied-patterns-1)
     * [4.4. Tests](#44-tests)
   * [5. Implementation](#5-implementation)
   * [6. Integration/Demonstration](#6-integrationdemonstration)
@@ -107,9 +111,26 @@ The following diagram depicts the interaction between the Doctor and the system.
 
 ### 4.1. Realization
 
-_// To do //_
+The logical, physical, development and scenario views diagrams are generic for all the use cases of the backoffice component.
+These diagrams can be found in the [generic views diagrams compilation file](../team-decisions/views/general-views.md).
 
-### 4.2. Class Diagram
+The process view levels are here represented as they represent a process specific to each user story.
+
+### Process View
+
+#### Level 1
+
+![us17-process-view-lvl1.svg](diagrams/Process_View/Level-1/us17-process-view-lvl1.svg)
+
+#### Level 2
+
+![us17-process-view-lvl2.svg](diagrams/Process_View/Level-2/us17-process-view-lvl2.svg)
+
+#### Level 3
+
+![us17-process-view-lvl3.png](diagrams/Process_View/Level-3/us17-process-view-lvl3.png)
+
+### 4.3. Applied Patterns
 
 _// To do //_
 
