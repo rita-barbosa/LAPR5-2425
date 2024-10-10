@@ -1,0 +1,134 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+title "US 5.1.15. Process View (Level 3)"
+
+autonumber
+
+participant "<<component>>\n Routing" as ROUTE
+participant "<<component>>\n Controller" as CONTROL
+
+participant "<<component>>\n XManagementService" as XServ
+participant "<<component>>\n XRepo" as XRepo
+participant "<<component>>\n XMapper" as XMapper
+participant "<<component>>\n XDTO" as XDTO
+
+participant "<<component>>\n DynamicQueryGenerationService" as QUERYServ
+
+
+[o-> ROUTE : GET()
+activate ROUTE
+
+ROUTE -> CONTROL : getAllXProfiles()
+activate CONTROL
+
+CONTROL -> XServ : getAllProfiles()
+activate XServ
+
+XServ -> XRepo : findAll()
+activate XRepo
+
+XRepo --> XServ : XprofilesList
+deactivate XRepo
+
+    loop for all the profiles in the list
+        XServ -> XMapper : toDTO(Xprofile)
+        activate XMapper
+
+        XMapper -> XDTO **
+
+        XMapper --> XServ : XprofileDTO
+        deactivate XMapper
+    end loop
+
+XServ --> CONTROL : XprofileDTOList
+deactivate XServ
+
+CONTROL --> ROUTE : XprofileDTOList
+deactivate CONTROL
+
+<-- ROUTE : XprofileDTOList
+deactivate ROUTE
+
+|||
+
+[o-> ROUTE : POST(queryParameters)
+activate ROUTE
+
+ROUTE -> CONTROL : filterXProfiles(queryParameters)
+activate CONTROL
+
+CONTROL -> XServ : filterXProfiles(queryParameters)
+activate XServ
+
+XServ -> QUERYServ : generateQueryText(queryParameters)
+activate QUERYServ
+
+QUERYServ --> XServ : query
+deactivate QUERYServ
+
+XServ -> XRepo : findAllConditioned(query)
+activate XRepo
+
+XRepo --> XServ : XprofilesList
+deactivate XRepo
+
+    loop for all the profiles in the list
+        XServ -> XMapper : toDTO(Xprofile)
+        activate XMapper
+
+        XMapper -> XDTO **
+
+        XMapper --> XServ : XprofileDTO
+        deactivate XMapper
+    end loop
+
+XServ --> CONTROL : filterXProfilesDTOList
+deactivate XServ
+
+CONTROL --> ROUTE : filterXProfilesDTOList
+deactivate CONTROL
+
+<-- ROUTE : filterXProfilesDTOList
+deactivate ROUTE
+
+|||
+
+alt edit X profile
+
+    [o-> ROUTE : PUT(updatedProfileData)
+    activate ROUTE
+
+    ROUTE -> CONTROL : updateXProfile(updatedProfileData)
+    activate CONTROL
+
+    ref over CONTROL
+
+    **US 5.1.Y.**
+    end ref
+
+    CONTROL --> ROUTE : return
+    deactivate CONTROL
+
+else
+
+    [o-> ROUTE : DELETE(XProfileData)
+
+    ROUTE -> CONTROL : deleteXProfile(XProfileData)
+    activate CONTROL
+
+    ref over CONTROL
+
+    **US 5.1.Z.**
+    end ref
+
+    CONTROL --> ROUTE : return
+    deactivate CONTROL
+
+end alt
+
+<-- ROUTE : success/error
+deactivate ROUTE
+
+
+@enduml
