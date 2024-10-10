@@ -103,7 +103,7 @@ _//To do//_
 
 ### 3.2. Level 2
 
-_//To do//_
+![vi2.drawio.svg](development-view\development-view-level-2.svg)
 
 ### 3.3. Level 3
 
