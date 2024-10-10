@@ -8,7 +8,10 @@
     * [System Sequence Diagram](#system-sequence-diagram)
   * [4. Design](#4-design)
     * [4.1. Realization](#41-realization)
-    * [4.2. Class Diagram](#42-class-diagram)
+    * [Process View](#process-view)
+      * [Level 1](#level-1)
+      * [Level 2](#level-2)
+      * [Level 3](#level-3)
     * [4.3. Applied Patterns](#43-applied-patterns)
     * [4.4. Tests](#44-tests)
   * [5. Implementation](#5-implementation)
@@ -64,14 +67,35 @@ The following diagram depicts the interaction between the Admin and the system.
 ![us_5.1.11_system_sequence_diagram.svg](diagrams/SSD/us_5.1.11_system_sequence_diagram.svg)
 
 ## 4. Design
-
 ### 4.1. Realization
 
-_// To do //_
+The logical, physical, development and scenario views diagrams are generic for all the use cases of the backoffice component.
+These diagrams can be found in the [generic views diagrams compilation file](../team-decisions/views/general-views.md).
 
-### 4.2. Class Diagram
+Regarding this user story in particular, it's very similar to [US 5.1.15.](../us-5.1.15/readme.md), so diagrams of generic
+process views of each level were created to represent both.
 
-_// To do //_
+In the following diagrams, the listed variables represent the respective concepts:
+
+* **N** is 11, represents the current user story -> US 5.1.11.
+* **X** represents Patient
+* **F** represents the set of filters applicable to patients (name, email, date of birth, or medical record number)
+* **Y** is 9, represents the patient profile edition user story -> US 5.1.9.
+* **Z** is 10, represents the patient profile deactivation/deletion user story -> US 5.1.10.
+
+### Process View
+
+#### Level 1
+
+![listing-profile-us-process-view-lvl1.svg](../team-decisions/views/general-process-view-diagrams/listing-profiles/Level-1/listing-profile-us-process-view-lvl1.svg)
+
+#### Level 2
+
+![listing-profile-us-process-view-lvl2.svg](../team-decisions/views/general-process-view-diagrams/listing-profiles/Level-2/listing-profile-us-process-view-lvl2.svg)
+
+#### Level 3
+
+![listing-profile-us-process-view-lvl3.svg](../team-decisions/views/general-process-view-diagrams/listing-profiles/Level-3/listing-profile-us-process-view-lvl3.svg)
 
 ### 4.3. Applied Patterns
 
@@ -79,8 +103,7 @@ _// To do //_
 
 ### 4.4. Tests
 
-_// To do - layout still in development //_ 
-
+_// To do - layout still in development //_
 
 ## 5. Implementation
 
