@@ -97,19 +97,15 @@ Process views will be done in each user story **readme** file.
 
 ## 3. Development View
 
-### 3.1. Level 1
-
-_//To do//_
-
 ### 3.2. Level 2
 
 ![vi2.drawio.svg](development-view\development-view-level-2.svg)
 
 ### 3.3. Level 3
 
-_//To do//_
+### 3.3.1 Backoffice Module
 
----
+![vi3_backo.drawio.svg](development-view\developement-view-level-3.svg)
 
 ## 4. Physical View
 
