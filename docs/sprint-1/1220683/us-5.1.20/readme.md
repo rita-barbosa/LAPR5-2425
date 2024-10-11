@@ -50,6 +50,51 @@ This functionality does not have dependencies.
 > **Answer:** Yes, a predefined list of specializations will be provided, but the system should allow for future additions.
 
 
+> **Question:** The document you provided divides surgical times into "specific phases of the surgery," whereas the main
+> statement only mentions recording the total surgery time. Should the system, therefore, store and specify the time spent
+> on each phase of the surgery, or is it sufficient to only record the total surgery time without detailing the time 
+> distribution across each phase?
+>
+> **Answer:** When describing an operation type, the system must record the time for each phase.
+
+
+> **Question:** In the document with the surgeries, they all have 3 phases and respective duration:
+>
+>-Anesthesia/patient preparation
+>
+>-Surgery
+>
+>-Cleaning
+> 
+>Can we assume while creating a new operation type, that the surgery must always have this 3 phases?
+>
+> **Answer:** Yes.
+
+
+> **Question:** When creating a new type of operation, we have a name, 3 time phases of the Surgery, a “required” list of
+> (specialties, quantity). This new type of operation must not have a specialty other than those required so that, according
+> to 5.1.16 AC2, a doctor can only book surgery in his specialty?
+>
+> The process is to create the new type of operation and then add it to the list of required specialties?
+> 
+> **Answer:** Yes. The type of operation is associated with a given specialty. The list of specialties is an integral part
+> of the type of operation. Creation is carried out in a single step and not in two steps as you suggest.
+
+
+> **Question:** Can the name of the operation be edited and can the name be the same as a deactivated operation?
+>
+> **Answer:** The name of the operation type must be unique. even if an operation type is "deactivated" it still exists 
+> in the system and as such no other operation type can have the same name.
+
+
+> **Question:** You want to log all updates to the operation request. Do you plan to have this info available in the app
+> or is this just for audit purposes?
+>
+> **Answer:** The history of the operation type definition is part of the application's data. If the user needs to view
+> the details of an operation that was performed last year, they need to be able to see the operation configuration that
+> was in place at that time.
+
+
 ## 3. Analysis
 
 
