@@ -80,6 +80,11 @@ system (**US 5.1.12** and **US 5.1.1**).
 > **Answer:** Surgery is a medical procedure (e.g., hip surgery), while an operation request is when a doctor schedules that surgery for a patient. An appointment is the scheduled date for the operation, determined by the planning module.
 
 
+> **Question:** When does an operation request become an appointment?
+>
+> **Answer:** When it is scheduled by the planning/scheduling module.
+
+
 ## 3. Analysis
 
 Upon the Doctor creating an operation requisition, they can also edit/update it, to ensure the patient's access to appropriate
