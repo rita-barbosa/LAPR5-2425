@@ -132,11 +132,12 @@ The process view levels are here represented as they represent a process specifi
 
 #### Level 1
 
-[us5-process-view-level1.svg](diagrams/Process_View/Level-1/us5-process-view-lvl1.svg)
+![us5-process-view-level1.svg](diagrams/Process_View/Level-1/us5-process-view-lvl1.svg)
 
 #### Level 2
 
-> N0T DONE, NOT RELEVANT
+As this level does not add any additional information regarding the user story's execution flow from level 1's diagram, 
+it's diagram was deemed irrelevant.
 
 #### Level 3
 

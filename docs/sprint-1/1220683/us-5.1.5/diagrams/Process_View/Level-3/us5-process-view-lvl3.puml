@@ -62,9 +62,9 @@ deactivate AUTHZRepo
 AUTHZServ --> AUTHServ : return
 deactivate AUTHZServ
 
-AUTHServ -> UserDTO **
+AUTHServ -> UserDTO ** : toDTO(user)
 
-AUTHServ --> CONTROL : userDTO
+AUTHServ --> CONTROL : completeUserDTO
 deactivate AUTHServ
 
 |||
