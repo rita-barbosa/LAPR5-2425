@@ -15,11 +15,8 @@ activate SYS
 SYS --> ADM : lists the staff profiles
 
     loop until the Admin desires
-    ADM -> SYS : searches profiles (by name, email or specialization)
 
-        opt search filters appliance
-        ADM -> SYS : applies search filters
-        end opt
+    ADM -> SYS : applies search filters (by name, email or specialization)
 
     SYS --> ADM : presents the search results
     end loop

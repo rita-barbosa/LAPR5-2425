@@ -72,8 +72,6 @@ to edit (**US 5.1.13**) and remove/deactivate (**US 5.1.14**) them.
 > **Answer:** They share the same set of specializations. 
 
 
-
-
 ## 3. Analysis
 
 The Admin has access to all the profiles within the healthcare system, including Staff profiles, that can be consulted in
@@ -82,7 +80,8 @@ a list. In this list, the Admin selects a profile to see its details, update and
 The Admin can search profiles by the staff's name, email or specialization, and the search results are presented through
 a paginated list, with search filters to refine the selection of listed profiles.
 
-Multiple filters can be used simultaneously.
+Multiple filters can be used simultaneously, with combinations of different attributes and filters conjunctions such as 
+"AND" or "OR" can be selected to refine even more the search results.
 
 ### System Sequence Diagram
 
