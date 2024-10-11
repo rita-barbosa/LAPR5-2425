@@ -58,6 +58,22 @@ to edit (**US 5.1.13**) and remove/deactivate (**US 5.1.14**) them.
 > of that. I want to look for whether this is a doctor or a physician, or what specialization this person is in.
 
 
+> **Question:** Is the system is intended to differentiate specializations for each type of staff? In other words, do we
+> have to validate that specialization x can only be assigned, for example, to a member of staff who is a doctor, or do
+> we consider that any specialization existing in the system can be assigned to any staff and that it is up to the person
+> responsible for creating the profiles to assign valid specializations according to the role of the staff.
+>
+> **Answer:** Specializations are independent of whether the professional is a doctor or a nurse.
+
+> **Question:** Regarding the specializations, do doctors, nurses, and technicians share the same group of specializations,
+> or does each type of professional have distinct, role-specific specializations? Could you clarify how these specializations
+> are categorized?
+>
+> **Answer:** They share the same set of specializations. 
+
+
+
+
 ## 3. Analysis
 
 The Admin has access to all the profiles within the healthcare system, including Staff profiles, that can be consulted in
@@ -96,15 +112,15 @@ In the following diagrams, the listed variables represent the respective concept
 
 #### Level 1
 
-![listing-profile-us-process-view-lvl1.svg](../../team-decisions/views/general-process-view-diagrams/listing-profiles/Level-1/listing-profile-us-process-view-lvl1.svg)
+![listing-profile-us-process-view-lvl1.svg](../general-process-view-diagrams/listing-profiles/Level-1/listing-profile-us-process-view-lvl1.svg)
 
 #### Level 2
 
-![listing-profile-us-process-view-lvl2.svg](../../team-decisions/views/general-process-view-diagrams/listing-profiles/Level-2/listing-profile-us-process-view-lvl2.svg)
+![listing-profile-us-process-view-lvl2.svg](../general-process-view-diagrams/listing-profiles/Level-2/listing-profile-us-process-view-lvl2.svg)
 
 #### Level 3
 
-![listing-profile-us-process-view-lvl3.svg](../../team-decisions/views/general-process-view-diagrams/listing-profiles/Level-3/listing-profile-us-process-view-lvl3.svg)
+![listing-profile-us-process-view-lvl3.svg](../general-process-view-diagrams/listing-profiles/Level-3/listing-profile-us-process-view-lvl3.svg)
 
 ### 4.3. Applied Patterns
 
