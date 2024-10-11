@@ -16,7 +16,7 @@ SYS --> ADM : lists the patient profiles
 
     loop until the Admin desires
 
-    ADM -> SYS : applies search filters (name, email or specialization)
+    ADM -> SYS : applies search filters (name, email, date of birth, or medical record number)
 
     SYS --> ADM : presents the search results
     end loop
