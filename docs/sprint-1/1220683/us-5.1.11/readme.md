@@ -65,13 +65,14 @@ to edit (**US 5.1.9**) and remove (**US 5.1.10**) them.
 
 ## 3. Analysis
 
-The Admin has access to all the profiles within the healthcare system, including Patient profiles, that can be consulted in
-a list. In this list, the Admin selects a profile to see its details, update and remove it.
+The Admin has access to all the profiles within the healthcare system, including Patient profiles, that can be consulted
+in a list. In this list, the Admin selects a profile to see its details, update and remove it.
 
 The Admin can search profiles by the patient's name, email, date of birth, or medical record number, and the search results
 are presented through a paginated list, with search filters to refine the selection of listed profiles.
 
-Multiple filters can be used simultaneously.
+Multiple filters can be used simultaneously, with combinations of different attributes and filters conjunctions such as 
+"AND" or "OR" can be selected to refine even more the search results.
 
 ### System Sequence Diagram
 
@@ -100,15 +101,15 @@ In the following diagrams, the listed variables represent the respective concept
 
 #### Level 1
 
-![listing-profile-us-process-view-lvl1.svg](../../team-decisions/views/general-process-view-diagrams/listing-profiles/Level-1/listing-profile-us-process-view-lvl1.svg)
+![listing-profile-us-process-view-lvl1.svg](../general-process-view-diagrams/listing-profiles/Level-1/listing-profile-us-process-view-lvl1.svg)
 
 #### Level 2
 
-![listing-profile-us-process-view-lvl2.svg](../../team-decisions/views/general-process-view-diagrams/listing-profiles/Level-2/listing-profile-us-process-view-lvl2.svg)
+![listing-profile-us-process-view-lvl2.svg](../general-process-view-diagrams/listing-profiles/Level-2/listing-profile-us-process-view-lvl2.svg)
 
 #### Level 3
 
-![listing-profile-us-process-view-lvl3.svg](../../team-decisions/views/general-process-view-diagrams/listing-profiles/Level-3/listing-profile-us-process-view-lvl3.svg)
+![listing-profile-us-process-view-lvl3.svg](../general-process-view-diagrams/listing-profiles/Level-3/listing-profile-us-process-view-lvl3.svg)
 
 ### 4.3. Applied Patterns
 
