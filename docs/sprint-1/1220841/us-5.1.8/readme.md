@@ -8,14 +8,16 @@
     - [Domain Model](#domain-model)
   - [4. Design](#4-design)
     - [4.1. Realization](#41-realization)
-    - [4.2. Class Diagram](#42-class-diagram)
+      - [Process View](#process-view)
+        - [Level 1](#level-1)
+        - [Level 2](#level-2)
+        - [Level 3](#level-3)
     - [4.3. Applied Patterns](#43-applied-patterns)
     - [4.4. Tests](#44-tests)
   - [5. Implementation](#5-implementation)
   - [6. Integration/Demonstration](#6-integrationdemonstration)
   - [7. Observations](#7-observations)
 <!-- TOC -->
-
 
 ## 1. Context
 
@@ -32,7 +34,7 @@ This is the first time this user story is worked on.
 - 5.1.8.2: A unique patient ID (Medical Record Number) is generated upon profile creation.
 
 - 5.1.8.3: The system validates that the patient’s email and phone number are unique.
- 
+
 - 5.1.8.4: The profile is stored securely in the system, and access is governed by role-based permissions.
 
 **Dependencies/References:**
@@ -49,7 +51,7 @@ This user story does not have dependencies.
 >
 > **Answer:** No, a user cannot have both profiles. Staff and patients have separate identifications.
 
-> **Question:**  It is specified that the admin can input some of the patient's information (name, date of birth, contact information, and medical history.). Do they also input the omitted information (gender, emergency contact and allergies/medical condition)? 
+> **Question:**  It is specified that the admin can input some of the patient's information (name, date of birth, contact information, and medical history.). Do they also input the omitted information (gender, emergency contact and allergies/medical condition)?
 >
 > **Answer:** The admin can not input medical history nor allergies. they can however input gender and emergency contact.
 
@@ -66,7 +68,6 @@ What defines an allergy and one medical condition?
 >
 > **Asnwer:** Since this system is mostly concerned with surgery, the medical record information is mostly free text. (see: [patient medical record example](patient-record-example.txt) )
 
-
 ## 3. Analysis
 
 In this functionality, the admin can create a patient profile by registering their personal details. The admin is required to input the following information:
@@ -81,7 +82,6 @@ Upon creating the profile, a unique medical record number will be generated and 
 
 It's important to note that the patient profile must be created before the patient can register themselves as a user. As specified in the acceptance criteria, the contact information (email and phone number) must be unique. Therefore, the system must verify that no other profile or user already exists with the same email or phone number.
 
-
 ### Domain Model
 
 ![Domain Model](diagrams/domain-model.svg)
@@ -92,11 +92,18 @@ It's important to note that the patient profile must be created before the patie
 
 ### 4.1. Realization
 
-_// To do //_
+The logical, physical, development and scenario views diagrams are generic for all the use cases of the backoffice component.
+These diagrams can be found in the [generic views diagrams compilation file](../team-decisions/views/general-views.md).
 
-### 4.2. Class Diagram
+#### Process View
 
-_// To do //_
+##### Level 1
+
+![Process View - Level 1](diagrams/level-1-process-view.svg)
+
+##### Level 2
+
+##### Level 3
 
 ### 4.3. Applied Patterns
 
@@ -104,8 +111,7 @@ _// To do //_
 
 ### 4.4. Tests
 
-_// To do - layout still in development //_ 
-
+_// To do - layout still in development //_
 
 ## 5. Implementation
 
