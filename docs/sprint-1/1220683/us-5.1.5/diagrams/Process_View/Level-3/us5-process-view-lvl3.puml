@@ -1,0 +1,200 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+title "US 5.1.5. Process View (Level 3)"
+
+autonumber
+
+participant "<<component>>\n Routing" as ROUTE
+participant "<<component>>\n Controller" as CONTROL
+
+participant "<<component>>\n AuthManagementService" as AUTHServ
+
+participant "<<component>>\n UserDTO" as UserDTO
+
+participant "<<component>>\n UserRepository" as AUTHRepo
+
+participant "<<component>>\n AuthorizationService" as AUTHZServ
+participant "<<component>>\n PermissionRepository" as AUTHZRepo
+
+participant "<<component>>\n EmailService" as EMAILServ
+
+participant "<<component>>\n TokenManagementService" as TOKENServ
+participant "<<component>>\n Token" as TOKEN
+participant "<<component>>\n TokenDTO" as TOKENDTO
+participant "<<component>>\n TokenRepo" as TOKENRepo
+
+
+participant "<<component>>\n PatientService" as PATIENTServ
+participant "<<component>>\n PatientRepository" as PATIENTRepo
+
+participant "<<component>>\n Persistence" as PERSISTENCE
+
+
+[o-> ROUTE : DELETE(credentialsData)
+activate ROUTE
+
+ROUTE -> CONTROL : deleteAccount(credentialsData)
+activate CONTROL
+
+CONTROL -> UserDTO** : toDTO(credentialsData)
+
+CONTROL -> AUTHServ : validateUser(userDTO)
+activate AUTHServ
+
+AUTHServ -> AUTHRepo : findByID(usernameString)
+activate AUTHRepo
+
+
+AUTHRepo --> AUTHServ : user
+deactivate AUTHRepo
+
+AUTHServ -> AUTHZServ : isUserAPatient(userDTO)
+activate AUTHZServ
+
+AUTHZServ -> AUTHZRepo : findByID(usernameString)
+activate AUTHZRepo
+
+
+AUTHZRepo --> AUTHZServ : return
+deactivate AUTHZRepo
+
+AUTHZServ --> AUTHServ : return
+deactivate AUTHZServ
+
+AUTHServ -> UserDTO **
+
+AUTHServ --> CONTROL : userDTO
+deactivate AUTHServ
+
+|||
+'SENDING EMAIL
+
+CONTROL -> EMAILServ : sendAccountDeletionConfirmationEmail(userDTO)
+activate EMAILServ
+
+EMAILServ -> TOKENServ : generateDeletionAccountToken()
+activate TOKENServ
+
+TOKENServ -> TOKEN **
+
+TOKENServ -> TOKENRepo : save(token)
+activate TOKENRepo
+
+TOKENRepo -> PERSISTENCE
+
+TOKENRepo --> TOKENServ : return
+deactivate TOKENRepo
+
+TOKENServ -> TOKENDTO ** : toDTO(token)
+
+TOKENServ --> EMAILServ : tokenDTO
+deactivate TOKENServ
+
+EMAILServ -> EMAILServ : sendEmail(emailString, tokenDTO, emailTitle, emailBody)
+
+EMAILServ --> CONTROL : return
+deactivate EMAILServ
+
+CONTROL --> ROUTE : return
+deactivate CONTROL
+
+<-- ROUTE : success/error
+deactivate ROUTE
+
+
+|||
+
+'CONFIRMATION
+
+[o-> ROUTE : GET(credentialsData, tokenData)
+note left
+After clicking on the
+link of the account
+deletion confirmation email
+end note
+activate ROUTE
+
+ROUTE -> CONTROL : confirmAccountDeletion(credentialsData, tokenData)
+activate CONTROL
+
+CONTROL -> TOKENDTO ** : toDTO(tokenData)
+
+CONTROL -> TOKENServ : validateToken(tokenDTO)
+activate TOKENServ
+
+TOKENServ -> TOKENRepo : findByID(tokenDtoID)
+activate TOKENRepo
+
+TOKENRepo --> TOKENServ : token
+deactivate TOKENRepo
+
+TOKENServ -> TOKENServ : checkTokenValidityTime(token)
+
+TOKENServ --> CONTROL : true
+deactivate TOKENServ
+
+CONTROL -> UserDTO ** : toDTO(credentialsData)
+
+CONTROL -> AUTHServ : deleteAccount(userDTO)
+activate AUTHServ
+
+AUTHServ -> AUTHServ : validateUser(userDTO)
+
+AUTHServ -> PATIENTServ : deletePatientProfile(patientIDString)
+activate PATIENTServ
+
+PATIENTServ -> PATIENTRepo : getByID(patientIDString)
+activate PATIENTRepo
+
+PATIENTRepo --> PATIENTServ : patient
+deactivate PATIENTRepo
+
+PATIENTServ -> PATIENTRepo : remove(patient)
+activate PATIENTRepo
+
+PATIENTRepo -> PERSISTENCE
+
+PATIENTRepo --> PATIENTServ : return
+deactivate PATIENTRepo
+
+PATIENTServ --> AUTHServ : return
+deactivate PATIENTServ
+
+AUTHServ -> AUTHRepo :  findByID(usernameString)
+activate AUTHRepo
+
+AUTHRepo --> AUTHServ : user
+deactivate AUTHRepo
+
+AUTHServ -> AUTHZServ : revokePermissionsOfUser(user)
+activate AUTHZServ
+
+AUTHZServ -> AUTHZRepo : delete(user)
+activate AUTHZRepo
+
+AUTHZRepo -> PERSISTENCE
+
+AUTHZRepo --> AUTHZServ : return
+deactivate AUTHZRepo
+
+AUTHZServ --> AUTHServ : return
+deactivate AUTHZServ
+
+AUTHServ -> AUTHRepo : remove(user)
+activate AUTHRepo
+
+AUTHRepo -> PERSISTENCE
+
+AUTHRepo --> AUTHServ : return
+deactivate AUTHRepo
+
+AUTHServ --> CONTROL : return
+deactivate AUTHServ
+
+CONTROL --> ROUTE : return
+deactivate CONTROL
+
+<-- ROUTE : success/error
+
+@enduml
