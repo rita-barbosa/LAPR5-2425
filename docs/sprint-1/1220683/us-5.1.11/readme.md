@@ -47,7 +47,20 @@ to edit (**US 5.1.9**) and remove (**US 5.1.10**) them.
 
 **Client Clarifications:**
 
-> _**No client clarifications yet!**_
+> **Question:** There are plenty of filters for the doctors profiles, however I'm struggling to see what filters can be 
+> applied to the patients profiles listing. They can be searched by name, email, date of birth, or medical record number,
+> but everyone has the same role, no specialization, and so on.
+>
+> Can you be a bit more detailed on the filters you're looking to be applied in the patients listings?
+>
+> **Answer:** Users should be able to search students by: name, AND/OR email, AND/OR phone number, AND/OR medical record
+> number, AND/OR date of birth, AND/OR gender listing of users should have the same filters available
+
+
+> **Question:** The filters are And or OR. For example, if I filter for a Patient named John and Age 24, do you want every
+> John who is 24 years old or every Patient who is called John or is 24 years old.
+>
+> **Answer:** If more than one search/filter parameter is used, the combination of filters should be considered as AND.
 
 
 ## 3. Analysis
