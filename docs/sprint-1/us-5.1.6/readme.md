@@ -1,18 +1,21 @@
 # US 5.1.6
 
 <!-- TOC -->
-- [US 5.1.6](#us-516)
-  - [1. Context](#1-context)
-  - [2. Requirements](#2-requirements)
-  - [3. Analysis](#3-analysis)
-  - [4. Design](#4-design)
-    - [4.1. Realization](#41-realization)
-    - [4.2. Class Diagram](#42-class-diagram)
-    - [4.3. Applied Patterns](#43-applied-patterns)
-    - [4.4. Tests](#44-tests)
-  - [5. Implementation](#5-implementation)
-  - [6. Integration/Demonstration](#6-integrationdemonstration)
-  - [7. Observations](#7-observations)
+* [US 5.1.6](#us-516)
+  * [1. Context](#1-context)
+  * [2. Requirements](#2-requirements)
+  * [3. Analysis](#3-analysis)
+  * [4. Design](#4-design)
+    * [4.1. Realization](#41-realization)
+    * [Process View](#process-view)
+      * [Level 1](#level-1)
+      * [Level 2](#level-2)
+      * [Level 3](#level-3)
+    * [4.3. Applied Patterns](#43-applied-patterns)
+    * [4.4. Tests](#44-tests)
+  * [5. Implementation](#5-implementation)
+  * [6. Integration/Demonstration](#6-integrationdemonstration)
+  * [7. Observations](#7-observations)
 <!-- TOC -->
 
 ## 1. Context
@@ -41,6 +44,7 @@ This user story is related to US-5.1.1, as the backoffice user must be registere
 **Client Clarifications:**
 
 > **Question**: What defines session inactivity?
+>
 > **Answer**: Inactivity is defined as no interaction with the API. After 20 minutes of inactivity, the session should disconnect.
 
 
@@ -54,11 +58,32 @@ A security measure is implemented where, after five failed login attempts, the u
 
 ### 4.1. Realization
 
-_// To do //_
+The logical, physical, development and scenario views diagrams are generic for all the use cases of the backoffice component.
+These diagrams can be found in the [generic views diagrams compilation file](../team-decisions/views/general-views.md).
 
-### 4.2. Class Diagram
+The process view levels are here represented as they represent a process specific to each user story.
 
-_// To do //_
+### Process View
+
+#### Level 1
+
+> N0T DONE, NOT RELEVANT
+
+#### Level 2
+
+> N0T DONE, NOT RELEVANT
+
+#### Level 3
+
+* Login successful before 5 attempts
+
+![us6-process-view-lvl3.svg](Process_View/Level-3/us6-process-view-lvl3.svg)
+
+
+* Login unsuccessful after 5 attempts
+
+![us6-failed-login-process-view-lvl3.svg](Process_View/Level-3/us6-failed-login-process-view-lvl3.svg)
+
 
 ### 4.3. Applied Patterns
 

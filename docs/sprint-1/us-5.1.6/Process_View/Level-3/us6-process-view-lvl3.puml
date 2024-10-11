@@ -1,0 +1,68 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+title "US 5.1.6. Process View (Level 3)"
+
+autonumber
+
+participant "<<component>>\n Routing" as ROUTE
+participant "<<component>>\n Controller" as CONTROL
+
+participant "<<component>>\n UserDTO" as UserDTO
+
+participant "<<component>>\n AuthenticationService" as AUTHServ
+participant "<<component>>\n UserRepository" as AUTHRepo
+
+participant "<<component>>\n AuthorizationService" as AUTHZServ
+participant "<<component>>\n PermissionRepository" as AUTHZRepo
+
+
+[o-> ROUTE : POST(credentialsData)
+activate ROUTE
+
+ROUTE -> CONTROL : loginStaff(credentialsData)
+activate CONTROL
+
+CONTROL -> UserDTO** : toDTO(credentialsData)
+
+CONTROL -> AUTHServ : authenticateUser(noAuthUserDTO)
+activate AUTHServ
+
+AUTHServ -> AUTHRepo : findByID(emailString)
+activate AUTHRepo
+
+
+AUTHRepo --> AUTHServ : user
+deactivate AUTHRepo
+
+AUTHServ -> AUTHServ : hashPassword(passwordString)
+
+AUTHServ -> AUTHServ : matchPassword(passwordStringHashed, password)
+
+
+AUTHServ -> AUTHZServ : validatePermissions(noAuthUserDTO)
+activate AUTHZServ
+
+AUTHZServ -> AUTHZRepo : findByID(emailString)
+activate AUTHZRepo
+
+AUTHZRepo --> AUTHZServ : return
+deactivate AUTHZRepo
+
+AUTHZServ --> AUTHServ : return
+deactivate AUTHZServ
+
+AUTHServ --> CONTROL : return
+deactivate AUTHServ
+
+CONTROL --> ROUTE : return
+deactivate CONTROL
+
+<-- ROUTE : success/error
+note right
+VER A SITUAÇAO DAS SESSOES
+end note
+
+deactivate ROUTE
+
+@enduml

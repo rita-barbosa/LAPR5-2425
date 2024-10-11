@@ -1,0 +1,40 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+title "US 5.1.6. Process View | Failed Login (Level 3)"
+
+autonumber
+
+participant "<<component>>\n Routing" as ROUTE
+participant "<<component>>\n Controller" as CONTROL
+
+participant "<<component>>\n UserDTO" as UserDTO
+
+participant "<<component>>\n EmailService" as EMAILServ
+
+[o-> ROUTE : POST(credentialsData)
+note right
+After 5 failed attempts at logging in this process happens
+end note
+activate ROUTE
+
+ROUTE -> CONTROL : notifyAdminLoginTriesExceeded(credentialsData)
+activate CONTROL
+
+CONTROL -> UserDTO** : toDTO(credentialsData)
+
+CONTROL -> EMAILServ : notifyAdminAboutLockedAccount(noAuthUserDTO)
+activate EMAILServ
+
+EMAILServ -> EMAILServ : sendEmail(adminEmail, emailString, emailTitle, emailBody)
+
+EMAILServ --> CONTROL : return
+deactivate EMAILServ
+
+CONTROL --> ROUTE : return
+deactivate CONTROL
+
+<- ROUTE : return
+deactivate ROUTE
+
+@enduml
