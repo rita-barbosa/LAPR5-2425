@@ -74,7 +74,7 @@ The following diagram depicts the interaction between the Admin and the system.
 ### 4.1. Realization
 
 The logical, physical, development and scenario views diagrams are generic for all the use cases of the backoffice component.
-These diagrams can be found in the [generic views diagrams compilation file](../team-decisions/views/general-views.md).
+These diagrams can be found in the [generic views diagrams compilation file](../../team-decisions/views/general-views.md).
 
 The process view levels are here represented as they represent a process specific to each user story.
 
