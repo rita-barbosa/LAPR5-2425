@@ -70,7 +70,7 @@ The following diagram depicts the interaction between the Admin and the system.
 ### 4.1. Realization
 
 The logical, physical, development and scenario views diagrams are generic for all the use cases of the backoffice component.
-These diagrams can be found in the [generic views diagrams compilation file](../team-decisions/views/general-views.md).
+These diagrams can be found in the [generic views diagrams compilation file](../../team-decisions/views/general-views.md).
 
 Regarding this user story in particular, it's very similar to [US 5.1.15.](../us-5.1.15/readme.md), so diagrams of generic
 process views of each level were created to represent both.
@@ -87,15 +87,15 @@ In the following diagrams, the listed variables represent the respective concept
 
 #### Level 1
 
-![listing-profile-us-process-view-lvl1.svg](../team-decisions/views/general-process-view-diagrams/listing-profiles/Level-1/listing-profile-us-process-view-lvl1.svg)
+![listing-profile-us-process-view-lvl1.svg](../../team-decisions/views/general-process-view-diagrams/listing-profiles/Level-1/listing-profile-us-process-view-lvl1.svg)
 
 #### Level 2
 
-![listing-profile-us-process-view-lvl2.svg](../team-decisions/views/general-process-view-diagrams/listing-profiles/Level-2/listing-profile-us-process-view-lvl2.svg)
+![listing-profile-us-process-view-lvl2.svg](../../team-decisions/views/general-process-view-diagrams/listing-profiles/Level-2/listing-profile-us-process-view-lvl2.svg)
 
 #### Level 3
 
-![listing-profile-us-process-view-lvl3.svg](../team-decisions/views/general-process-view-diagrams/listing-profiles/Level-3/listing-profile-us-process-view-lvl3.svg)
+![listing-profile-us-process-view-lvl3.svg](../../team-decisions/views/general-process-view-diagrams/listing-profiles/Level-3/listing-profile-us-process-view-lvl3.svg)
 
 ### 4.3. Applied Patterns
 
