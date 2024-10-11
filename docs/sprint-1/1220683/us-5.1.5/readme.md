@@ -65,6 +65,25 @@ This feature is related to the creation on a patient's account (**US 5.1.3**) an
 > **Answer:** Patient data must be retained for a legally mandated period before being anonymized or deleted.
 
 
+> **Question:** The document states "Some anonymized data may be retained for legal or research purposes, but all identifiable
+> information is erased". Which information should be retained?
+>
+> **Answer:** It is part of the team's responsibility in the scope of the GDPR module to define the policy.
+
+
+> **Question:** Can you clarify the username and email requirements?
+>
+> **Answer:** The username is the "official" email address of the user.
+>
+> For backoffice users, this is the mechanographic number of the collaborator, e.g., D240003 or N190345, and the DNS domain
+> of the system. For instance, Doctor Manuela Fernandes has email "D180023@myhospital.com". The system must allow for an
+> easy configuration of the DNS domain (e.g., environment variable).
+>
+> For patients, the username is the email address provided in the patient record and used as identity in the external IAM.
+> for instance patient Carlos Silva has provided his email csilva98@gmail.com the first time he entered the hospital. That
+> email address will be his username when he self-registers in the system.
+
+
 ## 3. Analysis
 
 This functionality centers around the patient's profile and their personal data, which contains plenty of information, such as:
@@ -75,8 +94,10 @@ This functionality centers around the patient's profile and their personal data,
 >- email
 >
 >**Non-Identifiable Data**
+>- gender
+>- birthday
 >- appointment history
->- medical records
+>- medical conditions/records
 >- settings/preferences
 
 Once on the profile page, the patient can request to delete their account through the settings.
@@ -87,6 +108,7 @@ frame of 30 days.
 
 Some anonymized data can be retained for legal or research purposes, but none of this information will identify the patient
 in any way.
+
 Upon concluding the account deletion, the system logs the action following GDPR requirements, ensuring compliance and
 auditability.
 
