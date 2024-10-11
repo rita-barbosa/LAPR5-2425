@@ -2,6 +2,7 @@
 
 <!-- TOC -->
 * [US 5.1.7](#us-517)
+  * [1. Context](#1-context)
   * [2. Requirements](#2-requirements)
   * [3. Analysis](#3-analysis)
   * [4. Design](#4-design)
@@ -13,6 +14,8 @@
   * [6. Integration/Demonstration](#6-integrationdemonstration)
   * [7. Observations](#7-observations)
 <!-- TOC -->
+
+## 1. Context
 
 * This is the first time this user story is presented.
 
@@ -40,6 +43,8 @@ access my appointments, medical records, and other features securely.
 
 - 5.1.7.4 | Sessions expire after a defined period of inactivity, requiring re-authentication.
 
+- 5.1.7.5 | If the credentials used in the IAM correspond to a staff profile, the patient cannot register in the healthcare system.
+
 
 **Dependencies/References:**
 
@@ -66,6 +71,18 @@ This functionality is dependent on the creation of a patient profile by the Admi
 > **Question:** Can a user have both patient and healthcare staff profiles?
 >
 > **Answer:** No, a user cannot have both profiles. Staff and patients have separate identifications.
+
+> **Question:** Can you clarify the username and email requirements?
+>
+> **Answer:** The username is the "official" email address of the user.
+> 
+> For backoffice users, this is the mechanographic number of the collaborator, e.g., D240003 or N190345, and the DNS domain
+> of the system. For instance, Doctor Manuela Fernandes has email "D180023@myhospital.com". The system must allow for an
+> easy configuration of the DNS domain (e.g., environment variable).
+> 
+> For patients, the username is the email address provided in the patient record and used as identity in the external IAM.
+> for instance patient Carlos Silva has provided his email csilva98@gmail.com the first time he entered the hospital. That
+> email address will be his username when he self-registers in the system.
 
 
 ## 3. Analysis
