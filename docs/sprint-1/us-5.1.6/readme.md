@@ -67,11 +67,12 @@ The process view levels are here represented as they represent a process specifi
 
 #### Level 1
 
-> N0T DONE, NOT RELEVANT
+> N0T DONE, BUT RELEVANT
 
 #### Level 2
 
-> N0T DONE, NOT RELEVANT
+As this level does not add any additional information regarding the user story's execution flow from level 1's diagram,
+it's diagram was deemed irrelevant.
 
 #### Level 3
 
