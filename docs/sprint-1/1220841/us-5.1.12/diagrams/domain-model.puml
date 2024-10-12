@@ -8,8 +8,10 @@ skinparam ArrowColor #222222
 
 package "<<aggregate Staff>>" {
     entity Staff <<entity>><<root>>{}
+    class StaffId <<(V,#FF8B40)value object>> <<identifier>> {}
     class LicenseNumber <<(V,#FF8B40)value object>> <<identifier>> {}
     class Name <<(V,#FF8B40)value object>> {}
+    class Function <<(V,#FF8B40)value object>> {}
     class FirstName <<(V,#FF8B40)value object>> {}
     class LastName <<(V,#FF8B40)value object>> {}
     class FullName <<(V,#FF8B40)value object>> {}
@@ -35,6 +37,8 @@ Name --> FullName
 ContactInfo --> "1" Email
 ContactInfo --> "1" Phone
 Staff --> "1" Name 
+Staff -> "1" StaffId
+Staff -left-> "1" Function
 Staff ---> "1" ContactInfo
 Staff --> "1" LicenseNumber 
 Staff ---> "1..*" Slot 
