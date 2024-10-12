@@ -102,10 +102,16 @@ The system has a predefined operation types list that  reflect the available pro
 has the permissions to add new ones as it is required, with the following attributes:
 
 - **Operation Name** | it has to be unique
-- **Required Staff by Specialization** | a list of the healthcare professionals needed to proceed with the surgery
+- **Required Staff by Specialization** | a list of the healthcare professionals needed to proceed with the surgery and each of their specializations
 - **Estimated Duration** | in hours
+- **Phases (Anesthesia/patient preparation, Surgery, Cleaning)** | each step that constitutes the operation and the time each one takes
 
 After the operation type has been created, the system registers the event in the system logs.
+
+An operation type can also be deactivated when it no longer is a type of procedure done in the hospital. It can also be
+reactivated. However, even if an operation type is inactive, no new operation types can have its name.
+
+The patients have access to the operation type logs - creation and editing history.
 
 
 ### System Sequence Diagram

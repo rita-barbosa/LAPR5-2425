@@ -24,9 +24,17 @@ ADM -> SYS : selects a staff member
 
 end loop
 
+loop for each phase of an operation type
+
 SYS --> ADM : asks to indicate an estimated duration
 
 ADM -> SYS : provides an estimated duration
+
+end loop
+
+SYS --> ADM : asks to indicate a total estimated duration
+
+ADM -> SYS : provides a total estimated duration
 
 SYS --> ADM : confirms the creation of a new operation type
 
