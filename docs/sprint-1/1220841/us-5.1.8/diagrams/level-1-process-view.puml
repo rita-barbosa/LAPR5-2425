@@ -19,5 +19,6 @@ activate SYS
 
 SYS --> ADM : success/insucess
 deactivate SYS
+deactivate ADM
 
 @enduml
