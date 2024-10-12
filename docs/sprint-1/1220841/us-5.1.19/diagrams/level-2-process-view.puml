@@ -1,0 +1,14 @@
+@startuml
+
+title "US 5.1.19. - Process View [Level 2]"
+
+autonumber
+
+participant "<<component>>\n Backoffice" as bo
+
+[o-> bo: listOperationRequisitions()
+activate bo
+<-- bo: operationRequisitions
+deactivate bo
+
+@enduml

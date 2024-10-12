@@ -1,0 +1,54 @@
+@startuml
+
+title "US 5.1.19. - Process View [Level 3]"
+
+autonumber
+participant "OperationRequestRoute" as ROUTE <<route>>
+participant "OperationRequestDto" as pat_dto <<dto>>
+participant "OperationRequestController" as CTRL <<controller>>
+participant "OperationRequestService" as SVC <<service>>
+participant "OperationRequestRepository" as REPO <<repository>>
+participant "OperationRequestMapper" as MAP <<mapper>>
+participant "OperationRequestDTO" as DTO <<dto>>
+
+
+[o-> ROUTE: GET /Operationrequisitions
+activate ROUTE
+note right of ROUTE:**Params**: **[optional]** patientname,\noperationtype, priority, status,\ndaterequest, deadlinedate
+
+ROUTE -> CTRL: getOperationRequisitionsByFilters(filters)
+activate CTRL
+
+CTRL -> SVC: getOperationRequisitionsByFilters(filters)
+activate SVC
+
+
+SVC -> SVC : generateQueryFromFilters(filters)
+activate SVC
+SVC --> SVC : query
+deactivate SVC
+|||
+
+SVC -> REPO : findAllConditioned(query)
+activate REPO
+REPO --> SVC : operationRequests
+deactivate REPO
+
+    loop for all the profiles in the list
+        SVC -> MAP : toDTO(operationRequest)
+        activate MAP
+
+        MAP -> DTO **
+
+        MAP --> SVC : operationRequestDTO
+        deactivate MAP
+    end loop
+
+
+
+SVC --> CTRL: operationRequestDTOs
+deactivate SVC
+CTRL --> ROUTE: operationRequestDTOs
+deactivate CTRL
+   deactivate ROUTE
+    @enduml
