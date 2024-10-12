@@ -1,0 +1,163 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+title "US 5.1.23. Process View (Level 3)"
+autonumber
+
+participant "route:\nListOperationTypesRoute" as ROUTE
+participant "controller:\nListOperationTypesController" as CTRL
+participant "service:\n OperationTypeService" as SER
+participant "repository:\nOperationTypeRepository" as REPO
+participant "mapper:\nOperationTypeMapper" as MAPPER
+participant "dto:\nOperationTypeDTO" as DTO
+participant "service:\nDynamicQueryGenerationService" as QUERYServ
+
+
+[o-> ROUTE : GET()
+activate ROUTE
+
+ROUTE -> CTRL : getAllOperationTypes()
+activate CTRL
+
+CTRL -> SER : getAllOperationTypes()
+activate SER
+
+SER -> REPO : findAll()
+activate REPO
+
+REPO --> SER : operationTypeList
+deactivate REPO
+
+    loop for all the operation types in the list
+        SER -> MAPPER : toDTO(operationType)
+        activate MAPPER
+
+        MAPPER -> DTO **
+
+        MAPPER --> SER : operationTypeDTO
+        deactivate MAPPER
+    end loop
+
+SER --> CTRL : operationTypeDTOList
+deactivate SER
+
+
+CTRL --> ROUTE : operationTypeDTOList
+deactivate CTRL
+
+<-- ROUTE : operationTypeDTOList
+deactivate ROUTE
+
+|||
+
+[o-> ROUTE : POST(queryParameters)
+activate ROUTE
+
+ROUTE -> CTRL : filterOperationTypes(queryParameters)
+activate CTRL
+
+CTRL -> SER : filterOperationTypes(queryParameters)
+activate SER
+
+SER -> QUERYServ : generateQueryText(queryParameters)
+activate QUERYServ
+
+QUERYServ --> SER : query
+deactivate QUERYServ
+
+SER -> REPO : findAllConditioned(query)
+activate REPO
+
+REPO --> SER : operationTypesList
+deactivate REPO
+
+    loop for all the operation types in the list
+        SER -> MAPPER : toDTO(operationType)
+        activate MAPPER
+
+        MAPPER -> DTO **
+
+        MAPPER --> SER : operationTypeDTO
+        deactivate MAPPER
+    end loop
+
+SER --> CTRL : filterOperationTypesDTOList
+deactivate SER
+
+CTRL --> ROUTE : filterOperationTypesDTOList
+deactivate CTRL
+
+<-- ROUTE : filterOperationTypesDTOList
+deactivate ROUTE
+
+|||
+
+alt view details
+
+[o-> ROUTE : GET()
+activate ROUTE
+
+ROUTE -> CTRL : getOperationType(operationTypeId)
+activate CTRL
+
+CTRL -> SER : getOperationType(operationTypeId)
+activate SER
+
+SER -> REPO : findByID()
+activate REPO
+
+REPO --> SER : operationType
+deactivate REPO
+        SER -> MAPPER : toDTO(operationType)
+        activate MAPPER
+
+        MAPPER -> DTO **
+
+        MAPPER --> SER : operationTypeDTO
+        deactivate MAPPER
+
+SER --> CTRL : operationTypeDTO
+deactivate SER
+
+
+CTRL --> ROUTE : operationTypeDTO
+deactivate CTRL
+
+
+else edit operation type
+
+    [o-> ROUTE : PUT(updatedProfileData)
+
+    ROUTE -> CTRL : editOperationType(updatedProfileData)
+    activate CTRL
+
+    ref over CTRL
+
+    **US 5.1.21.**
+    end ref
+
+    CTRL --> ROUTE : answer
+    deactivate CTRL
+
+else delete operation type
+
+    [o-> ROUTE : DELETE(operationType)
+
+    ROUTE -> CTRL : deleteOperationType(operationType)
+    activate CTRL
+
+    ref over CTRL
+
+    **US 5.1.22.**
+    end ref
+
+    CTRL --> ROUTE : answer
+    deactivate CTRL
+
+end alt
+
+<-- ROUTE : answer
+deactivate ROUTE
+
+
+@enduml
