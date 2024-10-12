@@ -9,6 +9,5 @@ participant "<<component>>\n Backoffice" as bo
 [o-> bo: createStaffProfile()
 activate bo
 <-- bo: success/insuccess
-
-
+deactivate bo
 @enduml
