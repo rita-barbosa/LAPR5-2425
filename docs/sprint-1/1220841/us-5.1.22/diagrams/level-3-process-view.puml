@@ -1,0 +1,55 @@
+@startuml
+
+title "US 5.1.22. - Process View [Level 3]"
+
+autonumber
+participant "OperationTypeRoute" as ROUTE <<route>>
+participant "OperationTypeDto" as pat_dto <<dto>>
+participant "OperationTypeController" as CTRL <<controller>>
+participant "OperationTypeService" as SVC <<service>>
+participant "OperationTypeRepository" as REPO <<repository>>
+participant "OperationType" as OT <<domain>>
+
+
+[o-> ROUTE: PUT(json)
+activate ROUTE
+
+ROUTE -> pat_dto **: create(json)
+
+ROUTE -> CTRL: removeOperationType(operationTypeId)
+activate CTRL
+
+CTRL -> SVC: inactivateOperationType(operationTypeId)
+activate SVC
+
+SVC -> REPO : getById(operationTypeId)
+activate REPO
+REPO --> SVC : operationType
+deactivate REPO
+
+SVC -> OT: markAsInactive()
+activate OT
+deactivate OT
+
+SVC -> REPO : save(operationType)
+activate REPO
+deactivate REPO
+
+
+SVC --> CTRL: success
+deactivate SVC
+CTRL --> ROUTE: success
+deactivate CTRL
+
+alt 
+
+[o<-- ROUTE: 200 Ok
+
+else 
+
+[o<-- ROUTE: 404 Not Found
+
+end alt
+
+deactivate ROUTE
+@enduml
