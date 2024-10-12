@@ -1,0 +1,32 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+title "US 5.1.X. Process View (Level 1)"
+
+actor Admin as ADM
+participant "<<system (C4)>>\n Healthcare System" as SYS
+
+ADM -> SYS : asks to edit X profile
+activate SYS
+
+SYS --> ADM : shows list of the X profiles
+deactivate SYS
+activate ADM
+
+ADM -> SYS : selects an X profile
+deactivate ADM
+activate SYS
+
+SYS --> ADM : shows selected X profile
+deactivate SYS
+activate ADM
+
+ADM -> SYS : edits X profile
+deactivate ADM
+activate SYS
+
+SYS --> ADM : confirms the update of the X profile
+deactivate SYS
+
+
+@enduml

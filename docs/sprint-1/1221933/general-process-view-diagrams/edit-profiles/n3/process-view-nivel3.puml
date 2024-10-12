@@ -1,0 +1,85 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+title "US 5.1.X. Process View (Level 3)"
+autonumber
+autonumber
+
+participant "route:\nEditXRoute" as ROUTE
+participant "controller:\nEditXController" as CTRL
+
+participant "service:\nXService" as SER
+participant "repository:\nXRepo" as REPO
+participant "mapper:\nXMapper" as MAP
+participant "dto:\nXDTO" as DTO
+
+participant "persistence:\nPersistence" as PERSISTENCE
+
+
+[o-> ROUTE : GET()
+activate ROUTE
+
+ROUTE -> CTRL : getXProfiles()
+activate CTRL
+
+CTRL -> SER : getXProfiles()
+activate SER
+
+SER -> REPO : findAll()
+activate REPO
+
+REPO --> SER : XProfilesList
+deactivate REPO
+
+loop for all the profiles in the list
+SER -> MAP : toDTO(XProfile)
+activate MAP
+
+MAP -> DTO **
+
+MAP --> SER : XProfileDTO
+deactivate MAP
+end loop
+
+SER --> CTRL : XProfileDTOList
+deactivate SER
+
+CTRL --> ROUTE : XProfileDTOList
+deactivate CTRL
+
+<- ROUTE : XProfileDTOList
+deactivate ROUTE
+
+|||
+
+[o-> ROUTE : PUT(json)
+activate ROUTE
+
+ROUTE -> CTRL : editXProfile(updatedData)
+activate CTRL
+
+CTRL -> DTO ** : toDTO(updatedData)
+
+CTRL -> SER : editXProfile(XProfileDTO)
+activate SER
+
+SER -> REPO : save(XProfileDTO)
+activate REPO
+
+REPO -> PERSISTENCE : save(XProfileDTO)
+activate PERSISTENCE
+deactivate PERSISTENCE
+
+REPO --> SER : answer
+deactivate REPO
+
+SER --> CTRL : answer
+deactivate SER
+
+CTRL --> ROUTE : answer
+deactivate CTRL
+
+<-- ROUTE : sanswer
+deactivate ROUTE
+
+@enduml
