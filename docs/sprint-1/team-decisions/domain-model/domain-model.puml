@@ -58,7 +58,7 @@ package "<<aggregate OperationType>>"{
     class Phase <<(V,#FF8B40)value object>>  {}
     class PhaseDuration <<(V,#FF8B40)value object>>  {}
     class PhaseDescription <<(V,#FF8B40)value object>> {}
-    class IsActive <<(V,#FF8B40)value object>> {}
+    class OperationTypeStatus <<(V,#FF8B40)value object>> {}
 }
 
 package "<<aggregate Appointment>>"{
@@ -110,7 +110,7 @@ Room --> "0..*" Slot
 Appointment -> "1" Room
 
 OperationType --> "1" OperationTypeId
-OperationType --> "1" IsActive
+OperationType --> "1" OperationTypeStatus
 OperationType --> "1" OperationTypeName
 OperationType --> "1..*" RequiredStaff
 RequiredStaff --> "1" Specialization
