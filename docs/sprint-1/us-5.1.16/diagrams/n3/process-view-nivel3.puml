@@ -1,0 +1,82 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+title "US 5.1.16. Process View (Level 3)"
+
+
+autonumber
+
+participant "route:\nOperationRequestRoute" as ROUTE
+participant "dto:\nOperationRequestDTO" as DTO
+participant "controller:\nOperationRequestController" as CTRL
+
+participant "service\n:StaffManagementService" as STAFFServ
+participant "repository:\nStaffRepo" as STAFFRepo
+participant "mapper:\nStaffMapper" as STAFFMapper
+participant "dto:\nStaffDTO" as STAFFDTO
+
+participant "service:\nAuthManagementService" as AUTHServ
+participant "repository:\nAuthRepo" as AUTHRepo
+
+participant "service:\nOperationRequestService" as SER
+participant "repository:\nOperationRequestRepository" as REPO
+participant "domain:\nOperationRequest" as OPREQ
+
+[o-> ROUTE : POST(json)
+activate ROUTE
+
+ROUTE -> DTO** : create(json)
+
+ROUTE -> CTRL : createOperationRequest(request,response,next)
+activate CTRL
+
+CTRL -> STAFFServ : findSessionDoctor()
+activate STAFFServ
+
+STAFFServ -> AUTHServ : getSessionUser()
+activate AUTHServ
+
+AUTHServ -> AUTHRepo : getUserByID()
+activate AUTHRepo
+
+AUTHRepo --> AUTHServ : user
+deactivate AUTHRepo
+
+AUTHServ --> STAFFServ : user
+deactivate AUTHServ
+
+STAFFServ -> STAFFRepo : getDoctorByUser(user)
+activate STAFFRepo
+
+STAFFRepo --> STAFFServ : doctor
+deactivate STAFFRepo
+
+STAFFServ --> STAFFMapper : toDTO(doctor)
+activate STAFFMapper
+
+STAFFMapper -> STAFFDTO **
+
+STAFFMapper --> STAFFServ : doctorDTO
+deactivate STAFFMapper
+
+STAFFServ --> CTRL : doctorDTO
+deactivate STAFFServ
+
+CTRL -> SER : createOperationRequest(doctorID,patientID,operationType,priority,deadline)
+activate SER
+
+SER -> OPREQ** : createOperationRequest(doctorID, patientID,operationType,priority,deadline)
+
+SER -> REPO : save(operationRequest)
+activate REPO
+deactivate REPO
+
+SER --> CTRL : answer
+deactivate SER
+
+CTRL --> ROUTE : answer
+deactivate CTRL
+
+ <-- ROUTE : answer
+
+@enduml
