@@ -189,3 +189,4 @@ _// To do //_
 * Although a factory could be implemented to generate/create the tokens, as they hold a similar structure (code, type, 
 expiration date) and the system only checks for validity and type during operations, their logic is simple enough for a 
 "factory method" to exist instead of a dedicated class.
+* [Design Patterns reference](https://refactoring.guru/design-patterns)
