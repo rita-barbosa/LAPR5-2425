@@ -8,7 +8,7 @@ autonumber
 participant "<<component>>\n Routing" as ROUTE
 participant "<<component>>\n PatientController" as CONTROL
 
-participant "<<component>>\n AuthManagementService" as AUTHServ
+participant "<<component>>\n AuthenticationService" as AUTHServ
 
 participant "<<component>>\n UserDTO" as UserDTO
 

@@ -148,7 +148,7 @@ it's diagram was deemed irrelevant.
 
 > #### **Repository Pattern**
 >
->* **Components:** AuthRepository, TokenRepository, PatientRepository, UserRepository
+>* **Components:** TokenRepository, PatientRepository, UserRepository
 >
 > The repositories are responsible for data access and retrieval, separating the logic for interacting with the database
 > from the services and other layers. This pattern helps in abstracting the persistence logic.
@@ -165,7 +165,7 @@ it's diagram was deemed irrelevant.
 
 > #### **Facade Pattern**
 >
->* **Components:** AuthManagementService, TokenManagementService, PatientService, EmailService
+>* **Components:** AuthenticationService, TokenManagementService, PatientService, EmailService
 >
 > These services act as a Facade to simplify interaction with lower-level components like repositories. The Controller 
 > interacts with these service facades, keeping the complexity hidden from the higher layers.
