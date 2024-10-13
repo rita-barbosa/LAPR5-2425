@@ -132,4 +132,4 @@ N/A
 ![use-case-diagram.svg](scenario-view/use-case-diagram.svg)
 
 Since the high-level use cases already cover the essential functionality, adding more levels would only increase complexity
-without adding significant value, making the system harder to maintain.
+without adding significant value, making the system harder to maintain. 
