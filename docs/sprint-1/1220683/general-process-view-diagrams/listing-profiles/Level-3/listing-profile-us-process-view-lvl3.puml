@@ -6,11 +6,11 @@ title "US 5.1.15. Process View (Level 3)"
 autonumber
 
 participant "<<component>>\n Routing" as ROUTE
-participant "<<component>>\n ProfileListingController" as CONTROL
+participant "<<component>>\n XProfileListingController" as CONTROL
 
 participant "<<component>>\n QueryParametersDTO" as QueryDTO
 
-participant "<<component>>\n XManagementService" as XServ
+participant "<<component>>\n XService" as XServ
 participant "<<component>>\n XRepository" as XRepo
 participant "<<component>>\n XDTO" as XDTO
 
@@ -40,10 +40,12 @@ deactivate XRepo
 XServ --> CONTROL : XprofileDTOList
 deactivate XServ
 
-CONTROL --> ROUTE : XprofileDTOList
+CONTROL -> CONTROL : json(XprofileDTOList)
+
+CONTROL --> ROUTE : json
 deactivate CONTROL
 
-<-- ROUTE : XprofileDTOList
+[o<-- ROUTE : ok(json)
 deactivate ROUTE
 
 |||
@@ -83,10 +85,12 @@ deactivate XRepo
 XServ --> CONTROL : filteredXProfilesDTOList
 deactivate XServ
 
-CONTROL --> ROUTE : filteredXProfilesDTOList
+CONTROL -> CONTROL : json(XprofileDTOList)
+
+CONTROL --> ROUTE : json
 deactivate CONTROL
 
-<-- ROUTE : filteredXProfilesDTOList
+[o<-- ROUTE : ok(json)
 deactivate ROUTE
 
 |||
@@ -128,8 +132,15 @@ else
 
 end alt
 
-<-- ROUTE : success/error
+
+alt success
+[o<-- ROUTE : 200 OK
+
+else failure
+
+[o<-- ROUTE : 400 Bad Request
 deactivate ROUTE
+end alt
 
 
 @enduml
