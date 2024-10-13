@@ -142,7 +142,7 @@ In the following diagrams, the listed variables represent the respective concept
 
 > #### **Facade Pattern**
 >
->* **Components:** DynamicQueryGenerationService, StaffManagementService
+>* **Components:** DynamicQueryGenerationService, StaffService
 >
 > These services act as a Facade to simplify interaction with lower-level components like repositories. The Controller
 > interacts with these service facades, keeping the complexity hidden from the higher layers.
