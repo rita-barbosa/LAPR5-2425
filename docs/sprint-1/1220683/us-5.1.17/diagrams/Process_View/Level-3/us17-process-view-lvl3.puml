@@ -6,41 +6,30 @@ title "US 5.1.17. Process View (Level 3)"
 autonumber
 
 participant "<<component>>\n Routing" as ROUTE
-participant "<<component>>\n Controller" as CONTROL
+participant "<<component>>\n OperationRequestController" as CONTROL
 
-participant "<<component>>\n StaffManagementService" as STAFFServ
-participant "<<component>>\n StaffRepo" as STAFFRepo
-participant "<<component>>\n StaffMapper" as STAFFMapper
-participant "<<component>>\n StaffDTO" as STAFFDTO
+participant "<<component>>\n StaffService" as STAFFServ
+participant "<<component>>\n StaffRepository" as STAFFRepo
+participant "<<component>>\n StaffDTO" as StaffDTO
 
-participant "<<component>>\n AuthManagementService" as AUTHServ
-participant "<<component>>\n AuthRepo" as AUTHRepo
+participant "<<component>>\n AuthenticationService" as AUTHServ
 
-participant "<<component>>\n OperationRequisitionManagementService" as OPREQServ
-participant "<<component>>\n OperationRequisitionRepo" as OPREQRepo
-participant "<<component>>\n OperationRequisitionMapper" as OPREQMapper
-participant "<<component>>\n OperationRequisitionDTO" as OPREQDTO
-
-participant "<<component>>\n Persistence" as PERSISTENCE
+participant "<<component>>\n OperationRequestService" as OPREQServ
+participant "<<component>>\n OperationRequestRepository" as OPREQRepo
+participant "<<component>>\n OperationRequestDTO" as OPREQDTO
 
 
 [o-> ROUTE : GET()
 activate ROUTE
 
-ROUTE -> CONTROL : getOperationRequisitionsByDoctor()
+ROUTE -> CONTROL : getOperationRequestsByDoctor()
 activate CONTROL
 
-CONTROL -> STAFFServ : findSessionDoctor()
+CONTROL -> STAFFServ : findCurrentSessionDoctor()
 activate STAFFServ
 
 STAFFServ -> AUTHServ : getSessionUser()
 activate AUTHServ
-
-AUTHServ -> AUTHRepo : getUserbyID()
-activate AUTHRepo
-
-AUTHRepo --> AUTHServ : user
-deactivate AUTHRepo
 
 AUTHServ --> STAFFServ : user
 deactivate AUTHServ
@@ -51,43 +40,34 @@ activate STAFFRepo
 STAFFRepo --> STAFFServ : doctor
 deactivate STAFFRepo
 
-STAFFServ --> STAFFMapper : toDTO(doctor)
-activate STAFFMapper
-
-STAFFMapper -> STAFFDTO **
-
-STAFFMapper --> STAFFServ : doctorDTO
-deactivate STAFFMapper
+STAFFServ --> StaffDTO ** : toDTO(doctor)
 
 STAFFServ --> CONTROL : doctorDTO
 deactivate STAFFServ
 
-CONTROL -> OPREQServ : getOperationRequisitionsByDoctor(doctorDTO)
+CONTROL -> OPREQServ : getOperationRequestsByDoctor(doctorDTO)
 activate OPREQServ
 
 OPREQServ -> OPREQRepo : findAllByDoctor(doctorDTO)
 activate OPREQRepo
 
-OPREQRepo --> OPREQServ : operationRequisitionList
+OPREQRepo --> OPREQServ : operationRequestList
 deactivate OPREQRepo
 
 loop for all the elements in the list
-OPREQServ -> OPREQMapper : toDTO(operationRequisition)
-activate OPREQMapper
+OPREQServ -> OPREQDTO ** : toDTO(operationRequest)
 
-OPREQMapper -> OPREQDTO **
-
-OPREQMapper --> OPREQServ : operationRequisitionDTO
-deactivate OPREQMapper
 end loop
 
-OPREQServ --> CONTROL : operationRequisitionDTOList
+OPREQServ --> CONTROL : operationRequestDTOList
 deactivate OPREQServ
 
-CONTROL --> ROUTE : operationRequisitionDTOList
+CONTROL -> CONTROL : json(operationRequestDTOList)
+
+CONTROL --> ROUTE : json
 deactivate CONTROL
 
-<- ROUTE : operationRequisitionDTOList
+[o<- ROUTE : ok(json)
 deactivate ROUTE
 
 |||
@@ -95,20 +75,16 @@ deactivate ROUTE
 [o-> ROUTE : POST(updatedData)
 activate ROUTE
 
-ROUTE -> CONTROL : updateOperationRequisition(updatedData)
+ROUTE -> CONTROL : updateOperationRequest(updatedData)
 activate CONTROL
 
 CONTROL -> OPREQDTO ** : toDTO(updatedData)
 
-CONTROL -> OPREQServ : updateOperationRequisition(operationRequisitionDTO)
+CONTROL -> OPREQServ : updateOperationRequest(operationRequestDTO)
 activate OPREQServ
 
-OPREQServ -> OPREQRepo : save(operationRequisitionDTO)
+OPREQServ -> OPREQRepo : save(operationRequestDTO)
 activate OPREQRepo
-
-OPREQRepo -> PERSISTENCE : save(operationRequisitionDTO)
-activate PERSISTENCE
-deactivate PERSISTENCE
 
 OPREQRepo --> OPREQServ : return
 deactivate OPREQRepo
@@ -119,8 +95,15 @@ deactivate OPREQServ
 CONTROL --> ROUTE : return
 deactivate CONTROL
 
-<-- ROUTE : success/error
+
+alt success
+[o<-- ROUTE : 200 OK
+
+else failure
+
+[o<-- ROUTE : 400 Bad Request
 deactivate ROUTE
+end alt
 
 
 @enduml
