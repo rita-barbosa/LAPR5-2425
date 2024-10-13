@@ -77,13 +77,13 @@ To visually model the system, the **Unified Modeling Language (UML)** is used.
 
 ![healthcare_system_vl2.drawio.svg](logical-view/healthcare_system_vl2.drawio.svg)
 
-In the system there is only one **Backoffice Api**, however it is consumed both internally and externally. The team decided
+In the system there is only one **Backoffice API**, however it is consumed both internally and externally. The team decided
 to represent it twice to make its use clearer.
 
 ### 1.3. Level 3
 
 The third level of the logical view explores each component in detail. The backoffice is a very important component of the
-system, as it communicates outside of it with other applications, so its representation is a bit more complex.
+system, as it communicates inside and outside of it with other applications, so its representation is a bit more complex.
 
 #### 1.3.1 Backoffice Component
 
@@ -93,7 +93,7 @@ system, as it communicates outside of it with other applications, so its represe
 
 ## 2. Process View
 
-Process views and their respective levels will be done in each user story **readme** file.
+Process views and their respective levels will be represented in each user story **readme** file.
 
 ---
 
@@ -101,13 +101,15 @@ Process views and their respective levels will be done in each user story **read
 
 ### 3.2. Level 2
 
-![vi2.drawio.svg](development-view\development-view-level-2.svg)
+![vi2.drawio.svg](development-view/development-view-level-2.svg)
 
 ### 3.3. Level 3
 
+![developement-view-level-3.svg](development-view/developement-view-level-3.svg)
+
 ### 3.3.1 Backoffice Module
 
-![vi3_backo.drawio.svg](development-view\developement-view-level-3.svg)
+![vi3_backo.drawio.svg](development-view/developement-view-level-3.svg)
 
 ## 4. Physical View
 
@@ -117,7 +119,7 @@ N/A
 
 ### 4.2. Level 2
 
-![pg-vl2.drawio.svg](physical-view\physical-vl2.svg)
+![pg-vl2.drawio.svg](physical-view/physical-vl2.svg)
 
 ### 4.3. Level 3
 
