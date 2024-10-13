@@ -65,7 +65,22 @@ It is important to note that for the sake of this project, **historical data** i
 
 ### 4.1. Realization
 
-_// To do //_
+The logical, physical, development and scenario views diagrams are generic for all the use cases of the backoffice component.
+These diagrams can be found in the [generic views diagrams compilation file](../../team-decisions/views/general-views.md).
+
+The process view levels are here represented as they represent a process specific to each user story.
+
+#### Process View - Level 1
+
+![Process View Level 1](Diagrams\Views\process-view-level-1.svg)
+
+#### Process View - Level 2
+
+![Process View Level 2](Diagrams\Views\process-view-level-2.svg)
+
+#### Process View - Level 3
+
+![Process View Level 3](Diagrams\Views\process-view-level-3.svg)
 
 ### 4.2. Class Diagram
 
