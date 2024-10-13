@@ -51,7 +51,17 @@ This User Story is related to the Admin.
 
 > Question: What are the system's password requirements?
 >
-> Answer: At least 10 characters long, at least a digit, a capital letter and a special character
+> Answer: At least 10 characters long, at least a digit, a capital letter and a special character.
+
+> Question: Dear Client,
+Chapter 3.2 says that "Backoffice users are registered by the admin in the IAM through an out-of-band process.", but US 5.1.1 says that "Backoffice users are registered by an Admin via an internal process, not via self-registration.".
+Can you please clarify if backoffice users registration uses the IAM system? And if the IAM system is the out-of-band process?
+>
+> Answer: What this means is that backoffice users can not self-register in the system like the patients do. the admin must register the backoffice user. If you are using an external IAM (e.g., Google, Azzure, Linkedin, ...) the backoffice user must first create their account in the IAM provider and then pass the credential info to the admin so that the user account in the system is "linked" wit the external identity provider.
+
+> Question: In IAM external system, if a patient is signed in with a google account and later uses other external system like Facebook, and both have different credentials, what happens?
+>
+> Answer: Assume the system only supports one IAM.
 
 ## 3. Analysis
 
@@ -73,7 +83,23 @@ The following diagram describes the second part of this User Story, what the sta
 
 ### 4.1. Realization
 
-_// To do //_
+The logical, physical, development and scenario views diagrams are generic for all the use cases of the backoffice component.
+These diagrams can be found in the [generic views diagrams compilation file](../../team-decisions/views/general-views.md).
+
+The process view levels are here represented as they represent a process specific to each user story.
+
+#### Process View
+
+The level 1 and 2 of this view was considered not to add more information in addition to the SSD shown above.
+However level 3 is shown below.
+
+#### 4.1.1 Process View - Admin
+
+![Process View - Admin](Diagrams\Views\process-view-level-3-ADMIN.svg)
+
+#### 4.1.2 Process View - Staff
+
+![Process View - Admin](Diagrams\Views\process-view-level-3-STAFF.svg)
 
 ### 4.2. Class Diagram
 
