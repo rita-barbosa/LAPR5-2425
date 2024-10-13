@@ -10,9 +10,9 @@
       * [1.3.1 Backoffice Component](#131-backoffice-component)
   * [2. Process View](#2-process-view)
   * [3. Development View](#3-development-view)
-    * [3.1. Level 1](#31-level-1)
     * [3.2. Level 2](#32-level-2)
     * [3.3. Level 3](#33-level-3)
+    * [3.3.1 Backoffice Module](#331-backoffice-module)
   * [4. Physical View](#4-physical-view)
     * [4.1. Level 1](#41-level-1)
     * [4.2. Level 2](#42-level-2)
@@ -77,11 +77,13 @@ To visually model the system, the **Unified Modeling Language (UML)** is used.
 
 ![healthcare_system_vl2.drawio.svg](logical-view/healthcare_system_vl2.drawio.svg)
 
-> explain the representation of two Backoffice API
+In the system there is only one **Backoffice Api**, however it is consumed both internally and externally. The team decided
+to represent it twice to make its use clearer.
 
 ### 1.3. Level 3
 
-> explain why this view will have multiple diagrams
+The third level of the logical view explores each component in detail. The backoffice is a very important component of the
+system, as it communicates outside of it with other applications, so its representation is a bit more complex.
 
 #### 1.3.1 Backoffice Component
 
@@ -91,7 +93,7 @@ To visually model the system, the **Unified Modeling Language (UML)** is used.
 
 ## 2. Process View
 
-Process views will be done in each user story **readme** file.
+Process views and their respective levels will be done in each user story **readme** file.
 
 ---
 
@@ -129,4 +131,5 @@ N/A
 
 ![use-case-diagram.svg](scenario-view/use-case-diagram.svg)
 
-> Justify why having more levels of the scenario view isn't relevant to the project
+Since the high-level use cases already cover the essential functionality, adding more levels would only increase complexity
+without adding significant value, making the system harder to maintain.
