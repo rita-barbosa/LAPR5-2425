@@ -6,7 +6,7 @@ title "US 5.1.6. Process View (Level 1)"
 autonumber
 
 actor "Backoffice User" as BACK
-participant "<<component>>\n System" as SYS
+participant "<<system (C4)>>\n Healthcare System" as SYS
 
 BACK -> SYS : wants to login into account
 activate SYS

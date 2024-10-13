@@ -31,7 +31,7 @@ deactivate EMAILServ
 CONTROL --> ROUTE : return
 deactivate CONTROL
 
-<- ROUTE : return
+[o<- ROUTE : 200 OK
 deactivate ROUTE
 
 @enduml
