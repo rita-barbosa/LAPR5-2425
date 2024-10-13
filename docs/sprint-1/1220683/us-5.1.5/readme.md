@@ -126,7 +126,7 @@ auditability.
 The logical, physical, development and scenario views diagrams are generic for all the use cases of the backoffice component.
 These diagrams can be found in the [generic views diagrams compilation file](../../team-decisions/views/general-views.md).
 
-The process view levels are here represented as they represent a process specific to each user story.
+The process view levels are here presented as they represent a process specific to each user story.
 
 ### Process View
 
@@ -146,7 +146,30 @@ it's diagram was deemed irrelevant.
 
 ### 4.3. Applied Patterns
 
-_// To do //_
+> #### **Repository Pattern**
+>
+>* **Components:** AuthRepository, TokenRepository, PatientRepository, UserRepository
+>
+> The repositories are responsible for data access and retrieval, separating the logic for interacting with the database
+> from the services and other layers. This pattern helps in abstracting the persistence logic.
+
+
+> #### **DTO (Data Transfer Object) Pattern**
+>
+>* **Components:** UserDTO, TokenDTO
+>
+> DTOs are used to transfer data between layers, especially from the controller layer to the service layer or vice versa.
+> The purpose is to carry data in a structured and decoupled way without exposing internal entity representations directly.
+> This pattern does not need to follow business rules.
+
+
+> #### **Facade Pattern**
+>
+>* **Components:** AuthManagementService, TokenManagementService, PatientService, EmailService
+>
+> These services act as a Facade to simplify interaction with lower-level components like repositories. The Controller 
+> interacts with these service facades, keeping the complexity hidden from the higher layers.
+
 
 ### 4.4. Tests
 
@@ -163,4 +186,6 @@ _// To do //_
 
 ## 7. Observations
 
-_// To do //_
+* Although a factory could be implemented to generate/create the tokens, as they hold a similar structure (code, type, 
+expiration date) and the system only checks for validity and type during operations, their logic is simple enough for a 
+"factory method" to exist instead of a dedicated class.
