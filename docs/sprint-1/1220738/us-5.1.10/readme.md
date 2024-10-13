@@ -65,7 +65,22 @@ The predefined amount of time for the data to be deleted permanently and the ext
 
 ### 4.1. Realization
 
-_// To do //_
+The logical, physical, development and scenario views diagrams are generic for all the use cases of the backoffice component.
+These diagrams can be found in the [generic views diagrams compilation file](../../team-decisions/views/general-views.md).
+
+The process view levels are here represented as they represent a process specific to each user story.
+
+#### Process View
+
+The level 2 of this view was considered not to add more information in addition to the level 1.
+
+##### Process View - Level 1
+
+![Process View Level 1](Diagrams\Views\process-view-level-1.svg)
+
+##### Process View - Level 3
+
+![Process View Level 3](Diagrams\Views\process-view-level-3.svg)
 
 ### 4.2. Class Diagram
 
