@@ -6,6 +6,7 @@ autonumber
 
 participant "route:\nListOperationTypesRoute" as ROUTE
 participant "controller:\nListOperationTypesController" as CTRL
+participant "query:\nQueryParametersDTO" as QueryDTO
 participant "service:\n OperationTypeService" as SER
 participant "repository:\nOperationTypeRepository" as REPO
 participant "mapper:\nOperationTypeMapper" as MAPPER
@@ -42,24 +43,28 @@ SER --> CTRL : operationTypeDTOList
 deactivate SER
 
 
-CTRL --> ROUTE : operationTypeDTOList
+CTRL -> CTRL : json(operationTypeDTOList)
+
+CTRL --> ROUTE : json
 deactivate CTRL
 
-<-- ROUTE : operationTypeDTOList
+[o<-- ROUTE : ok(json)
 deactivate ROUTE
 
 |||
 
-[o-> ROUTE : POST(queryParameters)
+[o-> ROUTE : POST(json)
 activate ROUTE
 
-ROUTE -> CTRL : filterOperationTypes(queryParameters)
+ROUTE -> CTRL : filterOperationTypes(json)
 activate CTRL
 
-CTRL -> SER : filterOperationTypes(queryParameters)
+CTRL -> QueryDTO ** : toDTO(json)
+
+CTRL -> SER : filterOperationTypes(queryParametersDTO)
 activate SER
 
-SER -> QUERYServ : generateQueryText(queryParameters)
+SER -> QUERYServ : generateQueryText(queryParametersDTO)
 activate QUERYServ
 
 QUERYServ --> SER : query

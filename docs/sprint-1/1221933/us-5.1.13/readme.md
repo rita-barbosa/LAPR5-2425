@@ -9,7 +9,13 @@
     * [Domain Model](#domain-model)
   * [4. Design](#4-design)
     * [4.1. Realization](#41-realization)
-    * [4.2. Class Diagram](#42-class-diagram)
+      * [Logical View](#logical-view)
+      * [Process View](#process-view)
+        * [Level 1](#level-1)
+        * [Level 2](#level-2)
+        * [Level 3](#level-3)
+      * [Development View](#development-view)
+      * [Physical View](#physical-view)
     * [4.3. Applied Patterns](#43-applied-patterns)
     * [4.4. Tests](#44-tests)
   * [5. Implementation](#5-implementation)
@@ -80,15 +86,67 @@ All the edited data that is changed, will be updated in real-time across the sys
 
 ### 4.1. Realization
 
-_// To do //_
+The logical, physical, development and scenario views diagrams are generic for all the use cases of the backoffice component.
 
-### 4.2. Class Diagram
+This user story is very similar to [US 5.1.9.](../us-5.1.9/readme.md), so were made generic diagrams of the process views
+for each level.
 
-_// To do //_
+In the following diagrams, the listed variables represent the respective concepts:
+
+* **Y** is 13, represents the user story: us-5.1.13.
+* **X** represents Staff.
+
+#### Logical View
+
+The diagrams are available in the [team decision views folder](../../team-decisions/views/general-views.md#1-logical-view).
+
+#### Process View
+
+##### Level 1
+
+![Process View - Level 1](../general-process-view-diagrams/edit-profiles/n1/process-view-nivel1.svg)
+
+##### Level 2
+
+![Process View - Level 2](../general-process-view-diagrams/edit-profiles/n2/process-view-nivel2.svg)
+
+##### Level 3
+
+![Process View - Level 3](../general-process-view-diagrams/edit-profiles/n3/process-view-nivel3.svg)
+
+#### Development View
+
+The diagrams are available in the [team decision views folder](../../team-decisions/views/general-views.md#3-development-view).
+
+#### Physical View
+
+The diagrams are available in the [team decision views folder](../../team-decisions/views/general-views.md#4-physical-view).
 
 ### 4.3. Applied Patterns
 
-_// To do //_
+> #### **Repository Pattern**
+>
+>* **Components:** StaffRepository, TokenRepository
+>
+> The repositories handle data access and retrieval, isolating the database interaction logic from services and other
+> layers. This approach abstracts the persistence logic, promoting separation of concerns.
+
+
+> #### **DTO (Data Transfer Object) Pattern**
+>
+>* **Components:** StaffDTO, TokenDTO
+>
+> DTOs are utilized to transfer data between layers, particularly from the controller layer to the service layer and
+> vice versa. Their main purpose is to convey data in a structured and decoupled manner without revealing the internal
+> representations of entities. Additionally, this pattern is not required to adhere to business rules.
+
+
+> #### **Facade Pattern**
+>
+>* **Components:** StaffService, EmailService, TokenService
+>
+> These services function as a facade, simplifying the interaction with lower-level components such as repositories.
+> The controller communicates with these service facades, concealing the complexity from the upper layers.
 
 ### 4.4. Tests
 

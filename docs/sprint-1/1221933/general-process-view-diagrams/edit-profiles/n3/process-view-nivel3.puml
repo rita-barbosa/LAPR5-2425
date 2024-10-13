@@ -1,8 +1,8 @@
 @startuml
 'https://plantuml.com/sequence-diagram
 
-title "US 5.1.X. Process View (Level 3)"
-autonumber
+title "US 5.1.Y. Process View (Level 3)"
+
 autonumber
 
 participant "route:\nEditXRoute" as ROUTE
@@ -14,6 +14,12 @@ participant "mapper:\nXMapper" as MAP
 participant "dto:\nXDTO" as DTO
 
 participant "persistence:\nPersistence" as PERSISTENCE
+
+participant "service:\nEmailService" as EMAILServ
+participant "service:\nTokenService" as TOKENServ
+participant "token:\nToken" as TOKEN
+participant "dto:\nTokenDTO" as TokenDTO
+participant "repository:\nTokenRepository" as TOKENRepo
 
 
 [o-> ROUTE : GET()
@@ -76,10 +82,41 @@ deactivate REPO
 SER --> CTRL : answer
 deactivate SER
 
+opt when is changed contact information
+
+CTRL -> EMAILServ : sendProfileEditEmail(userDTO)
+activate EMAILServ
+
+EMAILServ -> TOKENServ : generateProfileEditToken()
+activate TOKENServ
+
+TOKENServ -> TOKEN **
+
+TOKENServ -> TOKENRepo : save(token)
+activate TOKENRepo
+
+TOKENRepo --> TOKENServ : return
+deactivate TOKENRepo
+
+TOKENServ -> TokenDTO ** : toDTO(token)
+
+TOKENServ --> EMAILServ : tokenDTO
+deactivate TOKENServ
+
+EMAILServ -> EMAILServ : sendEmail(emailString, tokenDTO, emailTitle, emailBody)
+activate EMAILServ
+
+deactivate EMAILServ
+
+EMAILServ --> CTRL :
+deactivate EMAILServ
+|||
+end opt
+
 CTRL --> ROUTE : answer
 deactivate CTRL
 
-<-- ROUTE : sanswer
+<-- ROUTE : answer
 deactivate ROUTE
 
 @enduml
