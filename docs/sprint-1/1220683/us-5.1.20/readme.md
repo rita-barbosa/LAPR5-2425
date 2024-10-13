@@ -95,6 +95,13 @@ This functionality does not have dependencies.
 > was in place at that time.
 
 
+> **Question:** What is the process for handling the editing of operations, specifically regarding their type and history?
+>
+> **Answer:** When editing an operation, the system needs to maintain the history of the original operation type. The 
+> challenge is that operation names must be unique, and you may want to track versions of operations over time. One approach
+> is to use an auxiliary table to store operation history, ensuring you can track changes and retrieve past data, much 
+> like how VAT changes in invoices are handled.
+
 ## 3. Analysis
 
 
@@ -145,7 +152,30 @@ The process view levels are here represented as they represent a process specifi
 
 ### 4.3. Applied Patterns
 
-_// To do //_
+> #### **Repository Pattern**
+>
+>* **Components:** OperationTypeRepository, StaffRepository
+>
+> The repositories are responsible for data access and retrieval, separating the logic for interacting with the database
+> from the services and other layers. This pattern helps in abstracting the persistence logic.
+
+
+> #### **DTO (Data Transfer Object) Pattern**
+>
+>* **Components:** StaffDTO, OperationTypeDTO
+>
+> DTOs are used to transfer data between layers, especially from the controller layer to the service layer or vice versa.
+> The purpose is to carry data in a structured and decoupled way without exposing internal entity representations directly.
+> This pattern does not need to follow business rules.
+
+
+> #### **Facade Pattern**
+>
+>* **Components:** OperationTypeService, StaffService
+>
+> These services act as a Facade to simplify interaction with lower-level components like repositories. The Controller
+> interacts with these service facades, keeping the complexity hidden from the higher layers.
+
 
 ### 4.4. Tests
 

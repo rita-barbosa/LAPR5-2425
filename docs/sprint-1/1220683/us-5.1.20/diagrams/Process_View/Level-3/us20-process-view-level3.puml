@@ -6,19 +6,16 @@ title US 5.1.20 Process View (Level 3)
 autonumber
 
 participant "<<component>>\n Routing" as ROUTE
-participant "<<component>>\n Controller" as CONTROL
+participant "<<component>>\n OperationTypeController" as CONTROL
 
-participant "<<component>>\n StaffManagementService" as STAFFServ
-participant "<<component>>\n StaffRepo" as STAFFRepo
-participant "<<component>>\n StaffMapper" as STAFFMapper
+participant "<<component>>\n StaffService" as STAFFServ
+participant "<<component>>\n StaffRepository" as STAFFRepo
 participant "<<component>>\n StaffDTO" as STAFFDTO
 
 participant "<<component>>\n OperationTypeDTO" as OPTYDTO
-participant "<<component>>\n OperationTypeManagementService" as OPTYServ
-participant "<<component>>\n OperationTypeRepo" as OPTYRepo
+participant "<<component>>\n OperationTypeService" as OPTYServ
+participant "<<component>>\n OperationTypeRepository" as OPTYRepo
 participant "<<component>>\n OperationType" as OPTY
-
-participant "<<component>>\n Persistence" as PERSISTENCE
 
 
 [o-> ROUTE : GET()
@@ -38,32 +35,27 @@ deactivate STAFFRepo
 
 loop for all staff in the staff list
 
-STAFFServ -> STAFFMapper : toDTO(staff)
-activate STAFFMapper
-
-STAFFMapper -> STAFFDTO ** : staffMember
-
-STAFFMapper --> STAFFServ : staffMemberDTO
-deactivate STAFFMapper
+STAFFServ -> STAFFDTO ** : toDTO(staff)
 end loop
 
 STAFFServ --> CONTROL : staffListDTO
 deactivate STAFFServ
 
+CONTROL -> CONTROL : json(staffListDTO)
 
-CONTROL --> ROUTE : staffListDTO
+CONTROL --> ROUTE : json
 deactivate CONTROL
 
-<- ROUTE : staffListDTO
+[o<-- ROUTE : ok(json)
 deactivate ROUTE
 
 |||
 
 'probably json
-[o-> ROUTE : POST(operationTypeData)
+[o-> ROUTE : POST(json)
 activate ROUTE
 
-ROUTE -> CONTROL : registerOperationType(operationTypeData)
+ROUTE -> CONTROL : registerOperationType(json)
 activate CONTROL
 
 CONTROL -> OPTYDTO ** : toDTO(operationTypeData)
@@ -71,11 +63,18 @@ CONTROL -> OPTYDTO ** : toDTO(operationTypeData)
 CONTROL -> OPTYServ : registerOperationType(operationTypeDTO)
 activate OPTYServ
 
+OPTYServ -> OPTYServ : checkIfOperationExists(operationTypeDTO)
+activate OPTYServ
+
 OPTYServ -> OPTYRepo : findByName(OperationTypeName)
+
 activate OPTYRepo
 
 OPTYRepo --> OPTYServ : return
 deactivate OPTYRepo
+
+OPTYServ --> OPTYServ : false
+deactivate OPTYServ
 
 |||
 
@@ -84,11 +83,7 @@ OPTYServ -> OPTY ** : OperationType(operationTypeDTO)
 OPTYServ -> OPTYRepo : save(operationType)
 activate OPTYRepo
 
-OPTYRepo -> PERSISTENCE : save(operationType)
-activate PERSISTENCE
-deactivate PERSISTENCE
-
-OPTYRepo --> OPTYServ : success
+OPTYRepo --> OPTYServ : return
 deactivate OPTYRepo
 
 OPTYServ --> CONTROL : return
@@ -97,8 +92,14 @@ deactivate OPTYServ
 CONTROL --> ROUTE : return
 deactivate CONTROL
 
-<-- ROUTE : return
+alt success
+[o<-- ROUTE : 200 OK
+
+else failure
+
+[o<-- ROUTE : 400 Bad Request
 deactivate ROUTE
+end alt
 
 
 @enduml
