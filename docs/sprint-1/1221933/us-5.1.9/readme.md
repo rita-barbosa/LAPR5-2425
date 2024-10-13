@@ -63,7 +63,24 @@ This is the first time this user story is being requested.
 > **Question:** In the context of US 5.1.9, second acceptance criteria "Changes to sensitive data (e.g., contact
 > information) trigger an email notification to the patient.", what classifies as "sensitive data".
 >
-> **Answer:** 
+> **Answer:** This is part of the team's responsibilities in the scope of GDPR and the privacy policy you will define.
+
+> **Question:** In this US an admin can edit a user profile. Does the system display a list of all users or the admin
+> searches by ID? Or both?
+>
+> **Answer:** This requirement is for the editing of the user profile. from a usability point of view, the user should
+> be able to start this feature either by searching for a specific user or listing all users and selecting one.
+> note that we are not doing the user interface of the system in this sprint.
+
+> **Question:** Regarding the editing of patient information, is contact information the only sensitive data? Is it the 
+> only data that triggers an email notification?
+>
+> **Answer:** It's part of your responsibilities within the scope of the data protection module and in accordance with
+> the policy you define.
+
+> **Question:**
+>
+> **Answer:**
 
 
 ## 3. Analysis

@@ -20,8 +20,6 @@ ADM -> SYS : selects the patient profile
 
 SYS --> ADM : shows patient information
 
-ADM -> SYS : changes the editable fields
-
 loop until the admin wants
 
 ADM -> SYS : changes the editable fields (name, contact\n information, medical history and allergies)
