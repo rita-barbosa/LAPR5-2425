@@ -14,9 +14,7 @@
     * [3.3. Level 3](#33-level-3)
     * [3.3.1 Backoffice Module](#331-backoffice-module)
   * [4. Physical View](#4-physical-view)
-    * [4.1. Level 1](#41-level-1)
     * [4.2. Level 2](#42-level-2)
-    * [4.3. Level 3](#43-level-3)
   * [5. Scenario View](#5-scenario-view)
     * [5.1. Level 1](#51-level-1)
 <!-- TOC -->
@@ -113,17 +111,12 @@ Process views and their respective levels will be represented in each user story
 
 ## 4. Physical View
 
-### 4.1. Level 1
-
-N/A
+The physical view will only be represented at Level 2, as it focuses on deployable units and infrastructure, while 
+Levels 1 and 3 don't add much to the understanding of the system's physical architecture.
 
 ### 4.2. Level 2
 
 ![pg-vl2.drawio.svg](physical-view/physical-vl2.svg)
-
-### 4.3. Level 3
-
-N/A
 
 ---
 
