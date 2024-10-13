@@ -1,0 +1,90 @@
+@startuml
+title "US 5.1.1. Process View (Level 3)"
+
+participant "<<Route>>\n StaffRoute" as ROUTE
+participant "<<Controller>>\n StaffController" as CONTROL
+
+participant "<<Service>>\n AuthManagementService" as AUTHServ
+
+participant "<<DTO>>\n UserDTO" as UserDTO
+participant "<<Domain>>\n User" as USER
+participant "<<Repository>>\n UserRepository" as AUTHRepo
+participant "<<Service>>\n EmailService" as EMAILServ
+participant "<<Service>>\n TokenManagementService" as TOKENServ
+participant "<<component>>\n Token" as TOKEN
+participant "<<DTO>>\n TokenDTO" as TOKENDTO
+participant "<<Repository>>\n TokenRepo" as TOKENRepo
+participant "<<component>>\n Persistence" as PERSISTENCE
+
+[o-> ROUTE : POST(credentialsData)
+note right : email is staff's\nno password\nright role
+
+Activate ROUTE
+
+ROUTE -> CONTROL : createNewBackofficeUser(credentialsData)
+
+Activate CONTROL
+
+CONTROL -> UserDTO** : toDTO(credentialsData)
+CONTROL -> AUTHServ : checkIfUserExists(userDTO)
+Activate AUTHServ
+
+AUTHServ -> AUTHRepo : existsById(usernameString)
+Activate AUTHRepo
+
+AUTHRepo --> AUTHServ : boolean
+note right : checks if a user\n doesn't exist with\n that email
+Deactivate AUTHRepo
+
+AUTHServ --> CONTROL : boolean
+Deactivate AUTHServ
+
+CONTROL -> AUTHServ : createNewUser(userDTO)
+Activate AUTHServ
+
+AUTHServ -> USER**
+AUTHServ -> AUTHRepo : save(user)
+Activate AUTHRepo
+
+AUTHRepo -> PERSISTENCE
+
+AUTHRepo --> AUTHServ : user
+Deactivate AUTHRepo
+
+AUTHServ --> CONTROL : return
+Deactivate 
+
+CONTROL -> EMAILServ : sendSetupLink(userDTO)
+Activate EMAILServ
+
+EMAILServ -> TOKENServ : generateActivateAccountToken()
+activate TOKENServ
+
+TOKENServ -> TOKEN **
+
+TOKENServ -> TOKENRepo : save(token)
+activate TOKENRepo
+
+TOKENRepo -> PERSISTENCE
+
+TOKENRepo --> TOKENServ : return
+deactivate TOKENRepo
+
+TOKENServ -> TOKENDTO ** : toDTO(token)
+
+TOKENServ --> EMAILServ : tokenDTO
+deactivate TOKENServ
+
+EMAILServ -> EMAILServ : sendEmail(emailString, tokenDTO, emailTitle, emailBody)
+
+EMAILServ --> CONTROL : return
+deactivate EMAILServ
+
+CONTROL --> ROUTE : return
+deactivate CONTROL
+
+Deactivate CONTROL
+<-- ROUTE : success/error
+
+Deactivate ROUTE
+@enduml
