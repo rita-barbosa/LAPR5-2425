@@ -6,7 +6,7 @@ title "US 5.1.5. Process View (Level 3)"
 autonumber
 
 participant "<<component>>\n Routing" as ROUTE
-participant "<<component>>\n Controller" as CONTROL
+participant "<<component>>\n PatientController" as CONTROL
 
 participant "<<component>>\n AuthManagementService" as AUTHServ
 
