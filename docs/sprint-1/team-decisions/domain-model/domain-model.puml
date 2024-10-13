@@ -16,6 +16,7 @@ class Slot <<(V,#FF8B40)value object>> {}
 class Date <<(V,#FF8B40)value object>> {}
 class TimeInterval <<(V,#FF8B40)value object>> {}
 class Function <<(V,#FF8B40)value object>>  {}
+class Status <<(V,#FF8B40)value object>> {}
 
 package "<<aggregate>> Patient" {
     entity Patient <<entity>> <<root>> {}
@@ -41,7 +42,6 @@ package "<<aggregate OperationRequest>>"{
     entity OperationRequest <<entity>> <<root>> {}
     class OperationRequestId <<(V,#FF8B40)value object>> <<identifier>> {}
     class Priority <<(V,#FF8B40)value object>> {}
-    class Status <<(V,#FF8B40)value object>>  {}
     class DateOfRequest <<(V,#FF8B40)value object>>  {}
     class DeadlineDate <<(V,#FF8B40)value object>>  {}
 
@@ -88,8 +88,18 @@ package "<<aggregate>> User" {
     class Role <<(V,#FF8B40) value object>>
 }
 
+package "<<aggregate>> Log" {
+    entity Log <<entity>> <<root>>
+    class Change <<(V,#FF8B40) value object>>
+}
+
+Log ---> "1" Date
+Log ---> "1" Change
+Log ---> "1" User
+
 User ---> "0..1" Patient
 User -> "1" Staff
+User -> "1" Status
 User --> Username
 User ----> Email
 User --> Role
@@ -137,7 +147,7 @@ Appointment --> "1" AppointmentStatus
 Appointment --> "1" AppointmentType
 Appointment --> "1..*" Staff
 
-
+Patient -> "1" Status
 Patient -> "1" Name
 Patient --> "1" DateBirth
 Patient --> "1" Gender
@@ -150,7 +160,7 @@ ContactInfo --> "1" Email
 ContactInfo --> "1" Phone
 EmergencyContact --> "1" Phone
 
-
+Staff --> "1" Status
 Staff --> "1" Name
 Staff --> "1" Function
 Staff ---> "1" ContactInfo
