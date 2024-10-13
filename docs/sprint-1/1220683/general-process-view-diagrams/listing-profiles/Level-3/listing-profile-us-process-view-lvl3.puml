@@ -6,11 +6,12 @@ title "US 5.1.15. Process View (Level 3)"
 autonumber
 
 participant "<<component>>\n Routing" as ROUTE
-participant "<<component>>\n Controller" as CONTROL
+participant "<<component>>\n XProfileListingController" as CONTROL
 
-participant "<<component>>\n XManagementService" as XServ
-participant "<<component>>\n XRepo" as XRepo
-participant "<<component>>\n XMapper" as XMapper
+participant "<<component>>\n QueryParametersDTO" as QueryDTO
+
+participant "<<component>>\n XService" as XServ
+participant "<<component>>\n XRepository" as XRepo
 participant "<<component>>\n XDTO" as XDTO
 
 participant "<<component>>\n DynamicQueryGenerationService" as QUERYServ
@@ -32,36 +33,39 @@ XRepo --> XServ : XprofilesList
 deactivate XRepo
 
     loop for all the profiles in the list
-        XServ -> XMapper : toDTO(Xprofile)
-        activate XMapper
+        XServ -> XDTO ** : toDTO(Xprofile)
 
-        XMapper -> XDTO **
-
-        XMapper --> XServ : XprofileDTO
-        deactivate XMapper
     end loop
 
 XServ --> CONTROL : XprofileDTOList
 deactivate XServ
 
-CONTROL --> ROUTE : XprofileDTOList
+CONTROL -> CONTROL : json(XprofileDTOList)
+
+CONTROL --> ROUTE : json
 deactivate CONTROL
 
-<-- ROUTE : XprofileDTOList
+[o<-- ROUTE : ok(json)
 deactivate ROUTE
 
 |||
 
-[o-> ROUTE : POST(queryParameters)
+[o-> ROUTE : POST(json)
 activate ROUTE
 
-ROUTE -> CONTROL : filterXProfiles(queryParameters)
+ROUTE -> CONTROL : filterXProfiles(json)
+note left
+json contains the
+query parameters
+end note
 activate CONTROL
 
-CONTROL -> XServ : filterXProfiles(queryParameters)
+CONTROL -> QueryDTO ** : toDTO(json)
+
+CONTROL -> XServ : filterXProfiles(queryParametersDTO)
 activate XServ
 
-XServ -> QUERYServ : generateQueryText(queryParameters)
+XServ -> QUERYServ : generateQueryText(queryParametersDTO)
 activate QUERYServ
 
 QUERYServ --> XServ : query
@@ -74,33 +78,32 @@ XRepo --> XServ : XprofilesList
 deactivate XRepo
 
     loop for all the profiles in the list
-        XServ -> XMapper : toDTO(Xprofile)
-        activate XMapper
+        XServ -> XDTO ** : toDTO(Xprofile)
 
-        XMapper -> XDTO **
-
-        XMapper --> XServ : XprofileDTO
-        deactivate XMapper
     end loop
 
-XServ --> CONTROL : filterXProfilesDTOList
+XServ --> CONTROL : filteredXProfilesDTOList
 deactivate XServ
 
-CONTROL --> ROUTE : filterXProfilesDTOList
+CONTROL -> CONTROL : json(XprofileDTOList)
+
+CONTROL --> ROUTE : json
 deactivate CONTROL
 
-<-- ROUTE : filterXProfilesDTOList
+[o<-- ROUTE : ok(json)
 deactivate ROUTE
 
 |||
 
 alt edit X profile
 
-    [o-> ROUTE : PUT(updatedProfileData)
+    [o-> ROUTE : PUT(json)
     activate ROUTE
 
-    ROUTE -> CONTROL : updateXProfile(updatedProfileData)
+    ROUTE -> CONTROL : updateXProfile(json)
     activate CONTROL
+
+    CONTROL -> XDTO ** : toDto(json)
 
     ref over CONTROL
 
@@ -112,10 +115,12 @@ alt edit X profile
 
 else
 
-    [o-> ROUTE : DELETE(XProfileData)
+    [o-> ROUTE : DELETE(json)
 
-    ROUTE -> CONTROL : deleteXProfile(XProfileData)
+    ROUTE -> CONTROL : deleteXProfile(json)
     activate CONTROL
+
+    CONTROL -> XDTO ** : toDto(json)
 
     ref over CONTROL
 
@@ -127,8 +132,15 @@ else
 
 end alt
 
-<-- ROUTE : success/error
+
+alt success
+[o<-- ROUTE : 200 OK
+
+else failure
+
+[o<-- ROUTE : 400 Bad Request
 deactivate ROUTE
+end alt
 
 
 @enduml

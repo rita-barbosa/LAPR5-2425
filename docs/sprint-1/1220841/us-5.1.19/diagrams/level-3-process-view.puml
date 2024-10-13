@@ -38,7 +38,7 @@ deactivate REPO
         SVC -> MAP : toDTO(operationRequest)
         activate MAP
 
-        MAP -> DTO **
+        MAP -> DTO ** : create()
 
         MAP --> SVC : operationRequestDTO
         deactivate MAP

@@ -113,7 +113,30 @@ In the following diagrams, the listed variables represent the respective concept
 
 ### 4.3. Applied Patterns
 
-_// To do //_
+> #### **Repository Pattern**
+>
+>* **Components:** PatientRepository
+>
+> The repositories are responsible for data access and retrieval, separating the logic for interacting with the database
+> from the services and other layers. This pattern helps in abstracting the persistence logic.
+
+
+> #### **DTO (Data Transfer Object) Pattern**
+>
+>* **Components:** PatientDTO, QueryParametersDTO
+>
+> DTOs are used to transfer data between layers, especially from the controller layer to the service layer or vice versa.
+> The purpose is to carry data in a structured and decoupled way without exposing internal entity representations directly.
+> This pattern does not need to follow business rules.
+
+
+> #### **Facade Pattern**
+>
+>* **Components:** DynamicQueryGenerationService, PatientService
+>
+> These services act as a Facade to simplify interaction with lower-level components like repositories. The Controller
+> interacts with these service facades, keeping the complexity hidden from the higher layers.
+
 
 ### 4.4. Tests
 

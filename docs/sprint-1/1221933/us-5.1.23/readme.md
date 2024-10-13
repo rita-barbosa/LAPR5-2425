@@ -38,6 +38,8 @@ and estimated duration.
 **Dependencies/References:**
 
 **5.1.20:** There must exist operation types, so they can be listed and removed.
+**5.1.21:** The functionality to edit operation types.
+**5.1.22:** The functionality to deactivate operation types.
 
 **Client Clarifications:**
 
@@ -57,7 +59,7 @@ and estimated duration.
 > **Question:** Hello Mr. Client. The filters are And or OR. For example, if I filter for a Patient named John and
 > Age 24, do you want every John who is 24 years old or every Patient who is called John or is 24 years old
 >
-> **Answer:**
+> **Answer:** If more than one search/filter parameter is used, the combination of filters should be considered as AND.
 
 
 ## 3. Analysis
