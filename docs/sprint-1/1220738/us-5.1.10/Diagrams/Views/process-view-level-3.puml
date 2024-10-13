@@ -1,0 +1,143 @@
+@startuml
+title "US 5.1.10. Process View (Level 3)"
+
+participant "<<Route>>\n PatientRoute" as ROUTE
+participant "<<Controller>>\n PatientController" as CONTROL
+participant "<<Service>>\n PatientService" as AUTHServ
+participant "<<Repository>>\n PatientRepository" as PATIENTRepo
+participant "<<DTO>>\n PatientListDTO" as PatientListDTO
+participant "<<Domain>>\n Patient" as PATIENT
+participant "<<DTO>>\n PatientDTO" as PatientDTO
+participant "<<EventWatcher>>\n DeletePatientProfileWatcher" as WATCHER
+participant "<<Action>>\n DeletePatientProfileAction" as ACTION
+participant "<<component>>\n Persistence" as PERSISTENCE
+
+[o-> ROUTE : GET(json)
+note right : getting the \nlist of profiles
+
+Activate ROUTE
+
+ROUTE -> CONTROL : getListOfProfiles(json)
+
+Activate CONTROL
+
+CONTROL -> AUTHServ : getListOfProfiles()
+Activate AUTHServ
+
+AUTHServ -> PATIENTRepo : findAll() 
+Activate PATIENTRepo
+
+PATIENTRepo --> AUTHServ : listOfProfiles
+Deactivate PATIENTRepo
+
+
+AUTHServ -> PatientListDTO**
+loop for every profile in listOfProfiles
+AUTHServ -> PATIENT : toDTO()
+activate PATIENT
+PATIENT --> AUTHServ : profileDTO
+deactivate PATIENT
+AUTHServ -> PatientListDTO : listAdd(profileDTO)
+activate PatientListDTO
+PatientListDTO --> AUTHServ : return
+deactivate PatientListDTO
+end
+
+AUTHServ --> CONTROL : patientListDTO
+Deactivate AUTHServ
+
+CONTROL -> CONTROL : ok(patientListDTO)
+
+CONTROL --> ROUTE : json
+Deactivate CONTROL
+<-- ROUTE : json
+
+Deactivate ROUTE
+
+note right : after choosing\n a profile
+
+[o-> ROUTE : POST(json)
+note right : profile id
+
+Activate ROUTE
+
+ROUTE -> CONTROL : checkProfileByID(json)
+
+Activate CONTROL
+
+CONTROL -> PatientDTO** : toDTO(json)
+
+CONTROL -> AUTHServ : checkProfileByID(patientID)
+Activate AUTHServ
+
+AUTHServ -> PATIENTRepo : existsById(patientID)
+activate PATIENTRepo
+PATIENTRepo --> AUTHServ : true
+deactivate PATIENTRepo
+
+AUTHServ --> CONTROL : true
+deactivate AUTHServ
+
+CONTROL --> CONTROL : ok(true)
+CONTROL --> ROUTE : json
+deactivate CONTROL
+
+<-- ROUTE : json
+deactivate ROUTE
+
+[o-> ROUTE : POST(json)
+note right : after getting\n the confirmation
+
+Activate ROUTE
+
+ROUTE -> CONTROL : deletePatientProfile(json)
+
+Activate CONTROL
+
+CONTROL -> PatientDTO** : toDTO(json)
+
+CONTROL -> AUTHServ : deleteProfileByID(patientID)
+Activate AUTHServ
+
+AUTHServ -> PATIENTRepo : findByID(patientID)
+activate PATIENTRepo
+PATIENTRepo --> AUTHServ : patientProfile
+deactivate PATIENTRepo
+
+AUTHServ -> PATIENT : changeStatusForDeletion()
+activate PATIENT
+deactivate PATIENT
+
+AUTHServ -> PATIENTRepo : save(patient)
+activate PATIENTRepo
+PATIENTRepo -> PERSISTENCE 
+PATIENTRepo --> AUTHServ : return
+
+PATIENTRepo -> WATCHER : watcher notification
+activate WATCHER
+
+WATCHER -> ACTION**
+activate ACTION
+deactivate WATCHER
+deactivate PATIENTRepo
+
+AUTHServ --> CONTROL : return
+deactivate AUTHServ
+
+CONTROL --> CONTROL : ok(return)
+CONTROL --> ROUTE : json
+deactivate CONTROL
+
+<-- ROUTE : json
+deactivate ROUTE
+
+== After the GDPR time ==
+
+ACTION -> PATIENTRepo : delete(patient)
+activate PATIENTRepo
+PATIENTRepo -> PERSISTENCE
+PATIENTRepo --> ACTION : return
+deactivate PATIENTRepo
+deactivate ACTION
+
+@enduml
