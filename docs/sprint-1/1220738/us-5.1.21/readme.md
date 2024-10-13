@@ -60,8 +60,9 @@ This functionality talks about the updating or editting of an existing operation
 
 It is important to note that for the sake of this project, **editable data of the operation type is:** 
 - **Operation Type's Name**
-- **Required Staff by Specialization**
-- **Estimated Duration**
+- **Required Staff and their Specialization**
+- **Estimated Total Duration**
+- **Estimated Phases Duration**
 
 As explained by the acceptance criterias, **the changes only affect future requests** and all data relevant to old operations is still kept while the **new requests have updated information.**
 
@@ -73,7 +74,19 @@ As explained by the acceptance criterias, **the changes only affect future reque
 
 ### 4.1. Realization
 
-_// To do //_
+The logical, physical, development and scenario views diagrams are generic for all the use cases of the backoffice component.
+These diagrams can be found in the [generic views diagrams compilation file](../../team-decisions/views/general-views.md).
+
+The process view levels are here represented as they represent a process specific to each user story.
+
+#### Process View
+
+The level 1 and 2 of this view was considered not to add more information in addition to the SSD shown above.
+However level 3 is shown below.
+
+##### Process View - Level 3
+
+![Process View Level 3](Diagrams\Views\process-view-level-3.svg)
 
 ### 4.2. Class Diagram
 
