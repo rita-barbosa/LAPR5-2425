@@ -82,6 +82,8 @@ deactivate REPO
 SER --> CTRL : answer
 deactivate SER
 
+opt when is changed contact information
+
 CTRL -> EMAILServ : sendProfileEditEmail(userDTO)
 activate EMAILServ
 
@@ -93,7 +95,6 @@ TOKENServ -> TOKEN **
 TOKENServ -> TOKENRepo : save(token)
 activate TOKENRepo
 
-
 TOKENRepo --> TOKENServ : return
 deactivate TOKENRepo
 
@@ -104,10 +105,13 @@ deactivate TOKENServ
 
 EMAILServ -> EMAILServ : sendEmail(emailString, tokenDTO, emailTitle, emailBody)
 activate EMAILServ
+
 deactivate EMAILServ
 
 EMAILServ --> CTRL :
 deactivate EMAILServ
+|||
+end opt
 
 CTRL --> ROUTE : answer
 deactivate CTRL
