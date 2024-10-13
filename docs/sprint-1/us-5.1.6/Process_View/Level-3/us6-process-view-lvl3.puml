@@ -42,8 +42,13 @@ deactivate AUTHServ
 CONTROL --> ROUTE : return
 deactivate CONTROL
 
-<-- ROUTE : success/error
+alt success
+[o<-- ROUTE : 200 OK
 
+else failure
+
+[o<-- ROUTE : 400 Bad Request
 deactivate ROUTE
+end alt
 
 @enduml
