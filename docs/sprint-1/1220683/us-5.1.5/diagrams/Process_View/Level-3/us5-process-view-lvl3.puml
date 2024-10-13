@@ -16,7 +16,7 @@ participant "<<component>>\n UserRepository" as AUTHRepo
 
 participant "<<component>>\n EmailService" as EMAILServ
 
-participant "<<component>>\n TokenManagementService" as TOKENServ
+participant "<<component>>\n TokenService" as TOKENServ
 participant "<<component>>\n Token" as TOKEN
 participant "<<component>>\n TokenDTO" as TokenDTO
 participant "<<component>>\n TokenRepository" as TOKENRepo
@@ -88,9 +88,14 @@ deactivate EMAILServ
 CONTROL --> ROUTE : return
 deactivate CONTROL
 
-<-- ROUTE : success/error
-deactivate ROUTE
+alt success
+[o<-- ROUTE : 200 OK
 
+else failure
+
+[o<-- ROUTE : 400 Bad Request
+deactivate ROUTE
+end alt
 
 |||
 
@@ -167,6 +172,13 @@ deactivate AUTHServ
 CONTROL --> ROUTE : return
 deactivate CONTROL
 
-<-- ROUTE : success/error
+alt success
+[o<-- ROUTE : 200 OK
+
+else failure
+
+[o<-- ROUTE : 400 Bad Request
+deactivate ROUTE
+end alt
 
 @enduml

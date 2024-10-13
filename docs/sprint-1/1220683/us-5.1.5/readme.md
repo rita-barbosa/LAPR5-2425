@@ -165,7 +165,7 @@ it's diagram was deemed irrelevant.
 
 > #### **Facade Pattern**
 >
->* **Components:** AuthenticationService, TokenManagementService, PatientService, EmailService
+>* **Components:** AuthenticationService, TokenService, PatientService, EmailService
 >
 > These services act as a Facade to simplify interaction with lower-level components like repositories. The Controller 
 > interacts with these service facades, keeping the complexity hidden from the higher layers.
