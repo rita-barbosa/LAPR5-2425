@@ -78,6 +78,40 @@
         <mxCell id="-83bCuN38Bdld3bD9hPa-23" value="" style="ellipse;whiteSpace=wrap;html=1;fillColor=#1ba1e2;fontColor=#ffffff;strokeColor=#006EAF;" parent="-83bCuN38Bdld3bD9hPa-28" vertex="1">
           <mxGeometry x="140" y="40" width="20" height="20" as="geometry" />
         </mxCell>
+        <mxCell id="dj6CJQSSYTL0QDnudYro-1" value="" style="group;rotation=-180;" parent="1" vertex="1" connectable="0">
+          <mxGeometry x="360" y="415" width="20" height="75" as="geometry" />
+        </mxCell>
+        <mxCell id="dj6CJQSSYTL0QDnudYro-3" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;endArrow=none;endFill=0;fontColor=#000000;strokeColor=#000000;startArrow=halfCircle;startFill=0;" parent="dj6CJQSSYTL0QDnudYro-1" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="55" y="55" as="sourcePoint" />
+            <mxPoint x="55" y="10" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="dj6CJQSSYTL0QDnudYro-12" value="Public Authorization API" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];labelBackgroundColor=none;fontStyle=1" parent="dj6CJQSSYTL0QDnudYro-3" vertex="1" connectable="0">
+          <mxGeometry x="-0.0933" y="-1" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="dj6CJQSSYTL0QDnudYro-5" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#1ba1e2;fontColor=#ffffff;strokeColor=#006EAF;rotation=-180;" parent="dj6CJQSSYTL0QDnudYro-1" vertex="1">
+          <mxGeometry x="50" width="10" height="10" as="geometry" />
+        </mxCell>
+        <mxCell id="dj6CJQSSYTL0QDnudYro-6" value="" style="group;rotation=-180;" parent="1" vertex="1" connectable="0">
+          <mxGeometry x="247" y="415" width="20" height="75" as="geometry" />
+        </mxCell>
+        <mxCell id="dj6CJQSSYTL0QDnudYro-8" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;endArrow=none;endFill=0;fontColor=#000000;strokeColor=#000000;startArrow=halfCircle;startFill=0;" parent="dj6CJQSSYTL0QDnudYro-6" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="10" y="55" as="sourcePoint" />
+            <mxPoint x="10" y="10" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="dj6CJQSSYTL0QDnudYro-11" value="Public Email API" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];labelBackgroundColor=none;fontStyle=1" parent="dj6CJQSSYTL0QDnudYro-8" vertex="1" connectable="0">
+          <mxGeometry x="-0.146" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="dj6CJQSSYTL0QDnudYro-10" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#1ba1e2;fontColor=#ffffff;strokeColor=#006EAF;rotation=-180;" parent="dj6CJQSSYTL0QDnudYro-6" vertex="1">
+          <mxGeometry x="5" width="10" height="10" as="geometry" />
+        </mxCell>
       </root>
     </mxGraphModel>
   </diagram>
