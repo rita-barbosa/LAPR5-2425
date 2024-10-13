@@ -1,0 +1,140 @@
+@startuml
+title "US 5.1.18. Process View (Level 3)"
+
+participant "<<Route>>\n OperationRequestRoute" as ROUTE
+participant "<<Controller>>\n OperationRequestController" as CONTROL
+participant "<<Service>>\n OperationRequestService" as SERV
+participant "<<Repository>>\n OperationRequestRepository" as REPO
+participant "<<Service>>\n PatientService" as PSERV
+participant "<<Repository>>\n PatientRepository" as PREPO
+participant "<<DTO>>\n OperationRequestListDTO" as LISTDTO
+participant "<<Domain>>\n Patient" as PAT
+participant "<<Domain>>\n OperationRequest" as OPRES
+participant "<<DTO>>\n OperationRequestDTO" as OPRESDTO
+participant "<<component>>\n Persistence" as PERSISTENCE
+
+[o-> ROUTE : GET(json)
+note right : getting the \nlist of \nall requests
+
+Activate ROUTE
+
+ROUTE -> CONTROL : getListOfRequests(json)
+
+Activate CONTROL
+
+CONTROL -> SERV : getListOfRequests()
+Activate SERV
+
+SERV -> REPO : findAll() 
+Activate REPO
+
+REPO --> SERV : listOfProfiles
+Deactivate REPO
+
+
+SERV -> LISTDTO**
+loop for every profile in listOfProfiles
+SERV -> OPRES : toDTO()
+activate OPRES
+OPRES --> SERV : profileDTO
+deactivate OPRES
+SERV -> LISTDTO : listAdd(profileDTO)
+activate LISTDTO
+LISTDTO --> SERV : return
+deactivate LISTDTO
+end
+
+SERV --> CONTROL : opRequestListDTO
+Deactivate SERV
+
+CONTROL -> CONTROL : ok(opRequestListDTO)
+
+CONTROL --> ROUTE : json
+Deactivate CONTROL
+<-- ROUTE : json
+
+Deactivate ROUTE
+
+note right : after choosing\n a request
+
+[o-> ROUTE : POST(json)
+note right : op. request id
+
+Activate ROUTE
+
+ROUTE -> CONTROL : checkRequestByID(json)
+
+Activate CONTROL
+
+CONTROL -> OPRESDTO** : toDTO(json)
+
+CONTROL -> SERV : checkRequestByID(requestID)
+Activate SERV
+
+SERV -> REPO : existsById(requestID)
+activate REPO
+REPO --> SERV : true
+deactivate REPO
+
+SERV --> CONTROL : true
+deactivate SERV
+
+CONTROL --> CONTROL : ok(true)
+CONTROL --> ROUTE : json
+deactivate CONTROL
+
+<-- ROUTE : json
+deactivate ROUTE
+
+[o-> ROUTE : POST(json)
+note right : after getting\n the confirmation
+
+Activate ROUTE
+
+ROUTE -> CONTROL : deleteRequest(json)
+
+Activate CONTROL
+
+CONTROL -> OPRESDTO** : toDTO(json)
+
+CONTROL -> SERV : deleteRequestByID(requestID)
+Activate SERV
+
+SERV -> REPO : findByID(requestID)
+activate REPO
+REPO --> SERV : operationRequest
+deactivate REPO
+
+SERV -> REPO : delete(operationRequest)
+activate REPO
+REPO -> PERSISTENCE 
+REPO --> SERV : return
+deactivate REPO
+
+SERV -> PSERV : deleteRequestFromProfile(patientID, requestID)
+activate PSERV
+
+PSERV -> PREPO : findById(patientID)
+activate PREPO
+PREPO --> PSERV : patientProfile
+deactivate PREPO
+
+PSERV -> PAT : deleteRequest(requestID)
+activate PAT
+deactivate PAT
+
+
+PSERV --> SERV : return
+deactivate PSERV
+SERV --> CONTROL : return
+deactivate SERV
+
+CONTROL --> CONTROL : ok(sucess)
+CONTROL --> ROUTE : json
+deactivate CONTROL
+
+<-- ROUTE : json
+deactivate ROUTE
+
+
+@enduml
