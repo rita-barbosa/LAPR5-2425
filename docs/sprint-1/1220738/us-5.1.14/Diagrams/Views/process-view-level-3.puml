@@ -1,0 +1,92 @@
+@startuml
+title "US 5.1.14. Process View (Level 3)"
+
+participant "<<Route>>\n StaffRoute" as ROUTE
+participant "<<Controller>>\n StaffController" as CONTROL
+participant "<<Service>>\n StaffService" as STAFFSERV
+participant "<<Repository>>\n StaffRepository" as STAFFREPO
+participant "<<DTO>>\n ActiveStaffListDTO" as ACTIVESTAFFLISTDTO
+participant "<<Domain>>\n Staff" as STAFF
+participant "<<DTO>>\n StaffDTO" as STAFFDTO
+participant "<<component>>\n Persistence" as PERSISTENCE
+participant "<<component>>\n Planning" as PLAN
+
+[o-> ROUTE : GET(JSON)
+note right : getting the \nlist of profiles
+
+Activate ROUTE
+
+ROUTE -> CONTROL : getActiveRoster(JSON)
+
+Activate CONTROL
+
+CONTROL -> STAFFSERV : getActiveRoster()
+ACTIVATE STAFFSERV
+
+STAFFSERV -> STAFFREPO : findAllActiveRoster()
+ACTIVATE STAFFREPO 
+STAFFREPO --> STAFFSERV : activeRoster
+DEACTIVATE STAFFREPO
+
+STAFFSERV -> ACTIVESTAFFLISTDTO**
+
+loop For every profile in activeRoster
+STAFFSERV -> STAFF : toDTO()
+activate STAFF
+STAFF --> STAFFSERV : staffDTO
+deactivate STAFF
+
+STAFFSERV -> ACTIVESTAFFLISTDTO : listAdd(staffDTO)
+ACTIVATE ACTIVESTAFFLISTDTO
+DEACTIVATE ACTIVESTAFFLISTDTO
+end
+
+STAFFSERV --> CONTROL : activeStaffListDTO
+DEACTIVATE STAFFSERV
+
+CONTROL -> CONTROL : ok(activeStaffListDTO)
+CONTROL --> ROUTE : JSON
+DEACTIVATE CONTROL
+
+<-- ROUTE : JSON
+deactivate ROUTE
+
+[o-> ROUTE : POST(JSON)
+note right : after choosing\n a profile
+ACTIVATE ROUTE
+
+ROUTE -> CONTROL : deactivateStaffProfile(JSON)
+ACTIVATE CONTROL
+
+CONTROL -> STAFFDTO** : toDTO(JSON)
+
+CONTROL -> STAFFSERV : deactivateStaffProfile(profileID)
+ACTIVATE STAFFSERV
+
+STAFFSERV -> STAFFREPO : findById(profileID)
+ACTIVATE STAFFREPO
+STAFFREPO --> STAFFSERV : staffProfile
+DEACTIVATE STAFFREPO
+
+STAFFSERV -> STAFF : deactivateProfile()
+ACTIVATE STAFF
+DEACTIVATE STAFF
+
+STAFFSERV -> STAFFREPO : save(staffProfile)
+ACTIVATE STAFFREPO
+STAFFREPO -> PERSISTENCE
+STAFFREPO --> STAFFSERV : return
+DEACTIVATE STAFFREPO
+
+STAFFSERV --> CONTROL : return
+DEACTIVATE STAFFSERV
+
+CONTROL -> CONTROL : ok(sucess message)
+CONTROL --> ROUTE : JSON
+DEACTIVATE CONTROL
+
+<-- ROUTE : JSON
+note right : The Planning module\n update will be handled\n in the next sprint
+
+
+@enduml
