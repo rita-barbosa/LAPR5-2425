@@ -1,0 +1,98 @@
+@startuml
+title "US 5.1.1. Process View (Level 3)"
+
+participant "<<Route>>\n StaffRoute" as ROUTE
+participant "<<Controller>>\n StaffController" as CONTROL
+
+participant "<<Service>>\n AuthManagementService" as AUTHServ
+
+
+participant "<<DTO>>\n UserDTO" as UserDTO
+participant "<<Domain>>\n User" as USER
+participant "<<Repository>>\n UserRepository" as AUTHRepo
+
+participant "<<Service>>\n TokenManagementService" as TOKENServ
+participant "<<component>>\n Token" as TOKEN
+participant "<<DTO>>\n TokenDTO" as TOKENDTO
+participant "<<Repository>>\n TokenRepo" as TOKENRepo
+participant "<<Service>>\n EmailService" as EMAILServ
+
+participant "<<component>>\n Persistence" as PERSISTENCE
+
+[o-> ROUTE : GET(credentialsData, tokenData)
+note left
+After clicking on the
+one time link
+end note
+activate ROUTE
+
+ROUTE -> CONTROL : activateAccount(credentialsData, tokenData)
+activate CONTROL
+
+CONTROL -> TOKENDTO ** : toDTO(tokenData)
+
+CONTROL -> TOKENServ : validateToken(tokenDTO)
+activate TOKENServ
+
+TOKENServ -> TOKENRepo : findByID(tokenDtoID)
+activate TOKENRepo
+
+TOKENRepo --> TOKENServ : token
+deactivate TOKENRepo
+
+TOKENServ -> TOKENServ : checkTokenValidityUsage(token)
+TOKENServ -> TOKEN : updateValidity()
+Activate TOKEN
+TOKEN --> TOKENServ : return
+Deactivate TOKEN
+
+TOKENServ -> TOKENRepo : save(token)
+Activate TOKENRepo
+TOKENRepo -> PERSISTENCE 
+TOKENRepo --> TOKENServ : return
+Deactivate TOKENRepo
+
+TOKENServ --> CONTROL : true
+deactivate TOKENServ
+
+CONTROL -> UserDTO ** : toDTO(credentialsData)
+
+CONTROL -> AUTHServ : updateAccountPassword(userDTO)
+activate AUTHServ
+
+AUTHServ -> AUTHRepo : findById(usernameString)
+activate AUTHRepo
+AUTHRepo --> AUTHServ : user
+deactivate AUTHRepo
+
+AUTHServ -> USER : updatePassword(passwordString)
+activate USER
+USER --> AUTHServ : return
+deactivate USER
+
+AUTHServ -> USER : activateAccount()
+activate USER
+USER --> AUTHServ : return
+deactivate USER
+
+AUTHServ -> AUTHRepo : save(user)
+Activate AUTHRepo
+AUTHRepo -> PERSISTENCE 
+AUTHRepo --> AUTHServ : return
+Deactivate AUTHRepo
+
+AUTHServ --> CONTROL : return
+deactivate AUTHServ
+
+CONTROL -> EMAILServ : sendSucessEmail(userDTO)
+activate EMAILServ
+
+EMAILServ -> EMAILServ : sendEmail(emailString, tokenDTO, emailTitle, emailBody)
+EMAILServ --> CONTROL : return
+deactivate EMAILServ
+
+CONTROL --> ROUTE : return
+deactivate CONTROL
+
+<-- ROUTE : success/error
+@enduml
