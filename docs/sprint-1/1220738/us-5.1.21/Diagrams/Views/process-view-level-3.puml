@@ -1,0 +1,96 @@
+@startuml
+title "US 5.1.21. Process View (Level 3)"
+
+participant "<<Route>>\n OperationTypeRoute" as ROUTE
+participant "<<Controller>>\n OperationTypeController" as CONTROL
+participant "<<Service>>\n OperationTypeService" as SERV
+participant "<<Repository>>\n OperationTypeRepository" as REPO
+participant "<<DTO>>\n OperationTypeListDTO" as LISTDTO
+participant "<<Domain>>\n OperationType" as OPTYP
+participant "<<DTO>>\n OperationTypeDTO" as OPRESDTO
+participant "<<component>>\n Persistence" as PERSISTENCE
+
+[o-> ROUTE : GET(json)
+note right : getting the \nlist of \nall types
+
+Activate ROUTE
+
+ROUTE -> CONTROL : getListOfOpTypes(json)
+
+Activate CONTROL
+
+CONTROL -> SERV : getListOfOpTypes()
+Activate SERV
+
+SERV -> REPO : findAll() 
+Activate REPO
+
+REPO --> SERV : listOfOpTypes
+Deactivate REPO
+
+SERV -> LISTDTO**
+loop for every profile in listOfOpTypes
+SERV -> OPTYP : toDTO()
+activate OPTYP
+OPTYP --> SERV : opTypesDTO
+deactivate OPTYP
+SERV -> LISTDTO : listAdd(opTypesDTO)
+activate LISTDTO
+LISTDTO --> SERV : return
+deactivate LISTDTO
+end
+
+SERV --> CONTROL : opTypesListDTO
+Deactivate SERV
+
+CONTROL -> CONTROL : ok(opTypesListDTO)
+
+CONTROL --> ROUTE : json
+Deactivate CONTROL
+<-- ROUTE : json
+
+Deactivate ROUTE
+
+note right : after choosing\n a request
+
+[o-> ROUTE : POST(json)
+note right : after getting\n the confirmation
+
+Activate ROUTE
+
+ROUTE -> CONTROL : editOpType(json)
+
+Activate CONTROL
+
+CONTROL -> OPRESDTO** : toDTO(json)
+
+CONTROL -> SERV : editOpTypeByID(opTypeID)
+Activate SERV
+
+SERV -> REPO : findByID(opTypeID)
+activate REPO
+REPO --> SERV : operationType
+deactivate REPO
+
+loop for every attribute in operationTypeDTO
+SERV -> SERV : operationType.attribute = operationTypeDTO.attribute
+end
+
+SERV -> REPO : save(operationType)
+activate REPO
+REPO -> PERSISTENCE 
+REPO --> SERV : return
+deactivate REPO
+
+SERV --> CONTROL : return
+deactivate SERV
+
+CONTROL --> CONTROL : ok(sucess)
+CONTROL --> ROUTE : json
+deactivate CONTROL
+
+<-- ROUTE : json
+deactivate ROUTE
+
+
+@enduml
