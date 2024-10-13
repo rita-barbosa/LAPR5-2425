@@ -24,7 +24,8 @@ This is the first time this user story is worked on.
 
 ## 2. Requirements
 
-**US 5.1.6:** As a (non-authenticated) Backoffice User, I want to log in to the system using my credentials, so that I can access the backoffice features according to my assigned role.
+**US 5.1.6:** As a (non-authenticated) Backoffice User, I want to log in to the system using my credentials, so that I 
+can access the backoffice features according to my assigned role.
 
 **Acceptance Criteria:**
 
@@ -48,11 +49,22 @@ This user story is related to US-5.1.1, as the backoffice user must be registere
 > **Answer**: Inactivity is defined as no interaction with the API. After 20 minutes of inactivity, the session should disconnect.
 
 
+> **Question**: What happens when a user fails to log in more than five times, and what is the process for unlocking their account?
+>
+> **Answer**: After five failed login attempts, the system will temporarily lock the account. The process for unlocking 
+> the account is typically handled outside the system by an administrator, who would verify that the failed attempts were
+> not made with malicious intent. However, this unlocking process is not part of the current system.
+
+
 ## 3. Analysis
 
-In this user story, backoffice users, such as doctors, nurses, admins, and technicians, can log into the system using their credentials (username and password) to access features based on their assigned roles. Role-based access control ensures that each user only has access to the specific functionalities relevant to their position.
+In this user story, backoffice users, such as doctors, nurses, admins, and technicians, can log into the system using their
+credentials (username and password) to access features based on their assigned roles. Role-based access control ensures 
+that each user only has access to the specific functionalities relevant to their position.
 
-A security measure is implemented where, after five failed login attempts, the user account is temporarily locked, and the admin is notified. Additionally, to maintain security, login sessions are disconnected after 20 minutes of inactivity, defined as no interaction with the API.
+A security measure is implemented where, after five failed login attempts, the user account is temporarily locked, and the
+admin is notified. Additionally, to maintain security, login sessions are disconnected after 20 minutes of inactivity, 
+defined as no interaction with the API.
 
 ## 4. Design
 
@@ -67,7 +79,7 @@ The process view levels are here represented as they represent a process specifi
 
 #### Level 1
 
-> N0T DONE, BUT RELEVANT
+![us6-process-view-lvl1.svg](Process_View/Level-1/us6-process-view-lvl1.svg)
 
 #### Level 2
 
@@ -88,7 +100,29 @@ it's diagram was deemed irrelevant.
 
 ### 4.3. Applied Patterns
 
-_// To do //_
+> #### **Repository Pattern**
+>
+>* **Components:** UserRepository
+>
+> The repositories are responsible for data access and retrieval, separating the logic for interacting with the database
+> from the services and other layers. This pattern helps in abstracting the persistence logic.
+
+
+> #### **DTO (Data Transfer Object) Pattern**
+>
+>* **Components:** UserDTO
+>
+> DTOs are used to transfer data between layers, especially from the controller layer to the service layer or vice versa.
+> The purpose is to carry data in a structured and decoupled way without exposing internal entity representations directly.
+> This pattern does not need to follow business rules.
+
+
+> #### **Facade Pattern**
+>
+>* **Components:** AuthenticationService, EmailService
+>
+> These services act as a Facade to simplify interaction with lower-level components like repositories. The Controller
+> interacts with these service facades, keeping the complexity hidden from the higher layers.
 
 ### 4.4. Tests
 

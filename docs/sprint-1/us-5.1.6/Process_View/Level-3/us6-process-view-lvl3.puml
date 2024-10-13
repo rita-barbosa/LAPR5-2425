@@ -13,9 +13,6 @@ participant "<<component>>\n UserDTO" as UserDTO
 participant "<<component>>\n AuthenticationService" as AUTHServ
 participant "<<component>>\n UserRepository" as AUTHRepo
 
-participant "<<component>>\n AuthorizationService" as AUTHZServ
-participant "<<component>>\n PermissionRepository" as AUTHZRepo
-
 
 [o-> ROUTE : POST(json)
 activate ROUTE
@@ -38,19 +35,6 @@ deactivate AUTHRepo
 AUTHServ -> AUTHServ : hashPassword(passwordString)
 
 AUTHServ -> AUTHServ : matchPassword(passwordStringHashed, password)
-
-
-AUTHServ -> AUTHZServ : validatePermissions(noAuthUserDTO)
-activate AUTHZServ
-
-AUTHZServ -> AUTHZRepo : findByID(emailString)
-activate AUTHZRepo
-
-AUTHZRepo --> AUTHZServ : return
-deactivate AUTHZRepo
-
-AUTHZServ --> AUTHServ : return
-deactivate AUTHZServ
 
 AUTHServ --> CONTROL : return
 deactivate AUTHServ
