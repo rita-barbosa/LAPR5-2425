@@ -6,7 +6,7 @@ title "US 5.1.6. Process View (Level 3)"
 autonumber
 
 participant "<<component>>\n Routing" as ROUTE
-participant "<<component>>\n Controller" as CONTROL
+participant "<<component>>\n BackOfficeUserController" as CONTROL
 
 participant "<<component>>\n UserDTO" as UserDTO
 
@@ -17,10 +17,10 @@ participant "<<component>>\n AuthorizationService" as AUTHZServ
 participant "<<component>>\n PermissionRepository" as AUTHZRepo
 
 
-[o-> ROUTE : POST(credentialsData)
+[o-> ROUTE : POST(json)
 activate ROUTE
 
-ROUTE -> CONTROL : loginStaff(credentialsData)
+ROUTE -> CONTROL : loginStaff(json)
 activate CONTROL
 
 CONTROL -> UserDTO** : toDTO(credentialsData)
@@ -59,9 +59,6 @@ CONTROL --> ROUTE : return
 deactivate CONTROL
 
 <-- ROUTE : success/error
-note right
-VER A SITUAÇAO DAS SESSOES
-end note
 
 deactivate ROUTE
 
