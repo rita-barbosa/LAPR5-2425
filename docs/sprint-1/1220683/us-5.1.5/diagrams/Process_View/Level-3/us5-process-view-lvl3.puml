@@ -14,32 +14,26 @@ participant "<<component>>\n UserDTO" as UserDTO
 
 participant "<<component>>\n UserRepository" as AUTHRepo
 
-participant "<<component>>\n AuthorizationService" as AUTHZServ
-participant "<<component>>\n PermissionRepository" as AUTHZRepo
-
 participant "<<component>>\n EmailService" as EMAILServ
 
 participant "<<component>>\n TokenManagementService" as TOKENServ
 participant "<<component>>\n Token" as TOKEN
-participant "<<component>>\n TokenDTO" as TOKENDTO
-participant "<<component>>\n TokenRepo" as TOKENRepo
-
+participant "<<component>>\n TokenDTO" as TokenDTO
+participant "<<component>>\n TokenRepository" as TOKENRepo
 
 participant "<<component>>\n PatientService" as PATIENTServ
 participant "<<component>>\n PatientRepository" as PATIENTRepo
 
-participant "<<component>>\n Persistence" as PERSISTENCE
 
-
-[o-> ROUTE : DELETE(credentialsData)
+[o-> ROUTE : DELETE(json)
 activate ROUTE
 
-ROUTE -> CONTROL : deleteAccount(credentialsData)
+ROUTE -> CONTROL : deleteAccount(json)
 activate CONTROL
 
 CONTROL -> UserDTO** : toDTO(credentialsData)
 
-CONTROL -> AUTHServ : validateUser(userDTO)
+CONTROL -> AUTHServ : validatePatientUser(userDTO)
 activate AUTHServ
 
 AUTHServ -> AUTHRepo : findByID(usernameString)
@@ -49,18 +43,11 @@ activate AUTHRepo
 AUTHRepo --> AUTHServ : user
 deactivate AUTHRepo
 
-AUTHServ -> AUTHZServ : isUserAPatient(userDTO)
-activate AUTHZServ
+AUTHServ -> AUTHRepo : isUserAPatient(user)
+activate AUTHRepo
 
-AUTHZServ -> AUTHZRepo : findByID(usernameString)
-activate AUTHZRepo
-
-
-AUTHZRepo --> AUTHZServ : return
-deactivate AUTHZRepo
-
-AUTHZServ --> AUTHServ : return
-deactivate AUTHZServ
+AUTHRepo --> AUTHServ : true
+deactivate AUTHRepo
 
 AUTHServ -> UserDTO ** : toDTO(user)
 
@@ -81,17 +68,19 @@ TOKENServ -> TOKEN **
 TOKENServ -> TOKENRepo : save(token)
 activate TOKENRepo
 
-TOKENRepo -> PERSISTENCE
 
 TOKENRepo --> TOKENServ : return
 deactivate TOKENRepo
 
-TOKENServ -> TOKENDTO ** : toDTO(token)
+TOKENServ -> TokenDTO ** : toDTO(token)
 
 TOKENServ --> EMAILServ : tokenDTO
 deactivate TOKENServ
 
 EMAILServ -> EMAILServ : sendEmail(emailString, tokenDTO, emailTitle, emailBody)
+activate EMAILServ
+deactivate EMAILServ
+
 
 EMAILServ --> CONTROL : return
 deactivate EMAILServ
@@ -107,7 +96,7 @@ deactivate ROUTE
 
 'CONFIRMATION
 
-[o-> ROUTE : GET(credentialsData, tokenData)
+[o-> ROUTE : GET(json)
 note left
 After clicking on the
 link of the account
@@ -115,10 +104,11 @@ deletion confirmation email
 end note
 activate ROUTE
 
-ROUTE -> CONTROL : confirmAccountDeletion(credentialsData, tokenData)
+ROUTE -> CONTROL : confirmAccountDeletion(json)
 activate CONTROL
 
-CONTROL -> TOKENDTO ** : toDTO(tokenData)
+CONTROL -> TokenDTO ** : toDTO(tokenData)
+CONTROL -> UserDTO ** : toDTO(credentialsData)
 
 CONTROL -> TOKENServ : validateToken(tokenDTO)
 activate TOKENServ
@@ -134,12 +124,10 @@ TOKENServ -> TOKENServ : checkTokenValidityTime(token)
 TOKENServ --> CONTROL : true
 deactivate TOKENServ
 
-CONTROL -> UserDTO ** : toDTO(credentialsData)
-
 CONTROL -> AUTHServ : deleteAccount(userDTO)
 activate AUTHServ
 
-AUTHServ -> AUTHServ : validateUser(userDTO)
+AUTHServ -> AUTHServ : validatePatientUser(userDTO)
 
 AUTHServ -> PATIENTServ : deletePatientProfile(patientIDString)
 activate PATIENTServ
@@ -153,7 +141,6 @@ deactivate PATIENTRepo
 PATIENTServ -> PATIENTRepo : remove(patient)
 activate PATIENTRepo
 
-PATIENTRepo -> PERSISTENCE
 
 PATIENTRepo --> PATIENTServ : return
 deactivate PATIENTRepo
@@ -167,24 +154,9 @@ activate AUTHRepo
 AUTHRepo --> AUTHServ : user
 deactivate AUTHRepo
 
-AUTHServ -> AUTHZServ : revokePermissionsOfUser(user)
-activate AUTHZServ
-
-AUTHZServ -> AUTHZRepo : delete(user)
-activate AUTHZRepo
-
-AUTHZRepo -> PERSISTENCE
-
-AUTHZRepo --> AUTHZServ : return
-deactivate AUTHZRepo
-
-AUTHZServ --> AUTHServ : return
-deactivate AUTHZServ
-
 AUTHServ -> AUTHRepo : remove(user)
 activate AUTHRepo
 
-AUTHRepo -> PERSISTENCE
 
 AUTHRepo --> AUTHServ : return
 deactivate AUTHRepo
