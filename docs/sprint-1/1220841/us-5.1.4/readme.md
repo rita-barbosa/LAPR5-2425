@@ -7,7 +7,13 @@
   - [3. Analysis](#3-analysis)
   - [4. Design](#4-design)
     - [4.1. Realization](#41-realization)
-    - [4.2. Class Diagram](#42-class-diagram)
+      - [Logical View](#logical-view)
+      - [Process View](#process-view)
+        - [Level 1](#level-1)
+        - [Level 2](#level-2)
+        - [Level 3](#level-3)
+      - [Development View](#development-view)
+      - [Physical View](#physical-view)
     - [4.3. Applied Patterns](#43-applied-patterns)
     - [4.4. Tests](#44-tests)
   - [5. Implementation](#5-implementation)
@@ -68,7 +74,8 @@ It's important to highlight that patients cannot update every aspect of their pr
 
 - Email
 - Phone number
-- Username
+- Name
+- Emergency Contact
 
 A confirmation email must be sent to ensure the changes are legitimate.
 
@@ -78,11 +85,33 @@ Lastly, all the made changes must be be logged for traceability.
 
 ### 4.1. Realization
 
-_// To do //_
+The logical, physical, development and scenario views diagrams are generic for all the use cases of the backoffice component.
 
-### 4.2. Class Diagram
+#### Logical View
 
-_// To do //_
+The diagrams can be found in the [team decision views folder](../../team-decisions/views/general-views.md#1-logical-view).
+
+#### Process View
+
+##### Level 1
+
+![Process View - Level 1](diagrams/level-1-process-view.svg)
+
+##### Level 2
+
+![Process View - Level 2](diagrams/level-2-process-view.svg)
+
+##### Level 3
+
+![Process View - Level 3](diagrams/level-3-process-view.svg)
+
+#### Development View
+
+The diagrams can be found in the [team decision views folder](../../team-decisions/views/general-views.md#3-development-view).
+
+#### Physical View
+
+The diagrams can be found in the [team decision views folder](../../team-decisions/views/general-views.md#4-physical-view).
 
 ### 4.3. Applied Patterns
 
