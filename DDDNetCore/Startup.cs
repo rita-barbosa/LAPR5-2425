@@ -30,11 +30,10 @@ namespace DDDNetCore
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<DDDNetCoreDbContext>(opt =>
-                opt.UseInMemoryDatabase("DDDNetCoreDB")
+                opt.UseSqlite(Configuration.GetConnectionString("DefaultConnection"))
                 .ReplaceService<IValueConverterSelector, StronglyEntityIdValueConverterSelector>());
 
             ConfigureMyServices(services);
-
 
             services.AddControllers().AddNewtonsoftJson();
             services.AddSwaggerGen();
