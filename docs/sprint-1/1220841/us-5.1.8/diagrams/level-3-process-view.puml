@@ -11,7 +11,7 @@ participant "PatientRepository" as REPO <<repository>>
 participant "Patient" as pat <<domain>>
 
 
-[o-> ROUTE: POST(json)
+[o-> ROUTE: POST(json) /api/patient
 activate ROUTE
 
 ROUTE -> pat_dto **: create(json)
