@@ -9,11 +9,14 @@ using DDDNetCore.Infrastructure;
 using DDDNetCore.Infrastructure.Categories;
 using DDDNetCore.Infrastructure.Products;
 using DDDNetCore.Infrastructure.Families;
+using DDDNetCore.Infrastructure.Tokens;
 using DDDNetCore.Infrastructure.Shared;
 using DDDNetCore.Domain.Shared;
 using DDDNetCore.Domain.Categories;
 using DDDNetCore.Domain.Products;
 using DDDNetCore.Domain.Families;
+using DDDNetCore.Domain.Tokens;
+using DDDNetCore.Domain.Emails;
 
 namespace DDDNetCore
 {
@@ -83,6 +86,14 @@ namespace DDDNetCore
 
             services.AddTransient<IFamilyRepository, FamilyRepository>();
             services.AddTransient<FamilyService>();
+
+            services.AddTransient<EmailService>();
+
+            services.AddTransient<ITokenRepository, TokenRepository>();
+            services.AddTransient<TokenService>();
+
+            services.AddTransient<ITokenTypeRepository, TokenTypeRepository>();
+            services.AddTransient<TokenTypeService>();
         }
     }
 }
