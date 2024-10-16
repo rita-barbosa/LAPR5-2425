@@ -14,7 +14,6 @@ participant "<<Service>>\n TokenManagementService" as TOKENServ
 participant "<<component>>\n Token" as TOKEN
 participant "<<DTO>>\n TokenDTO" as TOKENDTO
 participant "<<Repository>>\n TokenRepo" as TOKENRepo
-participant "<<component>>\n Persistence" as PERSISTENCE
 
 [o-> ROUTE : POST(credentialsData)
 note right : email is staff's\nno password\nright role
@@ -46,8 +45,6 @@ AUTHServ -> USER**
 AUTHServ -> AUTHRepo : save(user)
 Activate AUTHRepo
 
-AUTHRepo -> PERSISTENCE
-
 AUTHRepo --> AUTHServ : user
 Deactivate AUTHRepo
 
@@ -64,8 +61,6 @@ TOKENServ -> TOKEN **
 
 TOKENServ -> TOKENRepo : save(token)
 activate TOKENRepo
-
-TOKENRepo -> PERSISTENCE
 
 TOKENRepo --> TOKENServ : return
 deactivate TOKENRepo

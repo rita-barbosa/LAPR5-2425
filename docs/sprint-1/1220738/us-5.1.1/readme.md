@@ -101,15 +101,19 @@ However level 3 is shown below.
 
 ![Process View - Admin](Diagrams\Views\process-view-level-3-STAFF.svg)
 
-### 4.2. Class Diagram
+### 4.2. Domain Model Excerpt
+
+![Domain Model Excerpt](Diagrams\Domain-Model\domain-model-excerpt.svg)
+
+### 4.3. Class Diagram2
 
 _// To do //_
 
-### 4.3. Applied Patterns
+### 4.4. Applied Patterns
 
 _// To do //_
 
-### 4.4. Tests
+### 4.5. Tests
 
 _// To do - layout still in development //_ 
 
