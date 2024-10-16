@@ -1,0 +1,106 @@
+@startuml
+
+title "US 5.1.8. - Process View [Level 3]"
+
+autonumber
+participant "PatientRoute" as ROUTE <<route>>
+participant "UpdateInformationDto" as pat_dto <<dto>>
+participant "PatientController" as CTRL <<controller>>
+participant "UserDto" as user_dto <<dto>>
+participant "PatientService" as SVC <<service>>
+participant "UserService" as US_SVC <<service>>
+participant "UserManager" as UM <<service>>
+participant "PatientRepository" as REPO <<repository>>
+participant "UserRepository" as US_REPO <<repository>>
+participant "Patient" as pat <<domain>>
+participant "User" as user <<domain>>
+
+
+[o-> ROUTE: PUT(json) /api/patient
+activate ROUTE
+
+ROUTE -> pat_dto **: create(json)
+
+ROUTE -> CTRL: updatePatientInformation(updateInformationDto)
+activate CTRL
+
+CTRL -> UM: getUserId(User)
+activate UM
+
+UM --> CTRL: loggedUser
+deactivate UM
+
+CTRL -> user_dto**: toDto(loggedUser)
+
+alt change email
+    CTRL -> US_SVC: updateUserInformation(loggedUser,updateInformationDto)
+    activate US_SVC
+
+    US_SVC -> UM: findByIdAsync(userId)
+    activate UM
+
+    UM --> US_SVC: user
+    deactivate UM
+
+    US_SVC -> user: updateEmail(email)
+    activate user
+    deactivate user
+
+    US_SVC -> user: updateUsername(email)
+    activate user
+    deactivate user
+
+
+    US_SVC -> US_REPO: save(updatedUser)
+    activate US_REPO
+    deactivate US_REPO
+
+    US_SVC --> CTRL:
+    deactivate US_SVC
+    end alt
+
+    CTRL -> SVC: updatePatientInformation(updateInformationDto, userDto)
+    activate SVC
+
+    SVC -> REPO: findByEmail(email)
+    activate REPO
+
+    REPO --> SVC : patient
+    deactivate REPO
+    |||
+    SVC -> pat: updateInformation(updateInformation)
+    activate pat
+    deactivate pat
+
+    SVC -> user : updateEmail(email)
+    activate user
+    deactivate user
+
+    SVC -> US_REPO: save(updatedUser)
+    activate US_REPO
+    deactivate US_REPO
+
+    SVC -> REPO: save(updatedPatient)
+    activate REPO
+    deactivate REPO
+
+
+
+
+    SVC --> CTRL: success
+    deactivate SVC
+    CTRL --> ROUTE: success
+    deactivate CTRL
+
+    alt
+
+        [o<-- ROUTE: 201 Created
+
+    else
+
+        [o<-- ROUTE: 400 Bad Request
+
+        end alt
+
+        deactivate ROUTE
+        @enduml

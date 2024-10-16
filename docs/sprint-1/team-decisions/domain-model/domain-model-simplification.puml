@@ -5,41 +5,23 @@ hide empty attributes
 skinparam classBackgroundColor beige
 skinparam ArrowColor #222222
 
-package "<<aggregate>> User"{
-    entity User  <<entity>>{}
-}
 
-package "<<aggregate>> Staff"{
-    entity Staff <<entity>>{}
-}
-package "<<aggregate>> Patient"{
-    entity Patient  <<entity>>{}
-}
-package "<<aggregate>> Doctor"{
-    entity Doctor <<entity>>{}
-}
-package "<<aggregate>> Appointment"{
-    entity Appointment <<entity>>{}
-}
-package "<<aggregate>> OperationRequest" {
-    entity OperationRequest <<entity>>{}
-}
-package "<<aggregate>> OperationType"{
-    entity OperationType <<entity>> {}
-}
-
-package "<<aggregate>> Room" {
-    entity Room <<entity>>{}
-}
-package "<<aggregate>> Specialization" {
-    entity Specialization <<entity>> {}
-}
+entity User  <<entity>>{}
+entity Staff <<entity>>{}
+entity Patient  <<entity>>{}
+entity Doctor <<entity>>{}
+entity Appointment <<entity>>{}
+entity OperationRequest <<entity>>{}
+entity OperationType <<entity>> {}
+entity Room <<entity>>{}
+entity Specialization <<entity>> {}
 
 
-User -up--> "1" Staff 
-User -up--> "0..1" Patient
+
+User <-up-- "1" Staff
+User <-up-- "0..1" Patient
 Doctor ---> "1" Staff : is a
-Staff ---> "1" Specialization
+Staff ---> "1" Specialization : specializes in
 OperationRequest --> "1" Doctor : request by
 Appointment ---> "1" OperationRequest : scheduling of
 OperationRequest ---> "1" OperationType : defined by

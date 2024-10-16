@@ -1,0 +1,145 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+title "US 5.1.2. Process View (Level 3)"
+
+autonumber
+
+participant "route:\nPasswordResetRoute" as ROUTE
+participant "controller:\nPasswordResetController" as CTRL
+
+participant "dto:\nUserDTO" as UserDTO
+participant "service:\nAuthenticationService" as AUTHServ
+participant "domain:\nUser" as USER
+participant "domain:\nUserPassword" as PASS
+participant "repository:\nUserRepository" as AUTHRepo
+participant "service:\nEmailService" as EMAILServ
+participant "service:\nTokenManagementService" as TOKENServ
+participant "domain:\nToken" as TOK
+participant "dto:\nTokenDTO" as TOKENDTO
+participant "repository:\nTokenRepository" as TOKENRepo
+
+[o-> ROUTE : POST(json)
+activate ROUTE
+
+ROUTE -> CTRL : requestPasswordAlteration(credentialsData)
+activate CTRL
+
+CTRL -> UserDTO** : toDTO(credentialsData)
+CTRL -> AUTHServ : checkIfUserExists(userDTO)
+activate AUTHServ
+
+AUTHServ -> AUTHRepo : existsById(usernameString)
+activate AUTHRepo
+
+AUTHRepo --> AUTHServ : boolean
+deactivate AUTHRepo
+
+AUTHServ --> CTRL : boolean
+deactivate AUTHServ
+
+
+CTRL -> EMAILServ : sendPasswordResetLink(userDTO)
+activate EMAILServ
+
+EMAILServ -> TOKENServ : generateResetPasswordToken()
+activate TOKENServ
+
+TOKENServ -> TOK **
+
+TOKENServ -> TOKENRepo : save(token)
+activate TOKENRepo
+
+TOKENRepo --> TOKENServ : return
+deactivate TOKENRepo
+
+TOKENServ -> TOKENDTO ** : toDTO(token)
+
+TOKENServ --> EMAILServ : tokenDTO
+deactivate TOKENServ
+
+EMAILServ -> EMAILServ : sendEmail(emailString, tokenDTO, emailTitle, emailBody)
+
+EMAILServ --> CTRL : return
+deactivate EMAILServ
+
+CTRL --> ROUTE : return
+deactivate CTRL
+
+deactivate CTRL
+<-- ROUTE : return
+
+deactivate ROUTE
+
+|||
+
+[o-> ROUTE : PUT(credentialsData, tokenData)
+activate ROUTE
+
+ROUTE -> CTRL : updatePassword(credentialsData, tokenData)
+activate CTRL
+
+CTRL -> TOKENDTO ** : toDTO(tokenData)
+
+CTRL -> TOKENServ : validateToken(tokenDTO)
+activate TOKENServ
+
+TOKENServ -> TOKENRepo : findByID(tokenDtoID)
+activate TOKENRepo
+
+TOKENRepo --> TOKENServ : token
+deactivate TOKENRepo
+
+TOKENServ -> TOKENServ : checkTokenValidityUsage(token)
+TOKENServ -> TOK : updateValidity()
+activate TOK
+TOK --> TOKENServ : return
+deactivate TOK
+
+TOKENServ -> TOKENRepo : save(token)
+activate TOKENRepo
+
+TOKENRepo --> TOKENServ : return
+deactivate TOKENRepo
+
+TOKENServ --> CTRL : true
+deactivate TOKENServ
+
+CTRL -> UserDTO ** : toDTO(credentialsData)
+
+CTRL -> AUTHServ : updateAccountPassword(userDTO)
+activate AUTHServ
+
+AUTHServ -> AUTHRepo : findById(usernameString)
+activate AUTHRepo
+AUTHRepo --> AUTHServ : user
+deactivate AUTHRepo
+
+AUTHServ -> PASS : checkPasswordIsValid(passwordString)
+activate PASS
+PASS --> AUTHServ : boolean
+deactivate PASS
+
+opt boolean == true
+AUTHServ -> USER : updatePassword(passwordString)
+activate USER
+USER --> AUTHServ : return
+deactivate USER
+
+
+AUTHServ -> AUTHRepo : save(user)
+activate AUTHRepo
+AUTHRepo --> AUTHServ : return
+deactivate AUTHRepo
+
+AUTHServ --> CTRL : return
+deactivate AUTHServ
+
+CTRL --> ROUTE : return
+deactivate CTRL
+
+end opt
+
+<-- ROUTE : success/error
+
+@enduml

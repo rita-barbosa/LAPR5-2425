@@ -11,7 +11,7 @@ participant "OperationTypeRepository" as REPO <<repository>>
 participant "OperationType" as OT <<domain>>
 
 
-[o-> ROUTE: PUT(json)
+[o-> ROUTE: DELETE(json) /api/operationtype
 activate ROUTE
 
 ROUTE -> pat_dto **: create(json)

@@ -12,7 +12,7 @@ participant "OperationRequestMapper" as MAP <<mapper>>
 participant "OperationRequestDTO" as DTO <<dto>>
 
 
-[o-> ROUTE: GET /Operationrequisitions
+[o-> ROUTE: GET /api/operationrequisitions
 activate ROUTE
 note right of ROUTE:**Params**: **[optional]** patientname,\noperationtype, priority, status,\ndaterequest, deadlinedate
 

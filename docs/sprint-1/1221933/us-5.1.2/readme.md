@@ -8,7 +8,13 @@
     * [System Sequence Diagram](#system-sequence-diagram)
   * [4. Design](#4-design)
     * [4.1. Realization](#41-realization)
-    * [4.2. Class Diagram](#42-class-diagram)
+      * [Logical View](#logical-view)
+      * [Process View](#process-view)
+        * [Level 1](#level-1)
+        * [Level 2](#level-2)
+        * [Level 3](#level-3)
+      * [Development View](#development-view)
+      * [Physical View](#physical-view)
     * [4.3. Applied Patterns](#43-applied-patterns)
     * [4.4. Tests](#44-tests)
   * [5. Implementation](#5-implementation)
@@ -64,15 +70,61 @@ password that meets the system password complexity rules.
 
 ### 4.1. Realization
 
-_// To do //_
+The logical, physical, development and scenario views diagrams are generic for all the use cases of the backoffice component.
 
-### 4.2. Class Diagram
+#### Logical View
 
-_// To do //_
+The diagrams are available in the [team decision views folder](../../team-decisions/views/general-views.md#1-logical-view).
+
+#### Process View
+
+##### Level 1
+
+![Process View - Level 1](diagrams/n1/process-view-nivel1.svg)
+
+##### Level 2
+
+![Process View - Level 2](diagrams/n2/process-view-nivel2.svg)
+
+##### Level 3
+
+![Process View - Level 3](diagrams/n3/process-view-nivel3.svg)
+
+#### Development View
+
+The diagrams are available in the [team decision views folder](../../team-decisions/views/general-views.md#3-development-view).
+
+#### Physical View
+
+The diagrams are available in the [team decision views folder](../../team-decisions/views/general-views.md#4-physical-view).
 
 ### 4.3. Applied Patterns
 
-_// To do //_
+> #### **Repository Pattern**
+>
+>* **Components:** UserRepository, TokenRepository
+>
+> The repositories handle data access and retrieval, isolating the database interaction logic from services and other
+> layers. This approach abstracts the persistence logic, promoting separation of concerns.
+
+
+> #### **DTO (Data Transfer Object) Pattern**
+>
+>* **Components:** UserDTO, TokenDTO
+>
+> DTOs are utilized to transfer data between layers, particularly from the controller layer to the service layer and
+> vice versa. Their main purpose is to convey data in a structured and decoupled manner without revealing the internal
+> representations of entities. Additionally, this pattern is not required to adhere to business rules.
+
+
+> #### **Facade Pattern**
+>
+>* **Components:** AuthenticationService, EmailService, TokenManagementService 
+>
+> These services function as a facade, simplifying the interaction with lower-level components such as repositories.
+> The controller communicates with these service facades, concealing the complexity from the upper layers.
+
+
 
 ### 4.4. Tests
 
