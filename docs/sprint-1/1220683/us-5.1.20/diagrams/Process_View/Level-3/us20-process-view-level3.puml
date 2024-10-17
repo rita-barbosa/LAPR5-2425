@@ -42,6 +42,8 @@ STAFFServ --> CONTROL : staffListDTO
 deactivate STAFFServ
 
 CONTROL -> CONTROL : json(staffListDTO)
+activate CONTROL
+deactivate CONTROL
 
 CONTROL --> ROUTE : json
 deactivate CONTROL
