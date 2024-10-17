@@ -5,50 +5,78 @@ title US 5.1.20 Process View (Level 3)
 
 autonumber
 
-participant "<<component>>\n Routing" as ROUTE
-participant "<<component>>\n OperationTypeController" as CONTROL
+participant "<<route>>\n Routing" as ROUTE
+participant "<<controller>>\n OperationTypeController" as CONTROL
 
-participant "<<component>>\n StaffService" as STAFFServ
-participant "<<component>>\n StaffRepository" as STAFFRepo
-participant "<<component>>\n StaffDTO" as STAFFDTO
+participant "<<service>>\n SpecializationService" as SpecializationServ
+participant "<<repository>>\n SpecializationRepository" as SpecializationRepo
+participant "<<dto>>\n SpecializationDTO" as SpecializationDTO
 
-participant "<<component>>\n OperationTypeDTO" as OPTYDTO
-participant "<<component>>\n OperationTypeService" as OPTYServ
-participant "<<component>>\n OperationTypeRepository" as OPTYRepo
-participant "<<component>>\n OperationType" as OPTY
+participant "<<service>>\n RoleService" as RoleServ
+participant "<<repository>>\n RoleRepository" as RoleRepo
+participant "<<dto>>\n RoleDTO" as RoleDTO
+
+
+participant "<<dto>>\n StaffSpecializationAndRoleResponseDTO " as ResponseDTO
+
+participant "<<dto>>\n OperationTypeDTO" as OPTYDTO
+participant "<<service>>\n OperationTypeService" as OPTYServ
+participant "<<repository>>\n OperationTypeRepository" as OPTYRepo
+participant "<<domain>>\n OperationType" as OPTY
+
+participant "<<domain>>\n Phase" as PHASE
 
 
 [o-> ROUTE : GET()
 activate ROUTE
 
-ROUTE -> CONTROL : getAllStaff()
+ROUTE -> CONTROL : getAllSpecializationsAndRoles()
 activate CONTROL
 
-CONTROL -> STAFFServ : getAllStaffList()
-activate STAFFServ
+CONTROL -> SpecializationServ : getAllSpecializationsList()
+activate SpecializationServ
 
-STAFFServ -> STAFFRepo : findAll()
-activate STAFFRepo
+SpecializationServ -> SpecializationRepo : findAll()
+activate SpecializationRepo
 
-STAFFRepo --> STAFFServ : staffList
-deactivate STAFFRepo
+SpecializationRepo --> SpecializationServ : specializationsList
+deactivate SpecializationRepo
 
-loop for all staff in the staff list
+loop for each specialization in the list
 
-STAFFServ -> STAFFDTO ** : toDTO(staff)
+SpecializationServ -> SpecializationDTO ** : toDTO(specialization)
 end loop
 
-STAFFServ --> CONTROL : staffListDTO
-deactivate STAFFServ
+SpecializationServ --> CONTROL : specializationListDTO
+deactivate SpecializationServ
 
-CONTROL -> CONTROL : json(staffListDTO)
+CONTROL -> RoleServ : getAllRolesList()
+activate RoleServ
+
+RoleServ -> RoleRepo : findAll()
+activate RoleRepo
+
+RoleRepo --> RoleServ : rolesList
+deactivate RoleRepo
+
+loop for each role in the list
+
+RoleServ -> RoleDTO ** : toDTO(role)
+end loop
+
+RoleServ --> CONTROL : roleListDTO
+deactivate RoleServ
+
+CONTROL -> ResponseDTO ** : toDTO(specializationListDTO, roleListDTO)
+
+CONTROL -> CONTROL : json(responseDTO)
 activate CONTROL
 deactivate CONTROL
 
 CONTROL --> ROUTE : json
 deactivate CONTROL
 
-[o<-- ROUTE : ok(json)
+[o<-- ROUTE : OK(json)
 deactivate ROUTE
 
 |||
@@ -81,6 +109,13 @@ deactivate OPTYServ
 |||
 
 OPTYServ -> OPTY ** : OperationType(operationTypeDTO)
+activate OPTY
+
+loop for all 3 phases (Anesthesia, Surgery, Cleaning)
+
+OPTY -> PHASE ** : Phase(description, duration)
+deactivate OPTY
+end loop
 
 OPTYServ -> OPTYRepo : save(operationType)
 activate OPTYRepo

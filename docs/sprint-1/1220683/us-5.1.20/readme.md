@@ -154,7 +154,7 @@ The process view levels are here represented as they represent a process specifi
 
 > #### **Repository Pattern**
 >
->* **Components:** OperationTypeRepository, StaffRepository
+>* **Components:** OperationTypeRepository, SpecializationRepository, RoleRepository
 >
 > The repositories are responsible for data access and retrieval, separating the logic for interacting with the database
 > from the services and other layers. This pattern helps in abstracting the persistence logic.
@@ -162,7 +162,7 @@ The process view levels are here represented as they represent a process specifi
 
 > #### **DTO (Data Transfer Object) Pattern**
 >
->* **Components:** StaffDTO, OperationTypeDTO
+>* **Components:** SpecializationDTO, RoleDTO, StaffSpecializationAndRoleResponseDTO, OperationTypeDTO
 >
 > DTOs are used to transfer data between layers, especially from the controller layer to the service layer or vice versa.
 > The purpose is to carry data in a structured and decoupled way without exposing internal entity representations directly.
@@ -171,7 +171,7 @@ The process view levels are here represented as they represent a process specifi
 
 > #### **Facade Pattern**
 >
->* **Components:** OperationTypeService, StaffService
+>* **Components:** OperationTypeService, SpecializationService, RoleService
 >
 > These services act as a Facade to simplify interaction with lower-level components like repositories. The Controller
 > interacts with these service facades, keeping the complexity hidden from the higher layers.
