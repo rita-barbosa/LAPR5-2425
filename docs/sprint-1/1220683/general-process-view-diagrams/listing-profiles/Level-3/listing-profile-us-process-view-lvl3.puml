@@ -16,7 +16,7 @@ participant "<<dto>>\n XDTO" as XDTO
 
 participant "<<service>>\n DynamicQueryGenerationService" as QUERYServ
 
-[o-> ROUTE : GET()
+[o-> ROUTE : GET() /api/Xs
 activate ROUTE
 
 ROUTE -> CONTROL : getAllXProfiles()

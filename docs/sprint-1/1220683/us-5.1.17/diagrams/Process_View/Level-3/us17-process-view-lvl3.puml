@@ -6,7 +6,7 @@ title "US 5.1.17. Process View (Level 3)"
 autonumber
 
 participant "<<route>>\n Routing" as ROUTE
-participant "<<controller>>\n OperationRequestController" as CONTROL
+participant "<<controller>>\n OperationRequisitionController" as CONTROL
 
 participant "<<service>>\n StaffService" as STAFFServ
 participant "<<repository>>\n StaffRepository" as STAFFRepo
@@ -14,15 +14,15 @@ participant "<<dto>>\n StaffDTO" as StaffDTO
 
 participant "<<service>>\n AuthenticationService" as AUTHServ
 
-participant "<<service>>\n OperationRequestService" as OPREQServ
-participant "<<repository>>\n OperationRequestRepository" as OPREQRepo
-participant "<<dto>>\n OperationRequestDTO" as OPREQDTO
+participant "<<service>>\n OperationRequisitionService" as OPREQServ
+participant "<<repository>>\n OperationRequisitionRepository" as OPREQRepo
+participant "<<dto>>\n OperationRequisitionDTO" as OPREQDTO
 
 
-[o-> ROUTE : GET()
+[o-> ROUTE : GET() /api/operationrequisitions
 activate ROUTE
 
-ROUTE -> CONTROL : getOperationRequestsByDoctor()
+ROUTE -> CONTROL : getOperationRequisitionsByDoctor()
 activate CONTROL
 
 CONTROL -> STAFFServ : findCurrentSessionDoctor()
@@ -45,24 +45,24 @@ STAFFServ --> StaffDTO ** : toDTO(doctor)
 STAFFServ --> CONTROL : doctorDTO
 deactivate STAFFServ
 
-CONTROL -> OPREQServ : getOperationRequestsByDoctor(doctorDTO)
+CONTROL -> OPREQServ : getOperationRequisitionsByDoctor(doctorDTO)
 activate OPREQServ
 
 OPREQServ -> OPREQRepo : findAllByDoctor(doctorDTO)
 activate OPREQRepo
 
-OPREQRepo --> OPREQServ : operationRequestList
+OPREQRepo --> OPREQServ : operationRequisitionList
 deactivate OPREQRepo
 
 loop for all the elements in the list
-OPREQServ -> OPREQDTO ** : toDTO(operationRequest)
+OPREQServ -> OPREQDTO ** : toDTO(operationRequisition)
 
 end loop
 
-OPREQServ --> CONTROL : operationRequestDTOList
+OPREQServ --> CONTROL : operationRequisitionDTOList
 deactivate OPREQServ
 
-CONTROL -> CONTROL : json(operationRequestDTOList)
+CONTROL -> CONTROL : json(operationRequisitionDTOList)
 activate CONTROL
 deactivate CONTROL
 
@@ -77,15 +77,15 @@ deactivate ROUTE
 [o-> ROUTE : POST(updatedData)
 activate ROUTE
 
-ROUTE -> CONTROL : updateOperationRequest(updatedData)
+ROUTE -> CONTROL : updateOperationRequisition(updatedData)
 activate CONTROL
 
 CONTROL -> OPREQDTO ** : toDTO(updatedData)
 
-CONTROL -> OPREQServ : updateOperationRequest(operationRequestDTO)
+CONTROL -> OPREQServ : updateOperationRequisition(operationRequisitionDTO)
 activate OPREQServ
 
-OPREQServ -> OPREQRepo : save(operationRequestDTO)
+OPREQServ -> OPREQRepo : save(operationRequisitionDTO)
 activate OPREQRepo
 
 OPREQRepo --> OPREQServ : return

@@ -26,7 +26,7 @@ participant "<<service>>\n PatientService" as PATIENTServ
 participant "<<repository>>\n PatientRepository" as PATIENTRepo
 
 
-[o-> ROUTE : DELETE(json)
+[o-> ROUTE : DELETE(json) /api/patients
 activate ROUTE
 
 ROUTE -> CONTROL : deleteAccount(json)

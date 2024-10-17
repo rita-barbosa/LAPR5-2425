@@ -27,7 +27,7 @@ participant "<<domain>>\n OperationType" as OPTY
 participant "<<domain>>\n Phase" as PHASE
 
 
-[o-> ROUTE : GET()
+[o-> ROUTE : GET() /api/operationtypes
 activate ROUTE
 
 ROUTE -> CONTROL : getAllSpecializationsAndRoles()
