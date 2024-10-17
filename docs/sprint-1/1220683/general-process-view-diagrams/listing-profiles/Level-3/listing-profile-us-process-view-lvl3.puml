@@ -41,6 +41,8 @@ XServ --> CONTROL : XprofileDTOList
 deactivate XServ
 
 CONTROL -> CONTROL : json(XprofileDTOList)
+activate CONTROL
+deactivate CONTROL
 
 CONTROL --> ROUTE : json
 deactivate CONTROL
@@ -86,6 +88,8 @@ XServ --> CONTROL : filteredXProfilesDTOList
 deactivate XServ
 
 CONTROL -> CONTROL : json(XprofileDTOList)
+activate CONTROL
+deactivate CONTROL
 
 CONTROL --> ROUTE : json
 deactivate CONTROL
