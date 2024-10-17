@@ -5,18 +5,18 @@ title "US 5.1.17. Process View (Level 3)"
 
 autonumber
 
-participant "<<component>>\n Routing" as ROUTE
-participant "<<component>>\n OperationRequestController" as CONTROL
+participant "<<route>>\n Routing" as ROUTE
+participant "<<controller>>\n OperationRequestController" as CONTROL
 
-participant "<<component>>\n StaffService" as STAFFServ
-participant "<<component>>\n StaffRepository" as STAFFRepo
-participant "<<component>>\n StaffDTO" as StaffDTO
+participant "<<service>>\n StaffService" as STAFFServ
+participant "<<repository>>\n StaffRepository" as STAFFRepo
+participant "<<dto>>\n StaffDTO" as StaffDTO
 
-participant "<<component>>\n AuthenticationService" as AUTHServ
+participant "<<service>>\n AuthenticationService" as AUTHServ
 
-participant "<<component>>\n OperationRequestService" as OPREQServ
-participant "<<component>>\n OperationRequestRepository" as OPREQRepo
-participant "<<component>>\n OperationRequestDTO" as OPREQDTO
+participant "<<service>>\n OperationRequestService" as OPREQServ
+participant "<<repository>>\n OperationRequestRepository" as OPREQRepo
+participant "<<dto>>\n OperationRequestDTO" as OPREQDTO
 
 
 [o-> ROUTE : GET()

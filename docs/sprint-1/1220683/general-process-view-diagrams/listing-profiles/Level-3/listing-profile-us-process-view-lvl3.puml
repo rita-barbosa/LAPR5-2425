@@ -5,17 +5,16 @@ title "US 5.1.15. Process View (Level 3)"
 
 autonumber
 
-participant "<<component>>\n Routing" as ROUTE
-participant "<<component>>\n XProfileListingController" as CONTROL
+participant "<<route>>\n Routing" as ROUTE
+participant "<<controller>>\n XProfileListingController" as CONTROL
 
-participant "<<component>>\n QueryParametersDTO" as QueryDTO
+participant "<<dto>>\n QueryParametersDTO" as QueryDTO
 
-participant "<<component>>\n XService" as XServ
-participant "<<component>>\n XRepository" as XRepo
-participant "<<component>>\n XDTO" as XDTO
+participant "<<service>>\n XService" as XServ
+participant "<<repository>>\n XRepository" as XRepo
+participant "<<dto>>\n XDTO" as XDTO
 
-participant "<<component>>\n DynamicQueryGenerationService" as QUERYServ
-
+participant "<<service>>\n DynamicQueryGenerationService" as QUERYServ
 
 [o-> ROUTE : GET()
 activate ROUTE

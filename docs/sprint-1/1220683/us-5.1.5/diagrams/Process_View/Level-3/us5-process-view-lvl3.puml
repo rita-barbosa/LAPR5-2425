@@ -5,25 +5,25 @@ title "US 5.1.5. Process View (Level 3)"
 
 autonumber
 
-participant "<<component>>\n Routing" as ROUTE
-participant "<<component>>\n PatientController" as CONTROL
+participant "<<route>>\n Routing" as ROUTE
+participant "<<controller>>\n PatientController" as CONTROL
 
-participant "<<component>>\n AuthenticationService" as AUTHServ
+participant "<<service>>\n AuthenticationService" as AUTHServ
 
-participant "<<component>>\n UserDTO" as UserDTO
+participant "<<dto>>\n UserDTO" as UserDTO
 
-participant "<<component>>\n UserRepository" as AUTHRepo
+participant "<<repository>>\n UserRepository" as AUTHRepo
 
-participant "<<component>>\n EmailService" as EMAILServ
-participant "<<component>>\n EmailDTO" as EmailDTO
+participant "<<service>>\n EmailService" as EMAILServ
+participant "<<dto>>\n EmailDTO" as EmailDTO
 
-participant "<<component>>\n TokenService" as TOKENServ
-participant "<<component>>\n Token" as TOKEN
-participant "<<component>>\n TokenDTO" as TokenDTO
-participant "<<component>>\n TokenRepository" as TOKENRepo
+participant "<<service>>\n TokenService" as TOKENServ
+participant "<<domain>>\n Token" as TOKEN
+participant "<<dto>>\n TokenDTO" as TokenDTO
+participant "<<repository>>\n TokenRepository" as TOKENRepo
 
-participant "<<component>>\n PatientService" as PATIENTServ
-participant "<<component>>\n PatientRepository" as PATIENTRepo
+participant "<<service>>\n PatientService" as PATIENTServ
+participant "<<repository>>\n PatientRepository" as PATIENTRepo
 
 
 [o-> ROUTE : DELETE(json)
