@@ -15,6 +15,7 @@ participant "<<component>>\n UserDTO" as UserDTO
 participant "<<component>>\n UserRepository" as AUTHRepo
 
 participant "<<component>>\n EmailService" as EMAILServ
+participant "<<component>>\n EmailDTO" as EmailDTO
 
 participant "<<component>>\n TokenService" as TOKENServ
 participant "<<component>>\n Token" as TOKEN
@@ -35,6 +36,7 @@ CONTROL -> UserDTO** : toDTO(credentialsData)
 
 CONTROL -> AUTHServ : validatePatientUser(userDTO)
 activate AUTHServ
+
 
 AUTHServ -> AUTHRepo : findByID(usernameString)
 activate AUTHRepo
@@ -60,7 +62,7 @@ deactivate AUTHServ
 CONTROL -> EMAILServ : sendAccountDeletionConfirmationEmail(userDTO)
 activate EMAILServ
 
-EMAILServ -> TOKENServ : generateDeletionAccountToken()
+EMAILServ -> TOKENServ : CreateAccountDeletionToken(userDTO.userEmail)
 activate TOKENServ
 
 TOKENServ -> TOKEN **
@@ -77,7 +79,9 @@ TOKENServ -> TokenDTO ** : toDTO(token)
 TOKENServ --> EMAILServ : tokenDTO
 deactivate TOKENServ
 
-EMAILServ -> EMAILServ : sendEmail(emailString, tokenDTO, emailTitle, emailBody)
+EMAILServ -> EmailDTO ** : toDTO(ADMIN_EMAIL, emailString, emailTitle, emailBody)
+
+EMAILServ -> EMAILServ : sendEmail(emailDTO, tokenDTO)
 activate EMAILServ
 deactivate EMAILServ
 
@@ -125,6 +129,8 @@ TOKENRepo --> TOKENServ : token
 deactivate TOKENRepo
 
 TOKENServ -> TOKENServ : checkTokenValidityTime(token)
+activate TOKENServ
+deactivate TOKENServ
 
 TOKENServ --> CONTROL : true
 deactivate TOKENServ
@@ -133,6 +139,8 @@ CONTROL -> AUTHServ : deleteAccount(userDTO)
 activate AUTHServ
 
 AUTHServ -> AUTHServ : validatePatientUser(userDTO)
+activate AUTHServ
+deactivate AUTHServ
 
 AUTHServ -> PATIENTServ : deletePatientProfile(patientIDString)
 activate PATIENTServ
