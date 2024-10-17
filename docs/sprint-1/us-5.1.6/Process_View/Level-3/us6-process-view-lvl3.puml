@@ -33,8 +33,12 @@ AUTHRepo --> AUTHServ : user
 deactivate AUTHRepo
 
 AUTHServ -> AUTHServ : hashPassword(passwordString)
+activate AUTHServ
+deactivate AUTHServ
 
 AUTHServ -> AUTHServ : matchPassword(passwordStringHashed, password)
+activate AUTHServ
+deactivate AUTHServ
 
 AUTHServ --> CONTROL : return
 deactivate AUTHServ

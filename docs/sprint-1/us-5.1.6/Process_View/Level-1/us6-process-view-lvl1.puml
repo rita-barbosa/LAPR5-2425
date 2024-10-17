@@ -20,6 +20,8 @@ deactivate BACK
 activate SYS
 
 SYS -> SYS : validates user
+activate SYS
+deactivate SYS
 
 SYS --> BACK : provides access to the system
 deactivate SYS

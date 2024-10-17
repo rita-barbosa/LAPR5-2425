@@ -110,7 +110,7 @@ it's diagram was deemed irrelevant.
 
 > #### **DTO (Data Transfer Object) Pattern**
 >
->* **Components:** UserDTO
+>* **Components:** UserDTO, EmailDTO
 >
 > DTOs are used to transfer data between layers, especially from the controller layer to the service layer or vice versa.
 > The purpose is to carry data in a structured and decoupled way without exposing internal entity representations directly.
