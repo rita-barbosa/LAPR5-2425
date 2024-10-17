@@ -1,0 +1,103 @@
+@startuml
+title "US 5.1.3. Process View (Level 3) [NO External IAM]"
+
+participant "<<Route>>\n PatientRoute" as ROUTE
+participant "<<Controller>>\n PatientController" as CONTROL
+
+participant "<<Service>>\n UserManager" as AUTHServ
+participant "<<Repository>>\n UserRepository" as AUTHRepo
+participant "<<DTO>>\n UserDTO" as UserDTO
+participant "<<Domain>>\n User" as USER
+participant "<<Service>>\n EmailService" as EMAILServ
+participant "<<Service>>\n TokenManagementService" as TOKENServ
+participant "<<component>>\n Token" as TOKEN
+participant "<<DTO>>\n TokenDTO" as TOKENDTO
+participant "<<Repository>>\n TokenRepo" as TOKENRepo
+participant "<<DTO>>\n PatientDTO" as PatientDTO
+participant "<<Service>>\n PatientService" as PATServ
+participant "<<Repository>>\n PatientRepository" as PATRepo
+participant "<<Domain>>\n Patient" as PATIENT
+
+[o-> ROUTE : POST(patientData)
+note right : All of a patient's info that\nis requested besides \nemail and password
+
+Activate ROUTE
+ROUTE -> CONTROL : activatePatientAccount(credentialsData, tokenData,patientData)
+activate CONTROL
+
+CONTROL -> TOKENDTO ** : toDTO(tokenData)
+CONTROL -> PatientDTO** : toDTO(patientData)
+
+CONTROL -> UserDTO ** : toDTO(credentialsData)
+
+CONTROL -> TOKENServ : validateToken(tokenDTO)
+activate TOKENServ
+
+TOKENServ -> TOKENRepo : findByID(tokenDtoID)
+activate TOKENRepo
+
+TOKENRepo --> TOKENServ : token
+deactivate TOKENRepo
+
+TOKENServ -> TOKENServ : checkTokenValidityUsage(token)
+activate TOKENServ
+deactivate TOKENServ
+TOKENServ -> TOKEN : updateValidity()
+Activate TOKEN
+TOKEN --> TOKENServ : return
+Deactivate TOKEN
+
+TOKENServ -> TOKENRepo : save(token)
+Activate TOKENRepo
+TOKENRepo --> TOKENServ : return
+Deactivate TOKENRepo
+
+TOKENServ --> CONTROL : true
+deactivate TOKENServ
+
+CONTROL -> AUTHServ : activateAccount(userDTO)
+activate AUTHServ
+
+AUTHServ -> AUTHRepo : findById(usernameString)
+activate AUTHRepo
+AUTHRepo --> AUTHServ : user
+deactivate AUTHRepo
+
+AUTHServ -> USER : activatePatientAccount()
+activate USER
+USER --> AUTHServ : return
+deactivate USER
+
+AUTHServ -> AUTHRepo : save(user)
+Activate AUTHRepo
+AUTHRepo --> AUTHServ : user
+Deactivate AUTHRepo
+
+AUTHServ -> PATServ : findByEmailOrPhone(patientDTO)
+activate PATServ
+PATServ -> PATRepo : findByEmailOrPhone(patientDTO.phoneNumber,patientDTO.email)
+Activate PATRepo
+
+PATRepo --> PATServ : patient
+Deactivate PATRepo
+PATServ --> AUTHServ : patient
+deactivate PATServ
+AUTHServ -> PATServ : associateUser(user, patient)
+activate PATServ
+PATServ -> PATIENT : associateUser(user)
+activate PATIENT
+PATIENT --> PATServ : return
+deactivate PATIENT
+PATServ -> PATRepo : save(patient)
+Activate PATRepo
+PATRepo --> PATServ : patient
+Deactivate PATRepo
+PATServ --> AUTHServ : return
+deactivate PATServ
+AUTHServ --> CONTROL : return
+deactivate AUTHServ
+CONTROL --> ROUTE : ok(sucess)
+Deactivate CONTROL
+<-- ROUTE : success/error
+Deactivate ROUTE
+@enduml

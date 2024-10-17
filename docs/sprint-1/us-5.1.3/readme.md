@@ -87,23 +87,41 @@ _// To do //_
 
 ## 4. Design
 
-### 4.1. Realization
+The logical, physical, development and scenario views diagrams are generic for all the use cases of the backoffice component.
+These diagrams can be found in the [generic views diagrams compilation file](../../team-decisions/views/general-views.md).
 
-_// To do //_
+The process view levels are here represented as they represent a process specific to each user story.
 
-### 4.2. Domain Model Excerpt
+#### Process View
+
+The level 1 and 2 of this view was considered not to add more information in addition to the SSD shown above.
+However level 3 is shown below.
+
+##### Process View - Level 3 - Part 1
+
+This process describes the first part, where the user registers itself into the system and the system confirms the email's authenticity.
+
+![Process View Level 3 Part 1](diagrams\Views\process-view-level-3-no-iam-part-1.svg)
+
+##### Process View - Level 3 - Part 2
+
+This process describes the second part, where the patient confirms the email, and associates it's newly registered account with the already existing profile.
+
+![Process View Level 3 Part 2](diagrams\Views\process-view-level-3-no-iam-part-2.svg)
+
+### 4.1. Domain Model Excerpt
 
 ![Domain Model Excerpt](Diagrams\Domain-Model\domain-model-excerpt.svg)
 
-### 4.3. Class Diagram
+### 4.2. Class Diagram
 
 _// To do //_
 
-### 4.4. Applied Patterns
+### 4.3. Applied Patterns
 
 _// To do //_
 
-### 4.5. Tests
+### 4.4. Tests
 
 _// To do - layout still in development //_ 
 
