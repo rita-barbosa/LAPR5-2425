@@ -63,6 +63,8 @@ OPREQServ --> CONTROL : operationRequestDTOList
 deactivate OPREQServ
 
 CONTROL -> CONTROL : json(operationRequestDTOList)
+activate CONTROL
+deactivate CONTROL
 
 CONTROL --> ROUTE : json
 deactivate CONTROL
