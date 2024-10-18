@@ -4,7 +4,7 @@ title "US 5.1.22. - Process View [Level 2]"
 
 autonumber
 
-participant "<<component>>\n Backoffice" as bo
+participant "<<component>>\n MDBackoffice" as bo
 
 [o-> bo: removeOperationType()
 activate bo

@@ -1,10 +1,10 @@
 @startuml
 
-title "US 5.1.8. - Process View [Level 2]"
+title "US 5.1.4. - Process View [Level 2]"
 
 autonumber
 
-participant "<<component>>\n Backoffice" as bo
+participant "<<component>>\n MDBackoffice" as bo
 
 [o-> bo: updatePatientInformation()
 activate bo
