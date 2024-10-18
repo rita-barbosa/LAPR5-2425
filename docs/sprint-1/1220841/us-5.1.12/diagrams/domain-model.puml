@@ -15,7 +15,6 @@ package "<<aggregate Staff>>" {
     class FirstName <<(V,#FF8B40)value object>> {}
     class LastName <<(V,#FF8B40)value object>> {}
     class FullName <<(V,#FF8B40)value object>> {}
-    class ContactInfo <<(V,#FF8B40)value object>> {}
     class Phone <<(V,#FF8B40)value object>> {}
     class Email <<(V,#FF8B40)value object>> {}
     class Slot <<(V,#FF8B40)value object>> {}
@@ -34,14 +33,13 @@ package "<<aggregate Specialization>>"{
 Name --> FirstName
 Name -> LastName
 Name --> FullName
-ContactInfo --> "1" Email
-ContactInfo --> "1" Phone
+Staff --> "1" Email
+Staff --> "1" Phone
 Staff --> "1" Name 
 Staff -> "1" StaffId
 Staff -left-> "1" Function
-Staff ---> "1" ContactInfo
 Staff --> "1" LicenseNumber 
-Staff ---> "1..*" Slot 
+Staff ---> "0..*" Slot 
 Staff --> "1" Specialization : specialized in
 Specialization --> "1" SpecializationDenomination
 Slot --> "1" Date

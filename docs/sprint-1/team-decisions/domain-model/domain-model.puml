@@ -9,7 +9,6 @@ class Name <<(V,#FF8B40)value object>> {}
 class FirstName <<(V,#FF8B40)value object>> {}
 class LastName <<(V,#FF8B40)value object>> {}
 class FullName <<(V,#FF8B40)value object>> {}
-class ContactInfo <<(V,#FF8B40)value object>> {}
 class Phone <<(V,#FF8B40)value object>> {}
 class Email <<(V,#FF8B40)value object>> {}
 class Slot <<(V,#FF8B40)value object>> {}
@@ -151,21 +150,21 @@ Patient -> "1" Status
 Patient -> "1" Name
 Patient --> "1" DateBirth
 Patient --> "1" Gender
-Patient ---> "1" ContactInfo
 Patient ---> "1" EmergencyContact
 Patient --> "1" MRN
 Patient --> "0..1" MedicalCondition
 Patient --> "1" AppoitmentHistory
-ContactInfo --> "1" Email
-ContactInfo --> "1" Phone
+Patient --> "1" Email
+Patient --> "1" Phone
 EmergencyContact --> "1" Phone
 
 Staff --> "1" Status
 Staff --> "1" Name
 Staff --> "1" Function
-Staff ---> "1" ContactInfo
+Staff ---> "1" Email
+Staff ---> "1" Phone
 Staff --> "1" LicenseNumber
-Staff ---> "1..*" Slot
+Staff ---> "0..*" Slot
 Staff --> "1" Specialization
 
 Specialization --> "1" SpecializationDenomination : defined by

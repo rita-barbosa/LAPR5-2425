@@ -25,6 +25,7 @@ dist/
 
 # JetBrains IDE
 .idea/
+.vs/
 
 # Unit test reports
 TEST*.xml
@@ -49,3 +50,5 @@ Thumbs.db
 *.wmv
 
 generate-plantuml-diagrams.sh
+*.db
+DDDNetCore/obj/
