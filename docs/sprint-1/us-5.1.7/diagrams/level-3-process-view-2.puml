@@ -1,0 +1,48 @@
+@startuml
+
+title "US 5.1.7. - Process View [Level 3]"
+
+autonumber
+participant "UserRoute" as ROUTE <<route>>
+participant "UserController" as CTRL <<controller>>
+participant "UserService" as SVC <<service>>
+participant "ExternalGoogleLoginAdapter" as IEL <<adapter>>
+participant "HttpContext" as HC
+
+[o-> ROUTE: GET /api/googleresponse
+activate ROUTE
+
+ROUTE -> CTRL: googleResponse()
+activate CTRL
+
+CTRL ->  SVC: googleResponse()
+activate SVC
+
+SVC -> IEL : googleResponse()
+activate IEL
+
+IEL -> HC : authenticateAsync(context, scheme)
+activate HC
+
+HC --> IEL: authenticateResult
+deactivate HC
+|||
+
+IEL --> SVC: authenticateResult
+deactivate IEL
+
+SVC --> CTRL: authenticateResult
+deactivate SVC
+
+CTRL --> ROUTE : success
+deactivate CTRL
+
+alt 
+<-- ROUTE: 200 Ok
+else 
+<-- ROUTE: 401 Unauthorized
+deactivate ROUTE
+end alt
+
+
+@enduml
