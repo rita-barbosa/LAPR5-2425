@@ -1,24 +1,29 @@
 using System;
 using DDDNetCore.Domain.Shared;
 
-namespace DDDNetCore.Domain.Specializations{
-    public class SpecializationDenomination : EntityId, IValueObject
+namespace DDDNetCore.Domain.Specializations
+{
+    public class SpecializationDenomination : EntityId
     {
 
-       public string Name {get; set; }
-
-        public SpecializationDenomination(String value):base(value)
+        public SpecializationDenomination(string denomination) : base(denomination)
         {
-            this.Name = value;
+            if (string.IsNullOrEmpty(denomination))
+            {
+                throw new ArgumentException("Specializations must have a denomination");
+            }
         }
 
-        override
-        protected  Object createFromString(String text){
-            return text;
+        protected override object createFromString(string text)
+        {
+            // Create a new SpecializationDenomination from a string
+            return new SpecializationDenomination(text);
         }
-        override
-        public String AsString(){
-            return (String) base.Value;
+
+        public override string AsString()
+        {
+            // Return the value as a string
+            return Value;
         }
     }
 }

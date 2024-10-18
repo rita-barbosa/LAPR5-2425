@@ -1,0 +1,55 @@
+using System;
+using DDDNetCore.Domain.Shared;
+
+namespace DDDNetCore.Domain.Staff
+{
+    public class StaffId : EntityId
+    {
+        public StaffId(string function, string seqNumber)
+              : base($"{function}{DateTime.Now.Year}{seqNumber}")
+        {
+            if (string.IsNullOrEmpty(function) || string.IsNullOrEmpty(seqNumber))
+            {
+                throw new ArgumentException("Function and sequential number cannot be null or empty.");
+            }
+
+            if (function != "N" && function != "D" && function != "O")
+            {
+                throw new ArgumentException("Function must be 'N' for nurse, 'D' for doctor, or 'O' for other.");
+            }
+
+            if (seqNumber.Length != 5 || !int.TryParse(seqNumber, out _))
+            {
+                throw new ArgumentException("Sequential number must be a 5-digit number.");
+            }
+        }
+        protected override object createFromString(string text)
+        {
+            if (string.IsNullOrEmpty(text) || text.Length < 10)
+            {
+                throw new ArgumentException("Invalid Staff ID format.");
+            }
+
+            string function = text[..1];
+            string year = text.Substring(1, 4);
+            string seqNumber = text[5..];
+
+            if (function != "N" && function != "D" && function != "O")
+            {
+                throw new ArgumentException("Function must be 'N' for nurse, 'D' for doctor, or 'O' for other.");
+            }
+
+            if (!int.TryParse(year, out _) || !int.TryParse(seqNumber, out _))
+            {
+                throw new ArgumentException("Invalid year or sequential number format.");
+            }
+
+            return text;
+        }
+
+        public override string AsString()
+        {
+            return Value;
+        }
+    }
+}

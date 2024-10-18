@@ -5,8 +5,8 @@ namespace DDDNetCore.Domain.Specializations
     public class Specialization : Entity<SpecializationDenomination>, IAggregateRoot
     {
 
-        public bool Active{ get;  private set; }
-
+        public bool Active { get; private set; }
+        private Specialization() { }
         public Specialization(string denomination)
         {
             this.Id = new SpecializationDenomination(denomination);
@@ -16,8 +16,8 @@ namespace DDDNetCore.Domain.Specializations
         public void ChangeDenomination(string denomination)
         {
             if (!this.Active)
-            // TODO:
-            //rever isto
+                // TODO:
+                //rever isto
                 throw new BusinessRuleValidationException("It is not possible to change the denomination to an inactive operation type.");
             this.Id = new SpecializationDenomination(denomination);
         }

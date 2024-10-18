@@ -8,6 +8,8 @@ using DDDNetCore.Infrastructure.Tokens;
 using DDDNetCore.Infrastructure.Categories;
 using DDDNetCore.Infrastructure.Products;
 using DDDNetCore.Infrastructure.Specializations;
+using DDDNetCore.Infrastructure.StaffProfiles;
+using DDDNetCore.Domain.Staff;
 
 
 namespace DDDNetCore.Infrastructure
@@ -23,10 +25,10 @@ namespace DDDNetCore.Infrastructure
         public DbSet<Token> Tokens { get; set; }
         public DbSet<TokenType> TokenTypes { get; set; }
         public DbSet<Specialization> Specializations { get; set; }
-
+        public DbSet<Staff> StaffProfiles { get; set; }
         public DDDNetCoreDbContext(DbContextOptions options) : base(options)
         {
-
+                
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -37,6 +39,7 @@ namespace DDDNetCore.Infrastructure
             modelBuilder.ApplyConfiguration(new TokenEntityTypeConfiguration());
             modelBuilder.ApplyConfiguration(new TokenTypeEntityTypeConfiguration());
             modelBuilder.ApplyConfiguration(new SpecializationEntityTypeConfiguration());
+            modelBuilder.ApplyConfiguration(new StaffEntityTypeConfiguration());
         }
     }
 }

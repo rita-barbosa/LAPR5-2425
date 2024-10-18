@@ -1,0 +1,58 @@
+using System;
+using System.Text.RegularExpressions;
+
+namespace DDDNetCore.Domain.Shared
+{
+    public class Phone : IValueObject
+    {
+        public string CountryCode;
+        public string PhoneNumber;
+
+
+        private Phone() { }
+        public Phone(string countryCode, string phoneNumber)
+        {
+            if (string.IsNullOrWhiteSpace(countryCode) || string.IsNullOrWhiteSpace(phoneNumber))
+            {
+                throw new ArgumentException("Phone number cannot be null or empty.");
+            }
+
+            // Optional: Validate the format of country code (e.g., numeric and starting with a '+')
+            if (!Regex.IsMatch(countryCode, @"^\+\d{1,3}$"))
+            {
+                throw new ArgumentException("Country code must start with '+' followed by 1 to 3 digits.", nameof(countryCode));
+            }
+
+            // Optional: Validate the format of phone number (e.g., allow only digits and specific characters)
+            if (!Regex.IsMatch(phoneNumber, @"^\d{7,15}$")) // Assuming valid phone numbers are between 7 and 15 digits
+            {
+                throw new ArgumentException("Phone number must be between 7 and 15 digits.", nameof(phoneNumber));
+            }
+            CountryCode = countryCode;
+            PhoneNumber = phoneNumber;
+        }
+
+        public Phone(string combinedPhoneNumber)
+        {
+            if (string.IsNullOrEmpty(combinedPhoneNumber))
+            {
+                throw new ArgumentException("Phone number cannot be null or empty.", nameof(combinedPhoneNumber));
+            }
+
+            // Use regex to extract country code and phone number allowing for space
+            var match = Regex.Match(combinedPhoneNumber, @"^(\+\d{1,3})\s(\d{7,15})$");
+            if (!match.Success)
+            {
+                throw new ArgumentException("Invalid phone number format. Use '+[country code] [phone number]'.", nameof(combinedPhoneNumber));
+            }
+
+            CountryCode = match.Groups[1].Value;
+            PhoneNumber = match.Groups[2].Value;
+        }
+
+        public override string ToString()
+        {
+            return $"{CountryCode} {PhoneNumber}";
+        }
+    }
+}

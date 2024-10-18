@@ -11,12 +11,14 @@ using DDDNetCore.Infrastructure.Products;
 using DDDNetCore.Infrastructure.Families;
 using DDDNetCore.Infrastructure.Tokens;
 using DDDNetCore.Infrastructure.Shared;
+using DDDNetCore.Infrastructure.StaffProfiles;
 using DDDNetCore.Domain.Shared;
 using DDDNetCore.Domain.Categories;
 using DDDNetCore.Domain.Products;
 using DDDNetCore.Domain.Families;
 using DDDNetCore.Domain.Tokens;
 using DDDNetCore.Domain.Emails;
+using DDDNetCore.Domain.Staff;
 
 namespace DDDNetCore
 {
@@ -94,6 +96,9 @@ namespace DDDNetCore
 
             services.AddTransient<ITokenTypeRepository, TokenTypeRepository>();
             services.AddTransient<TokenTypeService>();
+
+            services.AddTransient<IStaffRepository, StaffRepository>();
+            services.AddTransient<StaffService>();
         }
     }
 }
