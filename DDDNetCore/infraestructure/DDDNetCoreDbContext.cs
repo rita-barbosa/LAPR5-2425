@@ -3,9 +3,11 @@ using DDDNetCore.Domain.Categories;
 using DDDNetCore.Domain.Products;
 using DDDNetCore.Domain.Families;
 using DDDNetCore.Domain.Tokens;
+using DDDNetCore.Domain.Specializations;
 using DDDNetCore.Infrastructure.Tokens;
 using DDDNetCore.Infrastructure.Categories;
 using DDDNetCore.Infrastructure.Products;
+using DDDNetCore.Infrastructure.Specializations;
 
 
 namespace DDDNetCore.Infrastructure
@@ -20,6 +22,7 @@ namespace DDDNetCore.Infrastructure
 
         public DbSet<Token> Tokens { get; set; }
         public DbSet<TokenType> TokenTypes { get; set; }
+        public DbSet<Specialization> Specializations { get; set; }
 
         public DDDNetCoreDbContext(DbContextOptions options) : base(options)
         {
@@ -33,6 +36,7 @@ namespace DDDNetCore.Infrastructure
             modelBuilder.ApplyConfiguration(new FamilyEntityTypeConfiguration());
             modelBuilder.ApplyConfiguration(new TokenEntityTypeConfiguration());
             modelBuilder.ApplyConfiguration(new TokenTypeEntityTypeConfiguration());
+            modelBuilder.ApplyConfiguration(new SpecializationEntityTypeConfiguration());
         }
     }
 }
