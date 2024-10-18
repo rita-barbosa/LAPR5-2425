@@ -1,5 +1,4 @@
 using System;
-using Microsoft.EntityFrameworkCore.Diagnostics.Internal;
 
 namespace DDDNetCore.Domain.Shared
 {
