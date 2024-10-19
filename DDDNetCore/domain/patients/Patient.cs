@@ -1,3 +1,4 @@
+using System;
 using DDDNetCore.Domain.Shared;
 
 namespace DDDNetCore.Domain.Patients
@@ -11,8 +12,9 @@ namespace DDDNetCore.Domain.Patients
         public Phone EmergencyContact { get; private set; }
         public Email Email { get; private set; }
         public MedicalCondition MedicalCondition { get; private set; }
-        public Date DateBirth { get; private set; }
+        public DateTime DateBirth { get; private set; }
 
+        private Patient() {}
         public Patient(string firstName, string lastName, string fullName, Gender gender,
                         string countryCode, string phoneNumber, string emergencyContact, string email,
                         string medicalCondition, string dateBirth, string seqNumber)
@@ -27,7 +29,10 @@ namespace DDDNetCore.Domain.Patients
             EmergencyContact = new Phone(countryCode, emergencyContact);
             Email = new Email(email);
             MedicalCondition = new MedicalCondition(medicalCondition);
-            DateBirth = new Date(dateBirth);
+            if (!DateTime.TryParse(dateBirth, out DateTime DateBirth))
+            {
+                throw new ArgumentException("The Date of Birth format is incorrect");
+            }
             Gender = gender;
         }
 
@@ -45,7 +50,10 @@ namespace DDDNetCore.Domain.Patients
             EmergencyContact = new Phone(emergencyContact);
             Email = new Email(email);
             MedicalCondition = new MedicalCondition(medicalCondition);
-            DateBirth = new Date(dateBirth);
+            if (!DateTime.TryParse(dateBirth, out DateTime DateBirth))
+            {
+                throw new ArgumentException("The Date of Birth format is incorrect");
+            }
             Gender = gender;
         }
     }

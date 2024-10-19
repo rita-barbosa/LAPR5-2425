@@ -19,6 +19,7 @@ using DDDNetCore.Domain.Families;
 using DDDNetCore.Domain.Tokens;
 using DDDNetCore.Domain.Emails;
 using DDDNetCore.Domain.StaffProfiles;
+using DDDNetCore.Domain.Patients;
 
 namespace DDDNetCore
 {
@@ -99,6 +100,9 @@ namespace DDDNetCore
 
             services.AddTransient<IStaffRepository, StaffRepository>();
             services.AddTransient<StaffService>();
+
+            services.AddTransient<IPatientRepository, PatientRepository>();
+            services.AddTransient<PatientService>();
         }
     }
 }

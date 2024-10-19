@@ -10,6 +10,7 @@ using DDDNetCore.Infrastructure.Products;
 using DDDNetCore.Infrastructure.Specializations;
 using DDDNetCore.Infrastructure.StaffProfiles;
 using DDDNetCore.Domain.StaffProfiles;
+using DDDNetCore.Domain.Patients;
 
 
 namespace DDDNetCore.Infrastructure
@@ -26,6 +27,7 @@ namespace DDDNetCore.Infrastructure
         public DbSet<TokenType> TokenTypes { get; set; }
         public DbSet<Specialization> Specializations { get; set; }
         public DbSet<Staff> StaffProfiles { get; set; }
+        public DbSet<Patient> Patients { get; set; }
         public DDDNetCoreDbContext(DbContextOptions options) : base(options)
         {
                 
@@ -40,6 +42,7 @@ namespace DDDNetCore.Infrastructure
             modelBuilder.ApplyConfiguration(new TokenTypeEntityTypeConfiguration());
             modelBuilder.ApplyConfiguration(new SpecializationEntityTypeConfiguration());
             modelBuilder.ApplyConfiguration(new StaffEntityTypeConfiguration());
+            modelBuilder.ApplyConfiguration(new PatientEntityTypeConfiguration());
         }
     }
 }
