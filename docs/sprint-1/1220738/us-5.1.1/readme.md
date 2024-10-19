@@ -63,15 +63,39 @@ Can you please clarify if backoffice users registration uses the IAM system? And
 >
 > Answer: Assume the system only supports one IAM.
 
+> Question: Greetings,
+Regarding the creation of staff users and profiles, I know there's been a lot of questions about this matter, but my team just got very confused about this whole process, so I felt the need to ask for some clarification.
+>
+>There are 2 separate use cases regarding backoffice users: One for the creation of the user account and another one for the creation of the staff's profile.
+>
+>- Is there a fixed order for these operations to take place? Does the admin always create the profile first or can he create the user first aswell?
+>
+>- If the profile is created first, for example, should the user be created automaticaly or should the admin create the user afterwards, having to do 2 distinct operations?
+>
+> Answer: Recommended Flow:
+Order of operations: The system should support profile first. The admin should then create the user account. the account and user profile are linked by the professional email address or username (depending on the IAM provider).
+>Distinct Operations: The operations should remain distinct, even if they are performed in quick succession. This ensures that each step (creating user credentials and creating a staff profile) is carefully tracked and managed.
+>Validation: The system should ensure that a staff profile and user account are both created and linked before the staff member can access the system. 
+
+> Question: What does the client define as an out-of-band process?
+>
+> Answer: This applies mainly to the use of an external IAM module. it means the creation of the account is done at the IAM, thus is done outside of the system we are building.
+
 ## 3. Analysis
 
 According to our analysis of this User Story and it's acceptance criterias, we have achieved the following understanding of the order of events that are supposed to happen in order for this functionality to be achieved completly:
 
-### System Sequence Diagram - Admin
+### System Sequence Diagram
 
-The following diagram describes the first part of this User Story, what the admin must do to start the registration process.
+The following diagrams describe the first part of this User Story, what the admin must do to start the registration process.
 
-![SSD - Admin](Diagrams/SSD/system-sequence-diagram-admin.svg)
+#### Create a Profile for the Staff
+
+![SSD - Admin | Create Profile](Diagrams/SSD/system-sequence-diagram-admin-staff-profile.svg)
+
+#### Create a User for the Staff
+
+![SSD - Admin | Create User](Diagrams/SSD/system-sequence-diagram-admin-user.svg)
 
 ### System Sequence Diagram - Staff
 
@@ -95,7 +119,13 @@ However level 3 is shown below.
 
 #### 4.1.1 Process View - Admin
 
-![Process View - Admin](Diagrams\Views\process-view-level-3-ADMIN.svg)
+##### Create Staff Profile
+
+![Process View - Admin](Diagrams\Views\process-view-level-3-staff-profile.svg)
+
+##### Create User
+
+![Process View - Admin](Diagrams\Views\process-view-level-3-user.svg)
 
 #### 4.1.2 Process View - Staff
 
@@ -105,7 +135,7 @@ However level 3 is shown below.
 
 ![Domain Model Excerpt](Diagrams\Domain-Model\domain-model-excerpt.svg)
 
-### 4.3. Class Diagram2
+### 4.3. Class Diagram
 
 _// To do //_
 

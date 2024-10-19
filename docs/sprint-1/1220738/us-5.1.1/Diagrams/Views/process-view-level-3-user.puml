@@ -1,34 +1,37 @@
 @startuml
-title "US 5.1.1. Process View (Level 3)"
+title "US 5.1.1. Process View (Level 3) - Create User"
 
 participant "<<Route>>\n StaffRoute" as ROUTE
 participant "<<Controller>>\n StaffController" as CONTROL
 
-participant "<<Service>>\n AuthManagementService" as AUTHServ
-
+participant "<<Service>>\n UserManager" as AUTHServ
 participant "<<DTO>>\n UserDTO" as UserDTO
 participant "<<Domain>>\n User" as USER
 participant "<<Repository>>\n UserRepository" as AUTHRepo
+
 participant "<<Service>>\n EmailService" as EMAILServ
+
 participant "<<Service>>\n TokenManagementService" as TOKENServ
 participant "<<component>>\n Token" as TOKEN
 participant "<<DTO>>\n TokenDTO" as TOKENDTO
 participant "<<Repository>>\n TokenRepo" as TOKENRepo
 
-[o-> ROUTE : POST(credentialsData)
-note right : email is staff's\nno password\nright role
+participant "<<Service>>\n StaffService" as STAFFServ
+participant "<<Repository>>\n StaffRepository" as STAFFRepo
+participant "<<Domain>>\n Staff" as STAFF
 
+
+[o-> ROUTE : POST(userData)
 Activate ROUTE
 
-ROUTE -> CONTROL : createNewBackofficeUser(credentialsData)
-
+ROUTE -> CONTROL : createBackofficeUser(userData)
 Activate CONTROL
 
-CONTROL -> UserDTO** : toDTO(credentialsData)
+CONTROL -> UserDTO** : toDTO(userData)
 CONTROL -> AUTHServ : checkIfUserExists(userDTO)
 Activate AUTHServ
 
-AUTHServ -> AUTHRepo : existsById(usernameString)
+AUTHServ -> AUTHRepo : existsById(userDTO.email)
 Activate AUTHRepo
 
 AUTHRepo --> AUTHServ : boolean
@@ -48,8 +51,30 @@ Activate AUTHRepo
 AUTHRepo --> AUTHServ : user
 Deactivate AUTHRepo
 
+AUTHServ -> STAFFServ : findByEmail(userDTO.email)
+activate STAFFServ
+STAFFServ -> STAFFRepo : findByEmail(userDTO.email)
+Activate STAFFRepo
+
+STAFFRepo --> STAFFServ : staff
+Deactivate STAFFRepo
+STAFFServ --> AUTHServ : staff
+deactivate STAFFServ
+AUTHServ -> STAFFServ : associateUser(user, staff)
+activate STAFFServ
+STAFFServ -> STAFF : associateUser(user)
+activate STAFF
+STAFF --> STAFFServ : return
+deactivate STAFF
+STAFFServ -> STAFFRepo : save(staff)
+Activate STAFFRepo
+STAFFRepo --> STAFFServ : staff
+Deactivate STAFFRepo
+STAFFServ --> AUTHServ : return
+deactivate STAFFServ
+
 AUTHServ --> CONTROL : return
-Deactivate 
+deactivate AUTHServ
 
 CONTROL -> EMAILServ : sendSetupLink(userDTO)
 Activate EMAILServ
@@ -71,8 +96,10 @@ TOKENServ --> EMAILServ : tokenDTO
 deactivate TOKENServ
 
 EMAILServ -> EMAILServ : sendEmail(emailString, tokenDTO, emailTitle, emailBody)
+Activate EMAILServ
 
 EMAILServ --> CONTROL : return
+deactivate EMAILServ
 deactivate EMAILServ
 
 CONTROL --> ROUTE : return
