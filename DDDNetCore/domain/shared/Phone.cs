@@ -17,13 +17,12 @@ namespace DDDNetCore.Domain.Shared
                 throw new ArgumentException("Phone number cannot be null or empty.");
             }
 
-            // Optional: Validate the format of country code (e.g., numeric and starting with a '+')
+          
             if (!Regex.IsMatch(countryCode, @"^\+\d{1,3}$"))
             {
                 throw new ArgumentException("Country code must start with '+' followed by 1 to 3 digits.", nameof(countryCode));
             }
 
-            // Optional: Validate the format of phone number (e.g., allow only digits and specific characters)
             if (!Regex.IsMatch(phoneNumber, @"^\d{7,15}$")) // Assuming valid phone numbers are between 7 and 15 digits
             {
                 throw new ArgumentException("Phone number must be between 7 and 15 digits.", nameof(phoneNumber));
