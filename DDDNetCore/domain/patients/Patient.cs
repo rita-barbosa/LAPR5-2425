@@ -11,7 +11,7 @@ namespace DDDNetCore.Domain.Patients
         public Phone PhoneNumber { get; private set; }
         public Phone EmergencyContact { get; private set; }
         public Email Email { get; private set; }
-        public MedicalCondition MedicalCondition { get; private set; }
+        public MedicalCondition? MedicalCondition { get; private set; }
         public DateTime DateBirth { get; private set; }
 
         private Patient() {}
