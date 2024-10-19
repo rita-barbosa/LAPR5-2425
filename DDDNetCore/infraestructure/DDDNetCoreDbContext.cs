@@ -11,11 +11,13 @@ using DDDNetCore.Infrastructure.Specializations;
 using DDDNetCore.Infrastructure.StaffProfiles;
 using DDDNetCore.Domain.StaffProfiles;
 using DDDNetCore.Domain.Patients;
+using DDDNetCore.Domain.Users;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 
 namespace DDDNetCore.Infrastructure
 {
-    public class DDDNetCoreDbContext : DbContext
+    public class DDDNetCoreDbContext : IdentityDbContext<User, Role, string>
     {
         public DbSet<Category> Categories { get; set; }
 
@@ -30,11 +32,12 @@ namespace DDDNetCore.Infrastructure
         public DbSet<Patient> Patients { get; set; }
         public DDDNetCoreDbContext(DbContextOptions options) : base(options)
         {
-                
+
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
             modelBuilder.ApplyConfiguration(new CategoryEntityTypeConfiguration());
             modelBuilder.ApplyConfiguration(new ProductEntityTypeConfiguration());
             modelBuilder.ApplyConfiguration(new FamilyEntityTypeConfiguration());

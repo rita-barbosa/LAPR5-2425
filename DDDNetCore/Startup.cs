@@ -20,6 +20,11 @@ using DDDNetCore.Domain.Tokens;
 using DDDNetCore.Domain.Emails;
 using DDDNetCore.Domain.StaffProfiles;
 using DDDNetCore.Domain.Patients;
+using Microsoft.AspNetCore.Identity;
+using DDDNetCore.Domain.Users;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace DDDNetCore
 {
@@ -35,6 +40,30 @@ namespace DDDNetCore
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
+                {
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuer = true,
+                        ValidateAudience = true,
+                        ValidateLifetime = true,
+                        ValidateIssuerSigningKey = true,
+                        ValidIssuer = Configuration["Jwt:Issuer"],
+                        ValidAudience = Configuration["Jwt:Audience"],
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:Key"]))
+                    };
+                });
+            services.AddAuthorization(options =>
+                     {
+                         options.AddPolicy("Admin", policy => policy.RequireRole("Admin")); // Require Admin role
+
+                     });
+            services.AddIdentityCore<User>()
+                .AddRoles<Role>()
+                .AddEntityFrameworkStores<DDDNetCoreDbContext>();
+
             services.AddDbContext<DDDNetCoreDbContext>(opt =>
                 opt.UseSqlite(Configuration.GetConnectionString("DefaultConnection"))
                 .ReplaceService<IValueConverterSelector, StronglyEntityIdValueConverterSelector>());
@@ -44,37 +73,48 @@ namespace DDDNetCore
             services.AddControllers().AddNewtonsoftJson();
             services.AddSwaggerGen();
         }
+        public void SeedData(IApplicationBuilder app)
+        {
+            using IServiceScope scope = app.ApplicationServices.CreateScope();
+            RoleManager<Role> roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<Role>>();
+            string[] roleNames = { "Admin" };
+            foreach (string roleName in roleNames)
+            {
+                if (!roleManager.RoleExistsAsync(roleName).GetAwaiter().GetResult())
+                {
+                    roleManager.CreateAsync(new Role(roleName)).GetAwaiter().GetResult();
+                }
+            }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+            // Optionally, can create a default user here if needed
+        }
+
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                app.UseSwagger();
+                app.UseSwaggerUI();
             }
             else
             {
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
 
-            // Enable middleware to serve Swagger-generated JSON endpoints
-            app.UseSwagger();
-
-            // Enable middleware to serve Swagger UI (HTML page)
-            // Available at /swagger/index.html
-            app.UseSwaggerUI();
-
             app.UseHttpsRedirection();
-
             app.UseRouting();
 
+            //DON'T CHANGE ORDER
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
             });
+
+            SeedData(app);
         }
 
         public void ConfigureMyServices(IServiceCollection services)
@@ -104,5 +144,7 @@ namespace DDDNetCore
             services.AddTransient<IPatientRepository, PatientRepository>();
             services.AddTransient<PatientService>();
         }
+
+
     }
 }
