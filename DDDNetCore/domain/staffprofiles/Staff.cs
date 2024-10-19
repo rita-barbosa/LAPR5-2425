@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using DDDNetCore.Domain.Shared;
 using DDDNetCore.Domain.Specializations;
 
-namespace DDDNetCore.Domain.Staff
+namespace DDDNetCore.Domain.StaffProfiles
 {
     public class Staff : Entity<StaffId>, IAggregateRoot
     {
@@ -27,7 +27,6 @@ namespace DDDNetCore.Domain.Staff
 
             LicenseNumber = new LicenseNumber(licenseNumber);
             Name = new Name(firstName, lastName);
-            //ContactInfo = new ContactInfo(email, phoneNumber);
             Phone = new Phone(phoneNumber);
             Email = new Email(email);
             Slots = [];
@@ -45,7 +44,6 @@ namespace DDDNetCore.Domain.Staff
 
             LicenseNumber = new LicenseNumber(licenseNumber);
             Name = new Name(firstName, lastName, fullName);
-            //ContactInfo = new ContactInfo(email, countryCode, phoneNumber);
             Phone = new Phone(countryCode, phoneNumber);
             Email = new Email(email);
             Slots = [];

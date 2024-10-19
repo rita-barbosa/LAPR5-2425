@@ -1,7 +1,7 @@
 using System;
 using DDDNetCore.Domain.Shared;
 
-namespace DDDNetCore.Domain.Staff
+namespace DDDNetCore.Domain.StaffProfiles
 {
     public class StaffId : EntityId
     {
@@ -23,6 +23,12 @@ namespace DDDNetCore.Domain.Staff
                 throw new ArgumentException("Sequential number must be a 5-digit number.");
             }
         }
+
+        private StaffId(string function, string year, string seqNumber) : base($"{function}{year}{seqNumber}")
+        {
+
+        }
+
         protected override object createFromString(string text)
         {
             if (string.IsNullOrEmpty(text) || text.Length < 10)
@@ -44,7 +50,7 @@ namespace DDDNetCore.Domain.Staff
                 throw new ArgumentException("Invalid year or sequential number format.");
             }
 
-            return text;
+            return new StaffId(function, year, seqNumber);
         }
 
         public override string AsString()

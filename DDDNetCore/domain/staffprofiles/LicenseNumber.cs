@@ -1,7 +1,7 @@
 using System;
 using DDDNetCore.Domain.Shared;
 
-namespace DDDNetCore.Domain.Staff
+namespace DDDNetCore.Domain.StaffProfiles
 {
     public class LicenseNumber : IValueObject
     {
