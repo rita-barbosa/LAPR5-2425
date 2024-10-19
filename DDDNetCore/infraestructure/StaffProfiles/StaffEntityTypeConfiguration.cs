@@ -31,6 +31,7 @@ namespace DDDNetCore.Infrastructure.StaffProfiles
                     .IsRequired()
                     .HasColumnName("LastName");
                 n.Property(name => name.FullName)
+                    .IsRequired()
                     .HasColumnName("FullName");
             });
 
@@ -48,36 +49,14 @@ namespace DDDNetCore.Infrastructure.StaffProfiles
             builder.OwnsOne(c => c.Email, ea =>
             {
                 ea.Property(e => e.EmailAddress)
-                    .IsRequired() // Ensure EmailAddress is required
+                    .IsRequired() 
                     .HasColumnName("EmailAddress");
             });
 
-            // builder.OwnsOne(b => b.ContactInfo, ci =>
-            // {
-            //     ci.OwnsOne(c => c.PhoneNumber, pn =>
-            //     {
-            //         pn.Property(p => p.PhoneNumber)
-            //             .IsRequired() // Ensure PhoneNumber is required
-            //             .HasColumnName("PhoneNumber");
-
-            //         pn.Property(p => p.CountryCode)
-            //             .IsRequired() // Ensure CountryCode is required
-            //             .HasColumnName("CountryCode");
-            //     });
-
-            //     ci.OwnsOne(c => c.EmailAdress, ea =>
-            //     {
-            //         ea.Property(e => e.EmailAddress)
-            //             .IsRequired() // Ensure EmailAddress is required
-            //             .HasColumnName("EmailAddress");
-            //     });
-            // });
-
-
-            // Configure Function as a value object
+      
             builder.OwnsOne(b => b.Function, f =>
             {
-                f.Property(func => func.Description) // Assuming Function is a value object with a property `Value`
+                f.Property(func => func.Description)
                     .IsRequired()
                     .HasColumnName("Function");
             });
