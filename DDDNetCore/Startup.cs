@@ -18,7 +18,7 @@ using DDDNetCore.Domain.Products;
 using DDDNetCore.Domain.Families;
 using DDDNetCore.Domain.Tokens;
 using DDDNetCore.Domain.Emails;
-using DDDNetCore.Domain.Staff;
+using DDDNetCore.Domain.StaffProfiles;
 
 namespace DDDNetCore
 {

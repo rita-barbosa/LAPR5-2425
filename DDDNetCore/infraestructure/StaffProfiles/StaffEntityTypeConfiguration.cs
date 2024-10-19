@@ -1,5 +1,5 @@
 using DDDNetCore.Domain.Specializations;
-using DDDNetCore.Domain.Staff;
+using DDDNetCore.Domain.StaffProfiles;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Org.BouncyCastle.Asn1.Eac;

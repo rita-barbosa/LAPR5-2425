@@ -9,7 +9,7 @@ using DDDNetCore.Infrastructure.Categories;
 using DDDNetCore.Infrastructure.Products;
 using DDDNetCore.Infrastructure.Specializations;
 using DDDNetCore.Infrastructure.StaffProfiles;
-using DDDNetCore.Domain.Staff;
+using DDDNetCore.Domain.StaffProfiles;
 
 
 namespace DDDNetCore.Infrastructure

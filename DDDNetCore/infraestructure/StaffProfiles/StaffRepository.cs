@@ -1,4 +1,4 @@
-using DDDNetCore.Domain.Staff;
+using DDDNetCore.Domain.StaffProfiles;
 using DDDNetCore.Infrastructure.Shared;
 
 namespace DDDNetCore.Infrastructure.StaffProfiles
