@@ -1,0 +1,53 @@
+using System;
+using DDDNetCore.Domain.Shared;
+using DDDNetCore.Domain.Specializations;
+
+namespace DDDNetCore.Domain.OperationTypes.ValueObjects.RequiredStaff
+{
+    public class RequiredStaff : Entity<RequiredStaffId>
+    {
+
+        public NumberStaff StaffQuantity { get;  private set; }
+        public Function Function { get;  private set; }
+        public SpecializationDenomination SpecializationId { get;  private set; }
+
+        public RequiredStaff(int staffneeded, string function,  string specialization)
+        {
+            this.Id = new RequiredStaffId(specialization);
+            this.StaffQuantity = new NumberStaff(staffneeded);
+            this.SpecializationId = new SpecializationDenomination(specialization);
+            this.Function = MapFunction(function);
+        }
+
+        private static Function MapFunction(string functionDescription)
+        {
+            return functionDescription.ToLower() switch
+            {
+                "intern" => Function.Intern,
+                "doctor" => Function.Doctor,
+                "nurse" => Function.Nurse,
+                "assistant" => Function.Assistant,
+                _ => throw new ArgumentException("Invalid function description")
+            };
+        }
+
+        public void ChangeStaffQuantity(int quantity)
+        {
+            this.StaffQuantity = new NumberStaff(quantity);
+        }
+
+
+        public void ChangeFunction(string function)
+        {
+            this.Function = MapFunction(function);
+        }
+
+        
+        public void ChangeSpecialization(string specialization)
+        {
+            this.SpecializationId = new SpecializationDenomination(specialization);
+        }
+
+       
+    }
+}

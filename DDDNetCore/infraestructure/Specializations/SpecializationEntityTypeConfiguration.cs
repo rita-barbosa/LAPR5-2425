@@ -8,9 +8,16 @@ namespace DDDNetCore.Infrastructure.Specializations
     {
         public void Configure(EntityTypeBuilder<Specialization> builder)
         {
-            //builder.ToTable("Families", SchemaNames.DDDNetCore);
             builder.HasKey(b => b.Id);
-            //builder.Property<bool>("_active").HasColumnName("Active");
+
+            builder.OwnsOne(d => d.Denomination, dn =>
+            {
+                dn.Property(denomination => denomination.Denomination)
+                .IsRequired()
+                .HasColumnName("Denomination");
+            });
+
+            builder.ToTable("Specialization");
         }
     }
 }

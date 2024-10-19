@@ -19,19 +19,19 @@ namespace DDDNetCore.Domain.Specializations
         {
             var list = await this._repo.GetAllAsync();
             
-            List<SpecializationDto> listDto = list.ConvertAll<SpecializationDto>(spe => new SpecializationDto{Denomination = spe.Id.AsString()});
+            List<SpecializationDto> listDto = list.ConvertAll<SpecializationDto>(spe => new SpecializationDto{Denomination = spe.Denomination.Denomination});
 
             return listDto;
         }
 
-        public async Task<SpecializationDto> GetByIdAsync(SpecializationDenomination id)
+        public async Task<SpecializationDto> GetByIdAsync(SpecializationId id)
         {
             var spe = await this._repo.GetByIdAsync(id);
             
             if(spe == null)
                 return null;
 
-            return new SpecializationDto{Denomination = spe.Id.AsString()};
+            return new SpecializationDto{Denomination = spe.Denomination.Denomination};
         }
 
         public async Task<SpecializationDto> AddAsync(SpecializationDto dto)
@@ -42,53 +42,34 @@ namespace DDDNetCore.Domain.Specializations
 
             await this._unitOfWork.CommitAsync();
 
-            return new SpecializationDto { Denomination = specialization.Id.AsString() };
+            return new SpecializationDto { Denomination = specialization.Denomination.Denomination };
         }
 
         public async Task<SpecializationDto> UpdateAsync(SpecializationDto dto)
         {
-            var specialization = await this._repo.GetByIdAsync(new SpecializationDenomination(dto.Denomination)); 
+            var specialization = await this._repo.GetByIdAsync(new SpecializationId(dto.Denomination)); 
 
             if (specialization == null)
                 return null;   
 
-            // change all field
             specialization.ChangeDenomination(dto.Denomination);
             
             await this._unitOfWork.CommitAsync();
 
-            return new SpecializationDto { Denomination = specialization.Id.AsString() };
+            return new SpecializationDto { Denomination = specialization.Denomination.Denomination };
         }
 
-        public async Task<SpecializationDto> InactivateAsync(SpecializationDenomination id)
+         public async Task<SpecializationDto> DeleteAsync(SpecializationId id)
         {
             var specialization = await this._repo.GetByIdAsync(id); 
 
             if (specialization == null)
                 return null;   
 
-            // change all fields
-            specialization.MarkAsInative();
-            
-            await this._unitOfWork.CommitAsync();
-
-            return new SpecializationDto { Denomination = specialization.Id.AsString() };
-        }
-
-         public async Task<SpecializationDto> DeleteAsync(SpecializationDenomination id)
-        {
-            var specialization = await this._repo.GetByIdAsync(id); 
-
-            if (specialization == null)
-                return null;   
-
-            if (specialization.Active)
-                throw new BusinessRuleValidationException("It is not possible to delete an active specialization.");
-            
             this._repo.Remove(specialization);
             await this._unitOfWork.CommitAsync();
 
-            return new SpecializationDto { Denomination = specialization.Id.AsString() };
+            return new SpecializationDto { Denomination = specialization.Denomination.Denomination };
         }
     }
 }

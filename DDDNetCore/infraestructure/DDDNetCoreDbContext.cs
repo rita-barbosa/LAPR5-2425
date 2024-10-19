@@ -4,6 +4,7 @@ using DDDNetCore.Domain.Products;
 using DDDNetCore.Domain.Families;
 using DDDNetCore.Domain.Tokens;
 using DDDNetCore.Domain.Specializations;
+using DDDNetCore.Domain.OperationTypes;
 using DDDNetCore.Infrastructure.Tokens;
 using DDDNetCore.Infrastructure.Categories;
 using DDDNetCore.Infrastructure.Products;
@@ -13,6 +14,7 @@ using DDDNetCore.Domain.StaffProfiles;
 using DDDNetCore.Domain.Patients;
 using DDDNetCore.Domain.Users;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using DDDNetCore.Infrastructure.OperationTypes;
 
 
 namespace DDDNetCore.Infrastructure
@@ -28,6 +30,8 @@ namespace DDDNetCore.Infrastructure
         public DbSet<Token> Tokens { get; set; }
         public DbSet<TokenType> TokenTypes { get; set; }
         public DbSet<Specialization> Specializations { get; set; }
+        public DbSet<OperationType> OperationTypes { get; set; }
+
         public DbSet<Staff> StaffProfiles { get; set; }
         public DbSet<Patient> Patients { get; set; }
         public DDDNetCoreDbContext(DbContextOptions options) : base(options)
@@ -44,6 +48,8 @@ namespace DDDNetCore.Infrastructure
             modelBuilder.ApplyConfiguration(new TokenEntityTypeConfiguration());
             modelBuilder.ApplyConfiguration(new TokenTypeEntityTypeConfiguration());
             modelBuilder.ApplyConfiguration(new SpecializationEntityTypeConfiguration());
+            modelBuilder.ApplyConfiguration(new OperationTypeEntityTypeConfiguration());
+
             modelBuilder.ApplyConfiguration(new StaffEntityTypeConfiguration());
             modelBuilder.ApplyConfiguration(new PatientEntityTypeConfiguration());
         }

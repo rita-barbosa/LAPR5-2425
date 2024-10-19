@@ -3,28 +3,35 @@ using DDDNetCore.Domain.Shared;
 
 namespace DDDNetCore.Domain.Specializations
 {
-    public class SpecializationDenomination : EntityId
+    public class SpecializationDenomination : IValueObject
     {
 
-        public SpecializationDenomination(string denomination) : base(denomination)
+        public string Denomination { get;  private set; }
+
+        public SpecializationDenomination(string denomination)
         {
             if (string.IsNullOrEmpty(denomination))
             {
-                throw new ArgumentException("Specializations must have a denomination");
+                throw new ArgumentException("Specialization Denomination cannot be null or empty.");
             }
+            this.Denomination = denomination;
         }
 
-        protected override object createFromString(string text)
+        public override bool Equals(object obj)
         {
-            // Create a new SpecializationDenomination from a string
-            return new SpecializationDenomination(text);
+            if (obj == null || GetType() != obj.GetType())
+            {
+                return false;
+            }
+
+            var other = (SpecializationDenomination)obj;
+            return Denomination == other.Denomination;
         }
 
-        public override string AsString()
+        public override int GetHashCode()
         {
-            // Return the value as a string
-            return Value;
+            return HashCode.Combine(Denomination);
         }
+
     }
 }
-

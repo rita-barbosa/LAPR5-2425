@@ -1,3 +1,5 @@
+using System;
+
 namespace DDDNetCore.Domain.Shared
 {
     public class Function : IValueObject
@@ -12,6 +14,10 @@ namespace DDDNetCore.Domain.Shared
 
         private Function(string description)
         {
+            if (string.IsNullOrEmpty(description))
+            {
+                throw new ArgumentException("Function description cannot be null or empty.");
+            }
             Description = description;
         }
 
