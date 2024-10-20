@@ -38,6 +38,8 @@ Estimated Duration.
 
 - 5.1.20.3. | The system logs the creation of new operation types and makes them available for scheduling immediately.
 
+- 5.1.20.4. | The patient must have access to the operation type history and past appointments much link with the issued operation type version when they were created.
+
 
 **Dependencies/References:**
 
@@ -102,6 +104,21 @@ This functionality does not have dependencies.
 > is to use an auxiliary table to store operation history, ensuring you can track changes and retrieve past data, much 
 > like how VAT changes in invoices are handled.
 
+
+> **Question:** What are the technical options for managing reference data that changes over time, like VAT rates?
+>
+> **Answer:** There are two main approaches:
+> 1. **Store exact values**: In this method, when creating an invoice, you save the exact VAT value in the invoice record, ensuring that past invoices reflect the VAT rate at the time they were issued.
+> 2. **Versioned reference data**: You maintain a versioned VAT table, with columns for the effective start and end dates, ensuring that the system uses the correct VAT rate for any given period. This allows for tracking changes over time without altering historical data.
+
+
+> **Question:** In US 5.1.22, when editing an operation, what happens to the scheduled ones? Do they get updated accordingly and rescheduled, or do they remain the same?
+> Also regarding 5.1.20 and 5.1.21 Can the name be edited and can the name be the same as a deactivated operation?
+>
+> **Answer:** The name of the operation type must be unique. even if an operation type is "deactivated" it still exists in the system and as such no other operation type can have the same name.
+> When editing an operation type there is the need to indicate a date when that configuration will be put in place. If there are operations of that type, scheduled after that date, the system should ideally start a rescheduling.
+
+
 ## 3. Analysis
 
 
@@ -109,9 +126,9 @@ The system has a predefined operation types list that  reflect the available pro
 has the permissions to add new ones as it is required, with the following attributes:
 
 - **Operation Name** | it has to be unique
-- **Required Staff by Specialization** | a list of the healthcare professionals needed to proceed with the surgery and each of their specializations
-- **Estimated Duration** | in hours
-- **Phases (Anesthesia/patient preparation, Surgery, Cleaning)** | each step that constitutes the operation and the time each one takes
+- **Required Staff by Specialization** | a list of the healthcare professionals needed to proceed with the surgery and each of their specializations and function
+- **Estimated Duration** | in minutes
+- **Phases (Anesthesia/patient preparation, Surgery, Cleaning)** | each step that constitutes the operation and the time in minutes each one takes
 
 After the operation type has been created, the system registers the event in the system logs.
 
@@ -154,7 +171,7 @@ The process view levels are here represented as they represent a process specifi
 
 > #### **Repository Pattern**
 >
->* **Components:** OperationTypeRepository, SpecializationRepository, RoleRepository
+>* **Components:** OperationTypeRepository, SpecializationRepository
 >
 > The repositories are responsible for data access and retrieval, separating the logic for interacting with the database
 > from the services and other layers. This pattern helps in abstracting the persistence logic.
@@ -162,7 +179,7 @@ The process view levels are here represented as they represent a process specifi
 
 > #### **DTO (Data Transfer Object) Pattern**
 >
->* **Components:** SpecializationDTO, RoleDTO, StaffSpecializationAndRoleResponseDTO, OperationTypeDTO
+>* **Components:** SpecializationDTO, FunctionDTO, SpecializationAndFunctionResponseDTO, OperationTypeDTO
 >
 > DTOs are used to transfer data between layers, especially from the controller layer to the service layer or vice versa.
 > The purpose is to carry data in a structured and decoupled way without exposing internal entity representations directly.
@@ -171,7 +188,7 @@ The process view levels are here represented as they represent a process specifi
 
 > #### **Facade Pattern**
 >
->* **Components:** OperationTypeService, SpecializationService, RoleService
+>* **Components:** OperationTypeService, SpecializationService
 >
 > These services act as a Facade to simplify interaction with lower-level components like repositories. The Controller
 > interacts with these service facades, keeping the complexity hidden from the higher layers.

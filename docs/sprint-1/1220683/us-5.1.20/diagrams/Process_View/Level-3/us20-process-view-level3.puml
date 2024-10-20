@@ -12,28 +12,27 @@ participant "<<service>>\n SpecializationService" as SpecializationServ
 participant "<<repository>>\n SpecializationRepository" as SpecializationRepo
 participant "<<dto>>\n SpecializationDTO" as SpecializationDTO
 
-participant "<<service>>\n RoleService" as RoleServ
-participant "<<repository>>\n RoleRepository" as RoleRepo
-participant "<<dto>>\n RoleDTO" as RoleDTO
-
-
-participant "<<dto>>\n StaffSpecializationAndRoleResponseDTO " as ResponseDTO
+participant "<<dto>>\n SpecializationAndFunctionResponseDTO " as ResponseDTO
 
 participant "<<dto>>\n OperationTypeDTO" as OPTYDTO
 participant "<<service>>\n OperationTypeService" as OPTYServ
+participant "<<domain>>\n Function" as Function
+participant "<<dto>>\n FunctionDTO" as FunctionDTO
+
 participant "<<repository>>\n OperationTypeRepository" as OPTYRepo
 participant "<<domain>>\n OperationType" as OPTY
 
 participant "<<domain>>\n Phase" as PHASE
+participant "<<domain>>\n RequiredStaff" as STAFF
 
 
 [o-> ROUTE : GET() /api/operationtypes
 activate ROUTE
 
-ROUTE -> CONTROL : getAllSpecializationsAndRoles()
+ROUTE -> CONTROL : getAllSpecializationsAndFunctions()
 activate CONTROL
 
-CONTROL -> SpecializationServ : getAllSpecializationsList()
+CONTROL -> SpecializationServ : GetAllAsync()
 activate SpecializationServ
 
 SpecializationServ -> SpecializationRepo : findAll()
@@ -50,24 +49,23 @@ end loop
 SpecializationServ --> CONTROL : specializationListDTO
 deactivate SpecializationServ
 
-CONTROL -> RoleServ : getAllRolesList()
-activate RoleServ
+CONTROL -> OPTYServ : getAllFunctionsList()
+activate OPTYServ
 
-RoleServ -> RoleRepo : findAll()
-activate RoleRepo
+OPTYServ -> Function : getAll()
+activate Function
 
-RoleRepo --> RoleServ : rolesList
-deactivate RoleRepo
+Function --> OPTYServ : functionsList
+deactivate Function
 
-loop for each role in the list
-
-RoleServ -> RoleDTO ** : toDTO(role)
+loop for all functions
+OPTYServ -> FunctionDTO** : toDto(function)
 end loop
 
-RoleServ --> CONTROL : roleListDTO
-deactivate RoleServ
+OPTYServ --> CONTROL : functionListDTO
+deactivate OPTYServ
 
-CONTROL -> ResponseDTO ** : toDTO(specializationListDTO, roleListDTO)
+CONTROL -> ResponseDTO ** : toDTO(specializationListDTO, functionListDTO)
 
 CONTROL -> CONTROL : json(responseDTO)
 activate CONTROL
@@ -85,31 +83,20 @@ deactivate ROUTE
 [o-> ROUTE : POST(json)
 activate ROUTE
 
-ROUTE -> CONTROL : registerOperationType(json)
+ROUTE -> CONTROL : Create(operationTypeDTO)
 activate CONTROL
 
-CONTROL -> OPTYDTO ** : toDTO(operationTypeData)
-
-CONTROL -> OPTYServ : registerOperationType(operationTypeDTO)
+CONTROL -> OPTYServ : AddAsync(operationTypeDTO)
 activate OPTYServ
 
-OPTYServ -> OPTYServ : checkIfOperationExists(operationTypeDTO)
-activate OPTYServ
-
-OPTYServ -> OPTYRepo : findByName(OperationTypeName)
-
-activate OPTYRepo
-
-OPTYRepo --> OPTYServ : return
-deactivate OPTYRepo
-
-OPTYServ --> OPTYServ : false
-deactivate OPTYServ
-
-|||
 
 OPTYServ -> OPTY ** : OperationType(operationTypeDTO)
 activate OPTY
+
+loop for each RequiredStaffDto within operationTypeDto
+
+OPTY -> STAFF ** : RequiredStaff(StaffQuantity, Function, Specialization)
+end loop
 
 loop for all 3 phases (Anesthesia, Surgery, Cleaning)
 
@@ -117,16 +104,23 @@ OPTY -> PHASE ** : Phase(description, duration)
 deactivate OPTY
 end loop
 
-OPTYServ -> OPTYRepo : save(operationType)
+OPTYServ -> OPTYRepo : AddAsync(operationType)
 activate OPTYRepo
 
-OPTYRepo --> OPTYServ : return
+OPTYRepo --> OPTYServ : operationTypeDto
 deactivate OPTYRepo
 
-OPTYServ --> CONTROL : return
+OPTYServ --> CONTROL : operationTypeDto
 deactivate OPTYServ
 
-CONTROL --> ROUTE : return
+CONTROL -> OPTYServ : GetByIdAsync(operationTypeDto.Name)
+
+activate OPTYServ
+
+OPTYServ --> CONTROL : operationTypeDto
+deactivate OPTYServ
+
+CONTROL --> ROUTE : operationTypeDto
 deactivate CONTROL
 
 alt success

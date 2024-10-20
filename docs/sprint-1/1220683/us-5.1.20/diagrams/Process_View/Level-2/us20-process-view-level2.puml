@@ -13,21 +13,21 @@ participant "<<component>>\n Backoffice" as BACK
 Admin -> UI : create new operation type
 activate UI
 
-UI -> BACK : get staff
+UI -> BACK : get specializations and functions
 activate BACK
 
-BACK --> UI : staff list
+BACK --> UI : specializations and functions list
 deactivate BACK
 
-UI --> Admin : shows staff list
+UI --> Admin : shows specializations and functions list
 deactivate UI
 activate Admin
 
-Admin -> UI : provides operation type data (name,\n estimated duration and required staff)
+Admin -> UI : provides operation type data (name, estimated duration,\n activation status,phases and required staff)
 deactivate Admin
 activate UI
 
-UI -> BACK : OperationType(name, estimatedDuration, requiredStaff)
+UI -> BACK : OperationType(name, activation status, estimatedDuration, phases requiredStaff)
 activate BACK
 
 BACK --> UI : success/error

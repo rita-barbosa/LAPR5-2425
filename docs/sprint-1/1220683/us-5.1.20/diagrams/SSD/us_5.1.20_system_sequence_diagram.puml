@@ -16,11 +16,11 @@ SYS --> ADM : asks for the operation type name
 
 ADM -> SYS : provides the operation name
 
-SYS --> ADM : asks for the list of staff by specialization
+SYS --> ADM : asks for the list of required staff by specialization
 
 loop while there are vacancies in the list
 
-ADM -> SYS : selects a staff member
+ADM -> SYS : defines a required staff configuration
 
 end loop
 
