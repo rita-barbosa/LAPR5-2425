@@ -29,6 +29,8 @@ using DDDNetCore.Domain.OperationTypes;
 using DDDNetCore.Infrastructure.OperationTypes;
 using DDDNetCore.Domain.Specializations;
 using DDDNetCore.Infrastructure.Specializations;
+using DDDNetCore.Domain.OperationRequest;
+using DDDNetCore.Infrastructure.OperationRequests;
 
 namespace DDDNetCore
 {
@@ -153,6 +155,9 @@ namespace DDDNetCore
 
             services.AddTransient<ISpecializationRepository, SpecializationRepository>();
             services.AddTransient<SpecializationService>();
+
+            services.AddTransient<IOperationRequestRepository, OperationRequestRepository>();
+            services.AddTransient<OperationRequestService>();
         }
 
 
