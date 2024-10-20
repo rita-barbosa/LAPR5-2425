@@ -14,18 +14,15 @@ namespace DDDNetCore.Domain.Shared
         {
             if (string.IsNullOrWhiteSpace(countryCode) || string.IsNullOrWhiteSpace(phoneNumber))
             {
-                throw new ArgumentException("Phone number cannot be null or empty.");
+                throw new BusinessRuleValidationException("Phone number cannot be null or empty.");
             }
-
-          
             if (!Regex.IsMatch(countryCode, @"^\+\d{1,3}$"))
             {
-                throw new ArgumentException("Country code must start with '+' followed by 1 to 3 digits.", nameof(countryCode));
+                throw new BusinessRuleValidationException("Country code must start with '+' followed by 1 to 3 digits.", nameof(countryCode));
             }
-
             if (!Regex.IsMatch(phoneNumber, @"^\d{7,15}$")) // Assuming valid phone numbers are between 7 and 15 digits
             {
-                throw new ArgumentException("Phone number must be between 7 and 15 digits.", nameof(phoneNumber));
+                throw new BusinessRuleValidationException("Phone number must be between 7 and 15 digits.", nameof(phoneNumber));
             }
             CountryCode = countryCode;
             PhoneNumber = phoneNumber;
@@ -35,14 +32,14 @@ namespace DDDNetCore.Domain.Shared
         {
             if (string.IsNullOrEmpty(combinedPhoneNumber))
             {
-                throw new ArgumentException("Phone number cannot be null or empty.", nameof(combinedPhoneNumber));
+                throw new BusinessRuleValidationException("Phone number cannot be null or empty.", nameof(combinedPhoneNumber));
             }
 
             // Use regex to extract country code and phone number allowing for space
             var match = Regex.Match(combinedPhoneNumber, @"^(\+\d{1,3})\s(\d{7,15})$");
             if (!match.Success)
             {
-                throw new ArgumentException("Invalid phone number format. Use '+[country code] [phone number]'.", nameof(combinedPhoneNumber));
+                throw new BusinessRuleValidationException("Invalid phone number format. Use '+[country code] [phone number]'.", nameof(combinedPhoneNumber));
             }
 
             CountryCode = match.Groups[1].Value;

@@ -12,10 +12,10 @@ namespace DDDNetCore.Domain.Shared
         public TimeInterval(string startString, string endString)
         {
             if (!TimeSpan.TryParse(startString, out TimeSpan start) || !TimeSpan.TryParse(endString, out TimeSpan end))
-                throw new ArgumentException("Invalid time format. Use hh:mm.", nameof(startString));
+                throw new BusinessRuleValidationException("Invalid time format. Use hh:mm.", nameof(startString));
 
             if (end < start)
-                throw new ArgumentException("End time must be greater than or equal to start time.");
+                throw new BusinessRuleValidationException("End time must be greater than or equal to start time.");
 
             Start = start;
             End = end;

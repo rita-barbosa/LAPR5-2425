@@ -11,16 +11,16 @@ namespace DDDNetCore.Domain.Shared
         public Date(string start, string end = null)
         {
             if (string.IsNullOrWhiteSpace(start))
-                throw new ArgumentException("Start date cannot be null or empty.");
+                throw new BusinessRuleValidationException("Start date cannot be null or empty.");
 
             if (!DateTime.TryParse(start, out DateTime startDate))
-                throw new ArgumentException("Invalid start date format.", nameof(start));
+                throw new BusinessRuleValidationException("Invalid start date format.", nameof(start));
 
             End = string.IsNullOrWhiteSpace(end)
                 ? startDate
                 : (DateTime.TryParse(end, out DateTime endDate) && endDate >= startDate)
                     ? endDate
-                    : throw new ArgumentException("End date must be greater than or equal to start date.");
+                    : throw new BusinessRuleValidationException("End date must be greater than or equal to start date.");
 
             Start = startDate;
         }

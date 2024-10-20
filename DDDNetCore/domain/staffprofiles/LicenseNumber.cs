@@ -10,7 +10,7 @@ namespace DDDNetCore.Domain.StaffProfiles
         {
             if (string.IsNullOrEmpty(number))
             {
-                throw new ArgumentException("License number cannot be null or empty");
+                throw new BusinessRuleValidationException("License number cannot be null or empty");
             }
             Number = number;
         }

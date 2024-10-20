@@ -10,21 +10,21 @@ namespace DDDNetCore.Domain.StaffProfiles
         {
             if (string.IsNullOrEmpty(function) || string.IsNullOrEmpty(seqNumber))
             {
-                throw new ArgumentException("Function and sequential number cannot be null or empty.");
+                throw new BusinessRuleValidationException("Function and sequential number cannot be null or empty.");
             }
 
             if (function != "N" && function != "D" && function != "O")
             {
-                throw new ArgumentException("Function must be 'N' for nurse, 'D' for doctor, or 'O' for other.");
+                throw new BusinessRuleValidationException("Function must be 'N' for nurse, 'D' for doctor, or 'O' for other.");
             }
 
             if (seqNumber.Length != 5 || !int.TryParse(seqNumber, out _))
             {
-                throw new ArgumentException("Sequential number must be a 5-digit number.");
+                throw new BusinessRuleValidationException("Sequential number must be a 5-digit number.");
             }
         }
 
-        private StaffId(string function, string year, string seqNumber) : base($"{function}{year}{seqNumber}")
+        public StaffId(string value) : base(value)
         {
 
         }
@@ -50,7 +50,7 @@ namespace DDDNetCore.Domain.StaffProfiles
                 throw new ArgumentException("Invalid year or sequential number format.");
             }
 
-            return new StaffId(function, year, seqNumber);
+            return text;
         }
 
         public override string AsString()

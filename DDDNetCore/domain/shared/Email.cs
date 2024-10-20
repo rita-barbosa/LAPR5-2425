@@ -15,14 +15,14 @@ namespace DDDNetCore.Domain.Shared
         private Email() {}
         public Email(string emailAddress)
         {
-            if (string.IsNullOrEmpty(EmailAddress))
+            if (string.IsNullOrEmpty(emailAddress))
             {
-                throw new ArgumentException("Email EmailAddress cannot be null or empty.");
+                throw new BusinessRuleValidationException("Email EmailAddress cannot be null or empty.");
             }
 
-            if (!IsValidEmail(EmailAddress))
+            if (!IsValidEmail(emailAddress))
             {
-                throw new ArgumentException("Invalid email EmailAddress format.");
+                throw new BusinessRuleValidationException("Invalid email EmailAddress format.");
             }
 
             EmailAddress = emailAddress;

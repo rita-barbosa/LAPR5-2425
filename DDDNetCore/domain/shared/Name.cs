@@ -11,7 +11,7 @@ namespace DDDNetCore.Domain.Shared
         {
             if (string.IsNullOrEmpty(firstName) || string.IsNullOrEmpty(lastName))
             {
-                throw new ArgumentException("Name cannot be null or empty.");
+                throw new BusinessRuleValidationException("Name cannot be null or empty.");
             }
             this.FirstName = firstName;
             this.LastName = lastName;
@@ -21,7 +21,7 @@ namespace DDDNetCore.Domain.Shared
         {
             if (string.IsNullOrEmpty(firstName) || string.IsNullOrEmpty(lastName) || string.IsNullOrEmpty(fullName))
             {
-                throw new ArgumentException("Name cannot be null or empty.");
+                throw new BusinessRuleValidationException("Name cannot be null or empty.");
             }
             this.FirstName = firstName;
             this.LastName = lastName;
@@ -41,6 +41,11 @@ namespace DDDNetCore.Domain.Shared
         public override int GetHashCode()
         {
             return HashCode.Combine(FirstName, LastName, FullName);
+        }
+
+        public override string ToString()
+        {
+            return FullName;
         }
     }
 }

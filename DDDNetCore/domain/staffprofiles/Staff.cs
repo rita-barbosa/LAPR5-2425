@@ -8,7 +8,6 @@ namespace DDDNetCore.Domain.StaffProfiles
     {
         public LicenseNumber LicenseNumber { get; private set; }
         public Name Name { get; private set; }
-        //public ContactInfo ContactInfo { get; private set; }
         public Phone Phone { get; private set; }
         public Email Email { get; private set; }
         public List<Slot> Slots { get; set; }
@@ -18,18 +17,13 @@ namespace DDDNetCore.Domain.StaffProfiles
         private Staff() { }
         public Staff(string seqNumber, string licenseNumber, string firstName, string lastName, string email, string phoneNumber, Function function, SpecializationDenomination specializationId)
         {
-            this.Id = new StaffId(function switch
-            {
-                var f when f == Function.Doctor => "D",
-                var f when f == Function.Nurse => "N",
-                _ => "O"
-            }, seqNumber);
+            this.Id = new StaffId(function.GetCorrespondingChar(), seqNumber);
 
             LicenseNumber = new LicenseNumber(licenseNumber);
             Name = new Name(firstName, lastName);
             Phone = new Phone(phoneNumber);
             Email = new Email(email);
-            Slots = [];
+            Slots = new List<Slot>(); ;
             Function = function;
             SpecializationId = specializationId ?? throw new BusinessRuleValidationException("Staff members must have a specialization.");
         }
