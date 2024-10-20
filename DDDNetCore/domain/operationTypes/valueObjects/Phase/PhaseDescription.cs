@@ -8,6 +8,10 @@ namespace DDDNetCore.Domain.OperationTypes.ValueObjects.Phase
 
         public string Description { get;  private set; }
 
+        public PhaseDescription(){
+            // for EF Core
+        }
+
         public PhaseDescription(string description)
         {
             if (string.IsNullOrEmpty(description))

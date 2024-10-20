@@ -11,6 +11,11 @@ namespace DDDNetCore.Domain.OperationTypes.ValueObjects.Phase
         public PhaseDuration Duration { get;  private set; }
 
 
+        public Phase(){
+            // for EF Core
+        }
+
+
         public Phase(string description, int durationMinutes)
         {
             this.Description = new PhaseDescription(description);

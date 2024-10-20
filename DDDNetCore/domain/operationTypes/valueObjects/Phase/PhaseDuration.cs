@@ -8,6 +8,10 @@ namespace DDDNetCore.Domain.OperationTypes.ValueObjects.Phase
 
         public int DurationMinutes { get;  private set; }
 
+        public PhaseDuration(){
+            // for EF Core
+        }
+
         public PhaseDuration(int durationMinutes)
         {
         if (int.IsPositive(durationMinutes) && (int.IsOddInteger(durationMinutes) || int.IsEvenInteger(durationMinutes)))

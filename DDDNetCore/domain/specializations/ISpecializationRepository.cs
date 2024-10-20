@@ -3,7 +3,7 @@ using DDDNetCore.Domain.Shared;
 
 namespace DDDNetCore.Domain.Specializations
 {
-    public interface ISpecializationRepository:IRepository<Specialization,SpecializationId>
+    public interface ISpecializationRepository:IRepository<Specialization,SpecializationDenomination>
     {
 
     }

@@ -8,6 +8,10 @@ namespace DDDNetCore.Domain.OperationTypes.ValueObjects
 
         public bool Active{ get;  private set; }
 
+        public OperationTypeStatus(){
+            // for EF Core
+        }
+
         public OperationTypeStatus(bool status)
         {
             this.Active = status;

@@ -8,6 +8,10 @@ namespace DDDNetCore.Domain.OperationTypes.ValueObjects
 
         public string OperationName { get;  private set; }
 
+        public OperationTypeName(){
+            //for EF Core
+        }
+
         public OperationTypeName(string name)
         {
             if (string.IsNullOrEmpty(name))

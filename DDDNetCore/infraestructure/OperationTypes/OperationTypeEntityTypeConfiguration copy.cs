@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using DDDNetCore.Domain.OperationTypes;
-using DDDNetCore.Domain.Specializations;
+
 
 namespace DDDNetCore.Infrastructure.OperationTypes
 {
@@ -44,33 +44,11 @@ namespace DDDNetCore.Infrastructure.OperationTypes
                     .HasColumnName("OperationTypeStatus");
             });
 
-
-            // RequiredStaff is a collection of local entities
-             builder.OwnsMany(b => b.RequiredStaff, requiredStaffBuilder =>
-            {
-                requiredStaffBuilder.WithOwner();
-
-                requiredStaffBuilder.OwnsOne(s => s.StaffQuantity, qt =>
-                {
-                    qt.Property(q => q.NumberRequired)
-                        .IsRequired()
-                        .HasColumnName("StaffQuantity");
-                });
-
-                requiredStaffBuilder.OwnsOne(s => s.Function, ft =>
-                {
-                    ft.Property(f => f.Description)
-                        .IsRequired()
-                        .HasColumnName("Function");
-                });
-
-                requiredStaffBuilder.HasOne<Specialization>()
-                .WithMany()
-                .HasForeignKey(b => b.SpecializationId)
-                .IsRequired();
-                
-                requiredStaffBuilder.ToTable("RequiredStaff");
-            });
+            // RequiredStaff as value object
+            builder.HasMany(s => s.RequiredStaff)
+            .WithOne()
+            .HasForeignKey(s => s.OperationTypeId)
+            .IsRequired();
 
 
             // Phases is a collection of value objects

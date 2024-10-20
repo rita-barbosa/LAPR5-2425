@@ -111,7 +111,7 @@ namespace DDDNetCore.Domain.OperationTypes
                 {
                     StaffQuantity = staff.StaffQuantity.NumberRequired,
                     Function = staff.Function.Description,
-                    SpecializationId = staff.SpecializationId.Denomination
+                    Specialization = staff.SpecializationId.Value
                 }),
                 Phases = operationType.Phases.ConvertAll(phase => new PhaseDto
                 {

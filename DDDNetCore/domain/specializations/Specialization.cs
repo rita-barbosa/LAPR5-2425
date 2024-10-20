@@ -1,21 +1,26 @@
+using System.Collections.Generic;
+using DDDNetCore.Domain.OperationTypes.ValueObjects.RequiredStaff;
 using DDDNetCore.Domain.Shared;
 
 namespace DDDNetCore.Domain.Specializations
 {
-    public class Specialization : Entity<SpecializationId>, IAggregateRoot
+    public class Specialization : Entity<SpecializationDenomination>, IAggregateRoot
     {
 
-        public SpecializationDenomination Denomination { get; private set; }
+        public ICollection<RequiredStaff> RequiredStaff { get; set; }
+
+        public Specialization(){
+            //for EF Core
+        }
 
         public Specialization(string denomination)
         {
-            this.Id = new SpecializationId(denomination);
-            this.Denomination = new SpecializationDenomination(denomination);
+            this.Id = new SpecializationDenomination(denomination);
         }
 
         public void ChangeDenomination(string denomination)
         {
-            this.Denomination = new SpecializationDenomination(denomination);
+            this.Id = new SpecializationDenomination(denomination);
         }
 
     }

@@ -19,19 +19,19 @@ namespace DDDNetCore.Domain.Specializations
         {
             var list = await this._repo.GetAllAsync();
             
-            List<SpecializationDto> listDto = list.ConvertAll<SpecializationDto>(spe => new SpecializationDto{Denomination = spe.Denomination.Denomination});
+            List<SpecializationDto> listDto = list.ConvertAll<SpecializationDto>(spe => new SpecializationDto{Denomination = spe.Id.Value});
 
             return listDto;
         }
 
-        public async Task<SpecializationDto> GetByIdAsync(SpecializationId id)
+        public async Task<SpecializationDto> GetByIdAsync(SpecializationDenomination id)
         {
             var spe = await this._repo.GetByIdAsync(id);
             
             if(spe == null)
                 return null;
 
-            return new SpecializationDto{Denomination = spe.Denomination.Denomination};
+            return new SpecializationDto{Denomination = spe.Id.Value};
         }
 
         public async Task<SpecializationDto> AddAsync(SpecializationDto dto)
@@ -42,12 +42,12 @@ namespace DDDNetCore.Domain.Specializations
 
             await this._unitOfWork.CommitAsync();
 
-            return new SpecializationDto { Denomination = specialization.Denomination.Denomination };
+            return new SpecializationDto { Denomination = specialization.Id.Value };
         }
 
         public async Task<SpecializationDto> UpdateAsync(SpecializationDto dto)
         {
-            var specialization = await this._repo.GetByIdAsync(new SpecializationId(dto.Denomination)); 
+            var specialization = await this._repo.GetByIdAsync(new SpecializationDenomination(dto.Denomination)); 
 
             if (specialization == null)
                 return null;   
@@ -56,10 +56,10 @@ namespace DDDNetCore.Domain.Specializations
             
             await this._unitOfWork.CommitAsync();
 
-            return new SpecializationDto { Denomination = specialization.Denomination.Denomination };
+            return new SpecializationDto { Denomination = specialization.Id.Value };
         }
 
-         public async Task<SpecializationDto> DeleteAsync(SpecializationId id)
+         public async Task<SpecializationDto> DeleteAsync(SpecializationDenomination id)
         {
             var specialization = await this._repo.GetByIdAsync(id); 
 
@@ -69,7 +69,7 @@ namespace DDDNetCore.Domain.Specializations
             this._repo.Remove(specialization);
             await this._unitOfWork.CommitAsync();
 
-            return new SpecializationDto { Denomination = specialization.Denomination.Denomination };
+            return new SpecializationDto { Denomination = specialization.Id.Value };
         }
     }
 }

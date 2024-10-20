@@ -12,6 +12,11 @@ namespace DDDNetCore.Domain.Shared
         public static Function Nurse { get; } = new Function("nurse");
         public static Function Assistant { get; } = new Function("assistant");
 
+        public Function(){
+            //for ORM
+        }
+
+
         private Function(string description)
         {
             if (string.IsNullOrEmpty(description))

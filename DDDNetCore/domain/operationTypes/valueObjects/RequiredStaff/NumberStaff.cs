@@ -8,6 +8,10 @@ namespace DDDNetCore.Domain.OperationTypes.ValueObjects.RequiredStaff
 
         public int NumberRequired { get;  private set; }
 
+        public NumberStaff(){
+            // for EF Core
+        }
+
         public NumberStaff(int staffRequired)
         {
             if (int.IsPositive(staffRequired) && (int.IsOddInteger(staffRequired) || int.IsEvenInteger(staffRequired)))

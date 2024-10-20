@@ -8,14 +8,12 @@ namespace DDDNetCore.Infrastructure.Specializations
     {
         public void Configure(EntityTypeBuilder<Specialization> builder)
         {
-            builder.HasKey(b => b.Id);
+            builder.HasKey(s => s.Id);
 
-            builder.OwnsOne(d => d.Denomination, dn =>
-            {
-                dn.Property(denomination => denomination.Denomination)
-                .IsRequired()
-                .HasColumnName("Denomination");
-            });
+            builder.HasMany(s => s.RequiredStaff)
+            .WithOne()
+            .HasForeignKey(s => s.SpecializationId)
+            .IsRequired();
 
             builder.ToTable("Specialization");
         }

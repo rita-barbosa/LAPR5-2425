@@ -2,9 +2,6 @@ using System;
 
 namespace DDDNetCore.Domain.Shared
 {
-    /// <summary>
-    /// Base class for entities.
-    /// </summary>
     public abstract class EntityId: IEquatable<EntityId>, IComparable<EntityId>
     {
         protected Object ObjValue {get;}

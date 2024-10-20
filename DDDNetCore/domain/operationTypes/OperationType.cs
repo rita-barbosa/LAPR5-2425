@@ -18,6 +18,10 @@ namespace DDDNetCore.Domain.OperationTypes
 
         public List<Phase> Phases { get;  private set; } 
 
+        public OperationType(){
+            //for ORM
+        }
+
 
         public OperationType(string name, int duration, bool status, List<RequiredStaffDto> staff, List<PhaseDto> phases)
         {
@@ -27,7 +31,7 @@ namespace DDDNetCore.Domain.OperationTypes
             this.Name = new OperationTypeName(name);
 
             foreach (RequiredStaffDto person in staff){
-                RequiredStaff.Add(new RequiredStaff(person.StaffQuantity, person.Function, person.SpecializationId));
+                RequiredStaff.Add(new RequiredStaff(person.StaffQuantity, person.Function, person.Specialization));
             }
 
             if(phases.Count != NUMBER_OF_OPERATION_PHASES){
@@ -65,17 +69,17 @@ namespace DDDNetCore.Domain.OperationTypes
 
             foreach (RequiredStaffDto staffDto in newStaff)
             {
-                var existingStaff = this.RequiredStaff.Find(rs => rs.SpecializationId.Denomination == staffDto.SpecializationId);
+                var existingStaff = this.RequiredStaff.Find(rs => rs.SpecializationId.Value == staffDto.Specialization);
 
                 if (existingStaff != null)
                 {
                     existingStaff.ChangeStaffQuantity(staffDto.StaffQuantity);
                     existingStaff.ChangeFunction(staffDto.Function);
-                    existingStaff.ChangeSpecialization(staffDto.SpecializationId);
+                    existingStaff.ChangeSpecialization(staffDto.Specialization);
                 }
                 else
                 {
-                    this.RequiredStaff.Add(new RequiredStaff(staffDto.StaffQuantity, staffDto.Function, staffDto.SpecializationId));
+                    this.RequiredStaff.Add(new RequiredStaff(staffDto.StaffQuantity, staffDto.Function, staffDto.Specialization));
                 }
             }
         }

@@ -7,7 +7,7 @@ namespace DDDNetCore.Domain.OperationTypes.ValueObjects.RequiredStaff
 
         public int StaffQuantity { get; set; }
         public string Function { get; set; }
-        public string SpecializationId { get; set; }
+        public string Specialization { get; set; }
        
     }
 }

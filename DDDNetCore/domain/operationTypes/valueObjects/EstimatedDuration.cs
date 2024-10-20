@@ -8,6 +8,10 @@ namespace DDDNetCore.Domain.OperationTypes.ValueObjects
 
         public int TotalDurationMinutes { get;  private set; }
 
+        public EstimatedDuration(){
+            //for EF Core
+        }
+
         public EstimatedDuration(int minutes)
         {
         

@@ -7,9 +7,16 @@ namespace DDDNetCore.Domain.OperationTypes.ValueObjects.RequiredStaff
     public class RequiredStaff : Entity<RequiredStaffId>
     {
 
+        public OperationTypeId OperationTypeId { get; set; }
         public NumberStaff StaffQuantity { get;  private set; }
         public Function Function { get;  private set; }
         public SpecializationDenomination SpecializationId { get;  private set; }
+        public Specialization SpecializationObject { get; private set; }
+
+
+        public RequiredStaff(){
+            // for ORM
+        }
 
         public RequiredStaff(int staffneeded, string function,  string specialization)
         {
@@ -46,6 +53,7 @@ namespace DDDNetCore.Domain.OperationTypes.ValueObjects.RequiredStaff
         public void ChangeSpecialization(string specialization)
         {
             this.SpecializationId = new SpecializationDenomination(specialization);
+            this.SpecializationObject = new Specialization(specialization);
         }
 
        
