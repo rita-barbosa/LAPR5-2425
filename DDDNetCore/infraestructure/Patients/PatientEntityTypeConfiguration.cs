@@ -37,11 +37,11 @@ namespace DDDNetCore.Infrastructure.Products
             {
                 pn.Property(p => p.PhoneNumber)
                     .IsRequired()
-                    .HasColumnName("PhoneNumber");
+                    .HasColumnName("EmergencyContact");
 
                 pn.Property(p => p.CountryCode)
                     .IsRequired()
-                    .HasColumnName("CountryCode");
+                    .HasColumnName("EmergencyContactCountryCode");
             });
             builder.OwnsOne(c => c.Email, ea =>
            {

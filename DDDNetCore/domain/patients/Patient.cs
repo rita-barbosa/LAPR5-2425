@@ -14,12 +14,12 @@ namespace DDDNetCore.Domain.Patients
         public MedicalCondition? MedicalCondition { get; private set; }
         public DateTime DateBirth { get; private set; }
 
-        private Patient() {}
+        private Patient() { }
         public Patient(string firstName, string lastName, string fullName, Gender gender,
                         string countryCode, string phoneNumber, string emergencyContact, string email,
-                        string medicalCondition, string dateBirth, string seqNumber)
+                         string dateBirth, string seqNumber)
         {
-            this.Id = new MedicalRecordNumber(seqNumber);
+            this.Id = new MedicalRecordNumber(seqNumber, true);
             Name = new Name(firstName, lastName, fullName);
             if (string.Equals(phoneNumber, emergencyContact))
             {
@@ -28,19 +28,19 @@ namespace DDDNetCore.Domain.Patients
             PhoneNumber = new Phone(countryCode, phoneNumber);
             EmergencyContact = new Phone(countryCode, emergencyContact);
             Email = new Email(email);
-            MedicalCondition = new MedicalCondition(medicalCondition);
-            if (!DateTime.TryParse(dateBirth, out DateTime DateBirth))
+            if (!DateTime.TryParse(dateBirth, out DateTime dateOfBirth) || dateOfBirth > DateTime.Now)
             {
-                throw new ArgumentException("The Date of Birth format is incorrect");
+                throw new BusinessRuleValidationException("The Date of Birth is either in an incorrect format or cannot be in the future. Please provide a valid past date.");
             }
+            DateBirth = dateOfBirth;
             Gender = gender;
         }
 
         public Patient(string firstName, string lastName, Gender gender,
                      string phoneNumber, string emergencyContact, string email,
-                            string medicalCondition, string dateBirth, string seqNumber)
+                      string dateBirth, string seqNumber)
         {
-            this.Id = new MedicalRecordNumber(seqNumber);
+            this.Id = new MedicalRecordNumber(seqNumber, true);
             Name = new Name(firstName, lastName);
             if (string.Equals(phoneNumber, emergencyContact))
             {
@@ -49,11 +49,11 @@ namespace DDDNetCore.Domain.Patients
             PhoneNumber = new Phone(phoneNumber);
             EmergencyContact = new Phone(emergencyContact);
             Email = new Email(email);
-            MedicalCondition = new MedicalCondition(medicalCondition);
-            if (!DateTime.TryParse(dateBirth, out DateTime DateBirth))
+            if (!DateTime.TryParse(dateBirth, out DateTime dateOfBirth) || dateOfBirth > DateTime.Now)
             {
-                throw new ArgumentException("The Date of Birth format is incorrect");
+                throw new BusinessRuleValidationException("The Date of Birth is either in an incorrect format or cannot be in the future. Please provide a valid past date.");
             }
+            DateBirth = dateOfBirth;
             Gender = gender;
         }
     }

@@ -1,5 +1,3 @@
-using System;
-
 namespace DDDNetCore.Domain.StaffProfiles
 {
     public class CreatingStaffDto(string licenseNumber, string firstName, string lastName, string phone, string email, string function, string specializationId)

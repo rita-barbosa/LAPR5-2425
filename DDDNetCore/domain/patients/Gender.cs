@@ -15,13 +15,19 @@ namespace DDDNetCore.Domain.Patients
         {
             if (string.IsNullOrEmpty(denomination))
             {
-                throw new ArgumentException("Gender denomination cannot be null or empty");
+                throw new BusinessRuleValidationException("Gender denomination cannot be null or empty");
             }
             Denomination = denomination;
         }
-
-        
-
+        public static Gender? GetGenderByDescription(string description)
+        {
+            return string.IsNullOrEmpty(description.ToLower()) ? null : description.ToLower() switch
+            {
+                var d when string.Equals(d, Female.Denomination) => Female,
+                var d when string.Equals(d, Male.Denomination) => Male,
+                _ => null
+            };
+        }
 
         public override bool Equals(object obj)
         {

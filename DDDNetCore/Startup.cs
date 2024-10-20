@@ -31,6 +31,7 @@ using DDDNetCore.Domain.Specializations;
 using DDDNetCore.Infrastructure.Specializations;
 using DDDNetCore.Domain.OperationRequest;
 using DDDNetCore.Infrastructure.OperationRequests;
+using DDDNetCore.Infrastructure.Patients;
 
 namespace DDDNetCore
 {
