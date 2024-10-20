@@ -44,33 +44,33 @@ namespace DDDNetCore.Infrastructure.OperationTypes
                     .HasColumnName("OperationTypeStatus");
             });
 
-            // RequiredStaff as value object
+            //RequiredStaff as value object
             builder.HasMany(s => s.RequiredStaff)
             .WithOne()
             .HasForeignKey(s => s.OperationTypeId)
-            .IsRequired();
+            .IsRequired()
+            .OnDelete(DeleteBehavior.Restrict);
 
 
             // Phases is a collection of value objects
             builder.OwnsMany(o => o.Phases, phaseBuilder =>
             {
+                phaseBuilder.WithOwner().HasForeignKey(p => p.OperationTypeId);
 
-                phaseBuilder.WithOwner();
+                phaseBuilder.HasKey(p => p.PhaseId);
 
-                 phaseBuilder.OwnsOne(p => p.Description, phase =>
+                phaseBuilder.OwnsOne(p => p.Description, phase =>
                 {
                     phase.Property(p => p.Description)
                         .IsRequired()
                         .HasColumnName("PhaseDescription");
                 });
-
                 phaseBuilder.OwnsOne(p => p.Duration, phase =>
                 {
                     phase.Property(p => p.DurationMinutes)
                         .IsRequired()
                         .HasColumnName("PhaseDuration");
                 });
-
             });
 
 

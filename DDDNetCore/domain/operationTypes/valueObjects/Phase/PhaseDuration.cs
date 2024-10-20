@@ -9,15 +9,15 @@ namespace DDDNetCore.Domain.OperationTypes.ValueObjects.Phase
         public int DurationMinutes { get;  private set; }
 
         public PhaseDuration(){
-            // for EF Core
+            // for ORM
         }
 
         public PhaseDuration(int durationMinutes)
         {
-        if (int.IsPositive(durationMinutes) && (int.IsOddInteger(durationMinutes) || int.IsEvenInteger(durationMinutes)))
-        {
-            throw new ArgumentException("Operation Type Duration cannot be negative or have decimal cases.");
-        }
+            if (durationMinutes < 0)
+            {
+                throw new ArgumentException("The duration in minutes of an operation type's phase cannot be negative.");
+            }
             this.DurationMinutes = durationMinutes;
         }
 

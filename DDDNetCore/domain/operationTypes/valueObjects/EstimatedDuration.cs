@@ -9,15 +9,15 @@ namespace DDDNetCore.Domain.OperationTypes.ValueObjects
         public int TotalDurationMinutes { get;  private set; }
 
         public EstimatedDuration(){
-            //for EF Core
+            //for ORM
         }
 
         public EstimatedDuration(int minutes)
         {
         
-            if (int.IsPositive(minutes) && (int.IsOddInteger(minutes) || int.IsEvenInteger(minutes)))
+            if (minutes < 0)
             {
-                throw new ArgumentException("The estimated duration of the operation type cannot be negative or have decimal cases.");
+                throw new ArgumentException("The estimated duration of the operation type cannot be negative.");
             }
             this.TotalDurationMinutes = minutes;
         }

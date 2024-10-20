@@ -10,6 +10,6 @@ namespace DDDNetCore.Infrastructure.OperationTypes
         {
             
         }
-
+        
     }
 }

@@ -1,9 +1,6 @@
-using System.Text.Json.Serialization;
-using DDDNetCore.Domain.Shared;
-
 namespace DDDNetCore.Domain.OperationTypes.ValueObjects.RequiredStaff
 {
-    public class RequiredStaffDto : Entity<RequiredStaffId>
+    public class RequiredStaffDto
     {
 
         public int StaffQuantity { get; set; }

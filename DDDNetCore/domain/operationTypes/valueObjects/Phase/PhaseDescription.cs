@@ -9,7 +9,7 @@ namespace DDDNetCore.Domain.OperationTypes.ValueObjects.Phase
         public string Description { get;  private set; }
 
         public PhaseDescription(){
-            // for EF Core
+            // for ORM
         }
 
         public PhaseDescription(string description)

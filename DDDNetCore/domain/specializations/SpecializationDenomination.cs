@@ -17,8 +17,7 @@ namespace DDDNetCore.Domain.Specializations
 
         protected override object createFromString(string text)
         {
-            // Create a new SpecializationDenomination from a string
-            return new SpecializationDenomination(text);
+            return text;
         }
         
         public override string AsString()

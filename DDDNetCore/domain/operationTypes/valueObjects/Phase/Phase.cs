@@ -5,6 +5,9 @@ namespace DDDNetCore.Domain.OperationTypes.ValueObjects.Phase
 {
     public class Phase : IValueObject
     {
+        public OperationTypeId OperationTypeId { get; set; }
+
+        public string PhaseId {get; set;}
 
         public PhaseDescription Description { get;  private set; }
 
@@ -12,7 +15,7 @@ namespace DDDNetCore.Domain.OperationTypes.ValueObjects.Phase
 
 
         public Phase(){
-            // for EF Core
+            // for ORM
         }
 
 
@@ -20,6 +23,7 @@ namespace DDDNetCore.Domain.OperationTypes.ValueObjects.Phase
         {
             this.Description = new PhaseDescription(description);
             this.Duration = new PhaseDuration(durationMinutes);
+            this.PhaseId = RandomSequenceGenerator.GenerateUniqueRandomSequence(5);
         }
 
         public override bool Equals(object obj)

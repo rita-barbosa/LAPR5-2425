@@ -1,17 +1,17 @@
     using System;
-    using DDDNetCore.Domain.Shared;
+using System.Text.Json.Serialization;
+using DDDNetCore.Domain.Shared;
     using DDDNetCore.Domain.Specializations;
 
     namespace DDDNetCore.Domain.OperationTypes.ValueObjects.RequiredStaff
     {
         public class RequiredStaff : Entity<RequiredStaffId>
         {
-        
+
             public OperationTypeId OperationTypeId { get; set; }
             public NumberStaff StaffQuantity { get;  private set; }
             public Function Function { get;  private set; }
             public SpecializationDenomination SpecializationId { get;  private set; }
-            public Specialization SpecializationObject { get; private set; }
 
 
             public RequiredStaff(){
@@ -20,7 +20,7 @@
 
             public RequiredStaff(int staffneeded, string function,  string specialization)
             {
-                this.Id = new RequiredStaffId(specialization);
+                this.Id = new RequiredStaffId(RandomSequenceGenerator.GenerateUniqueRandomSequence(5));
                 this.StaffQuantity = new NumberStaff(staffneeded);
                 this.SpecializationId = new SpecializationDenomination(specialization);
                 this.Function = MapFunction(function);
@@ -53,7 +53,6 @@
             public void ChangeSpecialization(string specialization)
             {
                 this.SpecializationId = new SpecializationDenomination(specialization);
-                this.SpecializationObject = new Specialization(specialization);
             }
 
         

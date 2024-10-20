@@ -8,6 +8,8 @@ namespace DDDNetCore.Domain.OperationTypes
 {
     public class OperationTypeService
     {
+
+
         private readonly IUnitOfWork _unitOfWork;
         private readonly IOperationTypeRepository _repo;
 

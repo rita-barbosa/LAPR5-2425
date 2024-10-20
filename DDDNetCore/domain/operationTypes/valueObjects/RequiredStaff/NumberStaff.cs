@@ -9,14 +9,14 @@ namespace DDDNetCore.Domain.OperationTypes.ValueObjects.RequiredStaff
         public int NumberRequired { get;  private set; }
 
         public NumberStaff(){
-            // for EF Core
+            // for ORM
         }
 
         public NumberStaff(int staffRequired)
         {
-            if (int.IsPositive(staffRequired) && (int.IsOddInteger(staffRequired) || int.IsEvenInteger(staffRequired)))
+            if (staffRequired < 0)
             {
-                throw new ArgumentException("The number of required staff cannot be negative or have decimal cases.");
+                throw new ArgumentException("The number of required staff of the operation type cannot be negative.");
             }
             this.NumberRequired = staffRequired;
         }
