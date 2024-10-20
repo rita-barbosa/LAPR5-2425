@@ -1,61 +1,61 @@
-using System;
-using DDDNetCore.Domain.Shared;
-using DDDNetCore.Domain.Specializations;
+    using System;
+    using DDDNetCore.Domain.Shared;
+    using DDDNetCore.Domain.Specializations;
 
-namespace DDDNetCore.Domain.OperationTypes.ValueObjects.RequiredStaff
-{
-    public class RequiredStaff : Entity<RequiredStaffId>
+    namespace DDDNetCore.Domain.OperationTypes.ValueObjects.RequiredStaff
     {
-
-        public OperationTypeId OperationTypeId { get; set; }
-        public NumberStaff StaffQuantity { get;  private set; }
-        public Function Function { get;  private set; }
-        public SpecializationDenomination SpecializationId { get;  private set; }
-        public Specialization SpecializationObject { get; private set; }
-
-
-        public RequiredStaff(){
-            // for ORM
-        }
-
-        public RequiredStaff(int staffneeded, string function,  string specialization)
+        public class RequiredStaff : Entity<RequiredStaffId>
         {
-            this.Id = new RequiredStaffId(specialization);
-            this.StaffQuantity = new NumberStaff(staffneeded);
-            this.SpecializationId = new SpecializationDenomination(specialization);
-            this.Function = MapFunction(function);
-        }
+        
+            public OperationTypeId OperationTypeId { get; set; }
+            public NumberStaff StaffQuantity { get;  private set; }
+            public Function Function { get;  private set; }
+            public SpecializationDenomination SpecializationId { get;  private set; }
+            public Specialization SpecializationObject { get; private set; }
 
-        private static Function MapFunction(string functionDescription)
-        {
-            return functionDescription.ToLower() switch
+
+            public RequiredStaff(){
+                // for ORM
+            }
+
+            public RequiredStaff(int staffneeded, string function,  string specialization)
             {
-                "intern" => Function.Intern,
-                "doctor" => Function.Doctor,
-                "nurse" => Function.Nurse,
-                "assistant" => Function.Assistant,
-                _ => throw new ArgumentException("Invalid function description")
-            };
-        }
+                this.Id = new RequiredStaffId(specialization);
+                this.StaffQuantity = new NumberStaff(staffneeded);
+                this.SpecializationId = new SpecializationDenomination(specialization);
+                this.Function = MapFunction(function);
+            }
 
-        public void ChangeStaffQuantity(int quantity)
-        {
-            this.StaffQuantity = new NumberStaff(quantity);
-        }
+            private static Function MapFunction(string functionDescription)
+            {
+                return functionDescription.ToLower() switch
+                {
+                    "intern" => Function.Intern,
+                    "doctor" => Function.Doctor,
+                    "nurse" => Function.Nurse,
+                    "assistant" => Function.Assistant,
+                    _ => throw new ArgumentException("Invalid function description")
+                };
+            }
+
+            public void ChangeStaffQuantity(int quantity)
+            {
+                this.StaffQuantity = new NumberStaff(quantity);
+            }
 
 
-        public void ChangeFunction(string function)
-        {
-            this.Function = MapFunction(function);
-        }
+            public void ChangeFunction(string function)
+            {
+                this.Function = MapFunction(function);
+            }
+
+            
+            public void ChangeSpecialization(string specialization)
+            {
+                this.SpecializationId = new SpecializationDenomination(specialization);
+                this.SpecializationObject = new Specialization(specialization);
+            }
 
         
-        public void ChangeSpecialization(string specialization)
-        {
-            this.SpecializationId = new SpecializationDenomination(specialization);
-            this.SpecializationObject = new Specialization(specialization);
         }
-
-       
     }
-}

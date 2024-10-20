@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using DDDNetCore.Domain.Shared;
 
 namespace DDDNetCore.Domain.OperationTypes.ValueObjects.RequiredStaff

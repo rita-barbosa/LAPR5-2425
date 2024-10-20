@@ -25,6 +25,10 @@ using DDDNetCore.Domain.Users;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using DDDNetCore.Domain.OperationTypes;
+using DDDNetCore.Infrastructure.OperationTypes;
+using DDDNetCore.Domain.Specializations;
+using DDDNetCore.Infrastructure.Specializations;
 
 namespace DDDNetCore
 {
@@ -143,6 +147,12 @@ namespace DDDNetCore
 
             services.AddTransient<IPatientRepository, PatientRepository>();
             services.AddTransient<PatientService>();
+
+            services.AddTransient<IOperationTypeRepository, OperationTypeRepository>();
+            services.AddTransient<OperationTypeService>();
+
+            services.AddTransient<ISpecializationRepository, SpecializationRepository>();
+            services.AddTransient<SpecializationService>();
         }
 
 

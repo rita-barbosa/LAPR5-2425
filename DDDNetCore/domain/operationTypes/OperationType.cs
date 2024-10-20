@@ -20,6 +20,9 @@ namespace DDDNetCore.Domain.OperationTypes
 
         public OperationType(){
             //for ORM
+
+            RequiredStaff = new List<RequiredStaff>();
+            Phases = new List<Phase>();
         }
 
 
@@ -30,6 +33,8 @@ namespace DDDNetCore.Domain.OperationTypes
             this.Status = new OperationTypeStatus(status);
             this.Name = new OperationTypeName(name);
 
+            RequiredStaff = new List<RequiredStaff>();
+
             foreach (RequiredStaffDto person in staff){
                 RequiredStaff.Add(new RequiredStaff(person.StaffQuantity, person.Function, person.Specialization));
             }
@@ -38,6 +43,7 @@ namespace DDDNetCore.Domain.OperationTypes
                 throw new BusinessRuleValidationException("An operation type must have" + NUMBER_OF_OPERATION_PHASES + "phases.");
             }
 
+            Phases = new List<Phase>();
             foreach (PhaseDto stage in phases){
                 Phases.Add(new Phase(stage.Description, stage.Duration));
             }
@@ -93,7 +99,7 @@ namespace DDDNetCore.Domain.OperationTypes
                 throw new BusinessRuleValidationException("An operation type must have " + NUMBER_OF_OPERATION_PHASES + " phases.");
             }
 
-            this.Phases = [];
+            Phases = new List<Phase>();
 
             foreach (PhaseDto phaseDto in newPhases)
             {
