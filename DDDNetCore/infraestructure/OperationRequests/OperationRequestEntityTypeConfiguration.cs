@@ -1,0 +1,72 @@
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using DDDNetCore.Domain.OperationRequest;
+using DDDNetCore.Domain.OperationTypes;
+using DDDNetCore.Domain.Patients;
+using DDDNetCore.Domain.StaffProfiles;
+
+namespace DDDNetCore.Infrastructure.OperationRequests
+{
+    internal class OperationRequestEntityTypeConfiguration : IEntityTypeConfiguration<OperationRequest>
+    {
+        public void Configure(EntityTypeBuilder<OperationRequest> builder)
+        {
+            //primary key
+            builder.HasKey(b => b.Id);
+
+            // DeadLineDate as value object
+            builder.OwnsOne(b => b.DeadLineDate, dld => 
+            {
+                dld.Property(deadLineDate => deadLineDate.Start)
+                .IsRequired()
+                .HasColumnName("DeadLineDate");
+            });
+
+            // Priority as value object
+            builder.OwnsOne(b => b.Priority, p => 
+            {
+                p.Property(priority => priority.Name)
+                .IsRequired()
+                .HasColumnName("Priority");
+            });
+
+
+            // DateOfRequest as value object
+            builder.OwnsOne(b => b.DateOfRequest, dr => 
+            {
+                dr.Property(dateOfRequest => dateOfRequest.Start)
+                .IsRequired()
+                .HasColumnName("DateOfRequest");
+            });
+
+
+            // Status as value object
+            builder.OwnsOne(b => b.Status, s => 
+            {
+                s.Property(status => status.StatusName)
+                .IsRequired()
+                .HasColumnName("OperationRequestStatus");
+            });
+
+            // StaffId as value object
+            builder.HasOne<Patient>()
+               .WithMany() 
+               .HasForeignKey(b => b.PatientId) 
+               .IsRequired();
+
+            // PatientId as value object
+            builder.HasOne<Staff>()
+               .WithMany()
+               .HasForeignKey(b => b.StaffId)
+               .IsRequired();
+
+
+            // OperationTypeId as value object
+            builder.HasOne<OperationType>()
+               .WithMany()
+               .HasForeignKey(b => b.OperationTypeId)
+               .IsRequired();
+
+        }
+    }
+}
