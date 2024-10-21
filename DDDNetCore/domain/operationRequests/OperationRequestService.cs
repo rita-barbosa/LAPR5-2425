@@ -30,7 +30,7 @@ namespace DDDNetCore.Domain.OperationRequest
 
             List<OperationRequestDto> listDto = list.ConvertAll<OperationRequestDto>(opRequest =>
                 new OperationRequestDto(opRequest.Id.AsGuid(), opRequest.DeadLineDate.ToString(), opRequest.Priority.ToString(),
-                 opRequest.DateOfRequest.ToString(), opRequest.Status.ToString(), opRequest.StaffId,opRequest.PatientId,opRequest.OperationTypeId));
+                 opRequest.DateOfRequest.ToString(), opRequest.Status.ToString(),  opRequest.StaffId.AsString(),opRequest.PatientId.AsString(),opRequest.OperationTypeId.AsString()));
 
             return listDto;
         }
@@ -43,26 +43,49 @@ namespace DDDNetCore.Domain.OperationRequest
                 return null;
 
             return new OperationRequestDto(opRequest.Id.AsGuid(), opRequest.DeadLineDate.ToString(), opRequest.Priority.ToString(),
-                 opRequest.DateOfRequest.ToString(), opRequest.Status.ToString(), opRequest.StaffId,opRequest.PatientId,opRequest.OperationTypeId);
+                 opRequest.DateOfRequest.ToString(), opRequest.Status.ToString(), opRequest.StaffId.AsString(),opRequest.PatientId.AsString(),opRequest.OperationTypeId.AsString());
         }
 
-        public async Task<OperationRequestDto> AddAsync(OperationRequestDto dto)
+        public async Task<OperationRequestDto> AddAsync(CreatingOperationRequestDto dto)
         {
-            var staff = await this._repoSta.GetByIdAsync(dto.StaffId);
-            var patient = await this._repoPat.GetByIdAsync(dto.PatientId);
-            var opType = await this._repoOpTy.GetByIdAsync(dto.OperationTypeId);
+            Staff staff = await this._repoSta.GetByIdAsync(new StaffId(dto.StaffId));
+            Patient patient = await this._repoPat.GetByIdAsync(new MedicalRecordNumber(dto.PatientId));
+            OperationType opType = await this._repoOpTy.GetByIdWithStaffAsync(new OperationTypeId(dto.OperationTypeId));
+            
+            if (staff == null)
+                throw new BusinessRuleValidationException("Staff is invalid.");
 
-            if (staff == null || patient == null || opType == null)
-                throw new BusinessRuleValidationException("Staff, Patient or Operation Type is invalid.");
+            if (patient == null)
+                throw new BusinessRuleValidationException("Patient is invalid.");
+
+            if (opType == null)
+                throw new BusinessRuleValidationException("Operation Type is invalid.");
+
+
+            bool specializationMatches = false;
+            foreach (var requiredStaff in opType.RequiredStaff)
+            {
+                if (requiredStaff.SpecializationId.AsString() == staff.SpecializationId.AsString())
+                {
+                    specializationMatches = true;
+                    break;
+                }
+            }
+
+            if (!specializationMatches)
+            {
+                throw new BusinessRuleValidationException("Doctor's specialization does not match any of the required specializations for the operation.");
+            }
 
             var opRequest = new OperationRequest(new Date(dto.DeadLineDate), new Priority(dto.Priority), new Date(dto.DateOfRequest), 
-                new Status(dto.Status), dto.StaffId, dto.PatientId, dto.OperationTypeId);
+                new Status(dto.Status), staff.Id, patient.Id, opType.Id);
 
             await this._repo.AddAsync(opRequest);
+
             await this._unitOfWork.CommitAsync();
 
             return new OperationRequestDto(opRequest.Id.AsGuid(), opRequest.DeadLineDate.ToString(), opRequest.Priority.ToString(),
-                 opRequest.DateOfRequest.ToString(), opRequest.Status.ToString(), opRequest.StaffId,opRequest.PatientId,opRequest.OperationTypeId);
+                 opRequest.DateOfRequest.ToString(), opRequest.Status.ToString(),  opRequest.StaffId.AsString(),opRequest.PatientId.AsString(),opRequest.OperationTypeId.AsString());
         }
 
         public async Task<OperationRequestDto> UpdateAsync(OperationRequestDto dto)
@@ -79,7 +102,7 @@ namespace DDDNetCore.Domain.OperationRequest
             await this._unitOfWork.CommitAsync();
 
             return new OperationRequestDto(opRequest.Id.AsGuid(), opRequest.DeadLineDate.ToString(), opRequest.Priority.ToString(),
-                 opRequest.DateOfRequest.ToString(), opRequest.Status.ToString(), opRequest.StaffId,opRequest.PatientId,opRequest.OperationTypeId);
+                 opRequest.DateOfRequest.ToString(), opRequest.Status.ToString(),  opRequest.StaffId.AsString(),opRequest.PatientId.AsString(),opRequest.OperationTypeId.AsString());
         }
 
         public async Task<OperationRequestDto> DeleteAsync(OperationRequestId id)
@@ -93,7 +116,7 @@ namespace DDDNetCore.Domain.OperationRequest
             await this._unitOfWork.CommitAsync();
 
             return new OperationRequestDto(opRequest.Id.AsGuid(), opRequest.DeadLineDate.ToString(), opRequest.Priority.ToString(),
-                 opRequest.DateOfRequest.ToString(), opRequest.Status.ToString(), opRequest.StaffId,opRequest.PatientId,opRequest.OperationTypeId);
+                 opRequest.DateOfRequest.ToString(), opRequest.Status.ToString(),  opRequest.StaffId.AsString(),opRequest.PatientId.AsString(),opRequest.OperationTypeId.AsString());
         }
 
 

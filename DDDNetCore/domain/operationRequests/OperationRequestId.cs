@@ -20,11 +20,12 @@ namespace DDDNetCore.Domain.OperationRequest
 
         override
         protected Object createFromString(String text){
-            return text;
+            return new Guid(text);
         }
         override
         public String AsString(){
-            return (String) base.Value;
+            Guid obj = (Guid) base.ObjValue;
+            return obj.ToString();
         }
         public Guid AsGuid(){
             return (Guid) base.ObjValue;

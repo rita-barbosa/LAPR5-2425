@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DDDNetCore.Domain.Shared
 {
@@ -7,10 +8,13 @@ namespace DDDNetCore.Domain.Shared
     {
         public string Description { get; }
 
-
+        [NotMapped]
         public static Function Intern { get; } = new Function("intern");
+        [NotMapped]
         public static Function Doctor { get; } = new Function("doctor");
+        [NotMapped]
         public static Function Nurse { get; } = new Function("nurse");
+        [NotMapped]
         public static Function Assistant { get; } = new Function("assistant");
 
         private static readonly Dictionary<string, Function> _functions = new Dictionary<string, Function>(StringComparer.OrdinalIgnoreCase)
@@ -43,7 +47,7 @@ namespace DDDNetCore.Domain.Shared
             }
 
             _functions.TryGetValue(description, out var matchingFunction);
-            return matchingFunction;
+            return new Function(matchingFunction.Description);
         }
         public string GetCorrespondingChar()
         {

@@ -31,7 +31,7 @@ namespace DDDNetCore.Domain.OperationTypes
 
         public async Task<OperationTypeDto> GetByIdAsync(OperationTypeId id)
         {
-            var operationType = await this._repo.GetByIdAsync(id);
+            var operationType = await this._repo.GetByIdWithStaffAsync(id);
             
             if (operationType == null)
                 return null;

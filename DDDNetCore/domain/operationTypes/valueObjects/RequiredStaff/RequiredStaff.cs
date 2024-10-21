@@ -23,7 +23,7 @@ using DDDNetCore.Domain.Shared;
                 this.Id = new RequiredStaffId(RandomSequenceGenerator.GenerateUniqueRandomSequence(5));
                 this.StaffQuantity = new NumberStaff(staffneeded);
                 this.SpecializationId = new SpecializationDenomination(specialization);
-                this.Function = MapFunction(function);
+                this.Function = Function.GetFunctionByDescription(function);
             }
 
             private static Function MapFunction(string functionDescription)
