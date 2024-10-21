@@ -96,8 +96,6 @@ Log ---> "1" Date
 Log ---> "1" Change
 Log ---> "1" User
 
-User ---> "0..1" Patient
-User -> "1" Staff
 User -> "1" Status
 User --> Username
 User ----> Email
@@ -156,6 +154,7 @@ Patient --> "0..1" MedicalCondition
 Patient --> "1" AppoitmentHistory
 Patient --> "1" Email
 Patient --> "1" Phone
+Patient---> "0..1" User
 EmergencyContact --> "1" Phone
 
 Staff --> "1" Status
@@ -166,6 +165,7 @@ Staff ---> "1" Phone
 Staff --> "1" LicenseNumber
 Staff ---> "0..*" Slot
 Staff --> "1" Specialization
+Staff -> "1" User
 
 Specialization --> "1" SpecializationDenomination : defined by
 Slot --> "1" Date
