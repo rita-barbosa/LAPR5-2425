@@ -1,14 +1,11 @@
-using System;
-using DDDNetCore.Domain.Shared;
 using DDDNetCore.Domain.Patients;
 using DDDNetCore.Domain.StaffProfiles;
 using DDDNetCore.Domain.OperationTypes;
 
 namespace DDDNetCore.Domain.OperationRequest
 {
-    public class OperationRequestDto
+    public class CreatingOperationRequestDto
     {
-        public Guid Id { get; set; }
         public string DeadLineDate { get; set; }
 
         public string Priority { get; set; }
@@ -24,9 +21,8 @@ namespace DDDNetCore.Domain.OperationRequest
         public string OperationTypeId { get; set; } 
 
 
-        public OperationRequestDto(Guid Id, string deadLineDate, string priority, string dateOfRequest, string status, string staffId, string patientId, string operationTypeId)
+        public CreatingOperationRequestDto(string deadLineDate, string priority, string dateOfRequest, string status, string staffId, string patientId, string operationTypeId)
         {
-            this.Id = Id;
             this.DeadLineDate = deadLineDate;
             this.Priority = priority;
             this.DateOfRequest = dateOfRequest;

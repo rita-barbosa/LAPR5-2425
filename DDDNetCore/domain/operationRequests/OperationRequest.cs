@@ -3,6 +3,7 @@ using DDDNetCore.Domain.Shared;
 using DDDNetCore.Domain.StaffProfiles;
 using DDDNetCore.Domain.Patients;
 using DDDNetCore.Domain.OperationTypes;
+using DDDNetCore.Domain.Tokens;
 
 namespace DDDNetCore.Domain.OperationRequest
 {
@@ -40,13 +41,15 @@ namespace DDDNetCore.Domain.OperationRequest
 
         public OperationRequest(Date deadLineDate, Priority priority, Date dateOfRequest, Status status, StaffId staffId, MedicalRecordNumber patientId, OperationTypeId operationTypeId)
         {
-            DeadLineDate = deadLineDate;
-            Priority = priority;
-            DateOfRequest = dateOfRequest;
-            Status = status;
-            StaffId = staffId;
-            PatientId = patientId;
-            OperationTypeId = operationTypeId;
+            this.Id = new OperationRequestId(Guid.NewGuid());
+            Console.WriteLine($"OperationRequestId: {this.Id.Value}");
+            this.DeadLineDate = deadLineDate;
+            this.Priority = priority;
+            this.DateOfRequest = dateOfRequest;
+            this.Status = status;
+            this.StaffId = staffId;
+            this.PatientId = patientId;
+            this.OperationTypeId = operationTypeId;
         }
 
         public void ChangeDeadLineDate(string deadLineDate)
