@@ -2,7 +2,6 @@ using System;
 using System.Threading.Tasks;
 using DDDNetCore.Domain.Shared;
 using DDDNetCore.Domain.Specializations;
-using DDDNetCore.Infrastructure;
 
 namespace DDDNetCore.Domain.StaffProfiles
 {

@@ -31,7 +31,6 @@ namespace DDDNetCore.Infrastructure
         public DbSet<Family> Families { get; set; }
 
         public DbSet<Token> Tokens { get; set; }
-        public DbSet<TokenType> TokenTypes { get; set; }
         public DbSet<Specialization> Specializations { get; set; }
         public DbSet<OperationType> OperationTypes { get; set; }
 
@@ -51,7 +50,6 @@ namespace DDDNetCore.Infrastructure
             modelBuilder.ApplyConfiguration(new ProductEntityTypeConfiguration());
             modelBuilder.ApplyConfiguration(new FamilyEntityTypeConfiguration());
             modelBuilder.ApplyConfiguration(new TokenEntityTypeConfiguration());
-            modelBuilder.ApplyConfiguration(new TokenTypeEntityTypeConfiguration());
             modelBuilder.ApplyConfiguration(new SpecializationEntityTypeConfiguration());
             modelBuilder.ApplyConfiguration(new OperationTypeEntityTypeConfiguration());
             modelBuilder.ApplyConfiguration(new StaffEntityTypeConfiguration());

@@ -8,6 +8,7 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using DDDNetCore.Domain.Tokens;
+using DDDNetCore.Domain.Shared;
 
 namespace DDDNetCore.Domain.Emails
 {
@@ -26,15 +27,21 @@ namespace DDDNetCore.Domain.Emails
         }
 
 
-        public async Task SendEmail(EmailDto emailDto) {
+        public async Task SendEmail(EmailMessageDto emailDto) {
 
             var token = await _service.CreateAccountDeletionToken(emailDto.RecipientEmail);
 
-            string accessToken = await GetAccessToken();
+            string accessToken = await GetExternalEmailServiceAccessToken();
+
+            Console.WriteLine("Access Token: " + accessToken);
+
+            //to confirm format
+            var senderEmail = new Email(emailDto.SenderEmail);
+            var recipientEmail = new Email(emailDto.RecipientEmail);
 
             var email = new MimeMessage();
-            email.From.Add(new MailboxAddress("HealthCare Clinic", emailDto.SenderEmail));
-            email.To.Add(MailboxAddress.Parse(emailDto.RecipientEmail));
+            email.From.Add(new MailboxAddress("HealthCare Clinic", senderEmail.EmailAddress));
+            email.To.Add(MailboxAddress.Parse(recipientEmail.EmailAddress));
             email.Subject = emailDto.EmailSubject;
 
             // can be TextFormat Plain but changing it to Html allow us to better structure the email content 
@@ -48,10 +55,10 @@ namespace DDDNetCore.Domain.Emails
             smtp.Send(email);
             smtp.Disconnect(true);
 
-            Console.WriteLine("Email sent successfully!");
+           // Console.WriteLine("Email sent successfully!");
         }
 
-        private async Task<string> GetAccessToken()
+        private async Task<string> GetExternalEmailServiceAccessToken()
         {
             var client = new HttpClient();
             var request = new HttpRequestMessage(HttpMethod.Post, TOKEN_END_POINT);

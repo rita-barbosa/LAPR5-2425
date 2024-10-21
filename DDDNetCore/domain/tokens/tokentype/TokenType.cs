@@ -1,30 +1,28 @@
-using System;
 using DDDNetCore.Domain.Shared;
 
 namespace DDDNetCore.Domain.Tokens
 {
-        public class TokenType : Entity<TokenTypeId>, IAggregateRoot {
+        public class TokenType : IValueObject {
 
-        public TokenTypeId Code {get; set;}
+        public TokenTypeDenomination TypeDenomination { get; set; }
+        public TokenTypeExpirationDuration ExpirationDurationHours { get; set; }
 
-        public string Name { get; set; }
-        public int ExpirationDuration { get; set; }
+        public static TokenType AccountDeletion { get; } = new TokenType("Account Deletion", 24);
+        public static TokenType PasswordReset { get; } = new TokenType("Password Reset", 1);
 
             private TokenType(){}
 
             public TokenType(string name, int expirationHours) {
-                this.Code = new TokenTypeId(Guid.NewGuid());
-                this.Name = name;
-                this.ExpirationDuration = expirationHours;
+                this.TypeDenomination = new TokenTypeDenomination(name);
+                this.ExpirationDurationHours = new TokenTypeExpirationDuration(expirationHours);
             }
 
-
-            public void ChangeName(string name){
-                this.Name = name;
+            public void ChangeTypeDenomination(string name){
+                this.TypeDenomination = new TokenTypeDenomination(name);
             }
 
-            public void ChangeExpirationDuration(int time){
-                this.ExpirationDuration = time;
+            public void ChangeExpirationDuration(int duration){
+                this.ExpirationDurationHours = new TokenTypeExpirationDuration(duration);
             }
 
         }

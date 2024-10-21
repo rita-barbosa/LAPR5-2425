@@ -1,5 +1,3 @@
-using System;
-
 namespace DDDNetCore.Domain.Tokens{
     public class TokenDto{
 
@@ -7,7 +5,7 @@ namespace DDDNetCore.Domain.Tokens{
 
             public string ExpirationTime { get; set; }
 
-            public Guid Code { get; set; }
+            public string Code { get; set; }
 
             public TokenTypeDto TokenType { get; set; }
 

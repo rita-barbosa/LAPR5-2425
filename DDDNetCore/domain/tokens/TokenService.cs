@@ -10,25 +10,17 @@ namespace DDDNetCore.Domain.Tokens
         private readonly IUnitOfWork _unitOfWork;
         private readonly ITokenRepository _repo;
 
-        private readonly TokenTypeService _service;
-
-        public TokenService(IUnitOfWork unitOfWork, ITokenRepository repo, TokenTypeService service)
+        public TokenService(IUnitOfWork unitOfWork, ITokenRepository repo)
         {
             this._unitOfWork = unitOfWork;
             this._repo = repo;
-            this._service = service;
         }
 
         public async Task<TokenDto> CreateAccountDeletionToken(string username)
         {
+            var token = new Token(username, DateTime.Now.AddHours(TokenType.AccountDeletion.ExpirationDurationHours.Hours), TokenType.AccountDeletion);
 
-            TokenTypeDto tokenTypeDto = await _service.AddAsync(new CreatingTokenTypeDto{ Name = "Account Deletion", ExpirationDuration = 24});
-
-            var token = new Token(username, DateTime.Now.AddHours(tokenTypeDto.ExpirationDuration), new TokenType(tokenTypeDto.Name, tokenTypeDto.ExpirationDuration));
-            var dto = new TokenDto{UserId = token.UserId.ToString(), ExpirationTime = token.ExpirationTime.ToString(), Code = token.Code.AsGuid(), TokenType = tokenTypeDto, Active = token.Active};
-
-            await AddAsync(new CreatingTokenDto{UserId = token.UserId.ToString(), ExpirationTime = token.ExpirationTime.ToString(), Code = token.Code.AsGuid(), TokenType = tokenTypeDto, Active = token.Active});
-            return dto;
+            return await AddAsync(new TokenDto{UserId = token.UserId, ExpirationTime = token.ExpirationTime.ToString(), Code = token.Id.AsString(), TokenType = ToDto(TokenType.AccountDeletion), Active = token.Active});   
         }
 
 
@@ -36,7 +28,7 @@ namespace DDDNetCore.Domain.Tokens
         {
             var list = await this._repo.GetAllAsync();
             
-            List<TokenDto> listDto = list.ConvertAll<TokenDto>(token => new TokenDto{UserId = token.UserId.ToString(), ExpirationTime = token.ExpirationTime.ToString(), Code = token.Code.AsGuid(), TokenType = new TokenTypeDto{ Name = token.TokenType.Name, ExpirationDuration = token.TokenType.ExpirationDuration }, Active = token.Active});
+            List<TokenDto> listDto = list.ConvertAll<TokenDto>(token => new TokenDto{UserId = token.UserId, ExpirationTime = token.ExpirationTime.ToString(), Code = token.Id.AsString(), TokenType = ToDto(token.TokenType), Active = token.Active});
 
             return listDto;
         }
@@ -48,24 +40,24 @@ namespace DDDNetCore.Domain.Tokens
             if(token == null)
                 return null;
 
-            return new TokenDto{UserId = token.UserId.ToString(), ExpirationTime = token.ExpirationTime.ToString(), Code = token.Code.AsGuid(), TokenType = new TokenTypeDto{ Name = token.TokenType.Name, ExpirationDuration = token.TokenType.ExpirationDuration }, Active = token.Active};
+            return new TokenDto{UserId = token.UserId.ToString(), ExpirationTime = token.ExpirationTime.ToString(), Code = token.Id.AsString(), TokenType = ToDto(token.TokenType), Active = token.Active};
         }
 
-        public async Task<TokenDto> AddAsync(CreatingTokenDto dto)
+        public async Task<TokenDto> AddAsync(TokenDto dto)
         {
 
             var Token = new Token(dto.UserId, DateTime.Parse(dto.ExpirationTime), new TokenType(dto.TokenType.Name, dto.TokenType.ExpirationDuration));
 
-            Console.WriteLine("TOKEN user " + Token.UserId.ToString());
-            Console.WriteLine("TOKEN exp time " + Token.ExpirationTime.ToString());
-            Console.WriteLine("TOKEN code " + Token.Code.AsString());
-            Console.WriteLine("TOKEN active " + Token.Active.ToString());
-            Console.WriteLine("TOKEN type " + Token.TokenType.ToString());
+            // Console.WriteLine("TOKEN user " + Token.UserId.ToString());
+            // Console.WriteLine("TOKEN exp time " + Token.ExpirationTime.ToString());
+            // Console.WriteLine("TOKEN code " + Token.Id.AsString());
+            // Console.WriteLine("TOKEN active " + Token.Active.ToString());
+            // Console.WriteLine("TOKEN type " + Token.TokenType.ToString());
             await this._repo.AddAsync(Token);
 
             await this._unitOfWork.CommitAsync();
 
-            return new TokenDto {UserId = Token.UserId.ToString(), ExpirationTime = Token.ExpirationTime.ToString(), Code = Token.Code.AsGuid(), TokenType = dto.TokenType, Active = Token.Active};
+            return new TokenDto {UserId = Token.UserId.ToString(), ExpirationTime = Token.ExpirationTime.ToString(), Code = Token.Id.AsString(), TokenType = dto.TokenType, Active = Token.Active};
         }
 
         public async Task<TokenDto> UpdateAsync(TokenDto dto)
@@ -81,7 +73,7 @@ namespace DDDNetCore.Domain.Tokens
             
             await this._unitOfWork.CommitAsync();
 
-            return new TokenDto { UserId = Token.UserId.ToString(), ExpirationTime = Token.ExpirationTime.ToString(), Code = Token.Code.AsGuid(), TokenType = dto.TokenType, Active = Token.Active };
+            return new TokenDto { UserId = Token.UserId.ToString(), ExpirationTime = Token.ExpirationTime.ToString(), Code = Token.Id.AsString(), TokenType = dto.TokenType, Active = Token.Active };
         }
 
         public async Task<TokenDto> InactivateAsync(TokenId id)
@@ -95,7 +87,7 @@ namespace DDDNetCore.Domain.Tokens
             
             await this._unitOfWork.CommitAsync();
 
-            return new TokenDto { UserId = token.UserId.ToString(), ExpirationTime = token.ExpirationTime.ToString(), Code = token.Code.AsGuid(), TokenType = new TokenTypeDto{ Name = token.TokenType.Name, ExpirationDuration = token.TokenType.ExpirationDuration }, Active = token.Active };
+            return new TokenDto { UserId = token.UserId.ToString(), ExpirationTime = token.ExpirationTime.ToString(), Code = token.Id.AsString(), TokenType = ToDto(token.TokenType), Active = token.Active };
         }
 
          public async Task<TokenDto> DeleteAsync(TokenId id)
@@ -111,7 +103,12 @@ namespace DDDNetCore.Domain.Tokens
             this._repo.Remove(Token);
             await this._unitOfWork.CommitAsync();
 
-            return new TokenDto { UserId = Token.UserId.ToString(), ExpirationTime = Token.ExpirationTime.ToString(), Code = Token.Code.AsGuid(), TokenType = new TokenTypeDto{ Name = Token.TokenType.Name, ExpirationDuration = Token.TokenType.ExpirationDuration }, Active = Token.Active };
+            return new TokenDto { UserId = Token.UserId.ToString(), ExpirationTime = Token.ExpirationTime.ToString(), Code = Token.Id.AsString(), TokenType = ToDto(Token.TokenType), Active = Token.Active };
+        }
+
+
+        public TokenTypeDto ToDto(TokenType tokenType){
+            return new TokenTypeDto( tokenType.ExpirationDurationHours.Hours, tokenType.TypeDenomination.Denomination );
         }
     }
 }

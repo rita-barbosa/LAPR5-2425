@@ -8,11 +8,39 @@ namespace DDDNetCore.Infrastructure.Tokens
     {
         public void Configure(EntityTypeBuilder<Token> builder)
         {
-            // cf. https://www.entityframeworktutorial.net/efcore/fluent-api-in-entity-framework-core.aspx
             
-            //builder.ToTable("Categories", SchemaNames.DDDNetCore);
-            builder.HasKey(b => b.Code);
-            //builder.Property<bool>("_active").HasColumnName("Active");
+            builder.HasKey(b => b.Id);
+
+            builder.Property(t => t.UserId)
+                   .IsRequired();
+
+            builder.Property(t => t.ExpirationTime)
+                   .IsRequired();
+
+            builder.Property(t => t.Active)
+                   .HasColumnName("HasExpired")
+                   .IsRequired();
+
+
+            builder.OwnsOne(o => o.TokenType, tokenTypeBuilder =>
+            {
+                tokenTypeBuilder.WithOwner();
+
+                tokenTypeBuilder.OwnsOne(t => t.TypeDenomination, type =>
+                {
+                    type.Property(t => t.Denomination)
+                        .IsRequired()
+                        .HasColumnName("TokenTypeDenomination");
+                });
+                tokenTypeBuilder.OwnsOne(t => t.ExpirationDurationHours, type =>
+                {
+                    type.Property(t => t.Hours)
+                        .IsRequired()
+                        .HasColumnName("ExpirationDurationInHours");
+                });
+            });
+
+            builder.ToTable("Token");
         }
 
     }

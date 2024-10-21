@@ -142,9 +142,6 @@ namespace DDDNetCore
             services.AddTransient<ITokenRepository, TokenRepository>();
             services.AddTransient<TokenService>();
 
-            services.AddTransient<ITokenTypeRepository, TokenTypeRepository>();
-            services.AddTransient<TokenTypeService>();
-
             services.AddTransient<IStaffRepository, StaffRepository>();
             services.AddTransient<StaffService>();
 

@@ -18,7 +18,7 @@ namespace DDDNetCore.Controllers
         [HttpPost("send-email")]
         public async Task<IActionResult> SendTestEmail()
         {
-        await _service.SendEmail(new EmailDto
+        await _service.SendEmail(new EmailMessageDto
             (
                 "noreply.healthcare.dg38@gmail.com",
                 "matildexv.04@gmail.com",
