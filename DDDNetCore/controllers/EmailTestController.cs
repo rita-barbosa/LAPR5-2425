@@ -15,18 +15,11 @@ namespace DDDNetCore.Controllers
             _service = service;
         }
 
-        [HttpPost("send-email")]
-        public async Task<IActionResult> SendTestEmail()
+        [HttpPost("send-email-google-gmail")]
+        public async Task<IActionResult> SendTestEmail(EmailMessageDto messageDto)
         {
-        await _service.SendEmail(new EmailMessageDto
-            (
-                "noreply.healthcare.dg38@gmail.com",
-                "matildexv.04@gmail.com",
-                "Test Email",
-                "<p>Hello,</p><p>This email was sent to inform you that your user account in the HealthCare Clinic System has been deleted. Some non-identifiable data will be retained in our system for 30 days, as per GDPR policies.</p><p><a href='https://blog.postman.com/rest-api-examples/'>Click in the link to confirm the account deletion</a></p><p>Thank you for choosing us,<br>HealthCare Clinic</p></body></html>"
-            ));
-
-            return Ok("Email sent successfully");
+            await _service.SendEmail(messageDto);
+            return Ok();
         }
     }
 }

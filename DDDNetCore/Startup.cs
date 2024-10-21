@@ -32,6 +32,7 @@ using DDDNetCore.Infrastructure.Specializations;
 using DDDNetCore.Domain.OperationRequest;
 using DDDNetCore.Infrastructure.OperationRequests;
 using DDDNetCore.Infrastructure.Patients;
+using DDDNetCore.Infrastructure.Emails;
 
 namespace DDDNetCore
 {
@@ -141,6 +142,7 @@ namespace DDDNetCore
 
             services.AddTransient<ITokenRepository, TokenRepository>();
             services.AddTransient<TokenService>();
+            services.AddTransient<SendEmailGoogleAdapter>();
 
             services.AddTransient<IStaffRepository, StaffRepository>();
             services.AddTransient<StaffService>();
