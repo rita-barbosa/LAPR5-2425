@@ -2,6 +2,7 @@ using System;
 using System.Threading.Tasks;
 using System.Xml;
 using DDDNetCore.Domain.Shared;
+using DDDNetCore.Domain.Users;
 
 namespace DDDNetCore.Domain.Patients
 {
@@ -35,6 +36,22 @@ namespace DDDNetCore.Domain.Patients
 
             return new PatientDto(patient.Name.ToString(), patient.PhoneNumber.ToString(), patient.Email.ToString(), patient.Id.AsString());
         }
+
+        public async void AddUser(User user, string email, string phone)
+        {
+            bool result = await _repo.ExistsPatientWithEmailOrPhone(email, phone.Split(' ')[0], phone.Split(' ')[1]);
+
+            if(!result){
+                throw new InvalidOperationException("There isn't a staff member associated with this email/phone.");
+            }
+
+            Patient patient = await _repo.GetPatientWithEmail(email);
+
+            patient.AddUser(user);
+
+            await this._unitOfWork.CommitAsync();
+        }
+
         private async Task<string> getSequentialNumber()
         {
             try
