@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using System.Threading.Tasks;
 using DDDNetCore.Domain.Shared;
 
 namespace DDDNetCore.Domain.StaffProfiles
@@ -7,5 +8,6 @@ namespace DDDNetCore.Domain.StaffProfiles
     {
         Task<bool> ExistsStaffWithEmailOrPhone(string email, string CountryCode, string phone);
         Task<StaffId> FindLastStaffIdAsync();
+        Task<Staff> GetStaffWithEmail(string email);
     }
 }

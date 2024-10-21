@@ -35,5 +35,16 @@ namespace DDDNetCore.Infrastructure.StaffProfiles
 
             return lastStaff.Id;
         }
+
+        public async Task<Staff> GetStaffWithEmail(string email)
+        {
+            return await _context.StaffProfiles
+                .Where(staff => 
+                    staff.Email != null && 
+                    staff.Email.EmailAddress == email)
+                    .FirstOrDefaultAsync();
+        }
     }
 }
+
+
