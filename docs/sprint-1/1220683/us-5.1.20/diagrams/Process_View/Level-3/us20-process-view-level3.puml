@@ -114,8 +114,13 @@ OPTYServ --> CONTROL : operationTypeDto
 deactivate OPTYServ
 
 CONTROL -> OPTYServ : GetByIdAsync(operationTypeDto.Name)
-
 activate OPTYServ
+
+OPTYServ -> OPTYRepo : GetByIdWithStaffAsync(operationTypeId)
+activate OPTYRepo
+
+OPTYRepo --> OPTYServ : operationTypesWithRequiredStaffList
+deactivate OPTYRepo
 
 OPTYServ --> CONTROL : operationTypeDto
 deactivate OPTYServ
