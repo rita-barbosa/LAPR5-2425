@@ -12,7 +12,7 @@ participant "<<service>>\n StaffService" as STAFFServ
 participant "<<repository>>\n StaffRepository" as STAFFRepo
 participant "<<dto>>\n StaffDTO" as StaffDTO
 
-participant "<<service>>\n AuthenticationService" as AUTHServ
+participant "<<service>>\n UserService" as AUTHServ
 
 participant "<<service>>\n OperationRequisitionService" as OPREQServ
 participant "<<repository>>\n OperationRequisitionRepository" as OPREQRepo
@@ -74,15 +74,13 @@ deactivate ROUTE
 
 |||
 
-[o-> ROUTE : POST(updatedData)
+[o-> ROUTE : PUT(updatedData)
 activate ROUTE
 
-ROUTE -> CONTROL : updateOperationRequisition(updatedData)
+ROUTE -> CONTROL : Update(operationRequisitionDTO)
 activate CONTROL
 
-CONTROL -> OPREQDTO ** : toDTO(updatedData)
-
-CONTROL -> OPREQServ : updateOperationRequisition(operationRequisitionDTO)
+CONTROL -> OPREQServ : UpdateAsync(operationRequisitionDTO)
 activate OPREQServ
 
 OPREQServ -> OPREQRepo : save(operationRequisitionDTO)

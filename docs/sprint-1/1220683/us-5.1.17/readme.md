@@ -85,15 +85,26 @@ system (**US 5.1.12** and **US 5.1.1**).
 > **Answer:** When it is scheduled by the planning/scheduling module.
 
 
+> **Question:** There was a previous question, "What information can physicians update on an operating requisition?", with the following answer, "Physicians can update the operating time, priority, and description text, but not change the patient.". However, half of this answer applies to the Operation Type, instead of the Operation Request.
+> Operation Requests have, at least, an ID, a Patient, an Operation Type, a Doctor, a Deadline Date, and a Priority. Considering the previous answer, the doctor cannot change the Patient ID but can change the Priority. Besides the Priority, could the doctor also update the Deadline Date or Operation Type?
+>
+> **Answer:** The answer was about operation requests, not operation types. I believe the term "operation time" in the original answer was the reason for this misunderstanding, as it means the expected deadline for the request, not the duration.
+> Thus, the doctor can change the deadline, the priority, and the description. the doctor cannot change the operation type nor the patient
+
+
 ## 3. Analysis
 
 Upon the Doctor creating an operation requisition, they can also edit/update it, to ensure the patient's access to appropriate
 healthcare. This constrain is checked by the system.
 
-The information that can be edited is the following one:
+**The information that can be edited is the following one:**
 - deadline
 - priority
 - description text
+
+**The following information that cannot be edited:**
+- patient
+- operation type
 
 While the priority must be one of the types already in the system (Elective < Urgent < Emergency), the deadline is provided by the doctor, that defines it
 based on their experience as staff.
@@ -156,15 +167,11 @@ The process view levels are here represented as they represent a process specifi
 
 > #### **Facade Pattern**
 >
->* **Components:** StaffService, AuthenticationService, OperationRequestService
+>* **Components:** StaffService, UserService, OperationRequestService
 >
 > These services act as a Facade to simplify interaction with lower-level components like repositories. The Controller
 > interacts with these service facades, keeping the complexity hidden from the higher layers.
 
-
-### 4.3. Applied Patterns
-
-_// To do //_
 
 ### 4.4. Tests
 
