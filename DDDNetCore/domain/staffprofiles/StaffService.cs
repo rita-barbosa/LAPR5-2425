@@ -2,6 +2,7 @@ using System;
 using System.Threading.Tasks;
 using DDDNetCore.Domain.Shared;
 using DDDNetCore.Domain.Specializations;
+using DDDNetCore.Domain.Users;
 
 namespace DDDNetCore.Domain.StaffProfiles
 {
@@ -42,6 +43,21 @@ namespace DDDNetCore.Domain.StaffProfiles
             await this._unitOfWork.CommitAsync();
 
             return new StaffDto(staff.Name.ToString(), staff.Phone.ToString(), staff.Email.ToString(), staff.Id.AsString());
+        }
+
+        public async void AddUser(User user, string email, string phone)
+        {
+            bool result = await _repo.ExistsStaffWithEmailOrPhone(email, phone.Split(' ')[0], phone.Split(' ')[1]);
+
+            if(!result){
+                throw new InvalidOperationException("There isn't a staff member associated with this email/phone.");
+            }
+
+            Staff staff = await _repo.GetStaffWithEmail(email);
+
+            staff.AddUser(user);
+            
+            await this._unitOfWork.CommitAsync();
         }
 
         private async Task<string> getSequentialNumber()
