@@ -73,7 +73,15 @@ namespace DDDNetCore
                         options.AddPolicy("AuthenticatedUsers", policy => policy.RequireRole("Admin","Nurse","Doctor","Technician","Patient"));
                         options.AddPolicy("Staff", policy => policy.RequireRole("Admin","Nurse","Doctor","Technician"));
                      });
-            services.AddIdentityCore<User>()
+            services.AddIdentityCore<User>(options =>
+            {
+                // Password settings
+                options.Password.RequireDigit = true;
+                options.Password.RequiredLength = 10; // Minimum length
+                options.Password.RequireLowercase = true; // At least 1 lowercase letter
+                options.Password.RequireUppercase = true; // At least 1 uppercase letter
+                options.Password.RequireNonAlphanumeric = true; // At least 1 special character
+            })
                 .AddRoles<Role>()
                 .AddEntityFrameworkStores<DDDNetCoreDbContext>();
 
