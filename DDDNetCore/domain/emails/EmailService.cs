@@ -8,6 +8,7 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using DDDNetCore.Domain.Tokens;
+using DDDNetCore.Domain.Users;
 using DDDNetCore.Domain.Shared;
 using DDDNetCore.Infrastructure.Emails;
 
@@ -26,6 +27,22 @@ namespace DDDNetCore.Domain.Emails
             this._adapter = adapter;
         }
 
+        public async Task SendConfirmationEmail(EmailMessageDto emailDto) {
+
+            //to confirm email formatting
+            var senderEmail = new Email(emailDto.SenderEmail);
+            var recipientEmail = new Email(emailDto.RecipientEmail);
+
+            var email = new MimeMessage();
+            email.From.Add(new MailboxAddress("HealthCare Clinic", senderEmail.EmailAddress));
+            email.To.Add(MailboxAddress.Parse(recipientEmail.EmailAddress));
+            email.Subject = emailDto.EmailSubject;
+
+            // can be TextFormat Plain but changing it to Html allow us to better structure the email content 
+            email.Body = new TextPart(TextFormat.Html) { Text = emailDto.EmailBody };
+
+            await _adapter.SendEmail(email);
+        }
 
         public async Task SendEmail(EmailMessageDto emailDto) {
 
