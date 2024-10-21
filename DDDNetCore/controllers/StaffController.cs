@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using DDDNetCore.Domain.Shared;
 using DDDNetCore.Domain.StaffProfiles;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DDDNetCore.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Policy = "Staff")]
     public class StaffController : ControllerBase
     {
         private readonly StaffService _service;
@@ -20,6 +22,7 @@ namespace DDDNetCore.Controllers
 
         // POST: api/Staff
         [HttpPost]
+        [Authorize(Policy = "Admin")]
         public async Task<ActionResult<StaffDto>> CreateStaffProfile(CreatingStaffDto dto)
         {
             try
@@ -33,5 +36,6 @@ namespace DDDNetCore.Controllers
                 return BadRequest(new { Message = ex.Message });
             }
         }
+
     }
 }
