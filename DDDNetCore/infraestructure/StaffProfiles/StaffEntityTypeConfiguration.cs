@@ -1,5 +1,6 @@
 using DDDNetCore.Domain.Specializations;
 using DDDNetCore.Domain.StaffProfiles;
+using DDDNetCore.Domain.Users;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Org.BouncyCastle.Asn1.Eac;
@@ -20,6 +21,12 @@ namespace DDDNetCore.Infrastructure.StaffProfiles
                     .IsRequired()
                     .HasColumnName("LicenseNumber");
             });
+
+            builder.HasOne<User>()
+                .WithOne() // Assuming User does not have a direct reference to Staff
+                .HasForeignKey<Staff>(b => b.UserReference) // Foreign key on the Staff entity
+                .IsRequired(false) // Make the relationship optional
+                .OnDelete(DeleteBehavior.SetNull); // Optional: Set UserId to null on delete
 
             // Configure Name as a value object
             builder.OwnsOne(b => b.Name, n =>
@@ -93,6 +100,7 @@ namespace DDDNetCore.Infrastructure.StaffProfiles
                 });
                 slotBuilder.ToTable("StaffSlots");
             });
+
             // Configure the table name for Staff
             builder.ToTable("Staff");
         }

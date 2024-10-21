@@ -1,6 +1,8 @@
+using System;
 using System.Collections.Generic;
 using DDDNetCore.Domain.Shared;
 using DDDNetCore.Domain.Specializations;
+using DDDNetCore.Domain.Users;
 
 namespace DDDNetCore.Domain.StaffProfiles
 {
@@ -13,6 +15,8 @@ namespace DDDNetCore.Domain.StaffProfiles
         public List<Slot> Slots { get; set; }
         public Function Function { get; private set; }
         public SpecializationDenomination SpecializationId { get; private set; }
+        public string? UserReference { get; set; } 
+
 
         private Staff() { }
         public Staff(string seqNumber, string licenseNumber, string firstName, string lastName, string email, string phoneNumber, Function function, SpecializationDenomination specializationId)
@@ -49,6 +53,21 @@ namespace DDDNetCore.Domain.StaffProfiles
         {
             var slot = new Slot(startTime, endTime, startDate, endDate);
             Slots.Add(slot);
+        }
+
+        public void AddUser(User user)
+        {
+            if (user == null)
+            {
+                throw new ArgumentNullException(nameof(user), "User cannot be null.");
+            }
+
+            if (this.UserReference != null)
+            {
+                throw new InvalidOperationException("This staff member already has a user assigned.");
+            }
+
+            this.UserReference = user.Id;       
         }
     }
 }
