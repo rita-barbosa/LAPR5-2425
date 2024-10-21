@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -48,7 +48,6 @@ namespace DDDNetCore
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
                 {
@@ -65,7 +64,7 @@ namespace DDDNetCore
                 });
             services.AddAuthorization(options =>
                      {
-                         options.AddPolicy("Admin", policy => policy.RequireRole("Admin")); // Require Admin role
+                        options.AddPolicy("Admin", policy => policy.RequireRole("Admin")); // Require Admin role
                         options.AddPolicy("Doctor", policy => policy.RequireRole("Doctor")); // Require Doctor role
                         options.AddPolicy("Technician", policy => policy.RequireRole("Technician")); // Require Technician role
                         options.AddPolicy("Nurse", policy => policy.RequireRole("Nurse")); // Require Nurse role
@@ -83,7 +82,8 @@ namespace DDDNetCore
                 options.Password.RequireNonAlphanumeric = true; // At least 1 special character
             })
                 .AddRoles<Role>()
-                .AddEntityFrameworkStores<DDDNetCoreDbContext>();
+                .AddEntityFrameworkStores<DDDNetCoreDbContext>()
+                .AddDefaultTokenProviders();
 
             services.AddDbContext<DDDNetCoreDbContext>(opt =>
                 opt.UseSqlite(Configuration.GetConnectionString("DefaultConnection"))
@@ -98,7 +98,7 @@ namespace DDDNetCore
         {
             using IServiceScope scope = app.ApplicationServices.CreateScope();
             RoleManager<Role> roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<Role>>();
-            string[] roleNames = { "Admin" };
+            string[] roleNames = { "Admin", "Technician", "Doctor", "Nurse", "Patient" };
             foreach (string roleName in roleNames)
             {
                 if (!roleManager.RoleExistsAsync(roleName).GetAwaiter().GetResult())
