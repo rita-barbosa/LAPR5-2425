@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
 using DDDNetCore.Domain.OperationTypes;
+using DDDNetCore.Domain.OperationTypes.ValueObjects.RequiredStaff;
 
 namespace DDDNetCore.Controllers
 {
@@ -38,6 +39,11 @@ namespace DDDNetCore.Controllers
         [HttpPost]
         public async Task<ActionResult<OperationTypeDto>> Create(OperationTypeDto dto)
         {
+
+            foreach (RequiredStaffDto staff in dto.RequiredStaff){
+                Console.WriteLine(staff.Function);
+            }
+
             var operationType = await _service.AddAsync(dto);
 
             return CreatedAtAction(nameof(GetGetById), new { id = new OperationTypeId(operationType.Name) }, operationType);

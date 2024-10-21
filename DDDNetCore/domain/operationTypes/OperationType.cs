@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using DDDNetCore.Domain.OperationTypes.ValueObjects;
 using DDDNetCore.Domain.OperationTypes.ValueObjects.Phase;
