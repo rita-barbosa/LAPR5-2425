@@ -1,5 +1,6 @@
 using System;
 using DDDNetCore.Domain.Shared;
+using DDDNetCore.Domain.Users;
 
 namespace DDDNetCore.Domain.Patients
 {
@@ -13,6 +14,7 @@ namespace DDDNetCore.Domain.Patients
         public Email Email { get; private set; }
         public MedicalCondition? MedicalCondition { get; private set; }
         public DateTime DateBirth { get; private set; }
+        public string? UserReference { get; set; } 
 
         private Patient() { }
         public Patient(string firstName, string lastName, string fullName, Gender gender,
@@ -55,6 +57,21 @@ namespace DDDNetCore.Domain.Patients
             }
             DateBirth = dateOfBirth;
             Gender = gender;
+        }
+
+        public void AddUser(User user)
+        {
+            if (user == null)
+            {
+                throw new ArgumentNullException(nameof(user), "User cannot be null.");
+            }
+
+            if (this.UserReference != null)
+            {
+                throw new InvalidOperationException("This patient already has a user assigned.");
+            }
+
+            this.UserReference = user.Id;       
         }
     }
 }

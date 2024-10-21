@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using DDDNetCore.Domain.Patients;
+using DDDNetCore.Domain.Users;
 
 namespace DDDNetCore.Infrastructure.Products
 {
@@ -22,6 +23,12 @@ namespace DDDNetCore.Infrastructure.Products
                    .IsRequired()
                    .HasColumnName("FullName");
            });
+
+           builder.HasOne<User>()
+                .WithOne() // Assuming User does not have a direct reference to Staff
+                .HasForeignKey<Patient>(b => b.UserReference) // Foreign key on the Staff entity
+                .IsRequired(false) // Make the relationship optional
+                .OnDelete(DeleteBehavior.SetNull); // Optional: Set UserId to null on delete
 
             builder.OwnsOne(c => c.PhoneNumber, pn =>
              {
