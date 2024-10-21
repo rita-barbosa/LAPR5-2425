@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using DDDNetCore.Domain.Shared;
 using DDDNetCore.Domain.OperationTypes.ValueObjects.RequiredStaff;
 using DDDNetCore.Domain.OperationTypes.ValueObjects.Phase;
+using System;
 
 namespace DDDNetCore.Domain.OperationTypes
 {
@@ -104,23 +105,41 @@ namespace DDDNetCore.Domain.OperationTypes
 
         private OperationTypeDto ToDto(OperationType operationType)
         {
-            return new OperationTypeDto
-            {
-                Name = operationType.Name.OperationName,
-                EstimatedDuration = operationType.EstimatedDuration.TotalDurationMinutes,
-                Status = operationType.Status.Active,
-                RequiredStaff = operationType.RequiredStaff.ConvertAll(staff => new RequiredStaffDto
-                {
-                    StaffQuantity = staff.StaffQuantity.NumberRequired,
-                    Function = staff.Function.Description,
-                    Specialization = staff.SpecializationId.Value
-                }),
-                Phases = operationType.Phases.ConvertAll(phase => new PhaseDto
-                {
-                    Description = phase.Description.Description,
-                    Duration = phase.Duration.DurationMinutes
-                })
-            };
+
+            if (operationType.RequiredStaff.Count == 0){
+                Console.WriteLine("\n\nNo required staff obtained. \n\n");
+                return new OperationTypeDto
+                            {
+                                Name = operationType.Name.OperationName,
+                                EstimatedDuration = operationType.EstimatedDuration.TotalDurationMinutes,
+                                Status = operationType.Status.Active,
+                                RequiredStaff = [],
+                                Phases = operationType.Phases.ConvertAll(phase => new PhaseDto
+                                {
+                                    Description = phase.Description.Description,
+                                    Duration = phase.Duration.DurationMinutes
+                                })
+                            };
+            }else {
+                return new OperationTypeDto
+                            {
+                                Name = operationType.Name.OperationName,
+                                EstimatedDuration = operationType.EstimatedDuration.TotalDurationMinutes,
+                                Status = operationType.Status.Active,
+                                RequiredStaff = operationType.RequiredStaff.ConvertAll(staff => new RequiredStaffDto
+                                {
+                                    StaffQuantity = staff.StaffQuantity.NumberRequired,
+                                    Function = staff.Function.Description,
+                                    Specialization = staff.SpecializationId.Value
+                                }),
+                                Phases = operationType.Phases.ConvertAll(phase => new PhaseDto
+                                {
+                                    Description = phase.Description.Description,
+                                    Duration = phase.Duration.DurationMinutes
+                                })
+                            };
+            }
+            
         }
     }
 }
