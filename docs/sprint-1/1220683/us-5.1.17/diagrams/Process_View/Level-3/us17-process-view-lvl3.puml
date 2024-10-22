@@ -6,23 +6,25 @@ title "US 5.1.17. Process View (Level 3)"
 autonumber
 
 participant "<<route>>\n Routing" as ROUTE
-participant "<<controller>>\n OperationRequisitionController" as CONTROL
+participant "<<controller>>\n OperationRequestsController" as CONTROL
 
 participant "<<service>>\n StaffService" as STAFFServ
 participant "<<repository>>\n StaffRepository" as STAFFRepo
 participant "<<dto>>\n StaffDTO" as StaffDTO
 
 participant "<<service>>\n UserService" as AUTHServ
+participant "<<dto>>\n UserDto" as UserDto
 
-participant "<<service>>\n OperationRequisitionService" as OPREQServ
-participant "<<repository>>\n OperationRequisitionRepository" as OPREQRepo
-participant "<<dto>>\n OperationRequisitionDTO" as OPREQDTO
+participant "<<service>>\n OperationRequestsService" as OPREQServ
+participant "<<domain>>\n OperationRequest" as OPRequest
+participant "<<repository>>\n OperationRequestsRepository" as OPREQRepo
+participant "<<dto>>\n OperationRequestsDTO" as OPREQDTO
 
 
-[o-> ROUTE : GET() /api/operationrequisitions
+[o-> ROUTE : GET() /api/OperationRequest
 activate ROUTE
 
-ROUTE -> CONTROL : getOperationRequisitionsByDoctor()
+ROUTE -> CONTROL : getOperationRequestsByDoctor()
 activate CONTROL
 
 CONTROL -> STAFFServ : findCurrentSessionDoctor()
@@ -31,10 +33,12 @@ activate STAFFServ
 STAFFServ -> AUTHServ : getSessionUser()
 activate AUTHServ
 
-AUTHServ --> STAFFServ : user
+AUTHServ -> UserDto ** : toDTO(user)
+
+AUTHServ --> STAFFServ : userDto
 deactivate AUTHServ
 
-STAFFServ -> STAFFRepo : getDoctorByUser(user)
+STAFFServ -> STAFFRepo : getDoctorByUser(userDto)
 activate STAFFRepo
 
 STAFFRepo --> STAFFServ : doctor
@@ -45,24 +49,24 @@ STAFFServ --> StaffDTO ** : toDTO(doctor)
 STAFFServ --> CONTROL : doctorDTO
 deactivate STAFFServ
 
-CONTROL -> OPREQServ : getOperationRequisitionsByDoctor(doctorDTO)
+CONTROL -> OPREQServ : getOperationRequestsByDoctor(doctorDTO)
 activate OPREQServ
 
 OPREQServ -> OPREQRepo : findAllByDoctor(doctorDTO)
 activate OPREQRepo
 
-OPREQRepo --> OPREQServ : operationRequisitionList
+OPREQRepo --> OPREQServ : operationRequestsList
 deactivate OPREQRepo
 
 loop for all the elements in the list
-OPREQServ -> OPREQDTO ** : toDTO(operationRequisition)
+OPREQServ -> OPREQDTO ** : toDTO(operationRequests)
 
 end loop
 
-OPREQServ --> CONTROL : operationRequisitionDTOList
+OPREQServ --> CONTROL : operationRequestsDTOList
 deactivate OPREQServ
 
-CONTROL -> CONTROL : json(operationRequisitionDTOList)
+CONTROL -> CONTROL : json(operationRequestsDTOList)
 activate CONTROL
 deactivate CONTROL
 
@@ -74,25 +78,41 @@ deactivate ROUTE
 
 |||
 
-[o-> ROUTE : PUT(updatedData)
+[o-> ROUTE : PUT(json)
 activate ROUTE
 
-ROUTE -> CONTROL : Update(operationRequisitionDTO)
+ROUTE -> CONTROL : Update(idString, updatedOperationRequestsDTO)
 activate CONTROL
 
-CONTROL -> OPREQServ : UpdateAsync(operationRequisitionDTO)
+
+'//'GetByIdAsync
+
+CONTROL -> OPREQServ : UpdateAsync(updatedOperationRequestsDTO)
 activate OPREQServ
 
-OPREQServ -> OPREQRepo : save(operationRequisitionDTO)
+OPREQServ -> OPREQRepo : GetByIdAsync(dto.Id)
+activate OPREQRepo
+
+OPREQRepo --> OPREQServ : operationRequest
+deactivate OPREQRepo
+
+OPREQServ -> OperationRequest : ChangeDeadLineDate(dto.DeadLineDate)
+OPREQServ -> OperationRequest : ChangePriority(dto.Priority)
+OPREQServ -> OperationRequest : opRequest.ChangeDescription(dto.Description);
+|||
+
+OPREQServ -> OPREQRepo : save(operationRequest)
 activate OPREQRepo
 
 OPREQRepo --> OPREQServ : return
 deactivate OPREQRepo
 
-OPREQServ --> CONTROL : return
+OPREQServ -> OPREQDTO ** : toDTO(operationRequest)
+
+OPREQServ --> CONTROL : operationRequestDto
 deactivate OPREQServ
 
-CONTROL --> ROUTE : return
+CONTROL --> ROUTE : operationRequestDto
 deactivate CONTROL
 
 
