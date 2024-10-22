@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using DDDNetCore.Domain.Patients;
 using DDDNetCore.Domain.Shared;
 using DDDNetCore.Domain.StaffProfiles;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MimeKit.Encodings;
 
@@ -19,15 +20,27 @@ namespace DDDNetCore.Controllers
             _service = service;
         }
 
+        [HttpGet("{id}")]
+        [Authorize(Policy = "Admin")]
+        public async Task<ActionResult<PatientDto>> GetPatientById(MedicalRecordNumber id)
+        {
+            var staff = await _service.GetByIdAsync(id);
+            if (staff == null)
+            {
+                return NotFound();
+            }
+            return Ok(staff);
+        }
         // POST: api/Staff
         [HttpPost]
+        [Authorize(Policy = "Admin")]
         public async Task<ActionResult<PatientDto>> CreateStaffProfile(CreatingPatientDto dto)
         {
             try
             {
                 var patient = await _service.CreatePatientProfile(dto);
 
-                return Ok(patient);
+                return CreatedAtAction(nameof(GetPatientById), new { id = patient.PatientId }, patient);
             }
             catch (BusinessRuleValidationException ex)
             {

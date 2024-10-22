@@ -14,32 +14,28 @@ namespace DDDNetCore.Domain.StaffProfiles
         public Email Email { get; private set; }
         public List<Slot> Slots { get; set; }
         public Function Function { get; private set; }
+        public ResidentialAddress Address { get; private set; }
         public SpecializationDenomination SpecializationId { get; private set; }
-        public string? UserReference { get; set; } 
+        public string? UserReference { get; set; }
 
 
         private Staff() { }
-        public Staff(string seqNumber, string licenseNumber, string firstName, string lastName, string email, string phoneNumber, Function function, SpecializationDenomination specializationId)
+        public Staff(string seqNumber, string address, string licenseNumber, string firstName, string lastName, string email, string phoneNumber, Function function, SpecializationDenomination specializationId)
         {
             this.Id = new StaffId(function.GetCorrespondingChar(), seqNumber);
-
+            Address = new ResidentialAddress(address);
             LicenseNumber = new LicenseNumber(licenseNumber);
             Name = new Name(firstName, lastName);
             Phone = new Phone(phoneNumber);
             Email = new Email(email);
-            Slots = new List<Slot>(); ;
+            Slots = new List<Slot>();
             Function = function;
             SpecializationId = specializationId ?? throw new BusinessRuleValidationException("Staff members must have a specialization.");
         }
-        public Staff(string seqNumber, string licenseNumber, string firstName, string lastName, string fullName, string email, string countryCode, string phoneNumber, Function function, SpecializationDenomination specializationId)
+        public Staff(string seqNumber, string address, string licenseNumber, string firstName, string lastName, string fullName, string email, string countryCode, string phoneNumber, Function function, SpecializationDenomination specializationId)
         {
-            this.Id = new StaffId(function switch
-            {
-                var f when f == Function.Doctor => "D",
-                var f when f == Function.Nurse => "N",
-                _ => "O"
-            }, seqNumber);
-
+            this.Id = new StaffId(function.GetCorrespondingChar(), seqNumber);
+            Address = new ResidentialAddress(address);
             LicenseNumber = new LicenseNumber(licenseNumber);
             Name = new Name(firstName, lastName, fullName);
             Phone = new Phone(countryCode, phoneNumber);
@@ -67,7 +63,7 @@ namespace DDDNetCore.Domain.StaffProfiles
                 throw new InvalidOperationException("This staff member already has a user assigned.");
             }
 
-            this.UserReference = user.Id;       
+            this.UserReference = user.Id;
         }
     }
 }

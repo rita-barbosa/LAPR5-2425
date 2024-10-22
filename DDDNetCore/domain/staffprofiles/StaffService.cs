@@ -18,7 +18,15 @@ namespace DDDNetCore.Domain.StaffProfiles
             this._repo = repo;
             this._repoSpec = repoSpec;
         }
+        public async Task<StaffDto> GetByIdAsync(StaffId id)
+        {
+            var staff = await this._repo.GetByIdAsync(id);
 
+            if (staff == null)
+                return null;
+
+            return new StaffDto(staff.Name.ToString(), staff.Phone.ToString(), staff.Email.ToString(), staff.Id.AsString(), staff.SpecializationId.AsString());
+        }
         public async Task<StaffDto> CreateStaffProfile(CreatingStaffDto dto)
         {
 
@@ -35,28 +43,29 @@ namespace DDDNetCore.Domain.StaffProfiles
             Function? function = Function.GetFunctionByDescription(dto.Function) ??
                 throw new BusinessRuleValidationException("Invalid function.");
 
-            var staff = new Staff(seqNumber, dto.LicenseNumber, dto.FirstName, dto.LastName, dto.Email,
+            var staff = new Staff(seqNumber,dto.Address, dto.LicenseNumber, dto.FirstName, dto.LastName, dto.Email,
             dto.Phone, function, spec.Id);
 
             await this._repo.AddAsync(staff);
 
             await this._unitOfWork.CommitAsync();
 
-            return new StaffDto(staff.Name.ToString(), staff.Phone.ToString(), staff.Email.ToString(), staff.Id.AsString());
+            return new StaffDto(staff.Name.ToString(), staff.Phone.ToString(), staff.Email.ToString(), staff.Id.AsString(), staff.SpecializationId.AsString());
         }
 
         public async void AddUser(User user, string email, string phone)
         {
             bool result = await _repo.ExistsStaffWithEmailOrPhone(email, phone.Split(' ')[0], phone.Split(' ')[1]);
 
-            if(!result){
+            if (!result)
+            {
                 throw new InvalidOperationException("There isn't a staff member associated with this email/phone.");
             }
 
             Staff staff = await _repo.GetStaffWithEmail(email);
 
             staff.AddUser(user);
-            
+
             await this._unitOfWork.CommitAsync();
         }
 

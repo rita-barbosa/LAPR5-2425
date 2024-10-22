@@ -12,16 +12,18 @@ namespace DDDNetCore.Domain.Patients
         public Phone PhoneNumber { get; private set; }
         public Phone EmergencyContact { get; private set; }
         public Email Email { get; private set; }
+        public ResidentialAddress Address { get; private set; }
         public MedicalCondition? MedicalCondition { get; private set; }
         public DateTime DateBirth { get; private set; }
-        public string? UserReference { get; set; } 
+        public string? UserReference { get; set; }
 
         private Patient() { }
-        public Patient(string firstName, string lastName, string fullName, Gender gender,
+        public Patient(string firstName, string lastName, string fullName, string address, Gender gender,
                         string countryCode, string phoneNumber, string emergencyContact, string email,
                          string dateBirth, string seqNumber)
         {
             this.Id = new MedicalRecordNumber(seqNumber, true);
+            Address = new ResidentialAddress(address);
             Name = new Name(firstName, lastName, fullName);
             if (string.Equals(phoneNumber, emergencyContact))
             {
@@ -38,11 +40,12 @@ namespace DDDNetCore.Domain.Patients
             Gender = gender;
         }
 
-        public Patient(string firstName, string lastName, Gender gender,
+        public Patient(string firstName, string lastName, string address, Gender gender,
                      string phoneNumber, string emergencyContact, string email,
                       string dateBirth, string seqNumber)
         {
             this.Id = new MedicalRecordNumber(seqNumber, true);
+            Address = new ResidentialAddress(address);
             Name = new Name(firstName, lastName);
             if (string.Equals(phoneNumber, emergencyContact))
             {
@@ -71,7 +74,7 @@ namespace DDDNetCore.Domain.Patients
                 throw new InvalidOperationException("This patient already has a user assigned.");
             }
 
-            this.UserReference = user.Id;       
+            this.UserReference = user.Id;
         }
     }
 }

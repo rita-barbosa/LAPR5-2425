@@ -6,7 +6,6 @@ namespace DDDNetCore.Domain.Patients
         public string Name { get; set; } = name;
         public string Phone { get; set; } = phone;
         public string Email { get; set; } = email;
-
         public string PatientId { get; set; } = patientId;
     }
 }

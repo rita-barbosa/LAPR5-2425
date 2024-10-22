@@ -20,6 +20,18 @@ namespace DDDNetCore.Controllers
             _service = service;
         }
 
+        [HttpGet("{id}")]
+        [Authorize(Policy = "Admin")]
+        public async Task<ActionResult<StaffDto>> GetStaffById(StaffId id)
+        {
+            var staff = await _service.GetByIdAsync(id);
+            if (staff == null)
+            {
+                return NotFound();
+            }
+            return Ok(staff);
+        }
+
         // POST: api/Staff
         [HttpPost]
         [Authorize(Policy = "Admin")]
@@ -29,11 +41,15 @@ namespace DDDNetCore.Controllers
             {
                 var staff = await _service.CreateStaffProfile(dto);
 
-                return Ok(staff);
+                return CreatedAtAction(nameof(GetStaffById), new { id = staff.Id }, staff); 
+            }
+            catch (BusinessRuleValidationException ex)
+            {
+                return BadRequest(new { ex.Message });
             }
             catch (Exception ex)
             {
-                return BadRequest(new { Message = ex.Message });
+                return BadRequest(new { ex.Message});
             }
         }
 
