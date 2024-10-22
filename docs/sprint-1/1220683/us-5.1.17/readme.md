@@ -105,8 +105,7 @@ healthcare. This constrain is checked by the system.
 - patient
 - operation type
 
-While the priority must be one of the types already in the system (Elective < Urgent < Emergency), the deadline is provided by the doctor, that defines it
-based on their experience as staff.
+While the priority must be one of the types already in the system (Elective < Urgent < Emergency), the deadline is provided by the doctor, that defines it based on their experience as staff.
 
 Each single data edition is registered in the system logs and immediately reflected in the system and Planning Module.
 

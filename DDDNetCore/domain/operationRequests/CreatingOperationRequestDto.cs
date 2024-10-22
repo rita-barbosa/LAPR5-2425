@@ -15,19 +15,21 @@ namespace DDDNetCore.Domain.OperationRequest
         public string Status { get; set; }
 
         public string StaffId { get; set; } 
+        public string Description { get; set; } 
 
         public string PatientId { get; set; } 
 
         public string OperationTypeId { get; set; } 
 
 
-        public CreatingOperationRequestDto(string deadLineDate, string priority, string dateOfRequest, string status, string staffId, string patientId, string operationTypeId)
+        public CreatingOperationRequestDto(string deadLineDate, string priority, string dateOfRequest, string status, string staffId, string description, string patientId, string operationTypeId)
         {
             this.DeadLineDate = deadLineDate;
             this.Priority = priority;
             this.DateOfRequest = dateOfRequest;
             this.Status = status;
             this.StaffId = staffId;
+            this.Description = description;
             this.PatientId = patientId;
             this.OperationTypeId = operationTypeId;  
         }
