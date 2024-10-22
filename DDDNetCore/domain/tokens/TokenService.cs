@@ -2,6 +2,8 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using DDDNetCore.Domain.Shared;
 using System;
+using Microsoft.AspNetCore.Identity;
+using DDDNetCore.Domain.Users;
 
 namespace DDDNetCore.Domain.Tokens
 {
@@ -9,11 +11,13 @@ namespace DDDNetCore.Domain.Tokens
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly ITokenRepository _repo;
+        private readonly UserManager<User> _userManager;
 
-        public TokenService(IUnitOfWork unitOfWork, ITokenRepository repo)
+        public TokenService(IUnitOfWork unitOfWork, ITokenRepository repo, UserManager<User> userManager)
         {
             this._unitOfWork = unitOfWork;
             this._repo = repo;
+            this._userManager = userManager;
         }
 
         public async Task<TokenDto> CreateAccountDeletionToken(string username)
@@ -110,5 +114,17 @@ namespace DDDNetCore.Domain.Tokens
         public TokenTypeDto ToDto(TokenType tokenType){
             return new TokenTypeDto( tokenType.ExpirationDurationHours.Hours, tokenType.TypeDenomination.Denomination );
         }
+
+        public async Task<bool> ConfirmEmailToken(string userId, string token)
+        {
+            User user = await _userManager.FindByIdAsync(userId);
+            var result = await _userManager.ConfirmEmailAsync(user, token);
+            return result.Succeeded;
+        }
+
+        public async Task<string> GeneratePasswordResetTokenAsync(User user){
+            return await _userManager.GeneratePasswordResetTokenAsync(user);
+        }
     }
+
 }
