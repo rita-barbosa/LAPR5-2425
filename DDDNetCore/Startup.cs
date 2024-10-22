@@ -64,13 +64,13 @@ namespace DDDNetCore
                 });
             services.AddAuthorization(options =>
                      {
-                        options.AddPolicy("Admin", policy => policy.RequireRole("Admin")); // Require Admin role
-                        options.AddPolicy("Doctor", policy => policy.RequireRole("Doctor")); // Require Doctor role
-                        options.AddPolicy("Technician", policy => policy.RequireRole("Technician")); // Require Technician role
-                        options.AddPolicy("Nurse", policy => policy.RequireRole("Nurse")); // Require Nurse role
-                        options.AddPolicy("Patient", policy => policy.RequireRole("Patient")); // Require Patient role
-                        options.AddPolicy("AuthenticatedUsers", policy => policy.RequireRole("Admin","Nurse","Doctor","Technician","Patient"));
-                        options.AddPolicy("Staff", policy => policy.RequireRole("Admin","Nurse","Doctor","Technician"));
+                         options.AddPolicy("Admin", policy => policy.RequireRole("Admin")); // Require Admin role
+                         options.AddPolicy("Doctor", policy => policy.RequireRole("Doctor")); // Require Doctor role
+                         options.AddPolicy("Technician", policy => policy.RequireRole("Technician")); // Require Technician role
+                         options.AddPolicy("Nurse", policy => policy.RequireRole("Nurse")); // Require Nurse role
+                         options.AddPolicy("Patient", policy => policy.RequireRole("Patient")); // Require Patient role
+                         options.AddPolicy("AuthenticatedUsers", policy => policy.RequireRole("Admin", "Nurse", "Doctor", "Technician", "Patient"));
+                         options.AddPolicy("Staff", policy => policy.RequireRole("Admin", "Nurse", "Doctor", "Technician"));
                      });
             services.AddIdentityCore<User>(options =>
             {
@@ -171,6 +171,7 @@ namespace DDDNetCore
 
             services.AddTransient<IOperationRequestRepository, OperationRequestRepository>();
             services.AddTransient<OperationRequestService>();
+            services.AddTransient<UserService>();
         }
 
 

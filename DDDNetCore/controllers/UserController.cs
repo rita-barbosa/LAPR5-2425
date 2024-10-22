@@ -16,6 +16,7 @@ using DDDNetCore.Domain.Patients;
 using DDDNetCore.Domain.StaffProfiles;
 using DDDNetCore.Domain.Emails;
 using Microsoft.AspNetCore.Identity.Data;
+using DDDNetCore.Domain.Shared;
 
 namespace DDDNetCore.Controllers
 {
@@ -31,8 +32,10 @@ namespace DDDNetCore.Controllers
         private readonly EmailService _emailService;
         private readonly IConfiguration _configuration;
 
-        public UserController(UserManager<User> userManager, RoleManager<Role> roleManager, PatientService patientService, StaffService staffService, EmailService emailService, IConfiguration configuration)
+        private readonly UserService _userService;
+        public UserController(UserService userService, UserManager<User> userManager, RoleManager<Role> roleManager, PatientService patientService, StaffService staffService, EmailService emailService, IConfiguration configuration)
         {
+            _userService = userService;
             _userManager = userManager;
             _roleManager = roleManager;
             _patientService = patientService;
@@ -44,31 +47,22 @@ namespace DDDNetCore.Controllers
         [HttpPost("Login")]
         public async Task<IActionResult> Login([FromBody] LoginUserDto loginUserDto)
         {
-            // Find the user by email
-            var user = await _userManager.FindByEmailAsync(loginUserDto.Email);
-            if (user == null)
+            try
             {
-                return Unauthorized("Invalid email or password.");
+                var token = await _userService.Login(loginUserDto);
+                return Ok(new { Token = token });
             }
-            else if (!user.Status) 
+            catch (BusinessRuleValidationException ex)
             {
-                return Unauthorized("Account not yet activated.");
+                return Unauthorized(new { ex.Message });
             }
-
-            // Check the password
-            var result = await _userManager.CheckPasswordAsync(user, loginUserDto.Password);
-            if (!result)
+            catch (Exception)
             {
-                return Unauthorized("Invalid email or password.");
+                return BadRequest(new { V = "An unexpected error occured." });
             }
-
-            // Generate the token
-            var token = GenerateJwtToken(user);
-
-            return Ok(new { Token = token.Result });
         }
 
-         [HttpPut("ConfirmEmail")]
+        [HttpPut("ConfirmEmail")]
         public async Task<IActionResult> ConfirmEmail([FromQuery] string userId, [FromQuery] string token, [FromBody] ConfirmEmailUserDto confirmEmailUserDto)
         {
             if (string.IsNullOrWhiteSpace(userId) || string.IsNullOrWhiteSpace(token))
@@ -151,7 +145,8 @@ namespace DDDNetCore.Controllers
         [HttpPost("Register-Patient")]
         public async Task<IActionResult> RegisterPatientAndAssociateUser([FromBody] RegisterPatientUserDto registerPatientUserDto)
         {
-            try{
+            try
+            {
                 // Create the user
                 var user = new User { UserName = registerPatientUserDto.Email, Email = registerPatientUserDto.Email, Status = false };
                 IdentityResult result = await _userManager.CreateAsync(user, registerPatientUserDto.Password);
@@ -165,10 +160,10 @@ namespace DDDNetCore.Controllers
                 await _userManager.AddToRoleAsync(user, "Patient");
 
                 // Associate with it's profile
-                 _patientService.AddUser(user, registerPatientUserDto.Email, registerPatientUserDto.Phone);
+                _patientService.AddUser(user, registerPatientUserDto.Email, registerPatientUserDto.Phone);
 
                 SendConfirmationEmail(user);
-            } 
+            }
             catch (Exception ex)
             {
                 return StatusCode(500, $"An error occurred: {ex.Message} - {ex.StackTrace}");
@@ -181,7 +176,8 @@ namespace DDDNetCore.Controllers
         [Authorize(Policy = "Admin")]
         public async Task<IActionResult> RegisterStaffAndAssociateUser([FromBody] RegisterUserDto registerUserDto)
         {
-            try{
+            try
+            {
                 // Check if the role exists
                 bool roleExists = await _roleManager.RoleExistsAsync(registerUserDto.Role);
                 if (!roleExists)
@@ -202,14 +198,17 @@ namespace DDDNetCore.Controllers
                 await _userManager.AddToRoleAsync(user, registerUserDto.Role);
 
                 // Associate with it's profile
-                if (registerUserDto.Role.Equals("Patient")){
+                if (registerUserDto.Role.Equals("Patient"))
+                {
                     _patientService.AddUser(user, registerUserDto.Email, registerUserDto.Phone);
-                } else {
+                }
+                else
+                {
                     _staffService.AddUser(user, registerUserDto.Email, registerUserDto.Phone);
                 }
 
                 SendConfirmationEmail(user);
-            } 
+            }
             catch (Exception ex)
             {
                 return StatusCode(500, $"An error occurred: {ex.Message} - {ex.StackTrace}");
@@ -218,32 +217,7 @@ namespace DDDNetCore.Controllers
             return Ok(new { Message = "User registered successfully." });
         }
 
-        private async Task<string> GenerateJwtToken(User user)
-        {
-            var roles = await _userManager.GetRolesAsync(user);
-            var claims = new List<Claim>
-            {
-                new(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new(ClaimTypes.Email, user.Email)
-            };
-
-            foreach (var role in roles)
-            {
-                claims.Add(new Claim(ClaimTypes.Role, role));
-            }
-
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
-            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-
-            var token = new JwtSecurityToken(
-                issuer: _configuration["Jwt:Issuer"],
-                audience: _configuration["Jwt:Audience"],
-                claims: claims,
-                expires: DateTime.Now.AddMinutes(30), // THE TIME THE TOKEN IS ATIVE
-                signingCredentials: creds);
-
-            return new JwtSecurityTokenHandler().WriteToken(token);
-        }
+        
 
         private async void SendConfirmationEmail(User user)
         {
@@ -255,9 +229,9 @@ namespace DDDNetCore.Controllers
 
             // Step 2: Create emailDto to send all the info to the user
             EmailMessageDto emailDto = new EmailMessageDto(
-                "noreply.healthcare.dg38@gmail.com", 
-                user.Email, 
-                "Account Activation", 
+                "noreply.healthcare.dg38@gmail.com",
+                user.Email,
+                "Account Activation",
                 "<p>Hello,</p><p>This email was sent to inform you that your user account in the HealthCare Clinic System has been created. </p><p><a href='" + confirmationLink + "'>Click in the link to confirm the activation of the account and to set your own password.</a></p><p>Thank you for choosing us,<br>HealthCare Clinic</p></body></html>"
             );
             // Step 3: Send an email to the user
