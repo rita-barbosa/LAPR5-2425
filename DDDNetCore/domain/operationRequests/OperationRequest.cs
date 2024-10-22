@@ -14,7 +14,7 @@ namespace DDDNetCore.Domain.OperationRequest
 
         public Date DateOfRequest { get; private set; }
 
-        public Status Status { get; private set; }
+        public OperationRequestStatus Status { get; private set; }
 
         public StaffId StaffId { get; private set; } 
 
@@ -34,17 +34,16 @@ namespace DDDNetCore.Domain.OperationRequest
             this.DeadLineDate = new Date(deadLineDate);
             this.Priority = Priority.GetPriorityByName(priority);
             this.DateOfRequest = new Date(dateOfRequest);
-            this.Status = new Status(status);
+            this.Status = new OperationRequestStatus(status);
             this.StaffId = staffId;
             this.Description = new OperationRequestDescription(description);
             this.PatientId = patientId;
             this.OperationTypeId = operationTypeId;      
         }
 
-        public OperationRequest(Date deadLineDate, Priority priority, Date dateOfRequest, Status status, StaffId staffId, string description, MedicalRecordNumber patientId, OperationTypeId operationTypeId)
+        public OperationRequest(Date deadLineDate, Priority priority, Date dateOfRequest, OperationRequestStatus status, StaffId staffId, string description, MedicalRecordNumber patientId, OperationTypeId operationTypeId)
         {
             this.Id = new OperationRequestId(Guid.NewGuid());
-           // Console.WriteLine($"OperationRequestId: {this.Id.Value}");
             this.DeadLineDate = deadLineDate;
             this.Priority = priority;
             this.DateOfRequest = dateOfRequest;
@@ -72,7 +71,7 @@ namespace DDDNetCore.Domain.OperationRequest
 
         public void ChangeStatus(string status)
         {
-            this.Status = new Status(status);
+            this.Status = new OperationRequestStatus(status);
         }
 
         public void ChangeDescription(string text)
