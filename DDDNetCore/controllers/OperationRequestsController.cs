@@ -1,3 +1,4 @@
+using System;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -42,9 +43,20 @@ namespace DDDNetCore.Controllers
         [HttpPost]
         public async Task<ActionResult<OperationRequestDto>> Create(CreatingOperationRequestDto dto)
         {
+            try
+            {
             var opReq = await _service.AddAsync(dto);
 
             return CreatedAtAction(nameof(GetGetById), new {id = opReq.Id}, opReq);
+            }
+            catch (BusinessRuleValidationException ex)
+            {
+                return BadRequest(new { ex.Message });
+            }
+            catch (Exception)
+            {
+                return BadRequest(new { V = "An unexpected error occured." });
+            }
         }
 
 

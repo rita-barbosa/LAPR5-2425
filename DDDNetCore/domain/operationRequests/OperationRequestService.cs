@@ -48,37 +48,21 @@ namespace DDDNetCore.Domain.OperationRequest
 
         public async Task<OperationRequestDto> AddAsync(CreatingOperationRequestDto dto)
         {
-            Staff staff = await this._repoSta.GetByIdAsync(new StaffId(dto.StaffId));
-            Patient patient = await this._repoPat.GetByIdAsync(new MedicalRecordNumber(dto.PatientId));
-            OperationType opType = await this._repoOpTy.GetByIdWithStaffAsync(new OperationTypeId(dto.OperationTypeId));
-            
-            if (staff == null)
+            Staff staff = await this._repoSta.GetByIdAsync(new StaffId(dto.StaffId)) ??
                 throw new BusinessRuleValidationException("Staff is invalid.");
 
-            if (patient == null)
+
+            Patient patient = await this._repoPat.GetByIdAsync(new MedicalRecordNumber(dto.PatientId))??
                 throw new BusinessRuleValidationException("Patient is invalid.");
 
-            if (opType == null)
+
+            OperationType opType = await this._repoOpTy.GetByIdWithStaffAsync(new OperationTypeId(dto.OperationTypeId))??
                 throw new BusinessRuleValidationException("Operation Type is invalid.");
 
+            CheckStaffFunctionAndSpecialization(opType, staff);
 
-            bool specializationMatches = false;
-            foreach (var requiredStaff in opType.RequiredStaff)
-            {
-                if (requiredStaff.SpecializationId.AsString() == staff.SpecializationId.AsString())
-                {
-                    specializationMatches = true;
-                    break;
-                }
-            }
-
-            if (!specializationMatches)
-            {
-                throw new BusinessRuleValidationException("Doctor's specialization does not match any of the required specializations for the operation.");
-            }
-
-            var opRequest = new OperationRequest(new Date(dto.DeadLineDate), Priority.GetPriorityByName(dto.Priority), new Date(dto.DateOfRequest), 
-                new Status(dto.Status), staff.Id, dto.Description, patient.Id, opType.Id);
+            var opRequest = new OperationRequest(new Date(dto.DeadLineDate), Priority.GetPriorityByName(dto.Priority), new Date(dto.DateOfRequest),
+                new OperationRequestStatus(dto.Status), staff.Id, dto.Description, patient.Id, opType.Id);
 
             await this._repo.AddAsync(opRequest);
 
@@ -87,6 +71,23 @@ namespace DDDNetCore.Domain.OperationRequest
             return new OperationRequestDto(opRequest.Id.AsGuid(), opRequest.DeadLineDate.ToString(), opRequest.Priority.ToString(),
                  opRequest.DateOfRequest.ToString(), opRequest.Status.ToString(), opRequest.StaffId.AsString(), opRequest.Description.DescriptionText, opRequest.PatientId.AsString(),opRequest.OperationTypeId.AsString());
         }
+
+        private void CheckStaffFunctionAndSpecialization(OperationType opType, Staff staff){
+            bool specializationMatches = false;
+            foreach (var requiredStaff in opType.RequiredStaff)
+            {
+                if(requiredStaff.Function.Equals(staff.Function) && requiredStaff.SpecializationId.AsString() == staff.SpecializationId.AsString()){
+                    specializationMatches = true;
+                    break;
+                }
+            }
+
+            if (!specializationMatches)
+            {
+                throw new BusinessRuleValidationException("The Staff Function or Specialization does not match any of the required staff for the operation.");
+            }
+        }
+
 
         public async Task<OperationRequestDto> UpdateAsync(UpdateOperationRequestDto dto)
         {
