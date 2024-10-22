@@ -17,6 +17,7 @@ package "<<aggregate Staff>>" {
     class FullName <<(V,#FF8B40)value object>> {}
     class Phone <<(V,#FF8B40)value object>> {}
     class Email <<(V,#FF8B40)value object>> {}
+    class Address <<(V,#FF8B40)value object>> {}
     class Slot <<(V,#FF8B40)value object>> {}
     class Date <<(V,#FF8B40)value object>> {}
     class TimeInterval <<(V,#FF8B40)value object>> {}
@@ -35,11 +36,12 @@ Name -> LastName
 Name --> FullName
 Staff --> "1" Email
 Staff --> "1" Phone
-Staff --> "1" Name 
+Staff --> "1" Address
+Staff --> "1" Name
 Staff -> "1" StaffId
 Staff -left-> "1" Function
-Staff --> "1" LicenseNumber 
-Staff ---> "0..*" Slot 
+Staff --> "1" LicenseNumber
+Staff ---> "0..*" Slot
 Staff --> "1" Specialization : specialized in
 Specialization --> "1" SpecializationDenomination
 Slot --> "1" Date
