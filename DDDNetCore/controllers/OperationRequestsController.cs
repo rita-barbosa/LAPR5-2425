@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using DDDNetCore.Domain.OperationRequest;
+using DDDNetCore.Domain.Shared;
 
 namespace DDDNetCore.Controllers
 {
@@ -44,6 +45,32 @@ namespace DDDNetCore.Controllers
             var opReq = await _service.AddAsync(dto);
 
             return CreatedAtAction(nameof(GetGetById), new {id = opReq.Id}, opReq);
+        }
+
+
+        // PUT: api/OperationRequest/F5
+        [HttpPut("{id}")]
+        public async Task<ActionResult<UpdateOperationRequestDto>> Update(string id, UpdateOperationRequestDto dto)
+        {
+            if (id != dto.Id)
+            {
+                return BadRequest();
+            }
+
+            try
+            {
+                var opr = await _service.UpdateAsync(dto);
+                
+                if (opr == null)
+                {
+                    return NotFound();
+                }
+                return Ok(opr);
+            }
+            catch(BusinessRuleValidationException ex)
+            {
+                return BadRequest(new {Message = ex.Message});
+            }
         }
 
     }

@@ -30,7 +30,6 @@ namespace DDDNetCore.Infrastructure.OperationRequests
                 .HasColumnName("Priority");
             });
 
-
             // DateOfRequest as value object
             builder.OwnsOne(b => b.DateOfRequest, dr => 
             {
@@ -45,7 +44,7 @@ namespace DDDNetCore.Infrastructure.OperationRequests
             {
                 s.Property(status => status.StatusName)
                 .IsRequired()
-                .HasColumnName("OperationRequestStatus");
+                .HasColumnName("Status");
             });
 
             // StaffId as value object
@@ -53,6 +52,15 @@ namespace DDDNetCore.Infrastructure.OperationRequests
                .WithMany() 
                .HasForeignKey(b => b.PatientId) 
                .IsRequired();
+
+            // Description as a value object
+            builder.OwnsOne(b => b.Description, d => 
+            {
+                d.Property(description => description.DescriptionText)
+                .IsRequired()
+                .HasColumnName("Description");
+            });
+
 
             // PatientId as value object
             builder.HasOne<Staff>()
