@@ -3,6 +3,8 @@ using System;
 using System.Threading.Tasks;
 using DDDNetCore.Domain.OperationTypes;
 using DDDNetCore.Domain.OperationTypes.ValueObjects.RequiredStaff;
+using DDDNetCore.Domain.Shared;
+using Microsoft.AspNetCore.Authorization;
 
 namespace DDDNetCore.Controllers
 {
@@ -40,7 +42,8 @@ namespace DDDNetCore.Controllers
         public async Task<ActionResult<OperationTypeDto>> Create(OperationTypeDto dto)
         {
 
-            foreach (RequiredStaffDto staff in dto.RequiredStaff){
+            foreach (RequiredStaffDto staff in dto.RequiredStaff)
+            {
                 Console.WriteLine(staff.Function);
             }
 
@@ -49,6 +52,19 @@ namespace DDDNetCore.Controllers
             return CreatedAtAction(nameof(GetGetById), new { id = new OperationTypeId(operationType.Name) }, operationType);
         }
 
-
+        [HttpDelete("{id}")]
+        [Authorize(Policy = "Admin")]
+        public async Task<ActionResult<OperationTypeDto>> RemoveOperationType(string id)
+        {
+            try
+            {
+                var prod = await _service.InactivateAsync(id);
+                return Ok(prod);
+            }
+            catch (BusinessRuleValidationException ex)
+            {
+                return NotFound(new { ex.Message });
+            }
+        }
     }
 }

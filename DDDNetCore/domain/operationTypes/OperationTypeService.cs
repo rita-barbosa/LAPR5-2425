@@ -23,7 +23,7 @@ namespace DDDNetCore.Domain.OperationTypes
         public async Task<List<OperationTypeDto>> GetAllAsync()
         {
             var list = await this._repo.GetAllAsync();
-            
+
             List<OperationTypeDto> listDto = list.ConvertAll<OperationTypeDto>(operationType => ToDto(operationType));
 
             return listDto;
@@ -32,7 +32,7 @@ namespace DDDNetCore.Domain.OperationTypes
         public async Task<OperationTypeDto> GetByIdAsync(OperationTypeId id)
         {
             var operationType = await this._repo.GetByIdWithStaffAsync(id);
-            
+
             if (operationType == null)
                 return null;
 
@@ -73,17 +73,13 @@ namespace DDDNetCore.Domain.OperationTypes
             return ToDto(operationType);
         }
 
-        public async Task<OperationTypeDto> InactivateAsync(OperationTypeId id)
+        public async Task<OperationTypeDto> InactivateAsync(string dto)
         {
-            var operationType = await this._repo.GetByIdAsync(id);
-
-            if (operationType == null)
-                return null;
-
-            operationType.ChangeStatus(false); // false == Inactivate status
-
+            var operationType = await this._repo.GetByIdAsync(new OperationTypeId(dto)) 
+                    ?? throw new BusinessRuleValidationException("Invalid operation type.");
+            
+            operationType.Inactive();
             await this._unitOfWork.CommitAsync();
-
             return ToDto(operationType);
         }
 
@@ -106,40 +102,43 @@ namespace DDDNetCore.Domain.OperationTypes
         private OperationTypeDto ToDto(OperationType operationType)
         {
 
-            if (operationType.RequiredStaff.Count == 0){
+            if (operationType.RequiredStaff.Count == 0)
+            {
                 Console.WriteLine("\n\nNo required staff obtained. \n\n");
                 return new OperationTypeDto
-                            {
-                                Name = operationType.Name.OperationName,
-                                EstimatedDuration = operationType.EstimatedDuration.TotalDurationMinutes,
-                                Status = operationType.Status.Active,
-                                RequiredStaff = [],
-                                Phases = operationType.Phases.ConvertAll(phase => new PhaseDto
-                                {
-                                    Description = phase.Description.Description,
-                                    Duration = phase.Duration.DurationMinutes
-                                })
-                            };
-            }else {
-                return new OperationTypeDto
-                            {
-                                Name = operationType.Name.OperationName,
-                                EstimatedDuration = operationType.EstimatedDuration.TotalDurationMinutes,
-                                Status = operationType.Status.Active,
-                                RequiredStaff = operationType.RequiredStaff.ConvertAll(staff => new RequiredStaffDto
-                                {
-                                    StaffQuantity = staff.StaffQuantity.NumberRequired,
-                                    Function = staff.Function.Description,
-                                    Specialization = staff.SpecializationId.Value
-                                }),
-                                Phases = operationType.Phases.ConvertAll(phase => new PhaseDto
-                                {
-                                    Description = phase.Description.Description,
-                                    Duration = phase.Duration.DurationMinutes
-                                })
-                            };
+                {
+                    Name = operationType.Name.OperationName,
+                    EstimatedDuration = operationType.EstimatedDuration.TotalDurationMinutes,
+                    Status = operationType.Status.Active,
+                    RequiredStaff = [],
+                    Phases = operationType.Phases.ConvertAll(phase => new PhaseDto
+                    {
+                        Description = phase.Description.Description,
+                        Duration = phase.Duration.DurationMinutes
+                    })
+                };
             }
-            
+            else
+            {
+                return new OperationTypeDto
+                {
+                    Name = operationType.Name.OperationName,
+                    EstimatedDuration = operationType.EstimatedDuration.TotalDurationMinutes,
+                    Status = operationType.Status.Active,
+                    RequiredStaff = operationType.RequiredStaff.ConvertAll(staff => new RequiredStaffDto
+                    {
+                        StaffQuantity = staff.StaffQuantity.NumberRequired,
+                        Function = staff.Function.Description,
+                        Specialization = staff.SpecializationId.Value
+                    }),
+                    Phases = operationType.Phases.ConvertAll(phase => new PhaseDto
+                    {
+                        Description = phase.Description.Description,
+                        Duration = phase.Duration.DurationMinutes
+                    })
+                };
+            }
+
         }
     }
 }
