@@ -23,12 +23,23 @@ namespace DDDNetCore.Infrastructure.Products
                    .IsRequired()
                    .HasColumnName("FullName");
            });
-
-           builder.HasOne<User>()
-                .WithOne() // Assuming User does not have a direct reference to Staff
-                .HasForeignKey<Patient>(b => b.UserReference) // Foreign key on the Staff entity
-                .IsRequired(false) // Make the relationship optional
-                .OnDelete(DeleteBehavior.SetNull); // Optional: Set UserId to null on delete
+            builder.OwnsOne(b => b.Address, n =>
+            {
+                n.Property(ad => ad.Country)
+                    .IsRequired()
+                    .HasColumnName("Country");
+                n.Property(ad => ad.PostalCode)
+                    .IsRequired()
+                    .HasColumnName("PostalCode");
+                n.Property(ad => ad.Residence)
+                    .IsRequired()
+                    .HasColumnName("Residence");
+            });
+            builder.HasOne<User>()
+                 .WithOne() // Assuming User does not have a direct reference to Staff
+                 .HasForeignKey<Patient>(b => b.UserReference) // Foreign key on the Staff entity
+                 .IsRequired(false) // Make the relationship optional
+                 .OnDelete(DeleteBehavior.SetNull); // Optional: Set UserId to null on delete
 
             builder.OwnsOne(c => c.PhoneNumber, pn =>
              {

@@ -10,16 +10,17 @@ namespace DDDNetCore.Domain.OperationTypes
     public class OperationType : Entity<OperationTypeId>, IAggregateRoot
     {
 
-        public EstimatedDuration EstimatedDuration { get;  private set; }
-        public OperationTypeStatus Status { get;  private set; }
-        public OperationTypeName Name { get;  private set; }
-        public List<RequiredStaff> RequiredStaff { get;  private set; }
+        public EstimatedDuration EstimatedDuration { get; private set; }
+        public OperationTypeStatus Status { get; private set; }
+        public OperationTypeName Name { get; private set; }
+        public List<RequiredStaff> RequiredStaff { get; private set; }
 
         private static readonly int NUMBER_OF_OPERATION_PHASES = 3;
 
-        public List<Phase> Phases { get;  private set; } 
+        public List<Phase> Phases { get; private set; }
 
-        public OperationType(){
+        public OperationType()
+        {
             //for ORM
 
             RequiredStaff = new List<RequiredStaff>();
@@ -36,16 +37,19 @@ namespace DDDNetCore.Domain.OperationTypes
 
             RequiredStaff = new List<RequiredStaff>();
 
-            foreach (RequiredStaffDto person in staff){
+            foreach (RequiredStaffDto person in staff)
+            {
                 RequiredStaff.Add(new RequiredStaff(person.StaffQuantity, person.Function, person.Specialization));
             }
 
-            if(phases.Count != NUMBER_OF_OPERATION_PHASES){
+            if (phases.Count != NUMBER_OF_OPERATION_PHASES)
+            {
                 throw new BusinessRuleValidationException("An operation type must have" + NUMBER_OF_OPERATION_PHASES + "phases.");
             }
 
             Phases = new List<Phase>();
-            foreach (PhaseDto stage in phases){
+            foreach (PhaseDto stage in phases)
+            {
                 Phases.Add(new Phase(stage.Description, stage.Duration));
             }
         }
@@ -69,6 +73,10 @@ namespace DDDNetCore.Domain.OperationTypes
             this.Status = new OperationTypeStatus(status);
         }
 
+        public void Inactive()
+        {
+            this.Status = new OperationTypeStatus(false);
+        }
         public void ChangeRequiredStaff(List<RequiredStaffDto> newStaff)
         {
             if (!this.Status.Active)

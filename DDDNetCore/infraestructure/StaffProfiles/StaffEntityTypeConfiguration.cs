@@ -41,7 +41,18 @@ namespace DDDNetCore.Infrastructure.StaffProfiles
                     .IsRequired()
                     .HasColumnName("FullName");
             });
-
+            builder.OwnsOne(b => b.Address, n =>
+            {
+                n.Property(ad => ad.Country)
+                    .IsRequired()
+                    .HasColumnName("Country");
+                n.Property(ad => ad.PostalCode)
+                    .IsRequired()
+                    .HasColumnName("PostalCode");
+                n.Property(ad => ad.Residence)
+                    .IsRequired()
+                    .HasColumnName("Residence");
+            });
             builder.OwnsOne(c => c.Phone, pn =>
             {
                 pn.Property(p => p.PhoneNumber)
@@ -56,11 +67,11 @@ namespace DDDNetCore.Infrastructure.StaffProfiles
             builder.OwnsOne(c => c.Email, ea =>
             {
                 ea.Property(e => e.EmailAddress)
-                    .IsRequired() 
+                    .IsRequired()
                     .HasColumnName("EmailAddress");
             });
 
-      
+
             builder.OwnsOne(b => b.Function, f =>
             {
                 f.Property(func => func.Description)

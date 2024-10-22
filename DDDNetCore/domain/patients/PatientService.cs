@@ -17,6 +17,15 @@ namespace DDDNetCore.Domain.Patients
             this._repo = repo;
         }
 
+        public async Task<PatientDto> GetByIdAsync(MedicalRecordNumber id)
+        {
+            var patient = await this._repo.GetByIdAsync(id);
+
+            if (patient == null)
+                return null;
+
+            return new PatientDto(patient.Name.ToString(), patient.PhoneNumber.ToString(), patient.Email.ToString(), patient.Id.AsString());
+        }
         public async Task<PatientDto> CreatePatientProfile(CreatingPatientDto dto)
         {
             if (await _repo.ExistsPatientWithEmailOrPhone(dto.Email, dto.Phone.Split(' ')[0], dto.Phone.Split(' ')[1]))
@@ -28,7 +37,7 @@ namespace DDDNetCore.Domain.Patients
             Gender? gender = Gender.GetGenderByDescription(dto.Gender) ??
                            throw new BusinessRuleValidationException("Invalid gender.");
 
-            var patient = new Patient(dto.FirstName, dto.LastName, gender, dto.Phone, dto.EmergencyContact, dto.Email, dto.DateBirth, seqNumber);
+            var patient = new Patient(dto.FirstName, dto.LastName, dto.Address, gender, dto.Phone, dto.EmergencyContact, dto.Email, dto.DateBirth, seqNumber);
 
             await this._repo.AddAsync(patient);
 
@@ -41,7 +50,8 @@ namespace DDDNetCore.Domain.Patients
         {
             bool result = await _repo.ExistsPatientWithEmailOrPhone(email, phone.Split(' ')[0], phone.Split(' ')[1]);
 
-            if(!result){
+            if (!result)
+            {
                 throw new InvalidOperationException("There isn't a staff member associated with this email/phone.");
             }
 
@@ -66,5 +76,6 @@ namespace DDDNetCore.Domain.Patients
                 return "000001";
             }
         }
+
     }
 }

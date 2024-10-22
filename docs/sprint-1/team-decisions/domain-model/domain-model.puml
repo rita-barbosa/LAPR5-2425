@@ -11,6 +11,7 @@ class LastName <<(V,#FF8B40)value object>> {}
 class FullName <<(V,#FF8B40)value object>> {}
 class Phone <<(V,#FF8B40)value object>> {}
 class Email <<(V,#FF8B40)value object>> {}
+class Address <<(V,#FF8B40)value object>> {}
 class Slot <<(V,#FF8B40)value object>> {}
 class Date <<(V,#FF8B40)value object>> {}
 class TimeInterval <<(V,#FF8B40)value object>> {}
@@ -101,7 +102,7 @@ User --> Username
 User ----> Email
 User --> Role
 
-Doctor -> "1" Staff : is a
+Doctor -> "1" Staff
 
 Name --> FirstName
 Name -> LastName
@@ -130,14 +131,14 @@ Phase --> "1" PhaseDescription
 
 OperationRequest -> "1" OperationRequestId
 OperationRequest --> "1" Priority
-OperationRequest --> "1" Patient : made for
-OperationRequest --> "1" Doctor : registed by
-OperationRequest ---> "1" OperationType : defined by
+OperationRequest --> "1" Patient
+OperationRequest --> "1" Doctor
+OperationRequest ---> "1" OperationType
 OperationRequest --> "1" DateOfRequest
 OperationRequest --> "1" DeadlineDate
 OperationRequest --> "1" Status
 
-Appointment --> "1" OperationRequest : associated to
+Appointment --> "1" OperationRequest
 Appointment --> "1" Slot
 Appointment --> "1" AppointmentId
 Appointment --> "1" AppointmentStatus
@@ -154,6 +155,7 @@ Patient --> "0..1" MedicalCondition
 Patient --> "1" AppoitmentHistory
 Patient --> "1" Email
 Patient --> "1" Phone
+Patient --> "1" Address
 Patient---> "0..1" User
 EmergencyContact --> "1" Phone
 
@@ -162,12 +164,13 @@ Staff --> "1" Name
 Staff --> "1" Function
 Staff ---> "1" Email
 Staff ---> "1" Phone
+Staff --> "1" Address
 Staff --> "1" LicenseNumber
 Staff ---> "0..*" Slot
 Staff --> "1" Specialization
 Staff -> "1" User
 
-Specialization --> "1" SpecializationDenomination : defined by
+Specialization --> "1" SpecializationDenomination
 Slot --> "1" Date
 Slot --> "1" TimeInterval
 
