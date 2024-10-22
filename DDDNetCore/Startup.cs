@@ -33,6 +33,7 @@ using DDDNetCore.Domain.OperationRequest;
 using DDDNetCore.Infrastructure.OperationRequests;
 using DDDNetCore.Infrastructure.Patients;
 using DDDNetCore.Infrastructure.Emails;
+using Microsoft.AspNetCore.Identity.UI.Services;
 
 namespace DDDNetCore
 {
@@ -98,6 +99,9 @@ namespace DDDNetCore
         {
             using IServiceScope scope = app.ApplicationServices.CreateScope();
             RoleManager<Role> roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<Role>>();
+            SpecializationService specializationService = scope.ServiceProvider.GetRequiredService<SpecializationService>();
+            UserManager<User> userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
+
             string[] roleNames = { "Admin", "Technician", "Doctor", "Nurse", "Patient" };
             foreach (string roleName in roleNames)
             {
@@ -107,7 +111,6 @@ namespace DDDNetCore
                 }
             }
 
-            // Optionally, can create a default user here if needed
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -155,7 +158,7 @@ namespace DDDNetCore
 
             services.AddTransient<ITokenRepository, TokenRepository>();
             services.AddTransient<TokenService>();
-            services.AddTransient<SendEmailGoogleAdapter>();
+            services.AddTransient<IEmailAdapter, SendEmailGoogleAdapter>();
 
             services.AddTransient<IStaffRepository, StaffRepository>();
             services.AddTransient<StaffService>();
