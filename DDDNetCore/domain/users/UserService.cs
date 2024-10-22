@@ -22,17 +22,50 @@ namespace DDDNetCore.Domain.Users
         private readonly PatientService _patientService;
         private readonly StaffService _staffService;
         private readonly EmailService _emailService;
+        private readonly TokenService _tokenService;
         private readonly IConfiguration _configuration;
         public UserService(UserManager<User> userManager, RoleManager<Role> roleManager,
                                 PatientService patientService, StaffService staffService,
-                                EmailService emailService, IConfiguration configuration)
+                                EmailService emailService, IConfiguration configuration,
+                                TokenService tokenService)
         {
             _userManager = userManager;
             _roleManager = roleManager;
             _patientService = patientService;
             _staffService = staffService;
             _emailService = emailService;
+            _tokenService = tokenService;
             _configuration = configuration;
+        }
+
+        public async Task<bool> ConfirmEmailPatient(string userId, string token)
+        {
+            var result = await ConfirmEmailToken(userId, token);
+            if (result)
+            {
+                User user = await FindByIdAsync(userId);
+                user.Status = true;
+                await UpdateAsync(user);
+                return true;
+            }
+
+            return false;
+        }
+
+        public async Task<bool> ConfirmEmailStaff(string userId, string token, string newPassword)
+        {
+            var result = await ConfirmEmailToken(userId, token);
+            if (result)
+            {
+                User user = await FindByIdAsync(userId);
+                var resetToken = await _tokenService.GeneratePasswordResetTokenAsync(user);
+                await ResetPasswordAsync(user, resetToken, newPassword);
+                user.Status = true;
+                await UpdateAsync(user);
+                return true;
+            }
+
+            return false;
         }
 
         public async Task<string> Login(LoginUserDto loginUserDto)
@@ -79,5 +112,49 @@ namespace DDDNetCore.Domain.Users
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
+        private async Task<bool> ConfirmEmailToken(string userId, string token)
+        {
+            return await _tokenService.ConfirmEmailToken(userId, token);
+        }
+
+        public async Task<bool> UserExistsById(string userId)
+        {
+            User user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
+            {
+                return false;
+            }
+            return true;
+        }
+
+        public async Task<User> FindByIdAsync(string userId)
+        {
+            return await _userManager.FindByIdAsync(userId);
+        }
+
+        public async Task<User> FindByEmailAsync(string userEmail)
+        {
+            return await _userManager.FindByEmailAsync(userEmail);
+        }
+
+        private async Task<IdentityResult> UpdateAsync(User user)
+        {
+            return await _userManager.UpdateAsync(user);
+        }
+
+        private async Task<IdentityResult> ResetPasswordAsync(User user, string resetToken, string newPassword)
+        {
+           return await _userManager.ResetPasswordAsync(user, resetToken, newPassword);
+        }
+
+        internal async void AddToRoleAsync(User user, string role)
+        {
+            await _userManager.AddToRoleAsync(user, role);
+        }
+
+        internal async Task<IdentityResult> CreateAsync(User user, string password)
+        {
+            return await _userManager.CreateAsync(user, password);
+        }
     }
 }
