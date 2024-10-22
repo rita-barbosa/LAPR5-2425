@@ -11,6 +11,7 @@ using DDDNetCore.Domain.Tokens;
 using DDDNetCore.Domain.Users;
 using DDDNetCore.Domain.Shared;
 using DDDNetCore.Infrastructure.Emails;
+using Microsoft.AspNetCore.Identity;
 
 namespace DDDNetCore.Domain.Emails
 {
@@ -18,10 +19,9 @@ namespace DDDNetCore.Domain.Emails
     {
 
         private readonly TokenService _service;
+        private readonly IEmailAdapter _adapter;
 
-        private readonly SendEmailGoogleAdapter _adapter;
-
-        public EmailService(TokenService service, SendEmailGoogleAdapter adapter)
+        public EmailService(TokenService service, IEmailAdapter adapter)
         {
             this._service = service;
             this._adapter = adapter;
@@ -44,7 +44,7 @@ namespace DDDNetCore.Domain.Emails
             await _adapter.SendEmail(email);
         }
 
-        public async Task SendEmail(EmailMessageDto emailDto) {
+        public async Task SendAccountDeletionEmail(EmailMessageDto emailDto) {
 
             TokenDto token = await _service.CreateAccountDeletionToken(emailDto.RecipientEmail);
 
@@ -63,7 +63,7 @@ namespace DDDNetCore.Domain.Emails
 
             await _adapter.SendEmail(email);
         }
-
+        
 
     }
 

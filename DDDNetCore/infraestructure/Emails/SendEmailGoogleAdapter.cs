@@ -53,7 +53,8 @@ namespace DDDNetCore.Infrastructure.Emails
 
             if (!response.IsSuccessStatusCode)
             {
-                throw new System.Exception($"Failed to refresh token: {response.StatusCode}");
+                var errorContent = await response.Content.ReadAsStringAsync();
+                throw new System.Exception($"Failed to refresh token: {response.StatusCode}, Details: {errorContent}");
             }
 
             var content = await response.Content.ReadAsStringAsync();

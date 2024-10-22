@@ -18,7 +18,7 @@ namespace DDDNetCore.Controllers
         [HttpPost("send-email-google-gmail")]
         public async Task<IActionResult> SendTestEmail(EmailMessageDto messageDto)
         {
-            await _service.SendEmail(messageDto);
+            await _service.SendAccountDeletionEmail(messageDto);
             return Ok();
         }
     }
