@@ -3,7 +3,6 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-
 using DDDNetCore.Domain.Users;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -16,6 +15,8 @@ using DDDNetCore.Domain.Patients;
 using DDDNetCore.Domain.StaffProfiles;
 using DDDNetCore.Domain.Emails;
 using Microsoft.AspNetCore.Identity.Data;
+using System.ComponentModel;
+using DDDNetCore.Domain.Tokens;
 using DDDNetCore.Domain.Shared;
 
 namespace DDDNetCore.Controllers
@@ -25,6 +26,7 @@ namespace DDDNetCore.Controllers
     [Route("api/")]
     public class UserController : ControllerBase
     {
+        private static string hospitalEmail = "noreply.healthcare.dg38@gmail.com";
         private readonly UserManager<User> _userManager;
         private readonly RoleManager<Role> _roleManager;
         private readonly PatientService _patientService;
@@ -62,36 +64,53 @@ namespace DDDNetCore.Controllers
             }
         }
 
-        [HttpPut("ConfirmEmail")]
-        public async Task<IActionResult> ConfirmEmail([FromQuery] string userId, [FromQuery] string token, [FromBody] ConfirmEmailUserDto confirmEmailUserDto)
+        [HttpPut("Activate-StaffAccount")]
+        public async Task<IActionResult> ConfirmEmailStaff([FromQuery] string userId, [FromQuery] string token, [FromBody] ConfirmEmailUserDto confirmEmailUserDto)
         {
             if (string.IsNullOrWhiteSpace(userId) || string.IsNullOrWhiteSpace(token))
             {
                 return BadRequest("User Email and Token are required.");
             }
 
-            var user = await _userManager.FindByIdAsync(userId);
-            if (user == null)
+            if (!await _userService.UserExistsById(userId))
             {
                 return NotFound("User not found.");
             }
 
-            var result = await _userManager.ConfirmEmailAsync(user, token);
-            if (result.Succeeded)
+            if (await _userService.ConfirmEmailStaff(userId, token, confirmEmailUserDto.NewPassword))
             {
-
-                var resetToken = await _userManager.GeneratePasswordResetTokenAsync(user);
-                await _userManager.ResetPasswordAsync(user, resetToken, confirmEmailUserDto.NewPassword);
-                user.Status = true;
-                await _userManager.UpdateAsync(user);
-
-                return Ok("Email confirmed successfully and password succefully changed.");
+                return Ok("Email confirmed successfully and account activated.");
             }
-
-            return BadRequest("Email confirmation failed.");
+            else
+            {
+                return BadRequest("Email confirmation failed.");
+            }
         }
 
-        [HttpGet("Me")] // END POINT TO VERIFY IF REGISTER AND LOGIN ARE WORKING CORRECTLY
+        [HttpPut("Activate-PatientAccount")]
+        public async Task<IActionResult> ConfirmEmailPatient([FromQuery] string userId, [FromQuery] string token)
+        {
+            if (string.IsNullOrWhiteSpace(userId) || string.IsNullOrWhiteSpace(token))
+            {
+                return BadRequest("User Email and Token are required.");
+            }
+
+            if (!await _userService.UserExistsById(userId))
+            {
+                return NotFound("User not found.");
+            }
+
+            if (await _userService.ConfirmEmailPatient(userId, token))
+            {
+                return Ok("Email confirmed successfully and account activated.");
+            }
+            else
+            {
+                return BadRequest("Email confirmation failed.");
+            }
+        }
+
+        [HttpGet("Get-UserInfo")] // END POINT TO VERIFY IF REGISTER AND LOGIN ARE WORKING CORRECTLY
         [Authorize(Policy = "AuthenticatedUser")]
         public async Task<IActionResult> GetUserInfo()
         {
@@ -101,7 +120,7 @@ namespace DDDNetCore.Controllers
             {
                 return NotFound("Email claim not found.");
             }
-            User? user = await _userManager.FindByEmailAsync(userEmail);
+            User? user = await _userService.FindByEmailAsync(userEmail);
 
             if (user != null)
             {
@@ -117,7 +136,7 @@ namespace DDDNetCore.Controllers
             }
         }
 
-        [HttpPost("Register-Admins")]
+        [HttpPost("Create-UserAdmin")]
         public async Task<IActionResult> RegisterUser([FromBody] RegisterUserDto registerUserDto)
         {
             // Check if the role exists
@@ -129,7 +148,7 @@ namespace DDDNetCore.Controllers
 
             // Create the user
             var user = new User { UserName = registerUserDto.Email, Email = registerUserDto.Email, Status = true };
-            IdentityResult result = await _userManager.CreateAsync(user, registerUserDto.Password);
+            IdentityResult result = await _userService.CreateAsync(user, registerUserDto.Password);
 
             if (!result.Succeeded)
             {
@@ -137,12 +156,12 @@ namespace DDDNetCore.Controllers
             }
 
             // Assign the selected role to the user
-            await _userManager.AddToRoleAsync(user, registerUserDto.Role);
+            _userService.AddToRoleAsync(user, registerUserDto.Role);
 
             return Ok(new { Message = "User registered successfully." });
         }
 
-        [HttpPost("Register-Patient")]
+        [HttpPost("Create-UserPatient")]
         public async Task<IActionResult> RegisterPatientAndAssociateUser([FromBody] RegisterPatientUserDto registerPatientUserDto)
         {
             try
@@ -162,7 +181,7 @@ namespace DDDNetCore.Controllers
                 // Associate with it's profile
                 _patientService.AddUser(user, registerPatientUserDto.Email, registerPatientUserDto.Phone);
 
-                SendConfirmationEmail(user);
+                SendConfirmationEmail(user, "Patient"); 
             }
             catch (Exception ex)
             {
@@ -172,7 +191,7 @@ namespace DDDNetCore.Controllers
             return Ok(new { Message = "User registered successfully." });
         }
 
-        [HttpPost("Register-Staff")]
+        [HttpPost("Create-UserStaff")]
         [Authorize(Policy = "Admin")]
         public async Task<IActionResult> RegisterStaffAndAssociateUser([FromBody] RegisterUserDto registerUserDto)
         {
@@ -187,7 +206,7 @@ namespace DDDNetCore.Controllers
 
                 // Create the user
                 var user = new User { UserName = registerUserDto.Email, Email = registerUserDto.Email, Status = false };
-                IdentityResult result = await _userManager.CreateAsync(user, registerUserDto.Password);
+                IdentityResult result = await _userService.CreateAsync(user, registerUserDto.Password);
 
                 if (!result.Succeeded)
                 {
@@ -195,19 +214,11 @@ namespace DDDNetCore.Controllers
                 }
 
                 // Assign the selected role to the user
-                await _userManager.AddToRoleAsync(user, registerUserDto.Role);
+                _userService.AddToRoleAsync(user, registerUserDto.Role);
 
-                // Associate with it's profile
-                if (registerUserDto.Role.Equals("Patient"))
-                {
-                    _patientService.AddUser(user, registerUserDto.Email, registerUserDto.Phone);
-                }
-                else
-                {
-                    _staffService.AddUser(user, registerUserDto.Email, registerUserDto.Phone);
-                }
-
-                SendConfirmationEmail(user);
+                _staffService.AddUser(user, registerUserDto.Email, registerUserDto.Phone);
+            
+                SendConfirmationEmail(user, registerUserDto.Role);
             }
             catch (Exception ex)
             {
@@ -219,25 +230,31 @@ namespace DDDNetCore.Controllers
 
         
 
-        private async void SendConfirmationEmail(User user)
+        private async void SendConfirmationEmail(User user, string role)
         {
-            // Send confirmation email
-            // Step 1: Create a confirmation token to send to the user
             string token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
 
-            var confirmationLink = Url.Action("ConfirmEmail", "User", new { userId = user.Id, token = token }, Request.Scheme);
+            var confirmationLink = "";
 
-            // Step 2: Create emailDto to send all the info to the user
+            if(role.Equals("Patient"))
+            {
+                confirmationLink = Url.Action("Activate-PatientAccount", "User", new { userId = user.Id, token = token }, Request.Scheme);
+            } 
+            else
+            {
+                confirmationLink = Url.Action("Activate-StaffAccount", "User", new { userId = user.Id, token = token }, Request.Scheme);
+            }
+            
             EmailMessageDto emailDto = new EmailMessageDto(
-                "noreply.healthcare.dg38@gmail.com",
+                hospitalEmail,
                 user.Email,
                 "Account Activation",
-                "<p>Hello,</p><p>This email was sent to inform you that your user account in the HealthCare Clinic System has been created. </p><p><a href='" + confirmationLink + "'>Click in the link to confirm the activation of the account and to set your own password.</a></p><p>Thank you for choosing us,<br>HealthCare Clinic</p></body></html>"
+                "<p>Hello,</p><p>This email was sent to inform you that your user account in the HealthCare Clinic System has been created. </p><p><a href='" + confirmationLink + "'>Click in the link to confirm the activation of the account.</a></p><p>Thank you for choosing us,<br>HealthCare Clinic</p></body></html>"
             );
-            // Step 3: Send an email to the user
+            
             await _emailService.SendConfirmationEmail(emailDto);
         }
-    }
 
+    }
 
 }
