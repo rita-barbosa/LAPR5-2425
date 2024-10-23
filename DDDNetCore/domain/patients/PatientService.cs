@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Xml;
 using DDDNetCore.Domain.Shared;
@@ -43,7 +44,7 @@ namespace DDDNetCore.Domain.Patients
 
             await this._unitOfWork.CommitAsync();
 
-            return new PatientDto(patient.Name.ToString(), patient.PhoneNumber.ToString(), patient.Email.ToString(), patient.Id.AsString());
+            return new PatientDto(patient.Name.ToString(), patient.PhoneNumber.ToString(), patient.Email.ToString(), patient.Address.ToString(), patient.Id.AsString());
         }
 
         public async void AddUser(User user, string email, string phone)
@@ -77,5 +78,41 @@ namespace DDDNetCore.Domain.Patients
             }
         }
 
+public async Task<List<PatientDto>> GetAllAsysnc()
+        {
+            var list = await this._repo.GetAllAsync();
+
+            List<PatientDto> listDto = list.ConvertAll<PatientDto>(patient => new PatientDto(patient.Name.ToString(),
+                patient.PhoneNumber.ToString(), patient.Email.ToString(), patient.Id.AsString()));
+
+            return listDto;
+        }
+
+        public async Task<PatientDto> UpdateAsync (EditPatientDto dto)
+        {
+            var patient = await this._repo.GetByIdAsync(new MedicalRecordNumber(dto.PatientId));
+
+            if(patient == null)
+                return null;
+
+            if(dto.Phone != null)
+                patient.ChangePhone(dto.Phone);
+
+            if(dto.Email != null)
+                patient.ChangeEmail(dto.Email);
+
+            if(dto.Address != null)
+                patient.ChangeAddress(dto.Address);
+
+            if(dto.Name != null)
+                patient.ChangeName(dto.Name);
+
+            await this._unitOfWork.CommitAsync();
+
+            return new PatientDto(patient.Name.ToString(), patient.PhoneNumber.ToString(), 
+                patient.Email.ToString(), patient.Address.ToString(), patient.Id.AsString());
+
+
+        }
     }
 }
