@@ -65,5 +65,33 @@ namespace DDDNetCore.Domain.StaffProfiles
 
             this.UserReference = user.Id;
         }
+
+        public void ChangeEmail(string email){
+            this.Email = new Email(email);
+        }
+
+        public void ChangePhone(string phone){
+            this.Phone = new Phone(phone);
+        }
+
+        public void ChangeAddress(string address){
+            this.Address = new ResidentialAddress(address);
+        }
+
+        public void ChangeSpecialization(string specialization){
+            this.SpecializationId = new SpecializationDenomination(specialization);
+        }
+
+        public void ChangeSlots(List<SlotsDto> slots)
+        {
+            Slots = new List<Slot>();
+
+            foreach (SlotsDto slotDto in slots)
+            {
+                this.Slots.Add(new Slot(slotDto.StartTime, slotDto.EndTime, slotDto.StartDate, slotDto.EndDate));
+
+            }
+        }
+
     }
 }

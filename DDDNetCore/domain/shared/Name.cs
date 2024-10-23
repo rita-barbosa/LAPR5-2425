@@ -27,6 +27,27 @@ namespace DDDNetCore.Domain.Shared
             this.LastName = lastName;
             this.FullName = fullName;
         }
+
+        public Name(string fullName)
+        {
+            if (string.IsNullOrEmpty(fullName))
+            {
+                throw new BusinessRuleValidationException("Name cannot be null or empty.");
+            }
+
+            var nameParts = fullName.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+
+            if (nameParts.Length < 2)
+            {
+                throw new BusinessRuleValidationException("Full name must contain at least a first and last name.");
+            }
+
+
+            this.FirstName = nameParts[0];
+            this.LastName = nameParts[nameParts.Length - 1];
+            this.FullName = fullName;
+        }
+
         public override bool Equals(object obj)
         {
             if (obj == null || GetType() != obj.GetType())

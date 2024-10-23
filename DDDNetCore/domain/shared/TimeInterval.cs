@@ -7,14 +7,15 @@ namespace DDDNetCore.Domain.Shared
     {
         public TimeSpan Start { get; }
         public TimeSpan End { get; }
+        public bool Verification { get; }
 
         private TimeInterval() { }
-        public TimeInterval(string startString, string endString)
+        public TimeInterval(string startString, string endString, bool verification)
         {
             if (!TimeSpan.TryParse(startString, out TimeSpan start) || !TimeSpan.TryParse(endString, out TimeSpan end))
                 throw new BusinessRuleValidationException("Invalid time format. Use hh:mm.", nameof(startString));
 
-            if (end < start)
+            if (!verification && end < start)
                 throw new BusinessRuleValidationException("End time must be greater than or equal to start time.");
 
             Start = start;

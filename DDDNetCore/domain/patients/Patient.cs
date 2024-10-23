@@ -76,5 +76,24 @@ namespace DDDNetCore.Domain.Patients
 
             this.UserReference = user.Id;
         }
+
+
+        public void ChangeEmail(string email){
+            this.Email = new Email(email);
+        }
+
+        public void ChangePhone(string phone){
+            this.PhoneNumber = new Phone(phone);
+        }
+
+        public void ChangeAddress(string address){
+            this.Address = new ResidentialAddress(address);
+        }
+
+        public void ChangeName(string name){
+            this.Name = new Name(name);
+        }
+
+
     }
 }

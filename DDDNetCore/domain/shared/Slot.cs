@@ -12,7 +12,11 @@ namespace DDDNetCore.Domain.Shared
         public Slot(string startTime, string endTime, string startDate, string endDate = null)
         {
             Date = new Date(startDate, endDate);
-            TimeInterval = new TimeInterval(startTime, endTime);
+            bool moreDays = false;
+            if(endDate != null || startDate.Equals(endDate)){
+                moreDays = true;
+            }
+            TimeInterval = new TimeInterval(startTime, endTime, moreDays);
         }
 
         public override string ToString() => $"{Date}:{TimeInterval}";
