@@ -44,6 +44,8 @@ package "<<aggregate OperationRequest>>"{
     class Priority <<(V,#FF8B40)value object>> {}
     class DateOfRequest <<(V,#FF8B40)value object>>  {}
     class DeadlineDate <<(V,#FF8B40)value object>>  {}
+    class OperationRequestStatus <<(V,#FF8B40)value object>>
+    class OperationRequestDescription <<(V,#FF8B40)value object>>
 
 }
 
@@ -136,7 +138,8 @@ OperationRequest --> "1" Doctor
 OperationRequest ---> "1" OperationType
 OperationRequest --> "1" DateOfRequest
 OperationRequest --> "1" DeadlineDate
-OperationRequest --> "1" Status
+OperationRequest --> "1" OperationRequestStatus
+OperationRequest --> "1" OperationRequestDescription
 
 Appointment --> "1" OperationRequest
 Appointment --> "1" Slot
