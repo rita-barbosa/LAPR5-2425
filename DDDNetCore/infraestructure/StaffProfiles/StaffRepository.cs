@@ -1,9 +1,12 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using DDDNetCore.Domain.Shared;
 using DDDNetCore.Domain.StaffProfiles;
 using DDDNetCore.Infrastructure.Shared;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 namespace DDDNetCore.Infrastructure.StaffProfiles
 {
@@ -23,6 +26,60 @@ namespace DDDNetCore.Infrastructure.StaffProfiles
                    staff.Phone.CountryCode == countryCode &&
                    staff.Phone.PhoneNumber == phone));
 
+        }
+
+        public async Task<List<Staff>> FilterStaffProfiles(StaffQueryParametersDto dto)
+        {
+           IQueryable<Staff> combinedQuery = null;
+
+            foreach (StaffListingFilterParametersDto filter in dto.queryFilters)
+            {
+
+                var query = _context.StaffProfiles.AsQueryable();
+
+               // if both names are in the filter then create the full name, else search by the provided name
+                if (!string.IsNullOrEmpty(filter.FirstName) && !string.IsNullOrEmpty(filter.LastName))
+                {
+                    query = query.AsEnumerable().Where(s => s.Name.FullName.Contains($"{filter.FirstName} {filter.LastName}")).AsQueryable();
+                }
+                else
+                {
+
+                    if (!string.IsNullOrEmpty(filter.FirstName))
+                    {
+                        query = query.AsEnumerable().Where(s => s.Name.FirstName.Contains(filter.FirstName)).AsQueryable();
+                    }
+
+                    if (!string.IsNullOrEmpty(filter.LastName))
+                    {
+                        query = query.AsEnumerable().Where(s => s.Name.LastName.Contains(filter.LastName)).AsQueryable();
+                    }
+
+                }
+
+                if (!string.IsNullOrEmpty(filter.Email))
+                {
+                    query = query.AsEnumerable().Where(s => s.Email.EmailAddress.Contains(filter.Email)).AsQueryable();
+                }
+
+                if (!string.IsNullOrEmpty(filter.Specialization))
+                {
+                    query = query.AsEnumerable()
+                    .Where(s => s.SpecializationId.AsString() == filter.Specialization)
+                    .AsQueryable();
+                }
+
+                if (!query.IsNullOrEmpty())
+                {
+                    combinedQuery = combinedQuery == null ? query : combinedQuery.Union(query);
+                }
+
+            }
+
+            if(combinedQuery.IsNullOrEmpty())
+                return [];
+
+            return [.. combinedQuery];
         }
 
         public async Task<StaffId> FindLastStaffIdAsync()

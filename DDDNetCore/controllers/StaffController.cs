@@ -5,6 +5,7 @@ using DDDNetCore.Domain.Shared;
 using DDDNetCore.Domain.StaffProfiles;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 
 namespace DDDNetCore.Controllers
 {
@@ -89,7 +90,22 @@ namespace DDDNetCore.Controllers
                 return BadRequest(new {Message = ex.Message});
             }
 
-
         }
+
+        // POST: api/Staff/Filtered-List
+        [HttpPost("Filtered-List")]
+        [Authorize(Policy = "Admin")]
+        public async Task<ActionResult<List<StaffDto>>> GetFilteredStaffProfiles(StaffQueryParametersDto dto)
+        {
+                var staff = await _service.FilterStaffProfiles(dto);
+
+                if (staff.IsNullOrEmpty())
+                {
+                    return NotFound(new { Message = "No staff matching the filtering criteria." });
+                }
+
+                return Ok(staff);
+        }
+
     }
 }
