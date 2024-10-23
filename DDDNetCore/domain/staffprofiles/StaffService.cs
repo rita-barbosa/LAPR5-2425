@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using DDDNetCore.Domain.Shared;
 using DDDNetCore.Domain.Specializations;
@@ -82,6 +83,59 @@ namespace DDDNetCore.Domain.StaffProfiles
             {
                 return "00001";
             }
+        }
+
+        public async Task<List<StaffDto>> GetAllAsync()
+        {
+            var list = await this._repo.GetAllAsync();
+
+            List<StaffDto> listDto = list.ConvertAll<StaffDto>(staff => new StaffDto(staff.Name.ToString(), 
+                staff.Phone.ToString(), staff.Email.ToString(), staff.Address.ToString(), staff.Id.AsString()));
+        
+            return listDto;
+        }
+
+        public async Task<StaffDto> UpdateAsync (EditStaffDto dto)
+        {
+            var staff = await this._repo.GetByIdAsync(new StaffId(dto.StaffId));
+
+            if(staff == null)
+                return null;
+
+            if(dto.Phone != null)
+                staff.ChangePhone(dto.Phone);
+            
+            if(dto.Email != null)
+                staff.ChangeEmail(dto.Email);
+
+            if(dto.Address != null)
+                staff.ChangeAddress(dto.Address);
+            
+            if(dto.SpecializationId != null)
+                staff.ChangeSpecialization(dto.SpecializationId);
+            
+            if(dto.Slots != null)
+                staff.ChangeSlots(dto.Slots);
+
+            await this._unitOfWork.CommitAsync();
+
+            if(dto.Slots != null)
+            {
+                List<SlotsDto> slotsDto = new List<SlotsDto>();
+
+                foreach (var slot in dto.Slots)
+                {
+                    slotsDto.Add(new SlotsDto(slot.StartDate, slot.EndDate, slot.StartTime, slot.EndTime));
+                }
+
+                return new StaffDto(staff.Name.ToString(), staff.Phone.ToString(), staff.Email.ToString(), 
+                staff.Address.ToString(), staff.SpecializationId.AsString(), staff.Id.AsString(), slotsDto);
+
+            } else {
+                return new StaffDto(staff.Name.ToString(), staff.Phone.ToString(), staff.Email.ToString(), 
+                staff.Address.ToString(), staff.SpecializationId.AsString());
+            }
+            
         }
     }
 }

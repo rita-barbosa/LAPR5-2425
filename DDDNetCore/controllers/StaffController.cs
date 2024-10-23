@@ -10,7 +10,7 @@ namespace DDDNetCore.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Policy = "Staff")]
+    // [Authorize(Policy = "Staff")]
     public class StaffController : ControllerBase
     {
         private readonly StaffService _service;
@@ -53,5 +53,43 @@ namespace DDDNetCore.Controllers
             }
         }
 
+        // GET: api/Staff
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<StaffDto>>> GetStaffProfiles()
+        {
+            return await _service.GetAllAsync();
+        }
+
+
+        // PUT: api/Staff/5
+        [HttpPut("{id}")]
+        public async Task<ActionResult<StaffDto>> EditStaffProfile(string id, EditStaffDto dto)
+        {
+            if (id != dto.StaffId)
+            {
+                return BadRequest();
+            }
+
+            try
+            {
+                var staff = await _service.UpdateAsync(dto);
+
+                if (staff == null)
+                {
+                    return NotFound();
+                }
+
+                //falta a parte de mandar o mail!!!!
+
+                
+                return Ok(staff);
+            }
+            catch(BusinessRuleValidationException ex)
+            {
+                return BadRequest(new {Message = ex.Message});
+            }
+
+
+        }
     }
 }
