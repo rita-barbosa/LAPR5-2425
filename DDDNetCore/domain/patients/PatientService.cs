@@ -78,6 +78,18 @@ namespace DDDNetCore.Domain.Patients
             }
         }
 
+        public async Task<List<PatientDto>> FilterPatientProfiles(PatientQueryParametersDto dto)
+        {
+            List<Patient> filteredPatients = await _repo.FilterPatientProfiles(dto);
+            List<PatientDto> patientDtoListFiltered = [];
+
+            foreach (Patient patient in filteredPatients){
+                patientDtoListFiltered.Add(new PatientDto(patient.Name.ToString(), patient.PhoneNumber.ToString(), patient.Email.ToString(), patient.Id.AsString()));
+            }
+
+            return patientDtoListFiltered;
+        }
+
 public async Task<List<PatientDto>> GetAllAsysnc()
         {
             var list = await this._repo.GetAllAsync();

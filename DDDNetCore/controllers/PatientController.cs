@@ -6,6 +6,7 @@ using DDDNetCore.Domain.Shared;
 using DDDNetCore.Domain.StaffProfiles;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 
 namespace DDDNetCore.Controllers
 {
@@ -88,8 +89,21 @@ namespace DDDNetCore.Controllers
                 return BadRequest(new {Message = ex.Message});
             }
         }
+
+            // GET: api/Patients/Filtered-List
+            [HttpPost("Filtered-List")]
+            [Authorize(Policy = "Admin")]
+            public async Task<ActionResult<List<PatientDto>>> GetFilteredPatientProfiles(PatientQueryParametersDto dto)
+            {
+                 var patients = await _service.FilterPatientProfiles(dto);
+
+                if (patients.IsNullOrEmpty())
+                {
+                    return NotFound(new { Message = "No patients matching the filtering criteria." });
+                }
+
+                 return Ok(patients);
+            }
     }
-
-
 
 }

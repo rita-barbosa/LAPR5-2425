@@ -1,9 +1,12 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using DDDNetCore.Domain.Patients;
+using DDDNetCore.Domain.Shared;
 using DDDNetCore.Infrastructure.Shared;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 namespace DDDNetCore.Infrastructure.Patients
 {
@@ -24,6 +27,70 @@ namespace DDDNetCore.Infrastructure.Patients
                      patient.PhoneNumber.CountryCode == countryCode &&
                      patient.PhoneNumber.PhoneNumber == phone));
         }
+
+        public async Task<List<Patient>> FilterPatientProfiles(PatientQueryParametersDto dto)
+        {
+           IQueryable<Patient> combinedQuery = null;
+
+            foreach (PatientListingFilterParametersDto filter in dto.queryFilters)
+            {
+
+                var query = _context.Patients.AsQueryable();
+
+                // if both names are in the filter then create the full name, else search by the provided name
+                if (!string.IsNullOrEmpty(filter.FirstName) && !string.IsNullOrEmpty(filter.LastName))
+                {
+                    query = query.Where(s => s.Name.FullName.Contains($"{filter.FirstName} {filter.LastName}"));
+                }
+                else
+                {
+
+                    if (!string.IsNullOrEmpty(filter.FirstName))
+                    {
+                        query = query.Where(s => s.Name.FirstName.Contains(filter.FirstName));
+                    }
+
+                    if (!string.IsNullOrEmpty(filter.LastName))
+                    {
+                        query = query.Where(s => s.Name.LastName.Contains(filter.LastName));
+                    }
+
+                }
+
+                if (!string.IsNullOrEmpty(filter.Email))
+                {
+                    query = query.Where(s => s.Email.EmailAddress.Contains(filter.Email));
+                }
+
+
+                if (!string.IsNullOrEmpty(filter.Gender))
+                {
+                    query = query.Where(s => s.Gender.Denomination.Equals(filter.Gender.ToLower()));
+                }
+
+                if (!string.IsNullOrEmpty(filter.DateBirth))
+                {
+                    query = query.Where(s => s.DateBirth.Date.ToString() == $"{filter.DateBirth} {"00:00:00"}");
+                }
+
+                if (!string.IsNullOrEmpty(filter.MedicalRecordNumber))
+                {
+                    query = query.AsEnumerable().Where(s => s.Id.AsString() == filter.MedicalRecordNumber).AsQueryable();
+                }
+
+                 if (!query.IsNullOrEmpty()){
+                    combinedQuery = combinedQuery == null ? query : combinedQuery.Union(query);
+                 }
+
+            }
+
+            if(combinedQuery.IsNullOrEmpty())
+                return [];
+
+            return [.. combinedQuery];
+        }
+
+
         public async Task<MedicalRecordNumber> FindLastPatientIdAsync()
         {
             var patientList = await _context.Patients.ToListAsync(); // Load all staff profiles into memory
