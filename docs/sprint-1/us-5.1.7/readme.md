@@ -120,17 +120,11 @@ The diagrams can be found in the [team decision views folder](../../team-decisio
 
 ##### Level 2
 
-![Process View - Level 2](diagrams/level-2-process-view.svg)
+_[This diagram is not relevant.]_
 
 ##### Level 3
 
-![Process View - Level 3.1](diagrams/level-3-process-view-1.svg)
-
-The login initiates the authentication process with Google by challenging the user to log in. When `httpContext.ChallengeAsync` is called, it redirects the user to Google, and once authenticated, Google redirects back to your application.
-In this case to `api/googleresponse`:
-
-
-![Process View - Level 3.2](diagrams/level-3-process-view-2.svg)
+![Process View - Level 3](diagrams/level-3-process-view-1.svg)
 
 #### Development View
 

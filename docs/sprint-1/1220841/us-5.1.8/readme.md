@@ -117,7 +117,7 @@ The diagrams can be found in the [team decision views folder](../../team-decisio
 
 ##### Level 2
 
-![Process View - Level 2](diagrams/level-2-process-view.svg)
+_[This diagram is not relevant.]_
 
 ##### Level 3
 

@@ -7,7 +7,13 @@
   - [3. Analysis](#3-analysis)
   - [4. Design](#4-design)
     - [4.1. Realization](#41-realization)
-    - [4.2. Class Diagram](#42-class-diagram)
+      - [Logical View](#logical-view)
+      - [Process View](#process-view)
+        - [Level 1](#level-1)
+        - [Level 2](#level-2)
+        - [Level 3](#level-3)
+      - [Development View](#development-view)
+      - [Physical View](#physical-view)
     - [4.3. Applied Patterns](#43-applied-patterns)
     - [4.4. Tests](#44-tests)
   - [5. Implementation](#5-implementation)
@@ -66,7 +72,7 @@ The diagrams can be found in the [team decision views folder](../../team-decisio
 
 ##### Level 2
 
-![Process View - Level 2](diagrams/level-2-process-view.svg)
+_[This diagram is not relevant.]_
 
 ##### Level 3
 
