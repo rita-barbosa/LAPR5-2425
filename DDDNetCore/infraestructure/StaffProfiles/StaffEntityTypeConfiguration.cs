@@ -1,3 +1,4 @@
+using System;
 using DDDNetCore.Domain.Specializations;
 using DDDNetCore.Domain.StaffProfiles;
 using DDDNetCore.Domain.Users;
@@ -87,6 +88,10 @@ namespace DDDNetCore.Infrastructure.StaffProfiles
             builder.OwnsMany(b => b.Slots, slotBuilder =>
             {
                 slotBuilder.WithOwner();
+
+                slotBuilder.Property<Guid>("Id")
+                    .ValueGeneratedOnAdd();
+                slotBuilder.HasKey("Id");
 
                 slotBuilder.OwnsOne(s => s.TimeInterval, intervalBuilder =>
                 {
