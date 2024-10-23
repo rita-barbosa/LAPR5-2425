@@ -1,13 +1,9 @@
 using Microsoft.EntityFrameworkCore;
-using DDDNetCore.Domain.Categories;
-using DDDNetCore.Domain.Products;
-using DDDNetCore.Domain.Families;
 using DDDNetCore.Domain.Tokens;
 using DDDNetCore.Domain.Specializations;
 using DDDNetCore.Domain.OperationTypes;
 using DDDNetCore.Domain.OperationRequest;
 using DDDNetCore.Infrastructure.Tokens;
-using DDDNetCore.Infrastructure.Categories;
 using DDDNetCore.Infrastructure.Products;
 using DDDNetCore.Infrastructure.Specializations;
 using DDDNetCore.Infrastructure.StaffProfiles;
@@ -24,12 +20,6 @@ namespace DDDNetCore.Infrastructure
 {
     public class DDDNetCoreDbContext : IdentityDbContext<User, Role, string>
     {
-        public DbSet<Category> Categories { get; set; }
-
-        public DbSet<Product> Products { get; set; }
-
-        public DbSet<Family> Families { get; set; }
-
         public DbSet<Token> Tokens { get; set; }
         public DbSet<Specialization> Specializations { get; set; }
         public DbSet<OperationType> OperationTypes { get; set; }
@@ -46,9 +36,6 @@ namespace DDDNetCore.Infrastructure
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-            modelBuilder.ApplyConfiguration(new CategoryEntityTypeConfiguration());
-            modelBuilder.ApplyConfiguration(new ProductEntityTypeConfiguration());
-            modelBuilder.ApplyConfiguration(new FamilyEntityTypeConfiguration());
             modelBuilder.ApplyConfiguration(new TokenEntityTypeConfiguration());
             modelBuilder.ApplyConfiguration(new SpecializationEntityTypeConfiguration());
             modelBuilder.ApplyConfiguration(new OperationTypeEntityTypeConfiguration());

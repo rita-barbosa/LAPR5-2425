@@ -13,7 +13,7 @@ namespace DDDNetCore.Infrastructure.Emails
 
         private static readonly string CLIENT_ID = "643981681426-pdruu3r0crj9nstjg5lgfnrntrog4ahd.apps.googleusercontent.com";
         private static readonly string CLIENT_SECRET = "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";
-        private static readonly string REFRESH_TOKEN = "1//0402TzyVzbgWNCgYIARAAGAQSNwF-L9IrAGOptUEkMoSsLM614oCTO4pj3UKZevBtExzkRRFlonZMGV-Ox62E4TarWEulBsv34Lo";
+        private static readonly string REFRESH_TOKEN = "1//04HvLVYDBtN-QCgYIARAAGAQSNwF-L9IrMe0njlGh_d5X5ZbIgFIrcqYgSjVx7mVNaN4-DlqvqhP-AXcJ0zc_9B6Nnme0WDnPOu0";
         private static readonly string TOKEN_END_POINT = "https://oauth2.googleapis.com/token";
         private static readonly string TEST_USER_EMAIL = "noreply.healthcare.dg38@gmail.com";
 
