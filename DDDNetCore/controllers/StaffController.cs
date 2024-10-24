@@ -32,8 +32,9 @@ namespace DDDNetCore.Controllers
             return Ok(staff);
         }
 
-        // POST: api/Staff
+        // POST: api/Staff/Create-StaffProfile
         [HttpPost]
+        [Route("Create-StaffProfile")]
         [Authorize(Policy = "Admin")]
         public async Task<ActionResult<StaffDto>> CreateStaffProfile(CreatingStaffDto dto)
         {
