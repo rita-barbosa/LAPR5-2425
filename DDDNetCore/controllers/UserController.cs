@@ -220,9 +220,13 @@ namespace DDDNetCore.Controllers
             
                 SendConfirmationEmail(user, registerUserDto.Role);
             }
+            catch (InvalidOperationException ex1)
+            {
+                return BadRequest(ex1.Message); 
+            }
             catch (Exception ex)
             {
-                return StatusCode(500, $"An error occurred: {ex.Message} - {ex.StackTrace}");
+                return BadRequest("An error occurred.");
             }
 
             return Ok(new { Message = "User registered successfully." });
