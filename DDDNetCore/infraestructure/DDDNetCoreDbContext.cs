@@ -14,6 +14,9 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using DDDNetCore.Infrastructure.OperationTypes;
 using DDDNetCore.Infrastructure.OperationRequests;
 using DDDNetCore.Domain.OperationTypes.ValueObjects.RequiredStaff;
+using Microsoft.EntityFrameworkCore.Internal;
+using DDDNetCore.Domain.Logs;
+using DDDNetCore.Infrastructure.EntityConfigurations;
 
 
 namespace DDDNetCore.Infrastructure
@@ -23,11 +26,11 @@ namespace DDDNetCore.Infrastructure
         public DbSet<Token> Tokens { get; set; }
         public DbSet<Specialization> Specializations { get; set; }
         public DbSet<OperationType> OperationTypes { get; set; }
-
         public DbSet<Staff> StaffProfiles { get; set; }
         public DbSet<Patient> Patients { get; set; }
         public DbSet<RequiredStaff> RequiredStaff { get; set; }
         public DbSet<OperationRequest> OperationRequests { get; set; }
+        public DbSet<Log> Logs { get; set; }
         public DDDNetCoreDbContext(DbContextOptions options) : base(options)
         {
 
@@ -43,7 +46,7 @@ namespace DDDNetCore.Infrastructure
             modelBuilder.ApplyConfiguration(new PatientEntityTypeConfiguration());
             modelBuilder.ApplyConfiguration(new RequiredStaffEntityTypeConfiguration());
             modelBuilder.ApplyConfiguration(new OperationRequestEntityTypeConfiguration());
-
+            modelBuilder.ApplyConfiguration(new LogEntityTypeConfiguration());
         }
     }
 }
