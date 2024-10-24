@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using System.Xml;
-using DDDNetCore.Domain.Patients;
 using DDDNetCore.Domain.Emails;
 using DDDNetCore.Domain.Shared;
 using DDDNetCore.Domain.Users;
@@ -227,5 +225,28 @@ namespace DDDNetCore.Domain.Patients
 
             return new PatientDto(patient.Name.ToString(), patient.PhoneNumber.ToString(), patient.Email.ToString(), patient.Address.ToString(), patient.DateBirth.ToString("dd-MM-yyyy"), patient.Id.AsString());
         }
+
+        public async void ConfirmPatientAccountDeletionEmail(string? confirmationLink, string email)
+        {
+            string emailBody = "<html><body><p>Hello,</p><p>This email was sent to confirm your account's deletion in the HealthCare Clinic System.</p><p><a href='" + confirmationLink + "'>Click in the link to confirm the deletion of the account.</a></p><p>Thank you for choosing us,<br>HealthCare Clinic</p></body></html>"  ;                  
+            
+            EmailMessageDto emailMessageDto = new EmailMessageDto(_configuration["App:Email"] ?? throw new NullReferenceException("The hospital email is not configured."), email, "Account Deletion Confirmation", emailBody);
+            
+            await _emailService.SendAccountDeletionEmail(emailMessageDto);
+        }
+
+        public async void AnonymizeProfile(string email)
+        {
+            var patient = await _repo.GetPatientWithEmail(email);
+
+            patient.RemoveUser();
+            patient.Anonymize();
+
+            await _logService.CreateDeletionLog(patient.Id.AsString(), patient.GetType().Name, "Anonymization of patient profile.");
+
+            await _unitOfWork.CommitAsync();
+        }
+
+
     }
 }
