@@ -23,6 +23,7 @@ namespace DDDNetCore.Domain.Users
         private readonly StaffService _staffService;
         private readonly EmailService _emailService;
         private readonly TokenService _tokenService;
+        private readonly LogService _logService;
         private readonly IConfiguration _configuration;
         public UserService(UserManager<User> userManager, RoleManager<Role> roleManager,
                                  StaffService staffService, LogService logService,
