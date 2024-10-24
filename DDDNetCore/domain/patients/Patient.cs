@@ -80,27 +80,32 @@ namespace DDDNetCore.Domain.Patients
 
         public void ChangeEmail(string email)
         {
-            this.Email = new Email(email);
+            if(this.Email.Equals(new Email(email))) throw new BusinessRuleValidationException("The new email is identical to the existing one.");
+            Email = new Email(email);
         }
 
         public void ChangePhone(string phone)
         {
-            this.PhoneNumber = new Phone(phone);
+            if (this.PhoneNumber.Equals(new Phone(phone))) throw new BusinessRuleValidationException("The new phone number is identical to the existing one.");
+            PhoneNumber = new Phone(phone);
         }
 
         public void ChangeAddress(string address)
         {
-            this.Address = new ResidentialAddress(address);
+            if (this.Address.Equals(new ResidentialAddress(address))) throw new BusinessRuleValidationException("The new address is identical to the existing one.");
+            Address = new ResidentialAddress(address);
         }
 
         public void ChangeName(string name)
         {
-            this.Name = new Name(name);
+            if (Name.Equals(new Name(name))) throw new BusinessRuleValidationException("The new name is identical to the existing one.");
+            Name = new Name(name);
         }
 
         internal void ChangeEmergencyContact(string emergencyContact)
         {
-            this.EmergencyContact = new Phone(emergencyContact);
+            if (EmergencyContact.Equals(new Phone(emergencyContact))) throw new BusinessRuleValidationException("The new emergency contact is identical to the existing one.");
+            EmergencyContact = new Phone(emergencyContact);
         }
     }
 }

@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
+using System.Net.Mail;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
@@ -18,10 +20,10 @@ namespace DDDNetCore.Domain.Users
     public class UserService
     {
         private readonly UserManager<User> _userManager;
-         private readonly EmailService _emailService;
+        private readonly EmailService _emailService;
         private readonly TokenService _tokenService;
         private readonly IConfiguration _configuration;
-        public UserService(UserManager<User> userManager, 
+        public UserService(UserManager<User> userManager,
                                 EmailService emailService, IConfiguration configuration,
                                 TokenService tokenService)
         {
@@ -150,42 +152,59 @@ namespace DDDNetCore.Domain.Users
         {
             return await _userManager.CreateAsync(user, password);
         }
-        public async void EditUserProfile(string email)
+        public async Task EditUserProfile(string oldEmail, string newEmail)
         {
-            User user = await FindByEmailAsync(email);
-
-            string token = await _userManager.GenerateChangeEmailTokenAsync(user, email);
-            var result = await _userManager.ChangeEmailAsync(user, email, token);
+            User user = await FindByEmailAsync(oldEmail) ?? throw new BusinessRuleValidationException("Can't find the currently logged in user.");
+            string token = await _userManager.GenerateChangeEmailTokenAsync(user, newEmail);
+            var result = await _userManager.ChangeEmailAsync(user, newEmail, token);
 
             if (!result.Succeeded)
             {
-                throw new ArgumentException("Unable to update the user's email.");
+                throw new BusinessRuleValidationException("Unable to update the user's email.");
             }
 
             user.Status = false;
             await UpdateAsync(user);
-
-            SendConfirmationEmail(user, "Patient", await _userManager.GenerateEmailConfirmationTokenAsync(user));
+            await SendConfirmationChangeEmail(user, oldEmail, await _userManager.GenerateEmailConfirmationTokenAsync(user));
         }
 
-
-        public async void SendConfirmationEmail(User user, string role, string token)
+        private async Task SendConfirmationChangeEmail(User user, string email, string token)
         {
+            string confirmationLink = await ConfigureUrlConfirmation(token, user);
+            var body = "<p>Hello,</p><p>This email was sent to notify you that your email address has been updated in the HealthCare Clinic System. </p><p><a href='" + confirmationLink + "'>Click in the link to confirm your email change.</a></p><p>Thank you for choosing us,<br>HealthCare Clinic</p></body></html>";
+
+            await SendEmail(email, "Update Email Confirmation", body);
+        }
+        public async Task SendConfirmationEmail(User user, string token)
+        {
+            string confirmationLink = await ConfigureUrlConfirmation(token, user);
+            var body = "<p>Hello,</p><p>This email was sent to inform you that your user account in the HealthCare Clinic System has been created. </p><p><a href='" + confirmationLink + "'>Click in the link to confirm the activation of the account.</a></p><p>Thank you for choosing us,<br>HealthCare Clinic</p></body></html>";
+
+            await SendEmail(user.Email, "Account Activation", body);
+        }
+
+        private async Task<string> ConfigureUrlConfirmation(string token, User user)
+        {
+            string? role = (await _userManager.GetRolesAsync(user)).FirstOrDefault();
+
+            if (role == null) throw new NullReferenceException("Can't obtain the user role.");
 
             var encodedToken = Uri.EscapeDataString(token);
-
             var baseUrl = _configuration["App:BaseUrl"];
-            var confirmationLink = role.Equals("Patient")
+            return role.Equals("Patient")
             ? $"{baseUrl}/Activate-PatientAccount?userId={user.Id}&token={encodedToken}"
             : $"{baseUrl}/Activate-StaffAccount?userId={user.Id}&token={encodedToken}";
+        }
+        private async Task SendEmail(string receiver, string subject, string body)
+        {
+            if (receiver == null) throw new NullReferenceException("The recipient's email cannot be null.");
 
-            EmailMessageDto emailDto = new EmailMessageDto(
-                _configuration["App:Email"] ?? throw new NullReferenceException("Hospital email not configured."),
-                user.Email ?? throw new NullReferenceException("Couldn't get user email."),
-                "Account Activation",
-                "<p>Hello,</p><p>This email was sent to inform you that your user account in the HealthCare Clinic System has been created. </p><p><a href='" + confirmationLink + "'>Click in the link to confirm the activation of the account.</a></p><p>Thank you for choosing us,<br>HealthCare Clinic</p></body></html>"
-            );
-
+            EmailMessageDto emailDto = new(
+                           _configuration["App:Email"] ?? throw new NullReferenceException("Hospital email not configured."),
+                           receiver,
+                           subject,
+                           body
+                       );
             await _emailService.SendConfirmationEmail(emailDto);
         }
     }

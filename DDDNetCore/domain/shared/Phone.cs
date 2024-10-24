@@ -46,6 +46,20 @@ namespace DDDNetCore.Domain.Shared
             PhoneNumber = match.Groups[2].Value;
         }
 
+        public override bool Equals(object obj)
+        {
+            if (obj is Phone other)
+            {
+                return CountryCode == other.CountryCode && PhoneNumber == other.PhoneNumber;
+            }
+            return false;
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(CountryCode, PhoneNumber);
+        }
+
         public override string ToString()
         {
             return $"{CountryCode} {PhoneNumber}";

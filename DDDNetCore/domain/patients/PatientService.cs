@@ -184,21 +184,17 @@ namespace DDDNetCore.Domain.Patients
             var patient = await _repo.FindPatientWithUserEmail(email);
 
             if (dto.Phone != null) patient.ChangePhone(dto.Phone);
-
             if (dto.Address != null) patient.ChangeAddress(dto.Address);
             if (dto.Name != null) patient.ChangeName(dto.Name);
             if (dto.EmergencyContact != null) patient.ChangeEmergencyContact(dto.EmergencyContact);
             if (dto.Email != null)
             {
-                var oldEmail = patient.Email.ToString();
                 patient.ChangeEmail(dto.Email);
-                _usrSvc.EditUserProfile(oldEmail);
+                await _usrSvc.EditUserProfile(email, dto.Email);
             }
-
-
             await _unitOfWork.CommitAsync();
 
-            return new PatientDto(patient.Name.ToString(), patient.PhoneNumber.ToString(), patient.Email.ToString(), patient.Id.AsString());
+            return new PatientDto(patient.Name.ToString(), patient.PhoneNumber.ToString(), patient.Email.ToString(), patient.Address.ToString(), patient.Id.AsString());
         }
     }
 }
