@@ -6,20 +6,27 @@ namespace DDDNetCore.Domain.OperationRequest
     public class OperationRequestStatus : IValueObject
     {
 
-        public string StatusName{ get;  private set; }
+        public OperationRequestStatusEnum Status { get; private set; }
 
         public OperationRequestStatus() 
         {
-
         }
 
-        public OperationRequestStatus (string status)
+        public OperationRequestStatus(OperationRequestStatusEnum status)
         {
-            if (string.IsNullOrWhiteSpace(status))
+            this.Status = status;
+        }
+
+        public OperationRequestStatus(string status)
+        {
+            if (Enum.TryParse<OperationRequestStatusEnum>(status, true, out var result))
             {
-                throw new ArgumentException("Status cannot be null or empty.");
+                this.Status = result;
             }
-            this.StatusName = status;
+            else
+            {
+                throw new BusinessRuleValidationException($"Invalid status: {status}");
+            }
         }
 
         public override bool Equals(object obj)
@@ -29,18 +36,18 @@ namespace DDDNetCore.Domain.OperationRequest
                 return false;
             }
 
-            var other = (Status)obj;
-            return StatusName == other.StatusName;
+            var other = (OperationRequestStatus)obj;
+            return Status == other.Status;
         }
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(StatusName);
+            return HashCode.Combine(Status);
         }
 
         public override string ToString()
         {
-            return "Status: " + StatusName;
+            return Status.ToString();
         }
 
     }

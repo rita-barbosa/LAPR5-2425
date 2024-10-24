@@ -4,6 +4,7 @@ using DDDNetCore.Domain.OperationRequest;
 using DDDNetCore.Domain.OperationTypes;
 using DDDNetCore.Domain.Patients;
 using DDDNetCore.Domain.StaffProfiles;
+using System;
 
 namespace DDDNetCore.Infrastructure.OperationRequests
 {
@@ -42,7 +43,11 @@ namespace DDDNetCore.Infrastructure.OperationRequests
             // Status as value object
             builder.OwnsOne(b => b.Status, s => 
             {
-                s.Property(status => status.StatusName)
+                s.Property(status => status.Status)
+                .HasConversion(
+                    v => v.ToString(),
+                    v => (OperationRequestStatusEnum)Enum.Parse(typeof(OperationRequestStatusEnum), v) // Converte a string de volta para enum ao ler
+                )
                 .IsRequired()
                 .HasColumnName("Status");
             });
