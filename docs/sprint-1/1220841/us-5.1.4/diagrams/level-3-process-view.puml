@@ -8,6 +8,7 @@ participant "EditPatientProfileDto" as pat_dto <<dto>>
 participant "PatientController" as CTRL <<controller>>
 participant "ClaimsPrincipal" as CLAIM
 participant "PatientService" as SVC <<service>>
+participant "LogService" as LOG <<service>>
 participant "UserService" as US_SVC <<service>>
 participant "UserManager" as UM <<service>>
 participant "User" as USER <<domain>>
@@ -115,6 +116,10 @@ alt email != null
                         activate PATIENT
                         deactivate PATIENT
                         end alt
+
+                        SVC -> LOG: CreateEditLog(patientId,patientClass,log)
+                        activate LOG
+                        deactivate LOG
 
                         SVC -> REPO : save()
                         activate REPO

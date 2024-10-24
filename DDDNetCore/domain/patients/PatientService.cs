@@ -28,7 +28,7 @@ namespace DDDNetCore.Domain.Patients
             this._logService = logService;
         }
 
-        public async Task<PatientDto> GetByIdAsync( MedicalRecordNumber id)
+        public async Task<PatientDto> GetByIdAsync(MedicalRecordNumber id)
         {
             var patient = await _repo.GetByIdAsync(id);
 
@@ -108,9 +108,9 @@ namespace DDDNetCore.Domain.Patients
                     await this._unitOfWork.CommitAsync();
                 }
             }
-            
+
         }
-    
+
 
         public async Task<List<PatientDto>> FilterPatientProfiles(PatientQueryParametersDto dto)
         {
@@ -167,7 +167,7 @@ namespace DDDNetCore.Domain.Patients
             if (dto.Name != null)
                 patient.ChangeName(dto.Name);
 
-            if(dto.DateBirth != null)
+            if (dto.DateBirth != null)
                 patient.ChangeDateBirth(dto.DateBirth);
 
             await this._unitOfWork.CommitAsync();
@@ -210,17 +210,39 @@ namespace DDDNetCore.Domain.Patients
 
         public async Task<PatientDto> EditProfile(string email, EditPatientProfileDto dto)
         {
+            var logEntries = new List<string>();
             var patient = await _repo.FindPatientWithUserEmail(email);
 
-            if (dto.Phone != null) patient.ChangePhone(dto.Phone);
-            if (dto.Address != null) patient.ChangeAddress(dto.Address);
-            if (dto.Name != null) patient.ChangeName(dto.Name);
-            if (dto.EmergencyContact != null) patient.ChangeEmergencyContact(dto.EmergencyContact);
+            if (dto.Phone != null)
+            {
+                patient.ChangePhone(dto.Phone);
+                logEntries.Add($"phone=[{dto.Phone}]");
+            }
+            if (dto.Address != null)
+            {
+                patient.ChangeAddress(dto.Address);
+                logEntries.Add($"address=[{dto.Address}]");
+            }
+            if (dto.Name != null)
+            {
+                patient.ChangeName(dto.Name);
+                logEntries.Add($"name=[{dto.Name}]");
+            }
+            if (dto.EmergencyContact != null)
+            {
+                patient.ChangeEmergencyContact(dto.EmergencyContact);
+                logEntries.Add($"emergencyContact=[{dto.EmergencyContact}]");
+            }
             if (dto.Email != null)
             {
                 await _userService.EditUserProfile(email, dto.Email);
                 patient.ChangeEmail(dto.Email);
+                logEntries.Add($"email=[{dto.Email}]");
             }
+
+            var log = $"Edited information of patient/user profile. The information edited was: {string.Join(", ", logEntries)}.";
+            await _logService.CreateEditLog(patient.Id.AsString(), patient.GetType().ToString(), log);
+
             await _unitOfWork.CommitAsync();
 
             return new PatientDto(patient.Name.ToString(), patient.PhoneNumber.ToString(), patient.Email.ToString(), patient.Address.ToString(), patient.DateBirth.ToString("dd-MM-yyyy"), patient.Id.AsString());
@@ -228,10 +250,10 @@ namespace DDDNetCore.Domain.Patients
 
         public async void ConfirmPatientAccountDeletionEmail(string? confirmationLink, string email)
         {
-            string emailBody = "<html><body><p>Hello,</p><p>This email was sent to confirm your account's deletion in the HealthCare Clinic System.</p><p><a href='" + confirmationLink + "'>Click in the link to confirm the deletion of the account.</a></p><p>Thank you for choosing us,<br>HealthCare Clinic</p></body></html>"  ;                  
-            
+            string emailBody = "<html><body><p>Hello,</p><p>This email was sent to confirm your account's deletion in the HealthCare Clinic System.</p><p><a href='" + confirmationLink + "'>Click in the link to confirm the deletion of the account.</a></p><p>Thank you for choosing us,<br>HealthCare Clinic</p></body></html>";
+
             EmailMessageDto emailMessageDto = new EmailMessageDto(_configuration["App:Email"] ?? throw new NullReferenceException("The hospital email is not configured."), email, "Account Deletion Confirmation", emailBody);
-            
+
             await _emailService.SendAccountDeletionEmail(emailMessageDto);
         }
 
