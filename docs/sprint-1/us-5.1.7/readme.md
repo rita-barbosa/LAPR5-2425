@@ -14,7 +14,6 @@
         - [Level 3](#level-3)
       - [Development View](#development-view)
       - [Physical View](#physical-view)
-    - [4.3. Applied Patterns](#43-applied-patterns)
     - [4.4. Tests](#44-tests)
   - [5. Implementation](#5-implementation)
   - [6. Integration/Demonstration](#6-integrationdemonstration)
@@ -93,9 +92,9 @@ This functionality is dependent on the creation of a patient profile by the Admi
 
 ## 3. Analysis
 
-In this feature, patients can log in to the healthcare system using the available external Identity and Access Management
+In this feature, patients can log in to the healthcare system using the available internal Identity and Access Management
 (IAM) provider and its credentials.
-The patient's identity is verified by the IAM service, and upon successful authentication, they are granted a valid session.
+The patient's identity is verified, and upon successful authentication, they are granted a valid session.
 
 The patient has then access to their account and profile, along with all their data.
 
@@ -134,10 +133,6 @@ The diagrams can be found in the [team decision views folder](../../team-decisio
 
 The diagrams can be found in the [team decision views folder](../../team-decisions/views/general-views.md#4-physical-view).
 
-
-### 4.3. Applied Patterns
-
-_// To do //_
 
 ### 4.4. Tests
 
