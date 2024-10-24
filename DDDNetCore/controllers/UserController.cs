@@ -328,6 +328,50 @@ namespace DDDNetCore.Controllers
             return Ok("Patient account successfully deleted!\nSome of your non-identifiable data will be retained, as per our GDPR policies.");
         }
 
+    
+        [HttpPut("send-passwordEmail")]
+        public async Task<IActionResult> ResetPassword([FromQuery] string email)
+        {
+            try
+            {
+            await _userService.ResetPassword(email);
+
+            return Ok("Password reset email was sent!");
+            }
+            catch (BusinessRuleValidationException ex)
+            {
+                return BadRequest(new { ex.Message });
+            }
+            catch (Exception)
+            {
+                return BadRequest(new { V = "An unexpected error occured." });
+            }
+        }
+
+        [HttpPut("update-userPassword")]
+        public async Task<IActionResult> UpdatePassword([FromQuery] string email, [FromQuery] string token, [FromBody] ConfirmEmailUserDto confirmEmailUserDto)
+        {
+            try
+            {
+                if (await _userService.UpdatePassword(email, token, confirmEmailUserDto.NewPassword))
+                {
+                    return Ok("Password was changed successfully.");
+                }
+                else
+                {
+                    return BadRequest("Password update failed.");
+                }
+            }
+            catch (BusinessRuleValidationException ex)
+            {
+                return BadRequest(new { ex.Message });
+            }
+            catch (Exception)
+            {
+                return BadRequest(new { V = "An expected error occured" });
+            }
+        }
+
     }
 
 }
