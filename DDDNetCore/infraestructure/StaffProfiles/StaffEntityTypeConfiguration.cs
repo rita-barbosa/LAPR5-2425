@@ -23,6 +23,10 @@ namespace DDDNetCore.Infrastructure.StaffProfiles
                     .HasColumnName("LicenseNumber");
             });
 
+            builder.Property(b => b.Status)
+                .IsRequired()
+                .HasColumnName("Status");
+
             builder.HasOne<User>()
                 .WithOne() // Assuming User does not have a direct reference to Staff
                 .HasForeignKey<Staff>(b => b.UserReference) // Foreign key on the Staff entity
