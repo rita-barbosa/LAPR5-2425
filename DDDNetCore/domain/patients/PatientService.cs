@@ -51,7 +51,7 @@ namespace DDDNetCore.Domain.Patients
 
             await _unitOfWork.CommitAsync();
 
-            return new PatientDto(patient.Name.ToString(), patient.PhoneNumber.ToString(), patient.Email.ToString(), patient.Address.ToString(), patient.Id.AsString());
+            return new PatientDto(patient.Name.ToString(), patient.PhoneNumber.ToString(), patient.Email.ToString(), patient.Address.ToString(), patient.DateBirth.ToString("dd-MM-yyyy"), patient.Id.AsString());
         }
 
         public async void AddUser(User user, string email, string phone)
@@ -140,13 +140,15 @@ namespace DDDNetCore.Domain.Patients
             if (dto.Name != null)
                 patient.ChangeName(dto.Name);
 
+            if(dto.DateBirth != null)
+                patient.ChangeDateBirth(dto.DateBirth);
+
             await this._unitOfWork.CommitAsync();
 
             VerificationsToSendEmail(phoneChange, emailChange, adressChange, false, oldEmail, patient);
 
             return new PatientDto(patient.Name.ToString(), patient.PhoneNumber.ToString(),
-                patient.Email.ToString(), patient.Address.ToString(), patient.Id.AsString());
-
+                patient.Email.ToString(), patient.Address.ToString(), patient.DateBirth.ToString("dd-MM-yyyy"), patient.Id.AsString());
         }
 
         private async void VerificationsToSendEmail(bool phoneChange, bool emailChange, bool adressChange, bool emContactChange, string oldEmail, Patient patient)
@@ -194,7 +196,7 @@ namespace DDDNetCore.Domain.Patients
             }
             await _unitOfWork.CommitAsync();
 
-            return new PatientDto(patient.Name.ToString(), patient.PhoneNumber.ToString(), patient.Email.ToString(), patient.Address.ToString(), patient.Id.AsString());
+            return new PatientDto(patient.Name.ToString(), patient.PhoneNumber.ToString(), patient.Email.ToString(), patient.Address.ToString(), patient.DateBirth.ToString("dd-MM-yyyy"), patient.Id.AsString());
         }
     }
 }

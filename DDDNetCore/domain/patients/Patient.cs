@@ -77,6 +77,13 @@ namespace DDDNetCore.Domain.Patients
             this.UserReference = user.Id;
         }
 
+        public void ChangeDateBirth(string dateBirth){
+            if (!DateTime.TryParse(dateBirth, out DateTime dateOfBirth) || dateOfBirth > DateTime.Now)
+            {
+                throw new BusinessRuleValidationException("The Date of Birth is either in an incorrect format or cannot be in the future. Please provide a valid past date.");
+            }
+            this.DateBirth = dateOfBirth;
+        }
 
         public void ChangeEmail(string email)
         {

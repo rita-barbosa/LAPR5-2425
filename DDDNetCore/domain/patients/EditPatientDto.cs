@@ -7,6 +7,8 @@ namespace DDDNetCore.Domain.Patients
         public string? EmergencyContact { get; set; }
         public string? Email { get; set; }
         public string? Address { get; set; }
+        public string? DateBirth { get; set;}
+
         public string PatientId { get; set; }
 
         public EditPatientDto(string name, string phone, string email, string address, string patientId)
@@ -24,6 +26,7 @@ namespace DDDNetCore.Domain.Patients
             Phone = phone;
             EmergencyContact = emContact;
             Email = email;
+            DateBirth = DateBirth;
             Address = address;
         }
     }
