@@ -103,8 +103,8 @@ namespace DDDNetCore.Domain.Patients
                 var result = await _userService.DeleteByIdAsync(patient.UserReference);
                 if (result.Succeeded)
                 {
-                    await _logService.CreateDeletionLog(patient.Id.Value, "Patient", "Anonymization of patient's profile.");
-                    await _logService.CreateDeletionLog(userRef, "User", "Deletion of patient's account.");
+                    await _logService.CreateDeletionLog(patient.Id.Value, patient.GetType().ToString(), "Anonymization of patient's profile.");
+                    await _logService.CreateDeletionLog(userRef, "DDDNetCore.Domain.Users", "Deletion of patient's account.");
                     await this._unitOfWork.CommitAsync();
                 }
             }
