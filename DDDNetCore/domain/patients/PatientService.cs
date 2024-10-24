@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Xml;
+using DDDNetCore.Domain.Emails;
 using DDDNetCore.Domain.Shared;
 using DDDNetCore.Domain.Users;
 
@@ -9,13 +10,17 @@ namespace DDDNetCore.Domain.Patients
 {
     public class PatientService
     {
+        private static string hospitalEmail = "noreply.healthcare.dg38@gmail.com";
+
         private readonly IUnitOfWork _unitOfWork;
         private readonly IPatientRepository _repo;
+        private readonly EmailService _emailService;
 
-        public PatientService(IUnitOfWork unitOfWork, IPatientRepository repo)
+        public PatientService(IUnitOfWork unitOfWork, IPatientRepository repo, EmailService emailService)
         {
             this._unitOfWork = unitOfWork;
             this._repo = repo;
+            this._emailService = emailService;
         }
 
         public async Task<PatientDto> GetByIdAsync(MedicalRecordNumber id)
@@ -90,7 +95,7 @@ namespace DDDNetCore.Domain.Patients
             return patientDtoListFiltered;
         }
 
-public async Task<List<PatientDto>> GetAllAsysnc()
+        public async Task<List<PatientDto>> GetAllAsysnc()
         {
             var list = await this._repo.GetAllAsync();
 
@@ -107,24 +112,65 @@ public async Task<List<PatientDto>> GetAllAsysnc()
             if(patient == null)
                 return null;
 
-            if(dto.Phone != null)
+            bool phoneChange = false, emailChange = false, adressChange = false;
+            string oldEmail = null;
+
+            if(dto.Phone != null){
                 patient.ChangePhone(dto.Phone);
+                phoneChange = true;
+            }
 
-            if(dto.Email != null)
+            if(dto.Email != null){
+                oldEmail = patient.Email.ToString();
                 patient.ChangeEmail(dto.Email);
+                emailChange = true;
+            }
 
-            if(dto.Address != null)
+            if(dto.Address != null){
                 patient.ChangeAddress(dto.Address);
+                adressChange = true;
+            }
 
             if(dto.Name != null)
                 patient.ChangeName(dto.Name);
 
             await this._unitOfWork.CommitAsync();
+            
+            VerificationsToSendEmail(phoneChange, emailChange, adressChange, oldEmail, patient); 
 
             return new PatientDto(patient.Name.ToString(), patient.PhoneNumber.ToString(), 
                 patient.Email.ToString(), patient.Address.ToString(), patient.Id.AsString());
 
+        }
 
+        private async void VerificationsToSendEmail(bool phoneChange, bool emailChange, bool adressChange, string oldEmail, Patient patient)
+        {
+            if(phoneChange || emailChange || adressChange)
+            {
+                string changedInformation = "<p>The new information is the following:</p><ul>";
+
+                if(phoneChange)
+                    changedInformation += "<li>Phone Number: " + patient.PhoneNumber.ToString() + "</li>";
+
+                if(emailChange)
+                    changedInformation += "<li>Email: " + patient.Email.ToString() + "</li>";
+
+                if(adressChange)
+                    changedInformation += "<li>Address: " + patient.Address.ToString() + "</li>";
+
+                changedInformation += "</ul>";
+
+                EmailMessageDto emailDto = new EmailMessageDto(
+                    hospitalEmail,
+                    oldEmail,
+                    "Contact Information Edition",
+                    "<p>Hello,</p><p>This email was sent to inform you that your contact information in your patient profile in the HealthCare Clinic System has been changed.</p>" + 
+                    changedInformation + 
+                    "<p>Thank you for choosing us,<br>HealthCare Clinic</p></body></html>"
+                );
+
+                await _emailService.SendProfileEditEmail(emailDto);
+            }
         }
     }
 }

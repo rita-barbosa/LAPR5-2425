@@ -64,6 +64,7 @@ namespace DDDNetCore.Controllers
 
         //PUT: api/Patient/5
         [HttpPut("{id}")]
+        [Authorize(Policy = "Admin")]
         public async Task<ActionResult<PatientDto>> EditPatientProfile(string id, EditPatientDto dto)
         {
             if (id != dto.PatientId)
@@ -78,9 +79,7 @@ namespace DDDNetCore.Controllers
                 if (patient == null)
                 {
                     return NotFound();
-                }
-
-                //falta a parte de mandar o mail!!!!
+                }                
 
                 return Ok(patient);
             }
