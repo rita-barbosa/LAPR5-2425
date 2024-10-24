@@ -34,7 +34,7 @@ namespace DDDNetCore.Controllers
 
         // POST: api/Staff/Create-StaffProfile
         [HttpPost]
-        [Route("Create-StaffProfile")]
+        [Route("create")]
         [Authorize(Policy = "Admin")]
         public async Task<ActionResult<StaffDto>> CreateStaffProfile(CreatingStaffDto dto)
         {
@@ -50,7 +50,7 @@ namespace DDDNetCore.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(new { ex.Message });
+                return BadRequest(new { V = $"An unexpected error occurred: {ex.Message}" });
             }
         }
 
@@ -97,14 +97,14 @@ namespace DDDNetCore.Controllers
         [Authorize(Policy = "Admin")]
         public async Task<ActionResult<List<StaffDto>>> GetFilteredStaffProfiles(StaffQueryParametersDto dto)
         {
-                var staff = await _service.FilterStaffProfiles(dto);
+            var staff = await _service.FilterStaffProfiles(dto);
 
-                if (staff.IsNullOrEmpty())
-                {
-                    return NotFound(new { Message = "No staff matching the filtering criteria." });
-                }
+            if (staff.IsNullOrEmpty())
+            {
+                return NotFound(new { Message = "No staff matching the filtering criteria." });
+            }
 
-                return Ok(staff);
+            return Ok(staff);
         }
 
         // POST: api/Staff/Deactivate-StaffProfile

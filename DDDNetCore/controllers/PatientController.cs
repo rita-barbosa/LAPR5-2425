@@ -37,7 +37,7 @@ namespace DDDNetCore.Controllers
         }
     
         [HttpPost]
-        [Route("Create-PatientProfile")]
+        [Route("create")]
         [Authorize(Policy = "Admin")]
         public async Task<ActionResult<PatientDto>> CreatePatientProfile(CreatingPatientDto dto)
         {
@@ -51,9 +51,9 @@ namespace DDDNetCore.Controllers
             {
                 return BadRequest(new { ex.Message });
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return BadRequest(new { V = "An unexpected error occured." });
+                  return BadRequest(new { V = $"An unexpected error occurred: {ex.Message}" });
             }
         }
 

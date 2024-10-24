@@ -30,14 +30,14 @@ namespace DDDNetCore.Infrastructure.StaffProfiles
 
         public async Task<List<Staff>> FilterStaffProfiles(StaffQueryParametersDto dto)
         {
-           IQueryable<Staff> combinedQuery = null;
+            IQueryable<Staff> combinedQuery = null;
 
             foreach (StaffListingFilterParametersDto filter in dto.queryFilters)
             {
 
                 var query = _context.StaffProfiles.AsQueryable();
 
-               // if both names are in the filter then create the full name, else search by the provided name
+                // if both names are in the filter then create the full name, else search by the provided name
                 if (!string.IsNullOrEmpty(filter.FirstName) && !string.IsNullOrEmpty(filter.LastName))
                 {
                     query = query.AsEnumerable().Where(s => s.Name.FullName.Contains($"{filter.FirstName} {filter.LastName}")).AsQueryable();
@@ -108,10 +108,10 @@ namespace DDDNetCore.Infrastructure.StaffProfiles
         public async Task<Staff> GetStaffWithEmail(string email)
         {
             return await _context.StaffProfiles
-                .Where(staff => 
-                    staff.Email != null && 
+                .Where(staff =>
+                    staff.Email != null &&
                     staff.Email.EmailAddress == email)
-                    .FirstOrDefaultAsync();
+                    .FirstOrDefaultAsync() ?? throw new NullReferenceException("Couldn't find the staff with the specified email.");
         }
     }
 }

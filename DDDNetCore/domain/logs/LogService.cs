@@ -1,10 +1,6 @@
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using DDDNetCore.Domain.Shared;
-using DDDNetCore.Domain.Specializations;
-using DDDNetCore.Domain.Users;
-using Microsoft.OpenApi.Extensions;
 
 namespace DDDNetCore.Domain.Logs
 {

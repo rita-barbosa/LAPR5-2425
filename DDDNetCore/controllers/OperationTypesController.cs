@@ -7,6 +7,7 @@ using DDDNetCore.Domain.Shared;
 using Microsoft.AspNetCore.Authorization;
 using System.Collections.Generic;
 using Microsoft.IdentityModel.Tokens;
+using System.Security.Claims;
 
 namespace DDDNetCore.Controllers
 {
@@ -79,7 +80,11 @@ namespace DDDNetCore.Controllers
             }
             catch (BusinessRuleValidationException ex)
             {
-                return NotFound(new { ex.Message });
+                return BadRequest(new { ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { V = $"An unexpected error occurred: {ex.Message}" });
             }
         }
     }

@@ -83,6 +83,11 @@ namespace DDDNetCore.Domain.Patients
             this.UserReference = user.Id;
         }
 
+        public void RemoveUser()
+        {
+            UserReference = null;
+        }
+
         public bool Anonymize()
         {
             try

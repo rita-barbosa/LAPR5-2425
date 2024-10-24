@@ -4,6 +4,9 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using DDDNetCore.Domain.OperationRequest;
 using DDDNetCore.Domain.Shared;
+using Microsoft.AspNetCore.Authorization.Policy;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace DDDNetCore.Controllers
 {
@@ -45,9 +48,9 @@ namespace DDDNetCore.Controllers
         {
             try
             {
-            var opReq = await _service.AddAsync(dto);
+                var opReq = await _service.AddAsync(dto);
 
-            return CreatedAtAction(nameof(GetGetById), new {id = opReq.Id}, opReq);
+                return CreatedAtAction(nameof(GetGetById), new { id = opReq.Id }, opReq);
             }
             catch (BusinessRuleValidationException ex)
             {
@@ -72,16 +75,52 @@ namespace DDDNetCore.Controllers
             try
             {
                 var opr = await _service.UpdateAsync(dto);
-                
+
                 if (opr == null)
                 {
                     return NotFound();
                 }
                 return Ok(opr);
             }
-            catch(BusinessRuleValidationException ex)
+            catch (BusinessRuleValidationException ex)
             {
-                return BadRequest(new {Message = ex.Message});
+                return BadRequest(new { Message = ex.Message });
+            }
+        }
+
+        [HttpGet("filtered")]
+        [Authorize(Policy = "Doctor")]
+        public async Task<ActionResult<IEnumerable<OperationRequestDto>>> GetOperationRequestByFilters(
+                                                                                [FromQuery] string? name = null,
+                                                                                [FromQuery] string? priority = null,
+                                                                                [FromQuery] string? operationType = null,
+                                                                                [FromQuery] string? status = null,
+                                                                                [FromQuery] string? dateofrequest = null,
+                                                                                [FromQuery] string? deadlinedate = null)
+        {
+            try
+            {
+                var email = User.FindFirstValue(ClaimTypes.Email);
+                if (email == null)
+                {
+                    return NotFound("Couldn't obtain the logged in user's email");
+                }
+                var operationRequests = await _service.GetOperationRequestByFiltersAsync(email, name, priority, operationType, status, dateofrequest, deadlinedate);
+
+                if (operationRequests == null)
+                {
+                    return NotFound("No matching operation requests found.");
+                }
+
+                return Ok(operationRequests);
+            }
+            catch (BusinessRuleValidationException ex)
+            {
+                return BadRequest(new { ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { V = $"An unexpected error occurred: {ex.Message}" });
             }
         }
 

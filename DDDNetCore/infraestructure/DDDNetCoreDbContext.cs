@@ -14,7 +14,6 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using DDDNetCore.Infrastructure.OperationTypes;
 using DDDNetCore.Infrastructure.OperationRequests;
 using DDDNetCore.Domain.OperationTypes.ValueObjects.RequiredStaff;
-using Microsoft.EntityFrameworkCore.Internal;
 using DDDNetCore.Domain.Logs;
 using DDDNetCore.Infrastructure.EntityConfigurations;
 

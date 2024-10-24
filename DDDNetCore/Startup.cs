@@ -27,7 +27,6 @@ using DDDNetCore.Domain.OperationRequest;
 using DDDNetCore.Infrastructure.OperationRequests;
 using DDDNetCore.Infrastructure.Patients;
 using DDDNetCore.Infrastructure.Emails;
-using Microsoft.AspNetCore.Identity.UI.Services;
 using DDDNetCore.Domain.Logs;
 using DDDNetCore.Infrastructure.Logs;
 
