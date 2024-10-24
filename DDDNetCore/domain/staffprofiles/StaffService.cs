@@ -167,7 +167,7 @@ namespace DDDNetCore.Domain.StaffProfiles
 
             staff.DeactivateProfile();
 
-            await _logService.CreateEditLog(id, staff.GetType(), "Deactivation of staff's profile.");
+            await _logService.CreateEditLog(id, staff.GetType().ToString(), "Deactivation of staff's profile.");
 
             await this._unitOfWork.CommitAsync();
 
