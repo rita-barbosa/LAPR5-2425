@@ -11,7 +11,7 @@ namespace DDDNetCore.Domain.OperationRequest
         [NotMapped]
         public static OperationRequestStatus Planned { get; } = new OperationRequestStatus("Planned");
         [NotMapped]
-        public static OperationRequestStatus Requested { get; } = new OperationRequestStatus("Planned");
+        public static OperationRequestStatus Requested { get; } = new OperationRequestStatus("Requested");
 
         private OperationRequestStatus()
         {
