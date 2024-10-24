@@ -1,6 +1,8 @@
 namespace DDDNetCore.Domain.Tokens{
     public class TokenDto{
 
+            public string TokenId {get; set;}
+
             public string UserId { get; set; }
 
             public string ExpirationTime { get; set; }

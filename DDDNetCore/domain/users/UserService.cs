@@ -2,12 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
-using System.Net.Mail;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using DDDNetCore.Domain.Emails;
-using DDDNetCore.Domain.Patients;
+using DDDNetCore.Domain.Logs;
 using DDDNetCore.Domain.Shared;
 using DDDNetCore.Domain.StaffProfiles;
 using DDDNetCore.Domain.Tokens;
@@ -23,10 +22,11 @@ namespace DDDNetCore.Domain.Users
         private readonly RoleManager<Role> _roleManager;
         private readonly StaffService _staffService;
         private readonly EmailService _emailService;
+        private readonly LogService _logService;
         private readonly TokenService _tokenService;
         private readonly IConfiguration _configuration;
         public UserService(UserManager<User> userManager, RoleManager<Role> roleManager,
-                                 StaffService staffService,
+                                 StaffService staffService, LogService logService,
                                 EmailService emailService, IConfiguration configuration,
                                 TokenService tokenService)
         {
@@ -34,6 +34,7 @@ namespace DDDNetCore.Domain.Users
             _roleManager = roleManager;
             _staffService = staffService;
             _emailService = emailService;
+            _logService = logService;
             _tokenService = tokenService;
             _configuration = configuration;
         }
@@ -218,5 +219,28 @@ namespace DDDNetCore.Domain.Users
                        );
             await _emailService.SendConfirmationEmail(emailDto);
         }
+
+        public async Task<string> DeleteAsync(string userId)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+
+            if (user == null)
+                return null;
+            
+            await _userManager.DeleteAsync(user);
+            await _logService.CreateDeletionLog(user.Id.ToString(), user.GetType().Name, "Deletion of user account.");
+
+            return user.Email;
+        }
+
+        public async Task<string> DeletePatientAccount(string userId, string token)
+        {
+            //token was used so make it inactive
+            await _tokenService.InactivateAsync(new TokenId(token));
+            //delete account
+            return await DeleteAsync(userId);
+        }
+
+
     }
 }

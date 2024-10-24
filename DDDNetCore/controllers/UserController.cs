@@ -1,8 +1,4 @@
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using System.Text;
 using DDDNetCore.Domain.Users;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -10,12 +6,9 @@ using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using System;
-using System.Collections.Generic;
 using DDDNetCore.Domain.Patients;
 using DDDNetCore.Domain.StaffProfiles;
 using DDDNetCore.Domain.Emails;
-using Microsoft.AspNetCore.Identity.Data;
-using System.ComponentModel;
 using DDDNetCore.Domain.Tokens;
 using DDDNetCore.Domain.Shared;
 
@@ -32,10 +25,11 @@ namespace DDDNetCore.Controllers
         private readonly PatientService _patientService;
         private readonly StaffService _staffService;
         private readonly EmailService _emailService;
+        private readonly TokenService _tokenService;
         private readonly IConfiguration _configuration;
 
         private readonly UserService _userService;
-        public UserController(UserService userService, UserManager<User> userManager, RoleManager<Role> roleManager, PatientService patientService, StaffService staffService, EmailService emailService, IConfiguration configuration)
+        public UserController(UserService userService, UserManager<User> userManager, RoleManager<Role> roleManager, PatientService patientService, StaffService staffService, EmailService emailService, TokenService tokenService, IConfiguration configuration)
         {
             _userService = userService;
             _userManager = userManager;
@@ -43,6 +37,7 @@ namespace DDDNetCore.Controllers
             _patientService = patientService;
             _staffService = staffService;
             _emailService = emailService;
+            _tokenService = tokenService;
             _configuration = configuration;
         }
 
@@ -230,9 +225,7 @@ namespace DDDNetCore.Controllers
             }
 
             return Ok(new { Message = "User registered successfully." });
-        }
-
-        
+        } 
 
         private async void SendConfirmationEmail(User user, string role)
         {
@@ -257,6 +250,75 @@ namespace DDDNetCore.Controllers
             );
             
             await _emailService.SendConfirmationEmail(emailDto);
+        }
+
+        // Delete Patient Account Request: api/Delete-PatientAccountDeletionRequest
+        [HttpDelete("Delete-PatientAccountDeletionRequest")]
+        [Authorize(Policy = "Patient")]
+        public async Task<ActionResult> DeletePatientAccountRequest()
+        {
+           IActionResult result = await GetUserInfo();
+
+            if (result is OkObjectResult okResult)
+            {
+                var userInfo = okResult.Value;
+
+                string? email = userInfo?.GetType().GetProperty("Email")?.GetValue(userInfo, null)?.ToString();
+                string? userId = userInfo?.GetType().GetProperty("Id")?.GetValue(userInfo, null)?.ToString();
+
+                Console.WriteLine("EMAIL " + email);
+                Console.WriteLine("USERID " + userId);
+
+                var token = await _tokenService.CreateAccountDeletionToken(email);
+
+                var confirmationLink = Url.Action("ConfirmPatientAccountDeletionNotProfile", "User", new { userId, token = token.TokenId }, Request.Scheme);
+
+                Console.WriteLine("CONFIRMATION LINK: " + confirmationLink);
+
+                _patientService.ConfirmPatientAccountDeletionEmail(confirmationLink, email);
+
+                return Ok("An email asking for your account's deletion confirmation was sent.");
+            }
+            else
+            {
+                return BadRequest("User info could not be retrieved.");
+            }
+        }
+
+        // Update Deletion of Patient Account Confirmation: api/Update-PatientAccountDeletionConfirmation
+        [HttpPut("Update-PatientAccountDeletionConfirmation")]
+        public async Task<ActionResult> ConfirmPatientAccountDeletionNotProfile([FromQuery] string userId, [FromQuery] string token)
+        {
+            if (string.IsNullOrEmpty(userId) || string.IsNullOrEmpty(token))
+            {
+                return BadRequest("User Email and Token are required.");
+            }
+
+            if (!await _userService.UserExistsById(userId))
+            {
+                return NotFound("User not found.");
+            }
+
+            if (_tokenService.TokenExistsById(token) == null)
+            {
+                return NotFound("Token not found.");
+            }
+
+            if (await _tokenService.IsTokenExpired(token))
+            {
+                return Unauthorized("The provided token has expired.");
+            }
+            
+            if (!await _tokenService.IsTokenActive(token))
+            {
+                return Unauthorized("The provided token was already used.");
+            }
+
+            var userEmail = await _userService.DeletePatientAccount(userId, token);
+            // anonymize the patient's profile according to GDPR policies -> readme info for now
+            _patientService.AnonymizeProfile(userEmail);
+
+            return Ok("Patient account successfully deleted!\nSome of your non-identifiable data will be retained, as per our GDPR policies.");
         }
 
     }

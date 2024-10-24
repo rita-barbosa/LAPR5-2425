@@ -1,23 +1,14 @@
 using System.Threading.Tasks;
 using MimeKit;
 using MimeKit.Text;
-using MailKit.Security;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using Newtonsoft.Json.Linq;
-using System;
-using System.Collections.Generic;
 using DDDNetCore.Domain.Tokens;
-using DDDNetCore.Domain.Users;
 using DDDNetCore.Domain.Shared;
 using DDDNetCore.Infrastructure.Emails;
-using Microsoft.AspNetCore.Identity;
 
 namespace DDDNetCore.Domain.Emails
 {
     public class EmailService
     {
-
         private readonly TokenService _service;
         private readonly IEmailAdapter _adapter;
 
@@ -58,8 +49,7 @@ namespace DDDNetCore.Domain.Emails
             email.Subject = emailDto.EmailSubject;
 
             // can be TextFormat Plain but changing it to Html allow us to better structure the email content 
-            var appendix = "\nToken: " + token.Code.ToString() + "\n";
-            email.Body = new TextPart(TextFormat.Html) { Text = emailDto.EmailBody + appendix };
+            email.Body = new TextPart(TextFormat.Html) { Text = emailDto.EmailBody};
 
             await _adapter.SendEmail(email);
         }
