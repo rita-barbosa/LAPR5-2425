@@ -181,7 +181,9 @@ namespace DDDNetCore.Controllers
                 // Associate with it's profile
                 _patientService.AddUser(user, registerPatientUserDto.Email, registerPatientUserDto.Phone);
 
-                SendConfirmationEmail(user, "Patient"); 
+                string profileEmail = await _patientService.GetProfileEmail(user.Email.ToString(), registerPatientUserDto.Phone);
+
+                SendConfirmationEmail(user, profileEmail, "Patient"); 
             }
             catch (Exception ex)
             {
@@ -217,8 +219,10 @@ namespace DDDNetCore.Controllers
                 _userService.AddToRoleAsync(user, registerUserDto.Role);
 
                 _staffService.AddUser(user, registerUserDto.Email, registerUserDto.Phone);
+
+                string profileEmail = await _staffService.GetProfileEmail(user.Email.ToString(), registerUserDto.Phone);
             
-                SendConfirmationEmail(user, registerUserDto.Role);
+                SendConfirmationEmail(user, profileEmail, registerUserDto.Role);
             }
             catch (InvalidOperationException ex1)
             {
@@ -234,7 +238,7 @@ namespace DDDNetCore.Controllers
 
         
 
-        private async void SendConfirmationEmail(User user, string role)
+        private async void SendConfirmationEmail(User user, string email, string role)
         {
             string token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
 
@@ -251,7 +255,7 @@ namespace DDDNetCore.Controllers
             
             EmailMessageDto emailDto = new EmailMessageDto(
                 hospitalEmail,
-                user.Email,
+                email,
                 "Account Activation",
                 "<p>Hello,</p><p>This email was sent to inform you that your user account in the HealthCare Clinic System has been created. </p><p><a href='" + confirmationLink + "'>Click in the link to confirm the activation of the account.</a></p><p>Thank you for choosing us,<br>HealthCare Clinic</p></body></html>"
             );
