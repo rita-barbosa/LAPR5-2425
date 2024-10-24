@@ -57,13 +57,14 @@ namespace DDDNetCore.Controllers
             }
         }
 
-    	[HttpDelete("{id}")]
+    	[HttpDelete]
+        [Route("Delete-PatientProfile")]
         [Authorize(Policy = "Admin")]
-        public async Task<IActionResult> DeletePatientProfile(string id)
+        public async Task<IActionResult> DeletePatientProfile([FromBody] IdPassDto idPassDto)
         {
             try
             {
-                await _service.DeletePatientProfile(id);
+                await _service.DeletePatientProfile(idPassDto.Id);
 
                 return Ok("Patient profile and account succefully deleted");
             }
