@@ -220,9 +220,13 @@ namespace DDDNetCore.Controllers
             
                 SendConfirmationEmail(user, registerUserDto.Role);
             }
+            catch (InvalidOperationException ex1)
+            {
+                return BadRequest(ex1.Message); 
+            }
             catch (Exception ex)
             {
-                return StatusCode(500, $"An error occurred: {ex.Message} - {ex.StackTrace}");
+                return BadRequest("An error occurred.");
             }
 
             return Ok(new { Message = "User registered successfully." });
@@ -238,11 +242,11 @@ namespace DDDNetCore.Controllers
 
             if(role.Equals("Patient"))
             {
-                confirmationLink = Url.Action("Activate-PatientAccount", "User", new { userId = user.Id, token = token }, Request.Scheme);
+                confirmationLink = Url.Action("ConfirmEmailPatient", "User", new { userId = user.Id, token = token }, Request.Scheme);
             } 
             else
             {
-                confirmationLink = Url.Action("Activate-StaffAccount", "User", new { userId = user.Id, token = token }, Request.Scheme);
+                confirmationLink = Url.Action("ConfirmEmailStaff", "User", new { userId = user.Id, token = token }, Request.Scheme);
             }
             
             EmailMessageDto emailDto = new EmailMessageDto(
