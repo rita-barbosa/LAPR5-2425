@@ -228,5 +228,12 @@ namespace DDDNetCore.Domain.Patients
 
             return new PatientDto(patient.Name.ToString(), patient.PhoneNumber.ToString(), patient.Email.ToString(), patient.Address.ToString(), patient.DateBirth.ToString("dd-MM-yyyy"), patient.Id.AsString());
         }
+
+        public async Task<string> GetProfileEmail(string email, string phone)
+        {
+            Patient patient = await _repo.FindPatientWithEmailOrPhone(email, phone.Split(' ')[0], phone.Split(' ')[1]);
+
+            return patient.Email.EmailAddress;
+        }
     }
 }
