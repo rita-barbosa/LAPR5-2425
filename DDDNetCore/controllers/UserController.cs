@@ -242,11 +242,11 @@ namespace DDDNetCore.Controllers
 
             if(role.Equals("Patient"))
             {
-                confirmationLink = Url.Action("Activate-PatientAccount", "User", new { userId = user.Id, token = token }, Request.Scheme);
+                confirmationLink = Url.Action("ConfirmEmailPatient", "User", new { userId = user.Id, token = token }, Request.Scheme);
             } 
             else
             {
-                confirmationLink = Url.Action("Activate-StaffAccount", "User", new { userId = user.Id, token = token }, Request.Scheme);
+                confirmationLink = Url.Action("ConfirmEmailStaff", "User", new { userId = user.Id, token = token }, Request.Scheme);
             }
             
             EmailMessageDto emailDto = new EmailMessageDto(
