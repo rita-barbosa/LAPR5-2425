@@ -6,7 +6,8 @@ using DDDNetCore.Domain.OperationTypes;
 
 namespace DDDNetCore.Domain.OperationRequest
 {
-    public class OperationRequest : Entity<OperationRequestId>, IAggregateRoot{
+    public class OperationRequest : Entity<OperationRequestId>, IAggregateRoot
+    {
 
         public Date DeadLineDate { get; private set; }
 
@@ -16,38 +17,39 @@ namespace DDDNetCore.Domain.OperationRequest
 
         public OperationRequestStatus Status { get; private set; }
 
-        public StaffId StaffId { get; private set; } 
+        public StaffId StaffId { get; private set; }
 
-        public OperationRequestDescription Description {get; private set;}
+        public OperationRequestDescription Description { get; private set; }
 
-        public MedicalRecordNumber PatientId { get; private set; } 
+        public MedicalRecordNumber PatientId { get; private set; }
 
-        public OperationTypeId OperationTypeId { get; private set; } 
+        public OperationTypeId OperationTypeId { get; private set; }
 
-        public OperationRequest(){
-    
+        public OperationRequest()
+        {
+
         }
 
-        public OperationRequest(string code, string deadLineDate, string priority, string dateOfRequest, string status, StaffId staffId, string description, MedicalRecordNumber patientId, OperationTypeId operationTypeId)
+        public OperationRequest(string code, string deadLineDate, string priority, string dateOfRequest, StaffId staffId, string description, MedicalRecordNumber patientId, OperationTypeId operationTypeId)
         {
             this.Id = new OperationRequestId(code);
             this.DeadLineDate = new Date(deadLineDate);
             this.Priority = Priority.GetPriorityByName(priority);
             this.DateOfRequest = new Date(dateOfRequest);
-            this.Status = new OperationRequestStatus(status);
+            this.Status = OperationRequestStatus.Requested;
             this.StaffId = staffId;
             this.Description = new OperationRequestDescription(description);
             this.PatientId = patientId;
-            this.OperationTypeId = operationTypeId;      
+            this.OperationTypeId = operationTypeId;
         }
 
-        public OperationRequest(Date deadLineDate, Priority priority, Date dateOfRequest, OperationRequestStatus status, StaffId staffId, string description, MedicalRecordNumber patientId, OperationTypeId operationTypeId)
+        public OperationRequest(Date deadLineDate, Priority priority, Date dateOfRequest, StaffId staffId, string description, MedicalRecordNumber patientId, OperationTypeId operationTypeId)
         {
             this.Id = new OperationRequestId(Guid.NewGuid());
             this.DeadLineDate = deadLineDate;
             this.Priority = priority;
             this.DateOfRequest = dateOfRequest;
-            this.Status = status;
+            this.Status = OperationRequestStatus.Requested;
             this.StaffId = staffId;
             this.Description = new OperationRequestDescription(description);
             this.PatientId = patientId;
@@ -71,14 +73,14 @@ namespace DDDNetCore.Domain.OperationRequest
 
         public void ChangeStatus(string status)
         {
-            this.Status = new OperationRequestStatus(status);
+            this.Status = OperationRequestStatus.GetStatusByDescription(status);
         }
 
         public void ChangeDescription(string text)
         {
             this.Description = new OperationRequestDescription(text);
         }
-        
+
 
     }
 }

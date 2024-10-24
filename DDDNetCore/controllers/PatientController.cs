@@ -49,9 +49,9 @@ namespace DDDNetCore.Controllers
             {
                 return BadRequest(new { ex.Message });
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return BadRequest(new { V = "An unexpected error occured." });
+                  return BadRequest(new { V = $"An unexpected error occurred: {ex.Message}" });
             }
         }
 

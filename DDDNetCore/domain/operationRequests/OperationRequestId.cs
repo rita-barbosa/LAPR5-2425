@@ -10,7 +10,7 @@ namespace DDDNetCore.Domain.OperationRequest
         public OperationRequestId(Guid value) : base(value)
         {
         }
-        public OperationRequestId(String value):base(value)
+        public OperationRequestId(string value) : base(value)
         {
             if (string.IsNullOrEmpty(value))
             {
@@ -18,17 +18,19 @@ namespace DDDNetCore.Domain.OperationRequest
             }
         }
 
-        override
-        protected Object createFromString(String text){
-            return new Guid(text);
+        protected override object createFromString(string text)
+        {
+            return text;
         }
-        override
-        public String AsString(){
-            Guid obj = (Guid) base.ObjValue;
+
+        public override string AsString()
+        {
+            Guid obj = (Guid)base.ObjValue;
             return obj.ToString();
         }
-        public Guid AsGuid(){
-            return (Guid) base.ObjValue;
+        public Guid AsGuid()
+        {
+            return (Guid)base.ObjValue;
         }
     }
 }

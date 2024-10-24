@@ -68,5 +68,14 @@ namespace DDDNetCore.Domain.Shared
         {
             return FullName;
         }
+        public bool Contains(string value)
+        {
+            if (string.IsNullOrEmpty(value))
+            {
+                throw new ArgumentException("Value cannot be null or empty.", nameof(value));
+            }
+
+            return FullName.Contains(value, StringComparison.OrdinalIgnoreCase);
+        }
     }
 }

@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel.DataAnnotations.Schema;
 using DDDNetCore.Domain.Shared;
 
 namespace DDDNetCore.Domain.OperationRequest
@@ -6,27 +7,31 @@ namespace DDDNetCore.Domain.OperationRequest
     public class OperationRequestStatus : IValueObject
     {
 
-        public OperationRequestStatusEnum Status { get; private set; }
+        public string Description { get; }
+        [NotMapped]
+        public static OperationRequestStatus Planned { get; } = new OperationRequestStatus("Planned");
+        [NotMapped]
+        public static OperationRequestStatus Requested { get; } = new OperationRequestStatus("Planned");
 
-        public OperationRequestStatus() 
+        private OperationRequestStatus()
         {
         }
 
-        public OperationRequestStatus(OperationRequestStatusEnum status)
+        private OperationRequestStatus(string status)
         {
-            this.Status = status;
+            this.Description = status;
         }
-
-        public OperationRequestStatus(string status)
+        public static OperationRequestStatus? GetStatusByDescription(string description)
         {
-            if (Enum.TryParse<OperationRequestStatusEnum>(status, true, out var result))
+            if (Planned.Description.Equals(description))
             {
-                this.Status = result;
+                return new OperationRequestStatus(Planned.Description);
             }
-            else
+            else if (Requested.Description.Equals(description))
             {
-                throw new BusinessRuleValidationException($"Invalid status: {status}");
+                return new OperationRequestStatus(Requested.Description);
             }
+            return null;
         }
 
         public override bool Equals(object obj)
@@ -37,17 +42,17 @@ namespace DDDNetCore.Domain.OperationRequest
             }
 
             var other = (OperationRequestStatus)obj;
-            return Status == other.Status;
+            return Description == other.Description;
         }
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(Status);
+            return HashCode.Combine(Description);
         }
 
         public override string ToString()
         {
-            return Status.ToString();
+            return Description;
         }
 
     }

@@ -16,7 +16,7 @@ namespace DDDNetCore.Infrastructure.OperationRequests
             builder.HasKey(b => b.Id);
 
             // DeadLineDate as value object
-            builder.OwnsOne(b => b.DeadLineDate, dld => 
+            builder.OwnsOne(b => b.DeadLineDate, dld =>
             {
                 dld.Property(deadLineDate => deadLineDate.Start)
                 .IsRequired()
@@ -24,7 +24,7 @@ namespace DDDNetCore.Infrastructure.OperationRequests
             });
 
             // Priority as value object
-            builder.OwnsOne(b => b.Priority, p => 
+            builder.OwnsOne(b => b.Priority, p =>
             {
                 p.Property(priority => priority.Name)
                 .IsRequired()
@@ -32,7 +32,7 @@ namespace DDDNetCore.Infrastructure.OperationRequests
             });
 
             // DateOfRequest as value object
-            builder.OwnsOne(b => b.DateOfRequest, dr => 
+            builder.OwnsOne(b => b.DateOfRequest, dr =>
             {
                 dr.Property(dateOfRequest => dateOfRequest.Start)
                 .IsRequired()
@@ -41,25 +41,21 @@ namespace DDDNetCore.Infrastructure.OperationRequests
 
 
             // Status as value object
-            builder.OwnsOne(b => b.Status, s => 
+            builder.OwnsOne(b => b.Status, s =>
             {
-                s.Property(status => status.Status)
-                .HasConversion(
-                    v => v.ToString(),
-                    v => (OperationRequestStatusEnum)Enum.Parse(typeof(OperationRequestStatusEnum), v) // Converte a string de volta para enum ao ler
-                )
+                s.Property(status => status.Description)
                 .IsRequired()
                 .HasColumnName("Status");
             });
 
             // StaffId as value object
             builder.HasOne<Patient>()
-               .WithMany() 
-               .HasForeignKey(b => b.PatientId) 
+               .WithMany()
+               .HasForeignKey(b => b.PatientId)
                .IsRequired();
 
             // Description as a value object
-            builder.OwnsOne(b => b.Description, d => 
+            builder.OwnsOne(b => b.Description, d =>
             {
                 d.Property(description => description.DescriptionText)
                 .IsRequired()
