@@ -2,9 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Xml;
+using DDDNetCore.Domain.Patients;
 using DDDNetCore.Domain.Emails;
 using DDDNetCore.Domain.Shared;
 using DDDNetCore.Domain.Users;
+using Microsoft.AspNetCore.Mvc;
+using DDDNetCore.Domain.Logs;
 using Microsoft.Extensions.Configuration;
 
 namespace DDDNetCore.Domain.Patients
@@ -13,19 +16,22 @@ namespace DDDNetCore.Domain.Patients
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IPatientRepository _repo;
+        private readonly UserService _userService;
         private readonly EmailService _emailService;
+        private readonly LogService _logService;
         private readonly IConfiguration _configuration;
         private readonly UserService _usrSvc;
-        public PatientService(IUnitOfWork unitOfWork, IConfiguration configuration, IPatientRepository repo, UserService userService, EmailService emailService)
+        public PatientService(IUnitOfWork unitOfWork, LogService logService, IConfiguration configuration, IPatientRepository repo, UserService userService, EmailService emailService)
         {
-            _unitOfWork = unitOfWork;
-            _repo = repo;
-            _configuration = configuration;
-            _usrSvc = userService;
-            _emailService = emailService;
+            this._unitOfWork = unitOfWork;
+            this._repo = repo;
+            this._userService = userService;
+            this._configuration = configuration;
+            this._emailService = emailService;
+            this._logService = logService;
         }
 
-        public async Task<PatientDto> GetByIdAsync(MedicalRecordNumber id)
+        public async Task<PatientDto> GetByIdAsync( MedicalRecordNumber id)
         {
             var patient = await _repo.GetByIdAsync(id);
 
@@ -34,7 +40,7 @@ namespace DDDNetCore.Domain.Patients
 
             return new PatientDto(patient.Name.ToString(), patient.PhoneNumber.ToString(), patient.Email.ToString(), patient.Id.AsString());
         }
-        public async Task<PatientDto> CreatePatientProfile(CreatingPatientDto dto)
+        public async Task<PatientDto> CreatePatientProfile([FromBody] CreatingPatientDto dto)
         {
             if (await _repo.ExistsPatientWithEmailOrPhone(dto.Email, dto.Phone.Split(' ')[0], dto.Phone.Split(' ')[1]))
             {
@@ -84,6 +90,30 @@ namespace DDDNetCore.Domain.Patients
                 return "000001";
             }
         }
+
+        public async Task DeletePatientProfile(string id)
+        {
+            if (!await _repo.ExistsPatientWithId(id))
+            {
+                throw new BusinessRuleValidationException("There is no patient profile with the given Id.");
+            }
+
+            Patient patient = await _repo.GetByIdAsync(new MedicalRecordNumber(id));
+            string userRef = patient.UserReference;
+
+            if (patient.Anonymize())
+            {
+                var result = await _userService.DeleteByIdAsync(patient.UserReference);
+                if (result.Succeeded)
+                {
+                    await _logService.CreateDeletionLog(patient.Id.Value, "Patient", "Anonymization of patient's profile.");
+                    await _logService.CreateDeletionLog(userRef, "User", "Deletion of patient's account.");
+                    await this._unitOfWork.CommitAsync();
+                }
+            }
+            
+        }
+    
 
         public async Task<List<PatientDto>> FilterPatientProfiles(PatientQueryParametersDto dto)
         {
