@@ -28,6 +28,8 @@ using DDDNetCore.Infrastructure.OperationRequests;
 using DDDNetCore.Infrastructure.Patients;
 using DDDNetCore.Infrastructure.Emails;
 using Microsoft.AspNetCore.Identity.UI.Services;
+using DDDNetCore.Domain.Logs;
+using DDDNetCore.Infrastructure.Logs;
 
 namespace DDDNetCore
 {
@@ -159,7 +161,11 @@ namespace DDDNetCore
 
             services.AddTransient<IOperationRequestRepository, OperationRequestRepository>();
             services.AddTransient<OperationRequestService>();
+            
             services.AddTransient<UserService>();
+
+            services.AddTransient<ILogRepository, LogRepository>();
+            services.AddTransient<LogService>();
         }
 
 
