@@ -24,6 +24,7 @@ namespace DDDNetCore.Controllers
         }
 
         [HttpGet("{id}")]
+        [Route("Get-PatientWithId")]
         [Authorize(Policy = "Admin")]
         public async Task<ActionResult<PatientDto>> GetPatientById(MedicalRecordNumber id)
         {
@@ -34,8 +35,9 @@ namespace DDDNetCore.Controllers
             }
             return Ok(staff);
         }
-        // POST: api/Patient
+    
         [HttpPost]
+        [Route("Create-PatientProfile")]
         [Authorize(Policy = "Admin")]
         public async Task<ActionResult<PatientDto>> CreatePatientProfile(CreatingPatientDto dto)
         {
@@ -54,6 +56,27 @@ namespace DDDNetCore.Controllers
                 return BadRequest(new { V = "An unexpected error occured." });
             }
         }
+
+    	[HttpDelete("{id}")]
+        [Authorize(Policy = "Admin")]
+        public async Task<IActionResult> DeletePatientProfile(string id)
+        {
+            try
+            {
+                await _service.DeletePatientProfile(id);
+
+                return Ok("Patient profile and account succefully deleted");
+            }
+            catch (BusinessRuleValidationException ex)
+            {
+                return BadRequest(new { ex.Message });
+            }
+            catch (Exception ex1)
+            {
+                return BadRequest(new { V = ex1.Message });
+            }
+        }
+    
 
         [HttpPut]
         [Authorize(Policy = "Patient")]
