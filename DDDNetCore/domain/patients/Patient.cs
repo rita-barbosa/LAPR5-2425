@@ -1,4 +1,5 @@
 using System;
+using System.Net.Sockets;
 using DDDNetCore.Domain.Shared;
 using DDDNetCore.Domain.Users;
 
@@ -16,6 +17,7 @@ namespace DDDNetCore.Domain.Patients
         public MedicalCondition? MedicalCondition { get; private set; }
         public DateTime DateBirth { get; private set; }
         public string? UserReference { get; set; }
+        public bool Status { get; set; }
 
         private Patient() { }
         public Patient(string firstName, string lastName, string fullName, string address, Gender gender,
@@ -34,9 +36,10 @@ namespace DDDNetCore.Domain.Patients
             Email = new Email(email);
             if (!DateTime.TryParse(dateBirth, out DateTime dateOfBirth) || dateOfBirth > DateTime.Now)
             {
-                throw new BusinessRuleValidationException("The Date of Birth is either in an incorrect format or cannot be in the future. Please provide a valid past date.");
+                throw new BusinessRuleValidationException("The Date of Birth is either in an incorrect format or cannot be in the future. Please provide a valid past date." + dateBirth.ToString());
             }
             DateBirth = dateOfBirth;
+            Status = true;
             Gender = gender;
         }
 
@@ -54,11 +57,14 @@ namespace DDDNetCore.Domain.Patients
             PhoneNumber = new Phone(phoneNumber);
             EmergencyContact = new Phone(emergencyContact);
             Email = new Email(email);
-            if (!DateTime.TryParse(dateBirth, out DateTime dateOfBirth) || dateOfBirth > DateTime.Now)
+            string[] formats = { "dd/MM/yyyy" }; // Add any other formats you expect
+            if (!DateTime.TryParseExact(dateBirth, formats, null, System.Globalization.DateTimeStyles.None, out DateTime dateOfBirth) || dateOfBirth > DateTime.Now)
             {
                 throw new BusinessRuleValidationException("The Date of Birth is either in an incorrect format or cannot be in the future. Please provide a valid past date.");
             }
+
             DateBirth = dateOfBirth;
+            Status = true;
             Gender = gender;
         }
 
@@ -75,6 +81,24 @@ namespace DDDNetCore.Domain.Patients
             }
 
             this.UserReference = user.Id;
+        }
+
+        public bool Anonymize()
+        {
+            try
+            {
+                this.Name = new Name("[REDACTED]", "[REDACTED]");
+                this.Address = new ResidentialAddress("[REDACTED]","[REDACTED]","[REDACTED]");
+                this.Email = new Email("[REDACTED]");
+                this.PhoneNumber = new Phone("[REDACTED]","[REDACTED]");
+                this.EmergencyContact = new Phone("[REDACTED]","[REDACTED]");
+                this.Status = false;
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
         }
 
         public void ChangeDateBirth(string dateBirth){
