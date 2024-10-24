@@ -1,4 +1,6 @@
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -27,6 +29,17 @@ namespace DDDNetCore.Infrastructure.Patients
                      patient.PhoneNumber.CountryCode == countryCode &&
                      patient.PhoneNumber.PhoneNumber == phone));
         }
+
+        public async Task<bool> ExistsPatientWithId(string MRN)
+        {
+            List<Patient> reqPatients = _context.Patients
+                .Where(s=> s.Id.Equals(new MedicalRecordNumber(MRN))).ToList();
+
+            if(!reqPatients.IsNullOrEmpty()) return true;
+            return false;
+        }
+
+
 
         public async Task<List<Patient>> FilterPatientProfiles(PatientQueryParametersDto dto)
         {
@@ -124,5 +137,7 @@ namespace DDDNetCore.Infrastructure.Patients
                     patient.Email.EmailAddress == email)
                     .FirstOrDefaultAsync();
         }
+
+        
     }
 }
