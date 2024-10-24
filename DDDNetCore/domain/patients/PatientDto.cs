@@ -7,7 +7,7 @@ namespace DDDNetCore.Domain.Patients
         public string Name { get; set; }
         public string Phone { get; set; }
         public string Email { get; set; }
-        public string Address { get; set; }
+        public string? Address { get; set; }
         public string PatientId { get; set; }
 
         public PatientDto(string name, string phone, string email, string address, string patientId)
@@ -26,7 +26,6 @@ namespace DDDNetCore.Domain.Patients
             Phone = phone;
             Email = email;
             PatientId = patientId;
-            
         }
     }
 }

@@ -18,21 +18,14 @@ namespace DDDNetCore.Domain.Users
     public class UserService
     {
         private readonly UserManager<User> _userManager;
-        private readonly RoleManager<Role> _roleManager;
-        private readonly PatientService _patientService;
-        private readonly StaffService _staffService;
-        private readonly EmailService _emailService;
+         private readonly EmailService _emailService;
         private readonly TokenService _tokenService;
         private readonly IConfiguration _configuration;
-        public UserService(UserManager<User> userManager, RoleManager<Role> roleManager,
-                                PatientService patientService, StaffService staffService,
+        public UserService(UserManager<User> userManager, 
                                 EmailService emailService, IConfiguration configuration,
                                 TokenService tokenService)
         {
             _userManager = userManager;
-            _roleManager = roleManager;
-            _patientService = patientService;
-            _staffService = staffService;
             _emailService = emailService;
             _tokenService = tokenService;
             _configuration = configuration;
@@ -40,7 +33,8 @@ namespace DDDNetCore.Domain.Users
 
         public async Task<bool> ConfirmEmailPatient(string userId, string token)
         {
-            var result = await ConfirmEmailToken(userId, token);
+            var decodedToken = Uri.UnescapeDataString(token);
+            var result = await ConfirmEmailToken(userId, decodedToken);
             if (result)
             {
                 User user = await FindByIdAsync(userId);
@@ -144,7 +138,7 @@ namespace DDDNetCore.Domain.Users
 
         private async Task<IdentityResult> ResetPasswordAsync(User user, string resetToken, string newPassword)
         {
-           return await _userManager.ResetPasswordAsync(user, resetToken, newPassword);
+            return await _userManager.ResetPasswordAsync(user, resetToken, newPassword);
         }
 
         internal async void AddToRoleAsync(User user, string role)
@@ -155,6 +149,44 @@ namespace DDDNetCore.Domain.Users
         internal async Task<IdentityResult> CreateAsync(User user, string password)
         {
             return await _userManager.CreateAsync(user, password);
+        }
+        public async void EditUserProfile(string email)
+        {
+            User user = await FindByEmailAsync(email);
+
+            string token = await _userManager.GenerateChangeEmailTokenAsync(user, email);
+            var result = await _userManager.ChangeEmailAsync(user, email, token);
+
+            if (!result.Succeeded)
+            {
+                throw new ArgumentException("Unable to update the user's email.");
+            }
+
+            user.Status = false;
+            await UpdateAsync(user);
+
+            SendConfirmationEmail(user, "Patient", await _userManager.GenerateEmailConfirmationTokenAsync(user));
+        }
+
+
+        public async void SendConfirmationEmail(User user, string role, string token)
+        {
+
+            var encodedToken = Uri.EscapeDataString(token);
+
+            var baseUrl = _configuration["App:BaseUrl"];
+            var confirmationLink = role.Equals("Patient")
+            ? $"{baseUrl}/Activate-PatientAccount?userId={user.Id}&token={encodedToken}"
+            : $"{baseUrl}/Activate-StaffAccount?userId={user.Id}&token={encodedToken}";
+
+            EmailMessageDto emailDto = new EmailMessageDto(
+                _configuration["App:Email"] ?? throw new NullReferenceException("Hospital email not configured."),
+                user.Email ?? throw new NullReferenceException("Couldn't get user email."),
+                "Account Activation",
+                "<p>Hello,</p><p>This email was sent to inform you that your user account in the HealthCare Clinic System has been created. </p><p><a href='" + confirmationLink + "'>Click in the link to confirm the activation of the account.</a></p><p>Thank you for choosing us,<br>HealthCare Clinic</p></body></html>"
+            );
+
+            await _emailService.SendConfirmationEmail(emailDto);
         }
     }
 }

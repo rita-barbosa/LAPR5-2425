@@ -5,27 +5,29 @@ using System.Xml;
 using DDDNetCore.Domain.Emails;
 using DDDNetCore.Domain.Shared;
 using DDDNetCore.Domain.Users;
+using Microsoft.Extensions.Configuration;
 
 namespace DDDNetCore.Domain.Patients
 {
     public class PatientService
     {
-        private static string hospitalEmail = "noreply.healthcare.dg38@gmail.com";
-
         private readonly IUnitOfWork _unitOfWork;
         private readonly IPatientRepository _repo;
         private readonly EmailService _emailService;
-
-        public PatientService(IUnitOfWork unitOfWork, IPatientRepository repo, EmailService emailService)
+        private readonly IConfiguration _configuration;
+        private readonly UserService _usrSvc;
+        public PatientService(IUnitOfWork unitOfWork, IConfiguration configuration, IPatientRepository repo, UserService userService, EmailService emailService)
         {
-            this._unitOfWork = unitOfWork;
-            this._repo = repo;
-            this._emailService = emailService;
+            _unitOfWork = unitOfWork;
+            _repo = repo;
+            _configuration = configuration;
+            _usrSvc = userService;
+            _emailService = emailService;
         }
 
         public async Task<PatientDto> GetByIdAsync(MedicalRecordNumber id)
         {
-            var patient = await this._repo.GetByIdAsync(id);
+            var patient = await _repo.GetByIdAsync(id);
 
             if (patient == null)
                 return null;
@@ -45,9 +47,9 @@ namespace DDDNetCore.Domain.Patients
 
             var patient = new Patient(dto.FirstName, dto.LastName, dto.Address, gender, dto.Phone, dto.EmergencyContact, dto.Email, dto.DateBirth, seqNumber);
 
-            await this._repo.AddAsync(patient);
+            await _repo.AddAsync(patient);
 
-            await this._unitOfWork.CommitAsync();
+            await _unitOfWork.CommitAsync();
 
             return new PatientDto(patient.Name.ToString(), patient.PhoneNumber.ToString(), patient.Email.ToString(), patient.Address.ToString(), patient.Id.AsString());
         }
@@ -88,7 +90,8 @@ namespace DDDNetCore.Domain.Patients
             List<Patient> filteredPatients = await _repo.FilterPatientProfiles(dto);
             List<PatientDto> patientDtoListFiltered = [];
 
-            foreach (Patient patient in filteredPatients){
+            foreach (Patient patient in filteredPatients)
+            {
                 patientDtoListFiltered.Add(new PatientDto(patient.Name.ToString(), patient.PhoneNumber.ToString(), patient.Email.ToString(), patient.Id.AsString()));
             }
 
@@ -97,7 +100,7 @@ namespace DDDNetCore.Domain.Patients
 
         public async Task<List<PatientDto>> GetAllAsysnc()
         {
-            var list = await this._repo.GetAllAsync();
+            var list = await _repo.GetAllAsync();
 
             List<PatientDto> listDto = list.ConvertAll<PatientDto>(patient => new PatientDto(patient.Name.ToString(),
                 patient.PhoneNumber.ToString(), patient.Email.ToString(), patient.Id.AsString()));
@@ -105,72 +108,97 @@ namespace DDDNetCore.Domain.Patients
             return listDto;
         }
 
-        public async Task<PatientDto> UpdateAsync (EditPatientDto dto)
+        public async Task<PatientDto> UpdateAsync(EditPatientDto dto)
         {
-            var patient = await this._repo.GetByIdAsync(new MedicalRecordNumber(dto.PatientId));
+            var patient = await _repo.GetByIdAsync(new MedicalRecordNumber(dto.PatientId));
 
-            if(patient == null)
+            if (patient == null)
                 return null;
 
             bool phoneChange = false, emailChange = false, adressChange = false;
             string oldEmail = null;
 
-            if(dto.Phone != null){
+            if (dto.Phone != null)
+            {
                 patient.ChangePhone(dto.Phone);
                 phoneChange = true;
             }
 
-            if(dto.Email != null){
+            if (dto.Email != null)
+            {
                 oldEmail = patient.Email.ToString();
                 patient.ChangeEmail(dto.Email);
                 emailChange = true;
             }
 
-            if(dto.Address != null){
+            if (dto.Address != null)
+            {
                 patient.ChangeAddress(dto.Address);
                 adressChange = true;
             }
 
-            if(dto.Name != null)
+            if (dto.Name != null)
                 patient.ChangeName(dto.Name);
 
             await this._unitOfWork.CommitAsync();
-            
-            VerificationsToSendEmail(phoneChange, emailChange, adressChange, oldEmail, patient); 
 
-            return new PatientDto(patient.Name.ToString(), patient.PhoneNumber.ToString(), 
+            VerificationsToSendEmail(phoneChange, emailChange, adressChange, false, oldEmail, patient);
+
+            return new PatientDto(patient.Name.ToString(), patient.PhoneNumber.ToString(),
                 patient.Email.ToString(), patient.Address.ToString(), patient.Id.AsString());
 
         }
 
-        private async void VerificationsToSendEmail(bool phoneChange, bool emailChange, bool adressChange, string oldEmail, Patient patient)
+        private async void VerificationsToSendEmail(bool phoneChange, bool emailChange, bool adressChange, bool emContactChange, string oldEmail, Patient patient)
         {
-            if(phoneChange || emailChange || adressChange)
+            if (phoneChange || emailChange || adressChange)
             {
                 string changedInformation = "<p>The new information is the following:</p><ul>";
 
-                if(phoneChange)
+                if (phoneChange)
                     changedInformation += "<li>Phone Number: " + patient.PhoneNumber.ToString() + "</li>";
 
-                if(emailChange)
+                if (emailChange)
                     changedInformation += "<li>Email: " + patient.Email.ToString() + "</li>";
 
-                if(adressChange)
+                if (adressChange)
                     changedInformation += "<li>Address: " + patient.Address.ToString() + "</li>";
 
                 changedInformation += "</ul>";
 
-                EmailMessageDto emailDto = new EmailMessageDto(
-                    hospitalEmail,
+                EmailMessageDto emailDto = new(
+                    _configuration["App:Email"] ?? throw new NullReferenceException("The hospital email is not configured."),
                     oldEmail,
                     "Contact Information Edition",
-                    "<p>Hello,</p><p>This email was sent to inform you that your contact information in your patient profile in the HealthCare Clinic System has been changed.</p>" + 
-                    changedInformation + 
+                    "<p>Hello,</p><p>This email was sent to inform you that your contact information in your patient profile in the HealthCare Clinic System has been changed.</p>" +
+                    changedInformation +
                     "<p>Thank you for choosing us,<br>HealthCare Clinic</p></body></html>"
                 );
 
                 await _emailService.SendProfileEditEmail(emailDto);
             }
+        }
+
+        public async Task<PatientDto> EditProfile(string email, EditPatientProfileDto dto)
+        {
+            var patient = await _repo.FindPatientWithUserEmail(email);
+
+            if (dto.Phone != null) patient.ChangePhone(dto.Phone);
+
+            if (dto.Address != null) patient.ChangeAddress(dto.Address);
+            if (dto.Name != null) patient.ChangeName(dto.Name);
+            if (dto.EmergencyContact != null) patient.ChangeEmergencyContact(dto.EmergencyContact);
+            if (dto.Email != null)
+            {
+                var oldEmail = patient.Email.ToString();
+                patient.ChangeEmail(dto.Email);
+                _usrSvc.EditUserProfile(oldEmail);
+            }
+
+
+            await _unitOfWork.CommitAsync();
+
+            return new PatientDto(patient.Name.ToString(), patient.PhoneNumber.ToString(), patient.Email.ToString(), patient.Id.AsString());
         }
     }
 }

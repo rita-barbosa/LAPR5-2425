@@ -102,11 +102,25 @@ namespace DDDNetCore.Infrastructure.Patients
             return lastPatient.Id;
         }
 
+        public async Task<Patient> FindPatientWithUserEmail(string email)
+        {
+            return await _context.Patients
+                .Join(
+                    _context.Users,
+                    patient => patient.UserReference,
+                    user => user.Id,
+                    (patient, user) => new { patient, user }
+                )
+                .Where(joinResult => joinResult.user.Email == email)
+                .Select(joinResult => joinResult.patient)
+                .FirstOrDefaultAsync() ?? throw new NullReferenceException();
+        }
+
         public async Task<Patient> GetPatientWithEmail(string email)
         {
             return await _context.Patients
-                .Where(patient => 
-                    patient.Email != null && 
+                .Where(patient =>
+                    patient.Email != null &&
                     patient.Email.EmailAddress == email)
                     .FirstOrDefaultAsync();
         }

@@ -77,7 +77,7 @@ It's important to highlight that patients cannot update every aspect of their pr
 - Name
 - Emergency Contact
 
-A confirmation email must be sent to ensure the changes are legitimate.
+A confirmation email must be sent to ensure changes to sensitive data, such as email, are legitimate.
 
 Lastly, all the made changes must be be logged for traceability.
 

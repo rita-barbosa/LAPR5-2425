@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using DDDNetCore.Domain.Patients;
 using DDDNetCore.Domain.Shared;
 using DDDNetCore.Domain.StaffProfiles;
+using DDDNetCore.Domain.Users;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
@@ -53,6 +55,32 @@ namespace DDDNetCore.Controllers
             }
         }
 
+        [HttpPut]
+        [Authorize(Policy = "Patient")]
+        public async Task<ActionResult<PatientDto>> EditPatientProfile(EditPatientProfileDto dto)
+        {
+            try
+            {
+                var email = User.FindFirstValue(ClaimTypes.Email);
+                if (email == null)
+                {
+                    return BadRequest(new { Message = "Email claim not found." });
+                }
+
+                var patient = await _service.EditProfile(email, dto);
+
+                return Accepted(patient);
+            }
+            catch (BusinessRuleValidationException ex)
+            {
+                return BadRequest(new { ex.Message });
+            }
+            catch (Exception)
+            {
+                return BadRequest(new { V = "An unexpected error occured." });
+            }
+        }
+
 
         //GET: api/Patient
         [HttpGet]
@@ -79,30 +107,30 @@ namespace DDDNetCore.Controllers
                 if (patient == null)
                 {
                     return NotFound();
-                }                
+                }
 
                 return Ok(patient);
             }
-            catch(BusinessRuleValidationException ex)
+            catch (BusinessRuleValidationException ex)
             {
-                return BadRequest(new {Message = ex.Message});
+                return BadRequest(new { Message = ex.Message });
             }
         }
 
-            // GET: api/Patients/Filtered-List
-            [HttpPost("Filtered-List")]
-            [Authorize(Policy = "Admin")]
-            public async Task<ActionResult<List<PatientDto>>> GetFilteredPatientProfiles(PatientQueryParametersDto dto)
+        // GET: api/Patients/Filtered-List
+        [HttpPost("Filtered-List")]
+        [Authorize(Policy = "Admin")]
+        public async Task<ActionResult<List<PatientDto>>> GetFilteredPatientProfiles(PatientQueryParametersDto dto)
+        {
+            var patients = await _service.FilterPatientProfiles(dto);
+
+            if (patients.IsNullOrEmpty())
             {
-                 var patients = await _service.FilterPatientProfiles(dto);
-
-                if (patients.IsNullOrEmpty())
-                {
-                    return NotFound(new { Message = "No patients matching the filtering criteria." });
-                }
-
-                 return Ok(patients);
+                return NotFound(new { Message = "No patients matching the filtering criteria." });
             }
+
+            return Ok(patients);
+        }
     }
 
 }

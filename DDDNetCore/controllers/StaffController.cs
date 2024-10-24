@@ -22,7 +22,6 @@ namespace DDDNetCore.Controllers
         }
 
         [HttpGet("{id}")]
-        [Authorize(Policy = "Admin")]
         public async Task<ActionResult<StaffDto>> GetStaffById(StaffId id)
         {
             var staff = await _service.GetByIdAsync(id);
@@ -42,7 +41,7 @@ namespace DDDNetCore.Controllers
             {
                 var staff = await _service.CreateStaffProfile(dto);
 
-                return CreatedAtAction(nameof(GetStaffById), new { id = staff.Id }, staff); 
+                return Ok(staff);
             }
             catch (BusinessRuleValidationException ex)
             {
@@ -50,7 +49,7 @@ namespace DDDNetCore.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(new { ex.Message});
+                return BadRequest(new { ex.Message });
             }
         }
 
@@ -82,12 +81,12 @@ namespace DDDNetCore.Controllers
 
                 //falta a parte de mandar o mail!!!!
 
-                
+
                 return Ok(staff);
             }
-            catch(BusinessRuleValidationException ex)
+            catch (BusinessRuleValidationException ex)
             {
-                return BadRequest(new {Message = ex.Message});
+                return BadRequest(new { Message = ex.Message });
             }
 
         }

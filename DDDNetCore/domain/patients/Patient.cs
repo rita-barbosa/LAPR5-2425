@@ -78,22 +78,29 @@ namespace DDDNetCore.Domain.Patients
         }
 
 
-        public void ChangeEmail(string email){
+        public void ChangeEmail(string email)
+        {
             this.Email = new Email(email);
         }
 
-        public void ChangePhone(string phone){
+        public void ChangePhone(string phone)
+        {
             this.PhoneNumber = new Phone(phone);
         }
 
-        public void ChangeAddress(string address){
+        public void ChangeAddress(string address)
+        {
             this.Address = new ResidentialAddress(address);
         }
 
-        public void ChangeName(string name){
+        public void ChangeName(string name)
+        {
             this.Name = new Name(name);
         }
 
-
+        internal void ChangeEmergencyContact(string emergencyContact)
+        {
+            this.EmergencyContact = new Phone(emergencyContact);
+        }
     }
 }

@@ -9,6 +9,7 @@ namespace DDDNetCore.Domain.Patients
         Task<bool> ExistsPatientWithEmailOrPhone(string email, string v1, string v2);
         Task<List<Patient>> FilterPatientProfiles(PatientQueryParametersDto dto);
         Task<MedicalRecordNumber> FindLastPatientIdAsync();
+        Task<Patient> FindPatientWithUserEmail(string email);
         Task<Patient> GetPatientWithEmail(string email);
     }
 }

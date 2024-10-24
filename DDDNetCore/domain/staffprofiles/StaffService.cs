@@ -26,7 +26,7 @@ namespace DDDNetCore.Domain.StaffProfiles
             if (staff == null)
                 return null;
 
-            return new StaffDto(staff.Name.ToString(), staff.Phone.ToString(), staff.Email.ToString(), staff.Id.AsString(), staff.SpecializationId.AsString());
+            return new StaffDto(staff.Name.ToString(), staff.Phone.ToString(), staff.Email.ToString(), staff.Address.ToString(), staff.Id.AsString(), staff.SpecializationId.AsString());
         }
         public async Task<StaffDto> CreateStaffProfile(CreatingStaffDto dto)
         {
@@ -44,14 +44,14 @@ namespace DDDNetCore.Domain.StaffProfiles
             Function? function = Function.GetFunctionByDescription(dto.Function) ??
                 throw new BusinessRuleValidationException("Invalid function.");
 
-            var staff = new Staff(seqNumber,dto.Address, dto.LicenseNumber, dto.FirstName, dto.LastName, dto.Email,
+            var staff = new Staff(seqNumber, dto.Address, dto.LicenseNumber, dto.FirstName, dto.LastName, dto.Email,
             dto.Phone, function, spec.Id);
 
             await this._repo.AddAsync(staff);
 
             await this._unitOfWork.CommitAsync();
 
-            return new StaffDto(staff.Name.ToString(), staff.Phone.ToString(), staff.Email.ToString(), staff.Id.AsString(), staff.SpecializationId.AsString());
+            return new StaffDto(staff.Name.ToString(), staff.Phone.ToString(), staff.Email.ToString(), staff.Address.ToString(), staff.Id.AsString(), staff.SpecializationId.AsString());
         }
 
         public async void AddUser(User user, string email, string phone)
@@ -89,37 +89,37 @@ namespace DDDNetCore.Domain.StaffProfiles
         {
             var list = await this._repo.GetAllAsync();
 
-            List<StaffDto> listDto = list.ConvertAll<StaffDto>(staff => new StaffDto(staff.Name.ToString(), 
-                staff.Phone.ToString(), staff.Email.ToString(), staff.Address.ToString(), staff.Id.AsString()));
-        
+            List<StaffDto> listDto = list.ConvertAll<StaffDto>(staff => new StaffDto(staff.Name.ToString(),
+                staff.Phone.ToString(), staff.Email.ToString(), staff.Address.ToString(), staff.Id.AsString(), staff.SpecializationId.AsString()));
+
             return listDto;
         }
 
-        public async Task<StaffDto> UpdateAsync (EditStaffDto dto)
+        public async Task<StaffDto> UpdateAsync(EditStaffDto dto)
         {
             var staff = await this._repo.GetByIdAsync(new StaffId(dto.StaffId));
 
-            if(staff == null)
+            if (staff == null)
                 return null;
 
-            if(dto.Phone != null)
+            if (dto.Phone != null)
                 staff.ChangePhone(dto.Phone);
-            
-            if(dto.Email != null)
+
+            if (dto.Email != null)
                 staff.ChangeEmail(dto.Email);
 
-            if(dto.Address != null)
+            if (dto.Address != null)
                 staff.ChangeAddress(dto.Address);
-            
-            if(dto.SpecializationId != null)
+
+            if (dto.SpecializationId != null)
                 staff.ChangeSpecialization(dto.SpecializationId);
-            
-            if(dto.Slots != null)
+
+            if (dto.Slots != null)
                 staff.ChangeSlots(dto.Slots);
 
             await this._unitOfWork.CommitAsync();
 
-            if(dto.Slots != null)
+            if (dto.Slots != null)
             {
                 List<SlotsDto> slotsDto = new List<SlotsDto>();
 
@@ -128,24 +128,27 @@ namespace DDDNetCore.Domain.StaffProfiles
                     slotsDto.Add(new SlotsDto(slot.StartDate, slot.EndDate, slot.StartTime, slot.EndTime));
                 }
 
-                return new StaffDto(staff.Name.ToString(), staff.Phone.ToString(), staff.Email.ToString(), 
+                return new StaffDto(staff.Name.ToString(), staff.Phone.ToString(), staff.Email.ToString(),
                 staff.Address.ToString(), staff.SpecializationId.AsString(), staff.Id.AsString(), slotsDto);
 
-            } else {
-                return new StaffDto(staff.Name.ToString(), staff.Phone.ToString(), staff.Email.ToString(), 
-                staff.Address.ToString(), staff.SpecializationId.AsString());
             }
-            
+            else
+            {
+                return new StaffDto(staff.Name.ToString(), staff.Phone.ToString(), staff.Email.ToString(),
+                staff.Address.ToString(), staff.Id.AsString(), staff.SpecializationId.AsString());
+            }
+
         }
 
-         public async Task<List<StaffDto>> FilterStaffProfiles(StaffQueryParametersDto dto)
+        public async Task<List<StaffDto>> FilterStaffProfiles(StaffQueryParametersDto dto)
         {
             List<Staff> filteredStaffs = await _repo.FilterStaffProfiles(dto);
             List<StaffDto> StaffDtoListFiltered = [];
 
-            foreach (Staff Staff in filteredStaffs){
+            foreach (Staff Staff in filteredStaffs)
+            {
                 //string name, string phone, string email, string address, string specializationDenomination
-                StaffDtoListFiltered.Add(new StaffDto(Staff.Name.ToString(), Staff.Phone.ToString(), Staff.Email.ToString(), Staff.Address.ToString(), Staff.SpecializationId.AsString()));
+                StaffDtoListFiltered.Add(new StaffDto(Staff.Name.ToString(), Staff.Phone.ToString(), Staff.Email.ToString(), Staff.Address.ToString(), Staff.Id.AsString(), Staff.SpecializationId.AsString()));
             }
 
             return StaffDtoListFiltered;
