@@ -37,7 +37,7 @@ namespace DDDNetCore.Controllers
         }
     
         [HttpPost]
-        [Route("Create-PatientProfile")]
+        [Route("create")]
         [Authorize(Policy = "Admin")]
         public async Task<ActionResult<PatientDto>> CreatePatientProfile(CreatingPatientDto dto)
         {

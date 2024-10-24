@@ -18,6 +18,7 @@ using Microsoft.AspNetCore.Identity.Data;
 using System.ComponentModel;
 using DDDNetCore.Domain.Tokens;
 using DDDNetCore.Domain.Shared;
+using Microsoft.AspNetCore.Authentication;
 
 namespace DDDNetCore.Controllers
 {
@@ -32,10 +33,9 @@ namespace DDDNetCore.Controllers
         private readonly PatientService _patientService;
         private readonly StaffService _staffService;
         private readonly EmailService _emailService;
-        private readonly IConfiguration _configuration;
 
         private readonly UserService _userService;
-        public UserController(UserService userService, UserManager<User> userManager, RoleManager<Role> roleManager, PatientService patientService, StaffService staffService, EmailService emailService, IConfiguration configuration)
+        public UserController(UserService userService, UserManager<User> userManager, RoleManager<Role> roleManager, PatientService patientService, StaffService staffService, EmailService emailService)
         {
             _userService = userService;
             _userManager = userManager;
@@ -43,7 +43,7 @@ namespace DDDNetCore.Controllers
             _patientService = patientService;
             _staffService = staffService;
             _emailService = emailService;
-            _configuration = configuration;
+
         }
 
         [HttpPost("Login")]
@@ -56,14 +56,14 @@ namespace DDDNetCore.Controllers
             }
             catch (BusinessRuleValidationException ex)
             {
-                return Unauthorized(new { ex.Message });
+                return BadRequest(new { ex.Message });
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return BadRequest(new { V = "An unexpected error occured." });
+                return BadRequest(new { V = $"An unexpected error occurred: {ex.Message}" });
             }
         }
-
+     
         [HttpPut("Activate-StaffAccount")]
         public async Task<IActionResult> ConfirmEmailStaff([FromQuery] string userId, [FromQuery] string token, [FromBody] ConfirmEmailUserDto confirmEmailUserDto)
         {
@@ -181,7 +181,7 @@ namespace DDDNetCore.Controllers
                 // Associate with it's profile
                 _patientService.AddUser(user, registerPatientUserDto.Email, registerPatientUserDto.Phone);
 
-                SendConfirmationEmail(user, "Patient"); 
+                SendConfirmationEmail(user, "Patient");
             }
             catch (Exception ex)
             {
@@ -217,12 +217,12 @@ namespace DDDNetCore.Controllers
                 _userService.AddToRoleAsync(user, registerUserDto.Role);
 
                 _staffService.AddUser(user, registerUserDto.Email, registerUserDto.Phone);
-            
+
                 SendConfirmationEmail(user, registerUserDto.Role);
             }
             catch (InvalidOperationException ex1)
             {
-                return BadRequest(ex1.Message); 
+                return BadRequest(ex1.Message);
             }
             catch (Exception ex)
             {
@@ -232,7 +232,7 @@ namespace DDDNetCore.Controllers
             return Ok(new { Message = "User registered successfully." });
         }
 
-        
+
 
         private async void SendConfirmationEmail(User user, string role)
         {
@@ -240,22 +240,22 @@ namespace DDDNetCore.Controllers
 
             var confirmationLink = "";
 
-            if(role.Equals("Patient"))
+            if (role.Equals("Patient"))
             {
                 confirmationLink = Url.Action("ConfirmEmailPatient", "User", new { userId = user.Id, token = token }, Request.Scheme);
-            } 
+            }
             else
             {
                 confirmationLink = Url.Action("ConfirmEmailStaff", "User", new { userId = user.Id, token = token }, Request.Scheme);
             }
-            
+
             EmailMessageDto emailDto = new EmailMessageDto(
                 hospitalEmail,
                 user.Email,
                 "Account Activation",
                 "<p>Hello,</p><p>This email was sent to inform you that your user account in the HealthCare Clinic System has been created. </p><p><a href='" + confirmationLink + "'>Click in the link to confirm the activation of the account.</a></p><p>Thank you for choosing us,<br>HealthCare Clinic</p></body></html>"
             );
-            
+
             await _emailService.SendConfirmationEmail(emailDto);
         }
 

@@ -20,7 +20,6 @@ namespace DDDNetCore.Domain.Patients
         private readonly EmailService _emailService;
         private readonly LogService _logService;
         private readonly IConfiguration _configuration;
-        private readonly UserService _usrSvc;
         public PatientService(IUnitOfWork unitOfWork, LogService logService, IConfiguration configuration, IPatientRepository repo, UserService userService, EmailService emailService)
         {
             this._unitOfWork = unitOfWork;
@@ -221,7 +220,7 @@ namespace DDDNetCore.Domain.Patients
             if (dto.EmergencyContact != null) patient.ChangeEmergencyContact(dto.EmergencyContact);
             if (dto.Email != null)
             {
-                await _usrSvc.EditUserProfile(email, dto.Email);
+                await _userService.EditUserProfile(email, dto.Email);
                 patient.ChangeEmail(dto.Email);
             }
             await _unitOfWork.CommitAsync();
