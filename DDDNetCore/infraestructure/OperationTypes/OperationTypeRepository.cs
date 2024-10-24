@@ -1,8 +1,11 @@
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using DDDNetCore.Domain.OperationTypes;
 using DDDNetCore.Infrastructure.Shared;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 namespace DDDNetCore.Infrastructure.OperationTypes
 {
@@ -23,6 +26,46 @@ namespace DDDNetCore.Infrastructure.OperationTypes
                 .Where(p => p.Id.Equals(id));
 
             return operationTypeById.FirstOrDefault();
+        }
+
+
+        public async Task<List<OperationType>> FilterOperationTypes(OperationTypeQueryParametersDto dto)
+        {
+            IQueryable<OperationType> combinedQuery = null;
+
+            foreach (OperationTypeListingFilterParametersDto filter in dto.queryFilters)
+            {
+                var query = _context.OperationTypes
+                    .Include(o => o.RequiredStaff)
+                    .AsQueryable();
+
+                if(!string.IsNullOrEmpty(filter.Name))
+                {
+                    query = query.AsEnumerable().Where(s => s.Name.OperationName.Contains(filter.Name)).AsQueryable();
+                }
+
+                if (!string.IsNullOrEmpty(filter.Specialization))
+                {
+                    query = query.AsEnumerable()
+                        .Where(o => o.RequiredStaff.Any(rs => rs.SpecializationId.AsString() == filter.Specialization))
+                        .AsQueryable();
+                }
+
+                if (!string.IsNullOrEmpty(filter.Status))
+                {
+                    query = query.AsEnumerable().Where(s => s.Status.AsString().Contains(filter.Status)).AsQueryable();
+                }
+
+                 if (!query.IsNullOrEmpty())
+                {
+                    combinedQuery = combinedQuery == null ? query : combinedQuery.Union(query);
+                }
+            }
+            
+            if(combinedQuery.IsNullOrEmpty())
+                return [];
+
+            return [.. combinedQuery];
         }
     }
 }

@@ -10,7 +10,6 @@ namespace DDDNetCore.Domain.OperationTypes
     public class OperationTypeService
     {
 
-
         private readonly IUnitOfWork _unitOfWork;
         private readonly IOperationTypeRepository _repo;
 
@@ -97,6 +96,19 @@ namespace DDDNetCore.Domain.OperationTypes
             await this._unitOfWork.CommitAsync();
 
             return ToDto(operationType);
+        }
+
+        public async Task<List<OperationTypeDto>> FilterOperationTypes(OperationTypeQueryParametersDto dto)
+        {
+            List<OperationType> filteredOperationTypes = await _repo.FilterOperationTypes(dto);
+            List<OperationTypeDto> OperationTypeDtoListFiltered = [];
+
+            foreach (OperationType operationType in filteredOperationTypes)
+            {
+                OperationTypeDtoListFiltered.Add(ToDto(operationType));
+            }
+
+            return OperationTypeDtoListFiltered;
         }
 
         private OperationTypeDto ToDto(OperationType operationType)

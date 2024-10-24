@@ -90,9 +90,9 @@ namespace DDDNetCore.Controllers
                     return BadRequest(new { Message = "Email claim not found." });
                 }
 
-                var patient = await _service.EditProfile(email, dto);
+                var patientDto = await _service.EditProfile(email, dto);
 
-                return Accepted(patient);
+                return Accepted(patientDto);
             }
             catch (BusinessRuleValidationException ex)
             {
