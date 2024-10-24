@@ -5,8 +5,11 @@ namespace DDDNetCore.Domain.Users
 
     public class User : IdentityUser
     {
-        public string? Initials { get; set; }
-
         public bool Status { get; set; }
+
+        public void changeStatus(bool status)
+        {
+            this.Status = status;
+        }
     }
 }

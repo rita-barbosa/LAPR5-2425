@@ -4,16 +4,17 @@ title "US 5.1.4. - Process View [Level 3]"
 
 autonumber
 participant "PatientRoute" as ROUTE <<route>>
-participant "UpdateInformationDto" as pat_dto <<dto>>
+participant "EditPatientProfileDto" as pat_dto <<dto>>
 participant "PatientController" as CTRL <<controller>>
-participant "UserDto" as user_dto <<dto>>
+participant "ClaimsPrincipal" as CLAIM
 participant "PatientService" as SVC <<service>>
 participant "UserService" as US_SVC <<service>>
 participant "UserManager" as UM <<service>>
+participant "User" as USER <<domain>>
 participant "PatientRepository" as REPO <<repository>>
-participant "UserRepository" as US_REPO <<repository>>
-participant "Patient" as pat <<domain>>
-participant "User" as user <<domain>>
+participant "Patient" as PATIENT <<domain>>
+participant "PatientDto" as PATIENT_DTO <<dto>>
+
 
 
 [o-> ROUTE: PUT(json) /api/patient
@@ -21,86 +22,125 @@ activate ROUTE
 
 ROUTE -> pat_dto **: create(json)
 
-ROUTE -> CTRL: updatePatientInformation(updateInformationDto)
+ROUTE -> CTRL: EditPatientProfile(editPatientProfileDto)
 activate CTRL
 
-CTRL -> UM: getUserId(User)
-activate UM
+CTRL -> CLAIM : FindFirstValue(ClaimTypes.Email)
+activate CLAIM
 
-UM --> CTRL: loggedUser
-deactivate UM
+CLAIM --> CTRL : emailLoggedInUser
+deactivate CLAIM
 
-CTRL -> user_dto**: toDto(loggedUser)
+alt email != null
 
-alt change email
-    CTRL -> US_SVC: updateUserInformation(loggedUser,updateInformationDto)
-    activate US_SVC
-
-    US_SVC -> UM: findByIdAsync(userId)
-    activate UM
-
-    UM --> US_SVC: user
-    deactivate UM
-
-    US_SVC -> user: updateEmail(email)
-    activate user
-    deactivate user
-
-    US_SVC -> user: updateUsername(email)
-    activate user
-    deactivate user
-
-
-    US_SVC -> US_REPO: save(updatedUser)
-    activate US_REPO
-    deactivate US_REPO
-
-    US_SVC --> CTRL:
-    deactivate US_SVC
-    end alt
-
-    CTRL -> SVC: updatePatientInformation(updateInformationDto, userDto)
+    CTRL -> SVC : EditProfile(emailLoggedInUser,editPatientProfileDto)
     activate SVC
 
-    SVC -> REPO: findByEmail(email)
+    SVC -> REPO: FindPatientWithUserEmail(email)
     activate REPO
 
-    REPO --> SVC : patient
-    deactivate REPO
-    |||
-    SVC -> pat: updateInformation(updateInformation)
-    activate pat
-    deactivate pat
-
-    SVC -> user : updateEmail(email)
-    activate user
-    deactivate user
-
-    SVC -> US_REPO: save(updatedUser)
-    activate US_REPO
-    deactivate US_REPO
-
-    SVC -> REPO: save(updatedPatient)
-    activate REPO
+    REPO -> SVC: patient
     deactivate REPO
 
-
-
-
-    SVC --> CTRL: success
-    deactivate SVC
-    CTRL --> ROUTE: success
-    deactivate CTRL
-
-    alt
-
-        [o<-- ROUTE: 201 Created
-
-    else
-
-        [o<-- ROUTE: 400 Bad Request
-
+    alt newPhoneNumber != null
+        SVC -> PATIENT : ChangePhone(newPhoneNumber)
+        activate PATIENT
+        deactivate PATIENT
         end alt
 
-        deactivate ROUTE
-        @enduml
+        alt newAddress != null
+            SVC -> PATIENT : ChangeAddress(newAddress)
+            activate PATIENT
+            deactivate PATIENT
+            end alt
+
+            alt newName != null
+                SVC -> PATIENT : ChangeName(newName)
+                activate PATIENT
+                deactivate PATIENT
+                end alt
+
+                alt newEmergencyContact != null
+                    SVC -> PATIENT : ChangeEmergencyContact(newEmergencyContact)
+                    activate PATIENT
+                    deactivate PATIENT
+                    end alt
+
+                    alt newEmail != null
+
+                        SVC -> US_SVC: EditUserProfile(oldEmail,newEmail)
+                        activate US_SVC
+
+                        US_SVC -> UM: FindByEmailAsync(oldEmail)
+                        activate UM
+                        UM --> US_SVC: user
+                        deactivate UM
+
+                        US_SVC -> UM: GenerateChangeEmailTokenAsync(user,newEmail)
+                        activate UM
+
+                        UM --> US_SVC: token
+                        deactivate UM
+
+                        US_SVC -> UM: ChangeEmailAsync(user, newEmail, token)
+                        activate UM
+                        UM --> US_SVC: result
+                        deactivate UM
+
+                        alt result == true
+
+                            US_SVC -> USER: changeStatus(false)
+                            activate USER
+                            deactivate USER
+
+                            US_SVC -> UM: UpdateAsync(user)
+                            activate UM
+                            deactivate UM
+
+                            US_SVC -> UM: GenerateEmailConfirmationTokenAsync(user)
+                            activate UM
+
+                            UM --> US_SVC: token
+                            deactivate UM
+
+                            US_SVC -> US_SVC: SendConfirmationEmail(user,oldEmail,token)
+                            activate US_SVC
+                            deactivate US_SVC
+                        end
+
+                        US_SVC --> SVC:
+                        deactivate US_SVC
+
+                        SVC -> PATIENT : ChangeEmail(newEmail)
+                        activate PATIENT
+                        deactivate PATIENT
+                        end alt
+
+                        SVC -> REPO : save()
+                        activate REPO
+                        deactivate REPO
+
+                        SVC-> PATIENT_DTO**: create(name,phoneNumber,email,address)
+
+
+                        SVC --> CTRL: patientDto
+                        deactivate SVC
+
+
+                        end alt
+
+                        CTRL --> ROUTE: success
+                        deactivate CTRL
+
+                        alt
+
+                            [o<-- ROUTE: Accepted()
+
+                        else
+
+                            [o<-- ROUTE: BadRequest()
+
+                            end alt
+
+                            deactivate ROUTE
+                            @enduml

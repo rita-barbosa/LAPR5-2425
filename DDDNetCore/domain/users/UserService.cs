@@ -40,7 +40,7 @@ namespace DDDNetCore.Domain.Users
             if (result)
             {
                 User user = await FindByIdAsync(userId);
-                user.Status = true;
+                user.changeStatus(true);
                 await UpdateAsync(user);
                 return true;
             }
@@ -56,7 +56,7 @@ namespace DDDNetCore.Domain.Users
                 User user = await FindByIdAsync(userId);
                 var resetToken = await _tokenService.GeneratePasswordResetTokenAsync(user);
                 await ResetPasswordAsync(user, resetToken, newPassword);
-                user.Status = true;
+                user.changeStatus(true);
                 await UpdateAsync(user);
                 return true;
             }
@@ -154,7 +154,7 @@ namespace DDDNetCore.Domain.Users
         }
         public async Task EditUserProfile(string oldEmail, string newEmail)
         {
-            User user = await FindByEmailAsync(oldEmail) ?? throw new BusinessRuleValidationException("Can't find the currently logged in user.");
+            User user = await _userManager.FindByEmailAsync(oldEmail) ?? throw new BusinessRuleValidationException("Can't find the currently logged in user.");
             string token = await _userManager.GenerateChangeEmailTokenAsync(user, newEmail);
             var result = await _userManager.ChangeEmailAsync(user, newEmail, token);
 
@@ -162,9 +162,9 @@ namespace DDDNetCore.Domain.Users
             {
                 throw new BusinessRuleValidationException("Unable to update the user's email.");
             }
-
-            user.Status = false;
-            await UpdateAsync(user);
+            
+            user.changeStatus(false);
+            await _userManager.UpdateAsync(user);
             await SendConfirmationChangeEmail(user, oldEmail, await _userManager.GenerateEmailConfirmationTokenAsync(user));
         }
 
@@ -175,7 +175,7 @@ namespace DDDNetCore.Domain.Users
 
             await SendEmail(email, "Update Email Confirmation", body);
         }
-        public async Task SendConfirmationEmail(User user, string token)
+        private async Task SendConfirmationEmail(User user, string token)
         {
             string confirmationLink = await ConfigureUrlConfirmation(token, user);
             var body = "<p>Hello,</p><p>This email was sent to inform you that your user account in the HealthCare Clinic System has been created. </p><p><a href='" + confirmationLink + "'>Click in the link to confirm the activation of the account.</a></p><p>Thank you for choosing us,<br>HealthCare Clinic</p></body></html>";

@@ -191,8 +191,8 @@ namespace DDDNetCore.Domain.Patients
             if (dto.EmergencyContact != null) patient.ChangeEmergencyContact(dto.EmergencyContact);
             if (dto.Email != null)
             {
-                patient.ChangeEmail(dto.Email);
                 await _usrSvc.EditUserProfile(email, dto.Email);
+                patient.ChangeEmail(dto.Email);
             }
             await _unitOfWork.CommitAsync();
 
