@@ -7,7 +7,8 @@ namespace DDDNetCore.Domain.Shared
         public DateTime Start { get; }
         public DateTime End { get; }
 
-        private Date() { }
+        public Date(){}
+        public Date(DateTime now) { }
         public Date(string start, string end = null)
         {
             if (string.IsNullOrWhiteSpace(start))
@@ -37,5 +38,6 @@ namespace DDDNetCore.Domain.Shared
         }
 
         public override int GetHashCode() { return HashCode.Combine(Start, End); }
+
     }
 }

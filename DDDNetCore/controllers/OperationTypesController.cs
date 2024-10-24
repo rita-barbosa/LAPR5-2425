@@ -5,6 +5,8 @@ using DDDNetCore.Domain.OperationTypes;
 using DDDNetCore.Domain.OperationTypes.ValueObjects.RequiredStaff;
 using DDDNetCore.Domain.Shared;
 using Microsoft.AspNetCore.Authorization;
+using System.Collections.Generic;
+using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
 
 namespace DDDNetCore.Controllers
@@ -51,6 +53,20 @@ namespace DDDNetCore.Controllers
             var operationType = await _service.AddAsync(dto);
 
             return CreatedAtAction(nameof(GetGetById), new { id = new OperationTypeId(operationType.Name) }, operationType);
+        }
+
+        //POST: api/operationTypes/Filtered-List
+        [HttpPost("Filtered-List")]
+        [Authorize(Policy = "Admin")]
+        public async Task<ActionResult<List<OperationTypeDto>>> GetFilteredOperationTypes(OperationTypeQueryParametersDto dto)
+        {
+            var operationType = await _service.FilterOperationTypes(dto);
+
+            if(operationType.IsNullOrEmpty()){
+                return NotFound(new { Message = "No operation types matching the filtering criteria."});
+            }
+
+            return Ok(operationType);
         }
 
         [HttpDelete("{id}")]

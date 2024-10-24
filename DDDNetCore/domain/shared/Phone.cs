@@ -16,11 +16,11 @@ namespace DDDNetCore.Domain.Shared
             {
                 throw new BusinessRuleValidationException("Phone number cannot be null or empty.");
             }
-            if (!Regex.IsMatch(countryCode, @"^\+\d{1,3}$"))
+            if (!Regex.IsMatch(countryCode, @"^\+\d{1,3}$") && (!countryCode.Equals("[REDACTED]")))
             {
                 throw new BusinessRuleValidationException("Country code must start with '+' followed by 1 to 3 digits.", nameof(countryCode));
             }
-            if (!Regex.IsMatch(phoneNumber, @"^\d{7,15}$")) // Assuming valid phone numbers are between 7 and 15 digits
+            if (!Regex.IsMatch(phoneNumber, @"^\d{7,15}$") && (!countryCode.Equals("[REDACTED]"))) // Assuming valid phone numbers are between 7 and 15 digits
             {
                 throw new BusinessRuleValidationException("Phone number must be between 7 and 15 digits.", nameof(phoneNumber));
             }

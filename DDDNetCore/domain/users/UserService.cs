@@ -17,17 +17,22 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace DDDNetCore.Domain.Users
 {
-    public class UserService
+    public class UserService 
     {
         private readonly UserManager<User> _userManager;
+        private readonly RoleManager<Role> _roleManager;
+        private readonly StaffService _staffService;
         private readonly EmailService _emailService;
         private readonly TokenService _tokenService;
         private readonly IConfiguration _configuration;
-        public UserService(UserManager<User> userManager,
+        public UserService(UserManager<User> userManager, RoleManager<Role> roleManager,
+                                 StaffService staffService,
                                 EmailService emailService, IConfiguration configuration,
                                 TokenService tokenService)
         {
             _userManager = userManager;
+            _roleManager = roleManager;
+            _staffService = staffService;
             _emailService = emailService;
             _tokenService = tokenService;
             _configuration = configuration;
@@ -152,6 +157,12 @@ namespace DDDNetCore.Domain.Users
         {
             return await _userManager.CreateAsync(user, password);
         }
+
+        internal async Task<IdentityResult> DeleteByIdAsync(string userReference)
+        {
+            return await _userManager.DeleteAsync(await _userManager.FindByIdAsync(userReference));
+        }
+
         public async Task EditUserProfile(string oldEmail, string newEmail)
         {
             User user = await _userManager.FindByEmailAsync(oldEmail) ?? throw new BusinessRuleValidationException("Can't find the currently logged in user.");

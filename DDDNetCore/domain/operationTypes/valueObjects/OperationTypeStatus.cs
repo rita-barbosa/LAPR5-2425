@@ -33,5 +33,10 @@ namespace DDDNetCore.Domain.OperationTypes.ValueObjects
             return HashCode.Combine(Active);
         }
 
+        public string AsString()
+        {
+            return Active ? "true" : "false";
+        }
+
     }
 }

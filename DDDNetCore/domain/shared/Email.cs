@@ -20,7 +20,7 @@ namespace DDDNetCore.Domain.Shared
                 throw new BusinessRuleValidationException("Email EmailAddress cannot be null or empty.");
             }
 
-            if (!IsValidEmail(emailAddress))
+            if ((!IsValidEmail(emailAddress)) && (!emailAddress.Equals("[REDACTED]")))
             {
                 throw new BusinessRuleValidationException("Invalid email EmailAddress format.");
             }

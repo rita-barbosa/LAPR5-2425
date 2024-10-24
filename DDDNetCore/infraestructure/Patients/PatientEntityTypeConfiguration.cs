@@ -23,6 +23,11 @@ namespace DDDNetCore.Infrastructure.Products
                    .IsRequired()
                    .HasColumnName("FullName");
            });
+
+            builder.Property(b => b.Status)
+                .IsRequired()
+                .HasColumnName("Status");
+
             builder.OwnsOne(b => b.Address, n =>
             {
                 n.Property(ad => ad.Country)
