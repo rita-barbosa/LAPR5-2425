@@ -29,6 +29,8 @@ using DDDNetCore.Infrastructure.Patients;
 using DDDNetCore.Infrastructure.Emails;
 using DDDNetCore.Domain.Logs;
 using DDDNetCore.Infrastructure.Logs;
+using DDDNetCore.Domain.OperationTypesRecords;
+using DDDNetCore.Infrastructure.OperationTypeRecords;
 
 namespace DDDNetCore
 {
@@ -165,6 +167,10 @@ namespace DDDNetCore
 
             services.AddTransient<ILogRepository, LogRepository>();
             services.AddTransient<LogService>();
+
+            services.AddTransient<IOperationTypeRecordRepository, OperationTypeRecordRepository>();
+            services.AddTransient<OperationTypeRecordService>();
+
         }
 
 

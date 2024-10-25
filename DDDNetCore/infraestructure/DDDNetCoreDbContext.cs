@@ -16,6 +16,8 @@ using DDDNetCore.Infrastructure.OperationRequests;
 using DDDNetCore.Domain.OperationTypes.ValueObjects.RequiredStaff;
 using DDDNetCore.Domain.Logs;
 using DDDNetCore.Infrastructure.EntityConfigurations;
+using DDDNetCore.Domain.OperationTypesRecords;
+using DDDNetCore.Infrastructure.OperationTypeRecords;
 
 
 namespace DDDNetCore.Infrastructure
@@ -29,6 +31,9 @@ namespace DDDNetCore.Infrastructure
         public DbSet<Patient> Patients { get; set; }
         public DbSet<RequiredStaff> RequiredStaff { get; set; }
         public DbSet<OperationRequest> OperationRequests { get; set; }
+         public DbSet<OperationTypeRecord> OperationTypeRecords { get; set; }
+        public DbSet<RequiredStaffRecord> RequiredStaffRecords { get; set; }
+
         public DbSet<Log> Logs { get; set; }
         public DDDNetCoreDbContext(DbContextOptions options) : base(options)
         {
@@ -46,6 +51,8 @@ namespace DDDNetCore.Infrastructure
             modelBuilder.ApplyConfiguration(new RequiredStaffEntityTypeConfiguration());
             modelBuilder.ApplyConfiguration(new OperationRequestEntityTypeConfiguration());
             modelBuilder.ApplyConfiguration(new LogEntityTypeConfiguration());
+            modelBuilder.ApplyConfiguration(new OperationTypeRecordEntityTypeConfiguration());
+            modelBuilder.ApplyConfiguration(new RequiredStaffRecordEntityTypeConfiguration());
         }
     }
 }
