@@ -30,25 +30,33 @@ namespace DDDNetCore.Domain.OperationRequest
 
         }
 
-        public OperationRequest(string code, string deadLineDate, string priority, string dateOfRequest, StaffId staffId, string description, MedicalRecordNumber patientId, OperationTypeId operationTypeId)
+        public OperationRequest(string code, string deadLineDate, string priority, string dateOfRequest, string staffId, string description, string patientId, string operationTypeId)
         {
             this.Id = new OperationRequestId(code);
+            if (!DateTime.TryParse(deadLineDate, out DateTime deadLineDateVar) || !DateTime.TryParse(dateOfRequest, out DateTime dateOfRequestVar) || dateOfRequestVar > deadLineDateVar)
+            {
+                throw new BusinessRuleValidationException("The date of request can't be after deadline date.");
+            }
             this.DeadLineDate = new Date(deadLineDate);
-            this.Priority = Priority.GetPriorityByName(priority);
             this.DateOfRequest = new Date(dateOfRequest);
+            this.Priority = Priority.GetPriorityByName(priority);
             this.Status = OperationRequestStatus.Requested;
-            this.StaffId = staffId;
+            this.StaffId = new StaffId(staffId);
             this.Description = new OperationRequestDescription(description);
-            this.PatientId = patientId;
-            this.OperationTypeId = operationTypeId;
+            this.PatientId = new MedicalRecordNumber(patientId);
+            this.OperationTypeId = new OperationTypeId(operationTypeId);
         }
 
         public OperationRequest(Date deadLineDate, Priority priority, Date dateOfRequest, StaffId staffId, string description, MedicalRecordNumber patientId, OperationTypeId operationTypeId)
         {
             this.Id = new OperationRequestId(Guid.NewGuid());
+            if (dateOfRequest.Start > deadLineDate.Start)
+            {
+                throw new BusinessRuleValidationException("The date of request can't be after deadline date.");
+            }
             this.DeadLineDate = deadLineDate;
-            this.Priority = priority;
             this.DateOfRequest = dateOfRequest;
+            this.Priority = priority;
             this.Status = OperationRequestStatus.Requested;
             this.StaffId = staffId;
             this.Description = new OperationRequestDescription(description);
@@ -80,7 +88,5 @@ namespace DDDNetCore.Domain.OperationRequest
         {
             this.Description = new OperationRequestDescription(text);
         }
-
-
     }
 }

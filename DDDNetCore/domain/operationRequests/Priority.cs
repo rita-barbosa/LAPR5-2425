@@ -5,7 +5,7 @@ using DDDNetCore.Domain.Shared;
 
 namespace DDDNetCore.Domain.OperationRequest
 {
-    public class  Priority : IValueObject
+    public class Priority : IValueObject
     {
         public string Name { get; }
 
@@ -24,7 +24,8 @@ namespace DDDNetCore.Domain.OperationRequest
             { Emergency.Name, Emergency }
         };
 
-        public Priority(){
+        public Priority()
+        {
             // for ORM  
         }
 
@@ -32,20 +33,26 @@ namespace DDDNetCore.Domain.OperationRequest
         {
             if (string.IsNullOrEmpty(name))
             {
-                throw new ArgumentException("Priority cannot be null or empty");
+                throw new BusinessRuleValidationException("Priority cannot be null or empty");
             }
             Name = name;
         }
-        
+
         public static Priority? GetPriorityByName(string name)
         {
-            if (string.IsNullOrEmpty(name))
+            try
             {
-                return null;
+                if (string.IsNullOrWhiteSpace(name.Trim()))
+                {
+                    throw new BusinessRuleValidationException("Priority cannot be null or empty");
+                }
+                _prioritys.TryGetValue(name, out var matchingPriority);
+                return new Priority(matchingPriority.Name);
             }
-
-            _prioritys.TryGetValue(name, out var matchingPriority);
-            return new Priority(matchingPriority.Name);
+            catch (NullReferenceException)
+            {
+                throw new BusinessRuleValidationException("Priority specified is not available");
+            }
         }
 
         public override bool Equals(object obj)
@@ -61,7 +68,7 @@ namespace DDDNetCore.Domain.OperationRequest
 
         public override int GetHashCode()
         {
-            return  Name.GetHashCode();
+            return Name.GetHashCode();
         }
 
         public override string ToString()

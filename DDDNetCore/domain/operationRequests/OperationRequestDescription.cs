@@ -4,18 +4,19 @@ namespace DDDNetCore.Domain.OperationRequest
 {
     public class OperationRequestDescription : IValueObject
     {
-        public string DescriptionText {get; set;}
+        public string DescriptionText { get; set; }
 
-        public OperationRequestDescription(){
+        public OperationRequestDescription()
+        {
             // for ORM
         }
 
         public OperationRequestDescription(string text)
         {
-            // if (string.IsNullOrEmpty(text))
-            // {
-            //     throw new BusinessRuleValidationException("Operation Request's description cannot be null or empty.");
-            // }
+            if (string.IsNullOrWhiteSpace(text) || string.IsNullOrEmpty(text.Trim()))
+            {
+                throw new BusinessRuleValidationException("Operation Request's description cannot be null or empty.");
+            }
             this.DescriptionText = text;
         }
 

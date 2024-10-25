@@ -33,7 +33,7 @@ namespace DDDNetCore.Domain.StaffProfiles
         {
             if (string.IsNullOrEmpty(text) || text.Length < 10)
             {
-                throw new ArgumentException("Invalid Staff ID format.");
+                throw new BusinessRuleValidationException("Invalid Staff ID format.");
             }
 
             string function = text[..1];
@@ -42,12 +42,12 @@ namespace DDDNetCore.Domain.StaffProfiles
 
             if (function != "N" && function != "D" && function != "O")
             {
-                throw new ArgumentException("Function must be 'N' for nurse, 'D' for doctor, or 'O' for other.");
+                throw new BusinessRuleValidationException("Function must be 'N' for nurse, 'D' for doctor, or 'O' for other.");
             }
 
             if (!int.TryParse(year, out _) || !int.TryParse(seqNumber, out _))
             {
-                throw new ArgumentException("Invalid year or sequential number format.");
+                throw new BusinessRuleValidationException("Invalid year or sequential number format.");
             }
 
             return text;

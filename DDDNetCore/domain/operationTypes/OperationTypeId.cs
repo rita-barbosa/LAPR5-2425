@@ -6,21 +6,23 @@ namespace DDDNetCore.Domain.OperationTypes
     public class OperationTypeId : EntityId
     {
 
-        public OperationTypeId(String value):base(value)
+        public OperationTypeId(String value) : base(value)
         {
-            if (string.IsNullOrEmpty(value))
+            if (string.IsNullOrEmpty(value) || string.IsNullOrWhiteSpace(value))
             {
                 throw new ArgumentException("Operation name cannot be null or empty.");
             }
         }
 
         override
-        protected  Object createFromString(String text){
+        protected Object createFromString(String text)
+        {
             return text;
         }
         override
-        public String AsString(){
-            return (String) base.Value;
+        public String AsString()
+        {
+            return (String)base.Value;
         }
     }
 }
