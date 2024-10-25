@@ -6,6 +6,9 @@ using DDDNetCore.Domain.Patients;
 using DDDNetCore.Domain.OperationTypes;
 using System;
 using System.Linq;
+using Microsoft.AspNetCore.Http.HttpResults;
+using DDDNetCore.Domain.Users;
+using Microsoft.AspNetCore.Identity;
 
 namespace DDDNetCore.Domain.OperationRequest
 {
@@ -16,14 +19,16 @@ namespace DDDNetCore.Domain.OperationRequest
         private readonly IStaffRepository _repoSta;
         private readonly IPatientRepository _repoPat;
         private readonly IOperationTypeRepository _repoOpTy;
+        private readonly UserService _userService;
 
-        public OperationRequestService(IUnitOfWork unitOfWork, IOperationRequestRepository repo, IStaffRepository repoSta, IPatientRepository repoPat, IOperationTypeRepository repoOpTy)
+        public OperationRequestService(IUnitOfWork unitOfWork, IOperationRequestRepository repo, UserService userService, IStaffRepository repoSta, IPatientRepository repoPat, IOperationTypeRepository repoOpTy)
         {
             this._unitOfWork = unitOfWork;
             this._repo = repo;
             this._repoSta = repoSta;
             this._repoPat = repoPat;
             this._repoOpTy = repoOpTy;
+            this._userService = userService;
         }
 
         public async Task<List<OperationRequestDto>> GetAllAsysnc()
@@ -151,5 +156,38 @@ namespace DDDNetCore.Domain.OperationRequest
             return operationRequestDtos;
         }
 
+        public async Task<bool> DeleteOperationRequest(string id, string userEmail)
+        {
+            User user = await _userService.FindByEmailAsync(userEmail);
+            if (user == null)
+            {
+                throw new BusinessRuleValidationException("No user found with this email.");
+            }
+
+            Staff staff = await _repoSta.FindStaffWithUserId(user.Id.ToString());
+            if (staff == null)
+            {
+                throw new BusinessRuleValidationException("No staff found with this user.");
+            }
+
+            OperationRequest operationRequest = await _repo.GetByIdAsync(new OperationRequestId(id));
+            if (operationRequest == null)
+            {
+                return false;
+            }
+
+            if (operationRequest.Status.Description.Equals("Requested") && 
+                operationRequest.Id.Value == id &&
+                operationRequest.StaffId == staff.Id)
+            {
+                _repo.Remove(operationRequest);
+                await _unitOfWork.CommitAsync();
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
     }
 }

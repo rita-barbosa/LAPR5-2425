@@ -34,7 +34,7 @@ namespace DDDNetCore.Controllers
 
         // POST: api/Staff/Create-StaffProfile
         [HttpPost]
-        [Route("create")]
+        [Route("Create-StaffProfile")]
         [Authorize(Policy = "Admin")]
         public async Task<ActionResult<StaffDto>> CreateStaffProfile(CreatingStaffDto dto)
         {
@@ -134,7 +134,6 @@ namespace DDDNetCore.Controllers
                 return StatusCode(500, new { ex.Message }); 
             }
         }
-
 
     }
 }
