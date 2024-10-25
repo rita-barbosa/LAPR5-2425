@@ -24,7 +24,7 @@ namespace DDDNetCore.Domain.Patients
         public List<AppointmentHistory> AppointmentList { get; set;}
 
         private Patient() { }
-        public Patient(string firstName, string lastName, string fullName, string address, Gender gender,
+        public Patient(string firstName, string lastName, string fullName, string address, string gender,
                         string countryCode, string phoneNumber, string emergencyContact, string email,
                          string dateBirth, string seqNumber)
         {
@@ -44,7 +44,7 @@ namespace DDDNetCore.Domain.Patients
             }
             DateBirth = dateOfBirth;
             Status = true;
-            Gender = gender;
+            Gender = Gender.GetGenderByDescription(gender);
             AppointmentList = new List<AppointmentHistory>();
         }
 

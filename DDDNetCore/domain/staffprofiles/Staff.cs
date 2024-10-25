@@ -34,18 +34,18 @@ namespace DDDNetCore.Domain.StaffProfiles
             Status = true;
             SpecializationId = specializationId ?? throw new BusinessRuleValidationException("Staff members must have a specialization.");
         }
-        public Staff(string seqNumber, string address, string licenseNumber, string firstName, string lastName, string fullName, string email, string countryCode, string phoneNumber, Function function, SpecializationDenomination specializationId)
+        public Staff(string seqNumber, string address, string licenseNumber, string firstName, string lastName, string fullName, string email, string countryCode, string phoneNumber, string function, string specializationId)
         {
-            this.Id = new StaffId(function.GetCorrespondingChar(), seqNumber);
             Address = new ResidentialAddress(address);
             LicenseNumber = new LicenseNumber(licenseNumber);
             Name = new Name(firstName, lastName, fullName);
             Phone = new Phone(countryCode, phoneNumber);
             Email = new Email(email);
             Slots = [];
-            Function = function;
+            Function = Function.GetFunctionByDescription(function);
+            this.Id = new StaffId(Function.GetCorrespondingChar(), seqNumber);
             Status = true;
-            SpecializationId = specializationId ?? throw new BusinessRuleValidationException("Staff members must have a specialization.");
+            SpecializationId = new SpecializationDenomination(specializationId) ?? throw new BusinessRuleValidationException("Staff members must have a specialization.");
         }
 
         public void AddSlot(string startTime, string endTime, string startDate, string endDate = null)
