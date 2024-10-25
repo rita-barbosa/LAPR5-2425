@@ -8,7 +8,7 @@ namespace DDDNetCore.Domain.Shared
         public DateTime End { get; }
 
         public Date(){}
-        public Date(DateTime now) { }
+
         public Date(string start, string end = null)
         {
             if (string.IsNullOrWhiteSpace(start))

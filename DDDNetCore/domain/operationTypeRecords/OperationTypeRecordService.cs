@@ -26,16 +26,17 @@ namespace DDDNetCore.Domain.OperationTypes
 
         public async Task<OperationTypeRecordDto> AddAsync(OperationType operationType)
         {
-            var operationRecord = new OperationTypeRecord(new Date(DateTime.Now), 0, operationType.Id, operationType.Name, operationType.EstimatedDuration, operationType.Status, operationType.RequiredStaff, operationType.Phases);
+            var todayDate = new Date(DateTime.Now.ToString("yyyy-MM-dd"));
+            var operationRecord = new OperationTypeRecord(new Date(todayDate.Start.ToString(), todayDate.End.ToString()), 0, operationType.Id, operationType.Name, operationType.EstimatedDuration, operationType.Status, operationType.RequiredStaff, operationType.Phases);
             await _repo.AddAsync(operationRecord);
-          //  await _unitOfWork.CommitAsync();
+            await _unitOfWork.CommitAsync();
 
-            await _logService.CreateCreationLog(operationRecord.Id.Value, operationRecord.GetType().Name, "New operation type record added.");
+            await _logService.CreateCreationLog(operationRecord.Id.Value, operationRecord.GetType().Name, "New operation type version record created.");
 
             List<RequiredStaffDto> requiredStaffDtos = [];
             foreach (RequiredStaffRecord requiredStaffRecord in operationRecord.RequiredStaffRecords){
-                requiredStaffDtos.Add(new RequiredStaffDto{StaffQuantity =requiredStaffRecord.StaffQuantity.NumberRequired,
-                 Function = requiredStaffRecord.Function.Description, Specialization = requiredStaffRecord.SpecializationId.ToString()});
+                requiredStaffDtos.Add(new RequiredStaffDto{StaffQuantity = requiredStaffRecord.StaffQuantity.NumberRequired,
+                 Function = requiredStaffRecord.Function.Description, Specialization = requiredStaffRecord.SpecializationId.SpeciId});
             }
 
             List<PhaseDto> phaseDtos = [];
@@ -43,8 +44,8 @@ namespace DDDNetCore.Domain.OperationTypes
                 phaseDtos.Add(new PhaseDto{Description = phase.Description.Description, Duration = phase.Duration.DurationMinutes});
             }
 
-           return  new OperationTypeRecordDto(operationRecord.Id.ToString(), operationRecord.Version.Version,
-             operationRecord.EffectiveDate.ToString(), operationRecord.OperationTypeId.ToString(),
+           return  new OperationTypeRecordDto(operationRecord.Id.Value.ToString(), operationRecord.Version.Version,
+             operationRecord.EffectiveDate.ToString(), operationRecord.OperationTypeId.OpID,
               operationRecord.Name.OperationName, operationRecord.EstimatedDuration.TotalDurationMinutes,
                operationRecord.Status.Active, requiredStaffDtos, phaseDtos);
         }

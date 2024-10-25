@@ -1,6 +1,5 @@
 using DDDNetCore.Domain.OperationTypes.ValueObjects.RequiredStaff;
 using DDDNetCore.Domain.Shared;
-using DDDNetCore.Domain.Specializations;
 
 namespace DDDNetCore.Domain.OperationTypesRecords
     {
@@ -10,7 +9,7 @@ namespace DDDNetCore.Domain.OperationTypesRecords
             public OperationTypeRecordId OperationTypeRecordId { get; set; }
             public NumberStaff StaffQuantity { get;  private set; }
             public Function Function { get;  private set; }
-            public SpecializationDenomination SpecializationId { get;  private set; }
+            public StaffSpecialization SpecializationId { get;  private set; }
 
 
             public RequiredStaffRecord(){
@@ -21,7 +20,7 @@ namespace DDDNetCore.Domain.OperationTypesRecords
             {
                 RequiredStaffRecordId = RandomSequenceGenerator.GenerateUniqueRandomSequence(5);
                 StaffQuantity = new NumberStaff(staffneeded);
-                SpecializationId = new SpecializationDenomination(specialization);
+                SpecializationId = new StaffSpecialization(specialization);
                 Function = Function.GetFunctionByDescription(function);
             }
 
