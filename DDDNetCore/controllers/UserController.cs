@@ -121,7 +121,8 @@ namespace DDDNetCore.Controllers
             {
                 var user = await _userService.CreatePatientUserAsync(registerPatientUserDto);
                 _patientService.AddUser(user, registerPatientUserDto.Email, registerPatientUserDto.Phone);
-                await _userService.SendConfirmationEmail(user);
+                string email = await _patientService.GetProfileEmail(user.Email.ToString(), registerPatientUserDto.Phone);
+                await _userService.SendConfirmationEmail(user, email);
                 return Ok("The user has been successfully created. Please verify your email to complete the registration.");
             }
             catch (BusinessRuleValidationException ex)
@@ -142,7 +143,8 @@ namespace DDDNetCore.Controllers
             {
                 var user = await _userService.CreateStaffUserAsync(registerUserDto);
                 _staffService.AddUser(user, registerUserDto.Email, registerUserDto.Phone);
-                await _userService.SendConfirmationEmail(user);
+                string email = await _staffService.GetProfileEmail(user.Email.ToString(), registerUserDto.Phone);
+                await _userService.SendConfirmationEmail(user, email);
                 return Ok("The user has been successfully created. Please verify your email to complete the registration.");
             }
             catch (InvalidOperationException ex1)
@@ -248,6 +250,50 @@ namespace DDDNetCore.Controllers
             _patientService.AnonymizeProfile(userEmail);
 
             return Ok("Patient account successfully deleted!\nSome of your non-identifiable data will be retained, as per our GDPR policies.");
+        }
+
+
+        [HttpPut("send-passwordEmail")]
+        public async Task<IActionResult> ResetPassword([FromQuery] string email)
+        {
+            try
+            {
+                await _userService.ResetPassword(email);
+
+                return Ok("Password reset email was sent!");
+            }
+            catch (BusinessRuleValidationException ex)
+            {
+                return BadRequest(new { ex.Message });
+            }
+            catch (Exception)
+            {
+                return BadRequest(new { V = "An unexpected error occured." });
+            }
+        }
+
+        [HttpPut("update-userPassword")]
+        public async Task<IActionResult> UpdatePassword([FromQuery] string email, [FromQuery] string token, [FromBody] ConfirmEmailUserDto confirmEmailUserDto)
+        {
+            try
+            {
+                if (await _userService.UpdatePassword(email, token, confirmEmailUserDto.NewPassword))
+                {
+                    return Ok("Password was changed successfully.");
+                }
+                else
+                {
+                    return BadRequest("Password update failed.");
+                }
+            }
+            catch (BusinessRuleValidationException ex)
+            {
+                return BadRequest(new { ex.Message });
+            }
+            catch (Exception)
+            {
+                return BadRequest(new { V = "An expected error occured" });
+            }
         }
 
     }

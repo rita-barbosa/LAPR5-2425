@@ -138,6 +138,17 @@ namespace DDDNetCore.Infrastructure.Patients
                     .FirstOrDefaultAsync();
         }
 
+         public async Task<Patient> FindPatientWithEmailOrPhone(string email, string countryCode, string phone)
+        {
+            return await _context.Patients
+                .Where(patient =>
+                    (patient.Email != null && patient.Email.EmailAddress == email) ||
+                    (patient.PhoneNumber != null &&
+                    patient.PhoneNumber.CountryCode == countryCode &&
+                    patient.PhoneNumber.PhoneNumber == phone))
+                .FirstOrDefaultAsync(); // Get the first match or return null if none found
+        }
+
         
     }
 }

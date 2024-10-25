@@ -107,5 +107,34 @@ namespace DDDNetCore.Controllers
             return Ok(staff);
         }
 
+        // POST: api/Staff/Deactivate-StaffProfile
+        [HttpPut]
+        [Route("Deactivate-StaffProfile")]
+        [Authorize(Policy = "Admin")]
+        public async Task<ActionResult> DeactivateStaffProfile([FromBody] IdPassDto idPassDto) 
+        {
+            try
+            {
+                bool result = await _service.DeactivateStaffProfile(idPassDto.Id); 
+                if (result)
+                {
+                    return Ok("Staff deactivated successfully.");
+                }
+                else
+                {
+                    return NotFound($"Staff with ID {idPassDto.Id} not found."); 
+                }
+            }
+            catch (BusinessRuleValidationException ex)
+            {
+                return BadRequest(new { ex.Message }); 
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { ex.Message }); 
+            }
+        }
+
+
     }
 }

@@ -17,6 +17,7 @@ namespace DDDNetCore.Domain.StaffProfiles
         public ResidentialAddress Address { get; private set; }
         public SpecializationDenomination SpecializationId { get; private set; }
         public string? UserReference { get; set; }
+        public bool Status { get; set; }
 
 
         private Staff() { }
@@ -30,6 +31,7 @@ namespace DDDNetCore.Domain.StaffProfiles
             Email = new Email(email);
             Slots = new List<Slot>();
             Function = function;
+            Status = true;
             SpecializationId = specializationId ?? throw new BusinessRuleValidationException("Staff members must have a specialization.");
         }
         public Staff(string seqNumber, string address, string licenseNumber, string firstName, string lastName, string fullName, string email, string countryCode, string phoneNumber, Function function, SpecializationDenomination specializationId)
@@ -42,6 +44,7 @@ namespace DDDNetCore.Domain.StaffProfiles
             Email = new Email(email);
             Slots = [];
             Function = function;
+            Status = true;
             SpecializationId = specializationId ?? throw new BusinessRuleValidationException("Staff members must have a specialization.");
         }
 
@@ -91,6 +94,11 @@ namespace DDDNetCore.Domain.StaffProfiles
                 this.Slots.Add(new Slot(slotDto.StartTime, slotDto.EndTime, slotDto.StartDate, slotDto.EndDate));
 
             }
+        }
+
+        public void DeactivateProfile()
+        {
+            this.Status = false;
         }
 
     }

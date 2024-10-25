@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using DDDNetCore.Domain.Logs;
 using DDDNetCore.Domain.Shared;
 using DDDNetCore.Domain.Specializations;
 using DDDNetCore.Domain.Users;
@@ -11,12 +12,14 @@ namespace DDDNetCore.Domain.StaffProfiles
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IStaffRepository _repo;
+        private readonly LogService _logService;
         private readonly ISpecializationRepository _repoSpec;
 
-        public StaffService(IUnitOfWork unitOfWork, IStaffRepository repo, ISpecializationRepository repoSpec)
+        public StaffService(IUnitOfWork unitOfWork, LogService logService, IStaffRepository repo, ISpecializationRepository repoSpec)
         {
             this._unitOfWork = unitOfWork;
             this._repo = repo;
+            this._logService = logService;
             this._repoSpec = repoSpec;
         }
         public async Task<StaffDto> GetByIdAsync(StaffId id)
@@ -152,6 +155,30 @@ namespace DDDNetCore.Domain.StaffProfiles
             }
 
             return StaffDtoListFiltered;
+        }
+
+        public async Task<bool> DeactivateStaffProfile(string id)
+        {
+            var staff = await _repo.GetByIdAsync(new StaffId(id));
+            if (staff == null)
+            {
+                throw new BusinessRuleValidationException("No staff exists with that Id.");
+            }
+
+            staff.DeactivateProfile();
+
+            await _logService.CreateEditLog(id, staff.GetType().ToString(), "Deactivation of staff's profile.");
+
+            await this._unitOfWork.CommitAsync();
+
+            return true;
+        }
+
+        public async Task<string> GetProfileEmail(string email, string phone)
+        {
+            Staff staff = await _repo.FindStaffWithEmailOrPhone(email, phone.Split(' ')[0], phone.Split(' ')[1]);
+
+            return staff.Email.EmailAddress;
         }
     }
 }

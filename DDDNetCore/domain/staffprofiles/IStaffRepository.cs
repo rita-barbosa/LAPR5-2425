@@ -7,6 +7,7 @@ namespace DDDNetCore.Domain.StaffProfiles
     public interface IStaffRepository : IRepository<Staff, StaffId>
     {
         Task<bool> ExistsStaffWithEmailOrPhone(string email, string CountryCode, string phone);
+        Task<Staff> FindStaffWithEmailOrPhone(string email, string CountryCode, string phone);
         Task<List<Staff>> FilterStaffProfiles(StaffQueryParametersDto dto);
 
         Task<StaffId> FindLastStaffIdAsync();
