@@ -13,6 +13,7 @@ entity Doctor <<entity>>{}
 entity Appointment <<entity>>{}
 entity OperationRequest <<entity>>{}
 entity OperationType <<entity>> {}
+entity OperationTypeRecord <<entity>> {}
 entity Room <<entity>>{}
 entity Specialization <<entity>> {}
 
@@ -26,6 +27,7 @@ OperationRequest --> "1" Doctor : request by
 OperationRequest --> "1" Patient : made for
 Appointment ---> "1" OperationRequest : scheduling of
 OperationRequest ---> "1" OperationType : defined by
+OperationType "1" <-- OperationTypeRecord : versions
 Appointment ---> "1" Room : associated with
 
 

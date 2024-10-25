@@ -119,14 +119,10 @@ namespace DDDNetCore.Controllers
         [Authorize(Policy = "Admin")]
         public async Task<ActionResult<PatientDto>> EditPatientProfile(string id, EditPatientDto dto)
         {
-            if (id != dto.PatientId)
-            {
-                return BadRequest();
-            }
 
             try
             {
-                var patient = await _service.UpdateAsync(dto);
+                var patient = await _service.UpdateAsync(id, dto);
 
                 if (patient == null)
                 {

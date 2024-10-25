@@ -135,40 +135,52 @@ namespace DDDNetCore.Domain.Patients
             return listDto;
         }
 
-        public async Task<PatientDto> UpdateAsync(EditPatientDto dto)
+        public async Task<PatientDto> UpdateAsync(string id,EditPatientDto dto)
         {
-            var patient = await _repo.GetByIdAsync(new MedicalRecordNumber(dto.PatientId));
+            var logEntries = new List<string>();
+            var patient = await _repo.GetByIdAsync(new MedicalRecordNumber(id));
 
             if (patient == null)
                 return null;
 
             bool phoneChange = false, emailChange = false, adressChange = false;
-            string oldEmail = null;
+            string oldEmail = patient.Email.ToString();
 
             if (dto.Phone != null)
             {
                 patient.ChangePhone(dto.Phone);
                 phoneChange = true;
+                logEntries.Add($"phone=[{dto.Phone}]");
             }
 
             if (dto.Email != null)
-            {
-                oldEmail = patient.Email.ToString();
+            {    
                 patient.ChangeEmail(dto.Email);
                 emailChange = true;
+                logEntries.Add($"email=[{dto.Email}]");
             }
 
             if (dto.Address != null)
             {
                 patient.ChangeAddress(dto.Address);
                 adressChange = true;
+                logEntries.Add($"address=[{dto.Address}]");
             }
 
             if (dto.Name != null)
+            {
                 patient.ChangeName(dto.Name);
+                logEntries.Add($"name=[{dto.Name}]");
+            }
 
             if (dto.DateBirth != null)
+            {
                 patient.ChangeDateBirth(dto.DateBirth);
+                logEntries.Add($"datBirth=[{dto.DateBirth}]");
+            }
+
+            var log = $"Edited information of patient profile. The information edited was: {string.Join(", ", logEntries)}.";
+            await _logService.CreateEditLog(patient.Id.AsString(), patient.GetType().ToString(), log);
 
             await this._unitOfWork.CommitAsync();
 
