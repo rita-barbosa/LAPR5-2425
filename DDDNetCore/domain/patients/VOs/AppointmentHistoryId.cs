@@ -6,8 +6,9 @@ namespace DDDNetCore.Domain.Patients
     public class AppointmentHistoryId : EntityId
     {
 
-        public AppointmentHistoryId(String value):base(value)
+        public AppointmentHistoryId(String value, bool v) :base(value)
         {
+            
         }
 
         override

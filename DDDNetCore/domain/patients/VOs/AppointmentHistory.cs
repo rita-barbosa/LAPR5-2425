@@ -15,8 +15,9 @@ public class AppointmentHistory : Entity<AppointmentHistoryId>
     
     }
 
-    public AppointmentHistory(string id, int status, int type, MedicalRecordNumber patientId)
+    public AppointmentHistory(string seqNumber, string id, int status, int type, MedicalRecordNumber patientId)
     { 
+        this.Id = new AppointmentHistoryId(RandomSequenceGenerator.GenerateUniqueRandomSequence(5).ToString(), true);
         ObjectId = id;
         Status = (AppointmentHistoryStatus)status;
         Type = (AppointmentHistoryType)type;
