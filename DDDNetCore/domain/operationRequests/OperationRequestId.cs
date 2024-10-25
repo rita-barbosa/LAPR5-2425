@@ -30,7 +30,8 @@ namespace DDDNetCore.Domain.OperationRequest
         }
         public Guid AsGuid()
         {
-            return (Guid)base.ObjValue;
+            var ob = base.Value;
+            return new Guid((string)ob);
         }
     }
 }

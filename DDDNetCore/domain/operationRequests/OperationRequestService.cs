@@ -9,6 +9,7 @@ using System.Linq;
 using Microsoft.AspNetCore.Http.HttpResults;
 using DDDNetCore.Domain.Users;
 using Microsoft.AspNetCore.Identity;
+using DDDNetCore.Domain.Logs;
 
 namespace DDDNetCore.Domain.OperationRequest
 {
@@ -17,17 +18,19 @@ namespace DDDNetCore.Domain.OperationRequest
         private readonly IUnitOfWork _unitOfWork;
         private readonly IOperationRequestRepository _repo;
         private readonly IStaffRepository _repoSta;
+        private readonly LogService _logService;
         private readonly IPatientRepository _repoPat;
         private readonly IOperationTypeRepository _repoOpTy;
         private readonly UserService _userService;
 
-        public OperationRequestService(IUnitOfWork unitOfWork, IOperationRequestRepository repo, UserService userService, IStaffRepository repoSta, IPatientRepository repoPat, IOperationTypeRepository repoOpTy)
+        public OperationRequestService(IUnitOfWork unitOfWork, IOperationRequestRepository repo, IStaffRepository repoSta, LogService logService, IPatientRepository repoPat, IOperationTypeRepository repoOpTy, UserService userService)
         {
             this._unitOfWork = unitOfWork;
             this._repo = repo;
             this._repoSta = repoSta;
             this._repoPat = repoPat;
             this._repoOpTy = repoOpTy;
+            this._logService = logService;
             this._userService = userService;
         }
 
@@ -97,18 +100,29 @@ namespace DDDNetCore.Domain.OperationRequest
         }
 
 
-        public async Task<OperationRequestDto> UpdateAsync(UpdateOperationRequestDto dto)
+                public async Task<OperationRequestDto> UpdateAsync(UpdateOperationRequestDto dto)
         {
-            var opRequest = await this._repo.GetByIdAsync(new OperationRequestId(dto.Id));
+            var opRequest = await _repo.GetByIdAsync(new OperationRequestId(dto.Id));
 
             if (opRequest == null)
                 return null;
 
-            opRequest.ChangeDeadLineDate(dto.DeadLineDate);
-            opRequest.ChangePriority(dto.Priority);
-            opRequest.ChangeDescription(dto.Description);
+            if (!opRequest.DeadLineDate.Equals(dto.DeadLineDate)){
+                opRequest.ChangeDeadLineDate(dto.DeadLineDate);
+                await _logService.CreateEditLog(opRequest.Id.ToString(), opRequest.DeadLineDate.GetType().Name, "The operation request deadline date was altered.");
+            }
 
-            await this._unitOfWork.CommitAsync();
+            if (!opRequest.Priority.Equals(dto.Priority)){
+                opRequest.ChangePriority(dto.Priority);
+                await _logService.CreateEditLog(opRequest.Id.ToString(), opRequest.Priority.GetType().Name, "The operation request priority was altered.");
+            }
+
+            if (!opRequest.Description.Equals(dto.Description)){
+                opRequest.ChangeDescription(dto.Description);
+                await _logService.CreateEditLog(opRequest.Id.ToString(), opRequest.Description.GetType().Name, "The operation request description was altered.");
+            }
+
+            await _unitOfWork.CommitAsync();
 
             return new OperationRequestDto(opRequest.Id.AsGuid(), opRequest.DeadLineDate.ToString(), opRequest.Priority.ToString(),
                  opRequest.DateOfRequest.ToString(), opRequest.Status.ToString(), opRequest.StaffId.AsString(), opRequest.Description.DescriptionText, opRequest.PatientId.AsString(), opRequest.OperationTypeId.AsString());
@@ -188,6 +202,20 @@ namespace DDDNetCore.Domain.OperationRequest
             {
                 return false;
             }
+        }
+
+        public async Task<bool> CheckDoctorIsRequestingDoctor(string? userEmail, string id)
+        {
+
+            var request = await GetByIdAsync(new OperationRequestId(id));
+
+            var doctor = await _repoSta.GetStaffWithEmail(userEmail);
+
+            if (request.StaffId.Equals(doctor.Id.AsString())){
+                return true;
+            }
+
+            return false;            
         }
     }
 }

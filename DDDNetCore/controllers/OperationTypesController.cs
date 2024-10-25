@@ -7,7 +7,6 @@ using DDDNetCore.Domain.Shared;
 using Microsoft.AspNetCore.Authorization;
 using System.Collections.Generic;
 using Microsoft.IdentityModel.Tokens;
-using System.Security.Claims;
 
 namespace DDDNetCore.Controllers
 {
@@ -44,14 +43,7 @@ namespace DDDNetCore.Controllers
         [HttpPost]
         public async Task<ActionResult<OperationTypeDto>> Create(OperationTypeDto dto)
         {
-
-            foreach (RequiredStaffDto staff in dto.RequiredStaff)
-            {
-                Console.WriteLine(staff.Function);
-            }
-
             var operationType = await _service.AddAsync(dto);
-
             return CreatedAtAction(nameof(GetGetById), new { id = new OperationTypeId(operationType.Name) }, operationType);
         }
 

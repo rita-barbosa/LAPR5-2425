@@ -63,13 +63,15 @@ namespace DDDNetCore.Controllers
         }
 
 
-        // PUT: api/OperationRequest/F5
-        [HttpPut("{id}")]
-        public async Task<ActionResult<UpdateOperationRequestDto>> Update(string id, UpdateOperationRequestDto dto)
+        // PUT: api/OperationRequest/Update
+        [HttpPut("Update")]
+        [Authorize(Policy = "Doctor")]
+        public async Task<ActionResult<UpdateOperationRequestDto>> Update(UpdateOperationRequestDto dto)
         {
-            if (id != dto.Id)
-            {
-                return BadRequest();
+            string? userEmail = User.FindFirstValue(ClaimTypes.Email);
+
+            if (!await _service.CheckDoctorIsRequestingDoctor(userEmail, dto.Id)){
+                return BadRequest("You are not the requesting doctor for the choosen operation request.");
             }
 
             try
@@ -78,13 +80,13 @@ namespace DDDNetCore.Controllers
 
                 if (opr == null)
                 {
-                    return NotFound();
+                    return NotFound("An operation request with the provided ID does not exist.");
                 }
                 return Ok(opr);
             }
             catch (BusinessRuleValidationException ex)
             {
-                return BadRequest(new { Message = ex.Message });
+                return BadRequest(new { ex.Message });
             }
         }
 

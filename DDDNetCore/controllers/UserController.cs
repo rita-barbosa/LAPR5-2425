@@ -11,7 +11,6 @@ using DDDNetCore.Domain.StaffProfiles;
 using DDDNetCore.Domain.Emails;
 using DDDNetCore.Domain.Tokens;
 using DDDNetCore.Domain.Shared;
-using Microsoft.AspNetCore.Authentication;
 
 namespace DDDNetCore.Controllers
 {
@@ -172,14 +171,9 @@ namespace DDDNetCore.Controllers
                 string? email = userInfo?.GetType().GetProperty("Email")?.GetValue(userInfo, null)?.ToString();
                 string? userId = userInfo?.GetType().GetProperty("Id")?.GetValue(userInfo, null)?.ToString();
 
-                Console.WriteLine("EMAIL " + email);
-                Console.WriteLine("USERID " + userId);
-
                 var token = await _tokenService.CreateAccountDeletionToken(email);
 
                 var confirmationLink = Url.Action("ConfirmPatientAccountDeletionNotProfile", "User", new { userId, token = token.TokenId }, Request.Scheme);
-
-                Console.WriteLine("CONFIRMATION LINK: " + confirmationLink);
 
                 _patientService.ConfirmPatientAccountDeletionEmail(confirmationLink, email);
 
