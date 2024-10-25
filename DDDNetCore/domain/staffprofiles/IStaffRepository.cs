@@ -9,7 +9,7 @@ namespace DDDNetCore.Domain.StaffProfiles
         Task<bool> ExistsStaffWithEmailOrPhone(string email, string CountryCode, string phone);
         Task<Staff> FindStaffWithEmailOrPhone(string email, string CountryCode, string phone);
         Task<List<Staff>> FilterStaffProfiles(StaffQueryParametersDto dto);
-
+        Task<Staff> FindStaffWithUserId(string userId);
         Task<StaffId> FindLastStaffIdAsync();
         Task<Staff> GetStaffWithEmail(string email);
     }

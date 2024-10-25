@@ -104,6 +104,14 @@ namespace DDDNetCore.Infrastructure.StaffProfiles
                 .FirstOrDefaultAsync(); // Get the first match or return null if none found
         }
 
+        public async Task<Staff> FindStaffWithUserId(string userId)
+        {
+            return await _context.StaffProfiles
+                .Where(staff =>
+                    staff.UserReference != null &&
+                    staff.UserReference.ToString() == userId)
+                    .FirstOrDefaultAsync() ?? throw new NullReferenceException("Couldn't find the staff with the specified user reference.");
+        }
 
         public async Task<Staff> GetStaffWithEmail(string email)
         {
