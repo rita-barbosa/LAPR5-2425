@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using System.Net.Sockets;
+using DDDNetCore.Domain.OperationRequest;
 using DDDNetCore.Domain.Shared;
 using DDDNetCore.Domain.Users;
 
@@ -18,6 +20,7 @@ namespace DDDNetCore.Domain.Patients
         public DateTime DateBirth { get; private set; }
         public string? UserReference { get; set; }
         public bool Status { get; set; }
+        public List<AppointmentHistory> AppointmentList { get; set;}
 
         private Patient() { }
         public Patient(string firstName, string lastName, string fullName, string address, Gender gender,
@@ -41,6 +44,7 @@ namespace DDDNetCore.Domain.Patients
             DateBirth = dateOfBirth;
             Status = true;
             Gender = gender;
+            AppointmentList = new List<AppointmentHistory>();
         }
 
         public Patient(string firstName, string lastName, string address, Gender gender,
@@ -66,6 +70,7 @@ namespace DDDNetCore.Domain.Patients
             DateBirth = dateOfBirth;
             Status = true;
             Gender = gender;
+            AppointmentList = new List<AppointmentHistory>();
         }
 
         public void AddUser(User user)
@@ -138,10 +143,26 @@ namespace DDDNetCore.Domain.Patients
             Name = new Name(name);
         }
 
-        internal void ChangeEmergencyContact(string emergencyContact)
+        public void ChangeEmergencyContact(string emergencyContact)
         {
             if (EmergencyContact.Equals(new Phone(emergencyContact))) throw new BusinessRuleValidationException("The new emergency contact is identical to the existing one.");
             EmergencyContact = new Phone(emergencyContact);
+        }
+
+        public void AddRequestToHistory(AppointmentHistory appointmentHistory)
+        {
+            this.AppointmentList.Add(appointmentHistory);
+        }
+
+        public void RemoveRequestFromHistory(OperationRequestId operationRequestId)
+        {
+            foreach (AppointmentHistory appointmentHistory in this.AppointmentList)
+            {
+                if(appointmentHistory.Id.Equals(operationRequestId.ToString()))
+                {
+                    this.AppointmentList.Remove(appointmentHistory);
+                }
+            }
         }
     }
 }

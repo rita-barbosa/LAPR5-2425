@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using DDDNetCore.Domain.Patients;
 using DDDNetCore.Domain.Users;
+using DDDNetCore.Domain.Shared;
 
 namespace DDDNetCore.Infrastructure.Products
 {
@@ -23,6 +24,31 @@ namespace DDDNetCore.Infrastructure.Products
                    .IsRequired()
                    .HasColumnName("FullName");
            });
+
+          builder.OwnsMany(p => p.AppointmentList, a =>
+            {
+                a.WithOwner().HasForeignKey("PatientId");
+                a.Property(a => a.Id).IsRequired();
+                a.Property(a => a.Status)  
+                    .IsRequired();          
+                a.Property(a => a.Type)    
+                    .IsRequired();          
+                a.Property(a => a.CreatedAt)
+                    .HasConversion(
+                        date => date.Start, 
+                        value => new Date(value)) 
+                    .HasColumnName("CreatedAt")
+                    .HasColumnType("datetime")
+                    .IsRequired();
+                a.Property(a => a.PatientId)
+                    .HasConversion(
+                        id => id.ToString(),
+                        value => new MedicalRecordNumber(value))
+                    .IsRequired();
+
+                a.HasKey("Id"); 
+            }); 
+   
 
             builder.Property(b => b.Status)
                 .IsRequired()
