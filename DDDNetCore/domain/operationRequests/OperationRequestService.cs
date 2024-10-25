@@ -146,7 +146,7 @@ namespace DDDNetCore.Domain.OperationRequest
                 var patient = await _repoPat.GetByIdAsync(opRequest.PatientId) ?? throw new BusinessRuleValidationException("Couldn't obtain the patient associated with the operation request.");
 
                 var dto = new ListOperationRequestDto(
-                    patient.Name.ToString(), // Handle null case if patient is not found
+                    patient.Name.ToString(), 
                     opRequest.OperationTypeId.AsString(),
                     opRequest.Status.ToString()
                 );

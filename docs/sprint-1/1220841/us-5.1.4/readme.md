@@ -14,7 +14,6 @@
         - [Level 3](#level-3)
       - [Development View](#development-view)
       - [Physical View](#physical-view)
-    - [4.3. Applied Patterns](#43-applied-patterns)
     - [4.4. Tests](#44-tests)
   - [5. Implementation](#5-implementation)
   - [6. Integration/Demonstration](#6-integrationdemonstration)
@@ -113,9 +112,7 @@ The diagrams can be found in the [team decision views folder](../../team-decisio
 
 The diagrams can be found in the [team decision views folder](../../team-decisions/views/general-views.md#4-physical-view).
 
-### 4.3. Applied Patterns
 
-_// To do //_
 
 ### 4.4. Tests
 

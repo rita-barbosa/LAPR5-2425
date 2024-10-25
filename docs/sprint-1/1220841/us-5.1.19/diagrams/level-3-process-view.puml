@@ -6,9 +6,13 @@ autonumber
 participant "OperationRequestRoute" as ROUTE <<route>>
 participant "OperationRequestDto" as pat_dto <<dto>>
 participant "OperationRequestController" as CTRL <<controller>>
+participant "PrincipalExtensions" as CLAIMS <<utility>>
 participant "OperationRequestService" as SVC <<service>>
+participant "StaffRepository" as STA_REPO <<repository>>
+participant "PatientRepository" as PAT_REPO <<repository>>
 participant "OperationRequestRepository" as REPO <<repository>>
-participant "OperationRequestMapper" as MAP <<mapper>>
+participant "StaffRepository" as REPO <<repository>>
+
 participant "OperationRequestDTO" as DTO <<dto>>
 
 
@@ -16,39 +20,54 @@ participant "OperationRequestDTO" as DTO <<dto>>
 activate ROUTE
 note right of ROUTE:**Params**: **[optional]** patientname,\noperationtype, priority, status,\ndaterequest, deadlinedate
 
-ROUTE -> CTRL: getOperationRequisitionsByFilters(filters)
+ROUTE -> CTRL: GetOperationRequestByFilters(filters)
 activate CTRL
 
-CTRL -> SVC: getOperationRequisitionsByFilters(filters)
+note right of CTRL: **filters** represent the various variables passed as parameters.
+
+CTRL -> CLAIMS : FindFirstValue(ClaimTypes.Email)
+activate CLAIMS
+
+CLAIMS --> CTRL : emailLoggedInUser
+deactivate CLAIMS
+
+
+CTRL -> SVC: GetOperationRequestByFiltersAsync(email,filters)
 activate SVC
 
+SVC -> STA_REPO: GetStaffWithEmail(email);
+activate STA_REPO
 
-SVC -> SVC : generateQueryFromFilters(filters)
-activate SVC
-SVC --> SVC : query
-deactivate SVC
-|||
+STA_REPO --> SVC: staff
+deactivate STA_REPO
 
-SVC -> REPO : findAllConditioned(query)
+SVC -> REPO : findAllConditioned(staffId, filters)
 activate REPO
 REPO --> SVC : operationRequests
 deactivate REPO
 
-    loop for all the profiles in the list
-        SVC -> MAP : toDTO(operationRequest)
-        activate MAP
+SVC -> SVC: ConvertOperationRequestToDto(operationRequests)
+activate SVC
 
-        MAP -> DTO ** : create()
+loop for all the profiles in the list
+        SVC -> PAT_REPO : GetByIdAsync(patientId)
+        activate PAT_REPO
+        PAT_REPO -->  SVC : patient
+        deactivate PAT_REPO
 
-        MAP --> SVC : operationRequestDTO
-        deactivate MAP
-    end loop
+        SVC -> DTO ** : create(patientName,operationType,operationRequestStatus)
+end loop
 
 
+SVC --> SVC : operationRequestDtos
+deactivate SVC
 
 SVC --> CTRL: operationRequestDTOs
 deactivate SVC
+
 CTRL --> ROUTE: operationRequestDTOs
 deactivate CTRL
-   deactivate ROUTE
-    @enduml
+
+[o<-- ROUTE: operationRequestDTOs
+deactivate ROUTE
+@enduml

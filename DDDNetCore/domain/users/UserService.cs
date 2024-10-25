@@ -16,14 +16,14 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace DDDNetCore.Domain.Users
 {
-    public class UserService 
+    public class UserService
     {
         private readonly UserManager<User> _userManager;
         private readonly RoleManager<Role> _roleManager;
         private readonly StaffService _staffService;
         private readonly EmailService _emailService;
-        private readonly LogService _logService;
         private readonly TokenService _tokenService;
+        private readonly LogService _logService;
         private readonly IConfiguration _configuration;
         public UserService(UserManager<User> userManager, RoleManager<Role> roleManager,
                                  StaffService staffService, LogService logService,
@@ -39,35 +39,40 @@ namespace DDDNetCore.Domain.Users
             _configuration = configuration;
         }
 
-        public async Task<bool> ConfirmEmailPatient(string userId, string token)
+        public async Task ConfirmEmailPatient(string userId, string token)
         {
-            var decodedToken = Uri.UnescapeDataString(token);
-            var result = await ConfirmEmailToken(userId, decodedToken);
-            if (result)
-            {
-                User user = await FindByIdAsync(userId);
-                user.changeStatus(true);
-                await UpdateAsync(user);
-                return true;
-            }
+            await ConfirmEmailVerifications(userId, token);
 
-            return false;
+            User user = await FindByIdAsync(userId);
+            user.changeStatus(true);
+            await UpdateAsync(user);
         }
 
-        public async Task<bool> ConfirmEmailStaff(string userId, string token, string newPassword)
+        public async Task ConfirmEmailStaff(string userId, string token, string newPassword)
         {
-            var result = await ConfirmEmailToken(userId, token);
-            if (result)
-            {
-                User user = await FindByIdAsync(userId);
-                var resetToken = await _tokenService.GeneratePasswordResetTokenAsync(user);
-                await ResetPasswordAsync(user, resetToken, newPassword);
-                user.changeStatus(true);
-                await UpdateAsync(user);
-                return true;
-            }
+            await ConfirmEmailVerifications(userId, token);
 
-            return false;
+            User user = await FindByIdAsync(userId);
+            var resetToken = await _tokenService.GeneratePasswordResetTokenAsync(user);
+            await _userManager.ResetPasswordAsync(user, resetToken, newPassword);
+            user.changeStatus(true);
+            await UpdateAsync(user);
+        }
+        private async Task ConfirmEmailVerifications(string userId, string token)
+        {
+            if (string.IsNullOrWhiteSpace(userId) || string.IsNullOrWhiteSpace(token))
+                throw new BusinessRuleValidationException("User Email and Token are required.");
+
+            var decodedToken = Uri.UnescapeDataString(token);
+
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
+                throw new BusinessRuleValidationException("Unable to find the specified user.");
+
+            var result = await _tokenService.ConfirmEmailToken(userId, decodedToken);
+            if (!result)
+                throw new BusinessRuleValidationException("Unable to confirm the email.");
+
         }
 
         public async Task<string> Login(LoginUserDto loginUserDto)
@@ -77,16 +82,14 @@ namespace DDDNetCore.Domain.Users
               ?? throw new BusinessRuleValidationException("Invalid email.");
 
             if (!user.Status)
-            {
                 throw new BusinessRuleValidationException("Account not yet activated.");
-            }
+
             if (!await _userManager.CheckPasswordAsync(user, loginUserDto.Password))
-            {
                 throw new BusinessRuleValidationException("Invalid password.");
-            }
 
             return await GenerateJwtToken(user);
         }
+
         private async Task<string> GenerateJwtToken(User user)
         {
             var roles = await _userManager.GetRolesAsync(user);
@@ -114,14 +117,16 @@ namespace DDDNetCore.Domain.Users
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
-        private async Task<bool> ConfirmEmailToken(string userId, string token)
-        {
-            return await _tokenService.ConfirmEmailToken(userId, token);
-        }
-
         public async Task<bool> UserExistsById(string userId)
         {
-            User user = await _userManager.FindByIdAsync(userId);
+            var user = await _userManager.FindByIdAsync(userId) ?? throw new BusinessRuleValidationException("Unable to find the specified user.");
+            return true;
+        }
+
+
+        public async Task<bool> UserExistsByEmail(string email)
+        {
+            User user = await _userManager.FindByEmailAsync(email);
             if (user == null)
             {
                 return false;
@@ -144,22 +149,37 @@ namespace DDDNetCore.Domain.Users
             return await _userManager.UpdateAsync(user);
         }
 
-        private async Task<IdentityResult> ResetPasswordAsync(User user, string resetToken, string newPassword)
+        public async Task<User> CreateUserAsync(RegisterUserDto dto)
         {
-            return await _userManager.ResetPasswordAsync(user, resetToken, newPassword);
+            return await CreateAsync(dto.Email, dto.Password, dto.Role, true);
         }
-
-        internal async void AddToRoleAsync(User user, string role)
+        public async Task<User> CreateStaffUserAsync(RegisterUserDto dto)
         {
-            await _userManager.AddToRoleAsync(user, role);
+            return await CreateAsync(dto.Email, dto.Password, dto.Role, false);
         }
-
-        internal async Task<IdentityResult> CreateAsync(User user, string password)
+        public async Task<User> CreatePatientUserAsync(RegisterPatientUserDto registerPatientUserDto)
         {
-            return await _userManager.CreateAsync(user, password);
+            return await CreateAsync(registerPatientUserDto.Email, registerPatientUserDto.Password, "Patient", false);
         }
+        private async Task<User> CreateAsync(string email, string password, string role, bool activation)
+        {
+            bool roleExists = await _roleManager.RoleExistsAsync(role);
+            if (!roleExists)
+                throw new BusinessRuleValidationException("The specified role is not available.");
 
-        internal async Task<IdentityResult> DeleteByIdAsync(string userReference)
+            var user = new User { UserName = email, Email = email, Status = activation };
+
+            var createResult = await _userManager.CreateAsync(user, password);
+            if (!createResult.Succeeded)
+                throw new BusinessRuleValidationException("Unable to create the user.");
+
+            var addToRoleResult = await _userManager.AddToRoleAsync(user, role);
+            if (!addToRoleResult.Succeeded)
+                throw new BusinessRuleValidationException("Unable to configure the user's role.");
+
+            return user;
+        }
+        public async Task<IdentityResult> DeleteByIdAsync(string userReference)
         {
             return await _userManager.DeleteAsync(await _userManager.FindByIdAsync(userReference));
         }
@@ -174,7 +194,7 @@ namespace DDDNetCore.Domain.Users
             {
                 throw new BusinessRuleValidationException("Unable to update the user's email.");
             }
-            
+
             user.changeStatus(false);
             await _userManager.UpdateAsync(user);
             await SendConfirmationChangeEmail(user, oldEmail, await _userManager.GenerateEmailConfirmationTokenAsync(user));
@@ -187,12 +207,21 @@ namespace DDDNetCore.Domain.Users
 
             await SendEmail(email, "Update Email Confirmation", body);
         }
-        private async Task SendConfirmationEmail(User user, string token)
+        public async Task SendConfirmationEmail(User user, string email)
         {
+            string token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
             string confirmationLink = await ConfigureUrlConfirmation(token, user);
             var body = "<p>Hello,</p><p>This email was sent to inform you that your user account in the HealthCare Clinic System has been created. </p><p><a href='" + confirmationLink + "'>Click in the link to confirm the activation of the account.</a></p><p>Thank you for choosing us,<br>HealthCare Clinic</p></body></html>";
 
-            await SendEmail(user.Email, "Account Activation", body);
+            await SendEmail(email, "Account Activation", body);
+        }
+
+        private async Task SendPasswordEmail(User user, string token)
+        {
+            string confirmationLink = await ConfigureUrlPasswordConfirmation(token, user);
+            var body = "<p>Hello,</p><p>This email was sent to allow you to change your password in your HealthCare Clinic System account. </p><p><a href='" + confirmationLink + "'>Click in the link to change your password.</a></p><p>Thank you for choosing us,<br>HealthCare Clinic</p></body></html>";
+
+            await SendEmail(user.Email, "Password Reset", body);
         }
 
         private async Task<string> ConfigureUrlConfirmation(string token, User user)
@@ -204,9 +233,25 @@ namespace DDDNetCore.Domain.Users
             var encodedToken = Uri.EscapeDataString(token);
             var baseUrl = _configuration["App:BaseUrl"];
             return role.Equals("Patient")
-            ? $"{baseUrl}/Activate-PatientAccount?userId={user.Id}&token={encodedToken}"
-            : $"{baseUrl}/Activate-StaffAccount?userId={user.Id}&token={encodedToken}";
+            ? $"{baseUrl}/activate-patient?userId={user.Id}&token={encodedToken}"
+            : $"{baseUrl}/activate-staff?userId={user.Id}&token={encodedToken}";
         }
+
+        private async Task<string> ConfigureUrlPasswordConfirmation(string token, User user)
+        {
+            string? role = (await _userManager.GetRolesAsync(user)).FirstOrDefault();
+
+            if (role == null) throw new NullReferenceException("Can't obtain the user role.");
+
+            var encodedToken = Uri.EscapeDataString(token);
+            var baseUrl = _configuration["App:BaseUrl"];
+            if (role.Equals("Admin") || role.Equals("Technician") || role.Equals("Doctor") || role.Equals("Nurse"))
+                return $"{baseUrl}/Update-UserPassword?email={user.Email}&token={encodedToken}";
+
+
+            throw new BusinessRuleValidationException("Invalid user role. Only Admin, Doctor, Technician, or Nurse are allowed.");
+        }
+
         private async Task SendEmail(string receiver, string subject, string body)
         {
             if (receiver == null) throw new NullReferenceException("The recipient's email cannot be null.");
@@ -220,13 +265,48 @@ namespace DDDNetCore.Domain.Users
             await _emailService.SendConfirmationEmail(emailDto);
         }
 
+        public async Task ResetPassword(string email)
+        {
+            User user = await _userManager.FindByEmailAsync(email) ?? throw new BusinessRuleValidationException("Can't find the currently logged in user.");
+            user.changeStatus(false);
+            await _userManager.UpdateAsync(user);
+            await SendPasswordEmail(user, await _userManager.GenerateEmailConfirmationTokenAsync(user));
+        }
+
+        public async Task<bool> UpdatePassword(string email, string token, string newPassword)
+        {
+            if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(token))
+            {
+                throw new Exception("User Email and Token are required.");
+            }
+
+            if (!await UserExistsByEmail(email))
+            {
+                throw new Exception("User not found.");
+            }
+
+            string userId = (await FindByEmailAsync(email)).Id;
+            var result = await _tokenService.ConfirmEmailToken(userId, token);
+            if (result)
+            {
+                User user = await FindByIdAsync(userId);
+                var resetPasswordToken = await _tokenService.GeneratePasswordResetTokenAsync(user);
+                await _userManager.ResetPasswordAsync(user, resetPasswordToken, newPassword);
+                user.changeStatus(true);
+                await UpdateAsync(user);
+                return true;
+            }
+            return false;
+        }
+
+
         public async Task<string> DeleteAsync(string userId)
         {
             var user = await _userManager.FindByIdAsync(userId);
 
             if (user == null)
                 return null;
-            
+
             await _userManager.DeleteAsync(user);
             await _logService.CreateDeletionLog(user.Id.ToString(), user.GetType().Name, "Deletion of user account.");
 
@@ -240,7 +320,6 @@ namespace DDDNetCore.Domain.Users
             //delete account
             return await DeleteAsync(userId);
         }
-
 
     }
 }

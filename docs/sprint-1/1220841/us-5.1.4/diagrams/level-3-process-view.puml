@@ -6,7 +6,7 @@ autonumber
 participant "PatientRoute" as ROUTE <<route>>
 participant "EditPatientProfileDto" as pat_dto <<dto>>
 participant "PatientController" as CTRL <<controller>>
-participant "ClaimsPrincipal" as CLAIM
+participant "PrincipalExtensions" as CLAIMS <<utility>>
 participant "PatientService" as SVC <<service>>
 participant "LogService" as LOG <<service>>
 participant "UserService" as US_SVC <<service>>
@@ -26,11 +26,11 @@ ROUTE -> pat_dto **: create(json)
 ROUTE -> CTRL: EditPatientProfile(editPatientProfileDto)
 activate CTRL
 
-CTRL -> CLAIM : FindFirstValue(ClaimTypes.Email)
-activate CLAIM
+CTRL -> CLAIMS : FindFirstValue(ClaimTypes.Email)
+activate CLAIMS
 
-CLAIM --> CTRL : emailLoggedInUser
-deactivate CLAIM
+CLAIMS --> CTRL : emailLoggedInUser
+deactivate CLAIMS
 
 alt email != null
 
