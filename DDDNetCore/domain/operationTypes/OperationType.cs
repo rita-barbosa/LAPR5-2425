@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using DDDNetCore.Domain.OperationTypes.ValueObjects;
 using DDDNetCore.Domain.OperationTypes.ValueObjects.Phase;
 using DDDNetCore.Domain.OperationTypes.ValueObjects.RequiredStaff;
+using DDDNetCore.Domain.OperationTypesRecords;
 using DDDNetCore.Domain.Shared;
 
 namespace DDDNetCore.Domain.OperationTypes
@@ -14,6 +15,7 @@ namespace DDDNetCore.Domain.OperationTypes
         public OperationTypeStatus Status { get; private set; }
         public OperationTypeName Name { get; private set; }
         public List<RequiredStaff> RequiredStaff { get; private set; }
+        public List<OperationTypeRecord> History { get; private set; }
 
         private static readonly int NUMBER_OF_OPERATION_PHASES = 3;
 
