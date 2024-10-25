@@ -15,11 +15,11 @@ public class AppointmentHistory : Entity<AppointmentHistoryId>
     
     }
 
-    public AppointmentHistory(string id, string status, string type, MedicalRecordNumber patientId)
+    public AppointmentHistory(string id, int status, int type, MedicalRecordNumber patientId)
     { 
         ObjectId = id;
-        Status = (AppointmentHistoryStatus)Enum.Parse(typeof(AppointmentHistoryStatus), status);
-        Type = (AppointmentHistoryType)Enum.Parse(typeof(AppointmentHistoryType), type);
+        Status = (AppointmentHistoryStatus)status;
+        Type = (AppointmentHistoryType)type;
         CreatedAt = new Date(DateTime.Now.ToString());
         PatientId = patientId;
     }
