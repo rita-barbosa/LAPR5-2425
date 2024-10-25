@@ -27,7 +27,8 @@ namespace DDDNetCore.Infrastructure.Products
 
             builder.HasMany(p => p.AppointmentList)
                 .WithOne() 
-                .HasForeignKey(ah => ah.PatientId); 
+                .HasForeignKey(ah => ah.PatientId)
+                .IsRequired(); 
 
             builder.Property(b => b.Status)
                 .IsRequired()
