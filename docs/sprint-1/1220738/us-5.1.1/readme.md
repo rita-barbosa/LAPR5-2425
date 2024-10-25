@@ -129,7 +129,7 @@ However level 3 is shown below.
 
 #### 4.1.2 Process View - Staff
 
-![Process View - Admin](Diagrams\Views\process-view-level-3-STAFF.svg)
+![Process View - Admin](Diagrams\Views\process-view-level-3-staff-profile.svg)
 
 ### 4.2. Domain Model Excerpt
 

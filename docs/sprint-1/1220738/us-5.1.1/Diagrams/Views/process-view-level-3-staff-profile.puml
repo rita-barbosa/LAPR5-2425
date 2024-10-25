@@ -15,7 +15,7 @@ ROUTE -> CONTROL : createStaffProfile(staffProfileData)
 Activate CONTROL
 
 CONTROL -> StaffDTO** : toDTO(staffProfileData)
-CONTROL -> STAFFServ : checkIfStaffExists(staffDTO)
+CONTROL -> STAFFServ : createStaffProfile(staffDTO)
 Activate STAFFServ
 
 STAFFServ -> STAFFRepo : existsById(staffDTO.email)
@@ -24,12 +24,6 @@ Activate STAFFRepo
 STAFFRepo --> STAFFServ : boolean
 note right : Checks if a staff\ndoesn't exist with\nthat email.
 Deactivate STAFFRepo
-
-STAFFServ --> CONTROL : boolean
-Deactivate STAFFServ
-
-CONTROL -> STAFFServ : createStaffProfile(staffDTO)
-Activate STAFFServ
 
 STAFFServ -> STAFF**
 STAFFServ -> STAFFRepo : save(staff)
