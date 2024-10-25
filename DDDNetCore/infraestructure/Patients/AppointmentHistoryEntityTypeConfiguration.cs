@@ -6,15 +6,16 @@ public class AppointmentHistoryConfiguration : IEntityTypeConfiguration<Appointm
 {
     public void Configure(EntityTypeBuilder<AppointmentHistory> builder)
     {
-        // Define the primary key
         builder.HasKey(ah => ah.Id);
 
-        // Define properties for AppointmentHistory
+        builder.Property(ah => ah.ObjectId)
+            .IsRequired(); 
+
         builder.Property(ah => ah.Status)
-            .IsRequired(); // Assuming Status is an enum or another required type
+            .IsRequired(); 
 
         builder.Property(ah => ah.Type)
-            .IsRequired(); // Assuming Type is an enum or another required type
+            .IsRequired(); 
 
         builder.OwnsOne(b => b.CreatedAt, dr => 
             {
@@ -23,13 +24,11 @@ public class AppointmentHistoryConfiguration : IEntityTypeConfiguration<Appointm
                 .HasColumnName("CreatedAt");
             });
 
-        // Configure PatientId
-        builder.Property(ah => ah.PatientId) // Just use the whole object here
-            .IsRequired(); // PatientId is required and should not be null
+        builder.Property(ah => ah.PatientId) 
+            .IsRequired(); 
 
-        // Configure the relationship with Patient
         builder.HasOne<Patient>()
             .WithMany(p => p.AppointmentList)
-            .HasForeignKey(ah => ah.PatientId); // Just use PatientId instead of PatientId.Value
+            .HasForeignKey(ah => ah.PatientId); 
     }
 }
