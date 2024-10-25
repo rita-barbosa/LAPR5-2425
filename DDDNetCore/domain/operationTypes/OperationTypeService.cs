@@ -4,6 +4,7 @@ using DDDNetCore.Domain.Shared;
 using DDDNetCore.Domain.OperationTypes.ValueObjects.RequiredStaff;
 using DDDNetCore.Domain.OperationTypes.ValueObjects.Phase;
 using System;
+using DDDNetCore.Domain.Logs;
 
 namespace DDDNetCore.Domain.OperationTypes
 {
@@ -12,11 +13,17 @@ namespace DDDNetCore.Domain.OperationTypes
 
         private readonly IUnitOfWork _unitOfWork;
         private readonly IOperationTypeRepository _repo;
+      
+       private readonly OperationTypeRecordService __recordService;
 
-        public OperationTypeService(IUnitOfWork unitOfWork, IOperationTypeRepository repo)
+        private readonly LogService _logService;
+
+        public OperationTypeService(IUnitOfWork unitOfWork, IOperationTypeRepository repo, LogService logService, OperationTypeRecordService operationTypeRecordService)
         {
-            this._unitOfWork = unitOfWork;
-            this._repo = repo;
+            _unitOfWork = unitOfWork;
+            _repo = repo;
+            _logService = logService;
+            __recordService = operationTypeRecordService;
         }
 
         public async Task<List<OperationTypeDto>> GetAllAsync()
@@ -49,6 +56,12 @@ namespace DDDNetCore.Domain.OperationTypes
             );
 
             await this._repo.AddAsync(operationType);
+            await this._unitOfWork.CommitAsync();
+
+            await _logService.CreateCreationLog(operationType.Id.Value, operationType.GetType().Name, "New operation type added: " + operationType.Name.OperationName);
+
+            await __recordService.AddAsync(operationType);
+
             await this._unitOfWork.CommitAsync();
 
             return ToDto(operationType);

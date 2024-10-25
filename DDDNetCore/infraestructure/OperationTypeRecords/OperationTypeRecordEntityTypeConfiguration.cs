@@ -1,16 +1,40 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using DDDNetCore.Domain.OperationTypesRecords;
 using DDDNetCore.Domain.OperationTypes;
 
 
-namespace DDDNetCore.Infrastructure.OperationTypes
+namespace DDDNetCore.Infrastructure.OperationTypeRecords
 {
-    internal class OperationTypeEntityTypeConfiguration : IEntityTypeConfiguration<OperationType>
+    internal class OperationTypeRecordEntityTypeConfiguration : IEntityTypeConfiguration<OperationTypeRecord>
     {
-        public void Configure(EntityTypeBuilder<OperationType> builder)
+        public void Configure(EntityTypeBuilder<OperationTypeRecord> builder)
         {
             // primary key
             builder.HasKey(b => b.Id);
+
+            // Version as value object
+            builder.OwnsOne(b => b.Version, n =>
+            {
+                n.Property(version => version.Version)
+                    .IsRequired()
+                    .HasColumnName("Version");
+            });
+
+            // EffectiveDate as value object
+             builder.OwnsOne(b => b.EffectiveDate, ef =>
+            {
+                ef.Property(effectiveDate => effectiveDate.Start)
+                .IsRequired()
+                .HasColumnName("EffectiveDate");
+            });
+
+
+            //OperationTypeId as value object
+            // builder.HasOne<OperationType>()
+            //    .WithMany()
+            //    .HasForeignKey(b => b.OperationTypeId)
+            //    .IsRequired();
         
             // OperationTypeName as value object
             builder.OwnsOne(b => b.Name, n =>
@@ -19,6 +43,7 @@ namespace DDDNetCore.Infrastructure.OperationTypes
                     .IsRequired()
                     .HasColumnName("OperationTypeName");
             });
+
 
             // EstimatedDuration as value object
             builder.OwnsOne(b => b.EstimatedDuration, ed =>
@@ -35,29 +60,22 @@ namespace DDDNetCore.Infrastructure.OperationTypes
                     .IsRequired()
                     .HasColumnName("OperationTypeStatus");
             });
-        
-            // OperationTypeStatus as value object
-            builder.OwnsOne(b => b.Status, st =>
-            {
-                st.Property(status => status.Active)
-                    .IsRequired()
-                    .HasColumnName("OperationTypeStatus");
-            });
 
-            //RequiredStaff as value object
-            builder.HasMany(s => s.RequiredStaff)
+            //RequiredStaffRecords as value object
+            builder.HasMany(s => s.RequiredStaffRecords)
             .WithOne()
-            .HasForeignKey(s => s.OperationTypeId)
+            .HasForeignKey(s => s.OperationTypeRecordId)
             .IsRequired()
             .OnDelete(DeleteBehavior.Restrict);
-
 
             // Phases is a collection of value objects
             builder.OwnsMany(o => o.Phases, phaseBuilder =>
             {
-                phaseBuilder.WithOwner().HasForeignKey(p => p.OperationTypeId);
+
+                phaseBuilder.WithOwner().HasForeignKey(p => p.OperationTypeRecordId);
 
                 phaseBuilder.HasKey(p => p.PhaseId);
+
 
                 phaseBuilder.OwnsOne(p => p.Description, phase =>
                 {
@@ -73,16 +91,8 @@ namespace DDDNetCore.Infrastructure.OperationTypes
                 });
             });
 
-                        builder.HasMany(s => s.History)
-            .WithOne()
-            .HasForeignKey(s => s.OperationTypeId)
-            .IsRequired()
-            .OnDelete(DeleteBehavior.Restrict);
-
-
-
             // Configure the table name for Staff
-            builder.ToTable("OperationType");
+            builder.ToTable("OperationTypeRecords");
         
         }
     }
