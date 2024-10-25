@@ -60,161 +60,90 @@ namespace DDDNetCore.Controllers
             }
         }
 
-        [HttpPut("Activate-StaffAccount")]
+        [HttpPut("activate-staff")]
         public async Task<IActionResult> ConfirmEmailStaff([FromQuery] string userId, [FromQuery] string token, [FromBody] ConfirmEmailUserDto confirmEmailUserDto)
-        {
-            if (string.IsNullOrWhiteSpace(userId) || string.IsNullOrWhiteSpace(token))
-            {
-                return BadRequest("User Email and Token are required.");
-            }
-
-            if (!await _userService.UserExistsById(userId))
-            {
-                return NotFound("User not found.");
-            }
-
-            if (await _userService.ConfirmEmailStaff(userId, token, confirmEmailUserDto.NewPassword))
-            {
-                return Ok("Email confirmed successfully and account activated.");
-            }
-            else
-            {
-                return BadRequest("Email confirmation failed.");
-            }
-        }
-
-        [HttpPut("Activate-PatientAccount")]
-        public async Task<IActionResult> ConfirmEmailPatient([FromQuery] string userId, [FromQuery] string token)
-        {
-            if (string.IsNullOrWhiteSpace(userId) || string.IsNullOrWhiteSpace(token))
-            {
-                return BadRequest("User Email and Token are required.");
-            }
-
-            if (!await _userService.UserExistsById(userId))
-            {
-                return NotFound("User not found.");
-            }
-
-            if (await _userService.ConfirmEmailPatient(userId, token))
-            {
-                return Ok("Email confirmed successfully and account activated.");
-            }
-            else
-            {
-                return BadRequest("Email confirmation failed.");
-            }
-        }
-
-        [HttpGet("Get-UserInfo")] // END POINT TO VERIFY IF REGISTER AND LOGIN ARE WORKING CORRECTLY
-        [Authorize(Policy = "AuthenticatedUser")]
-        public async Task<IActionResult> GetUserInfo()
-        {
-            string? userEmail = User.FindFirstValue(ClaimTypes.Email);
-
-            if (string.IsNullOrEmpty(userEmail))
-            {
-                return NotFound("Email claim not found.");
-            }
-            User? user = await _userService.FindByEmailAsync(userEmail);
-
-            if (user != null)
-            {
-                return Ok(new
-                {
-                    user.Id,
-                    user.Email,
-                });
-            }
-            else
-            {
-                return NotFound("User not found.");
-            }
-        }
-
-        [HttpPost("Create-UserAdmin")]
-        public async Task<IActionResult> RegisterUser([FromBody] RegisterUserDto registerUserDto)
-        {
-            // Check if the role exists
-            bool roleExists = await _roleManager.RoleExistsAsync(registerUserDto.Role);
-            if (!roleExists)
-            {
-                return BadRequest($"Role '{registerUserDto.Role}' does not exist.");
-            }
-
-            // Create the user
-            var user = new User { UserName = registerUserDto.Email, Email = registerUserDto.Email, Status = true };
-            IdentityResult result = await _userService.CreateAsync(user, registerUserDto.Password);
-
-            if (!result.Succeeded)
-            {
-                return BadRequest(result.Errors);
-            }
-
-            // Assign the selected role to the user
-            _userService.AddToRoleAsync(user, registerUserDto.Role);
-
-            return Ok(new { Message = "User registered successfully." });
-        }
-
-        [HttpPost("Create-UserPatient")]
-        public async Task<IActionResult> RegisterPatientAndAssociateUser([FromBody] RegisterPatientUserDto registerPatientUserDto)
         {
             try
             {
-                // Create the user
-                var user = new User { UserName = registerPatientUserDto.Email, Email = registerPatientUserDto.Email, Status = false };
-                IdentityResult result = await _userManager.CreateAsync(user, registerPatientUserDto.Password);
-
-                if (!result.Succeeded)
-                {
-                    return BadRequest(result.Errors);
-                }
-
-                // Assign the selected role to the user
-                await _userManager.AddToRoleAsync(user, "Patient");
-
-                // Associate with it's profile
-                _patientService.AddUser(user, registerPatientUserDto.Email, registerPatientUserDto.Phone);
-
-                SendConfirmationEmail(user, "Patient");
+                await _userService.ConfirmEmailStaff(userId, token, confirmEmailUserDto.NewPassword);
+                return Ok("Email confirmed successfully and account activated.");
+            }
+            catch (BusinessRuleValidationException ex)
+            {
+                return BadRequest(ex.Message);
             }
             catch (Exception ex)
             {
-                return StatusCode(500, $"An error occurred: {ex.Message} - {ex.StackTrace}");
+                return BadRequest(new { V = $"An unexpected error occurred: {ex.Message}" });
             }
-
-            return Ok(new { Message = "User registered successfully." });
         }
 
-        [HttpPost("Create-UserStaff")]
-        [Authorize(Policy = "Admin")]
-        public async Task<IActionResult> RegisterStaffAndAssociateUser([FromBody] RegisterUserDto registerUserDto)
+        [HttpPut("activate-patient")]
+        public async Task<IActionResult> ConfirmEmailPatient([FromQuery] string userId, [FromQuery] string token)
         {
             try
             {
-                // Check if the role exists
-                bool roleExists = await _roleManager.RoleExistsAsync(registerUserDto.Role);
-                if (!roleExists)
-                {
-                    return BadRequest($"Role '{registerUserDto.Role}' does not exist.");
-                }
+                await _userService.ConfirmEmailPatient(userId, token);
+                return Ok("Email confirmed successfully and account activated.");
+            }
+            catch (BusinessRuleValidationException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { V = $"An unexpected error occurred: {ex.Message}" });
+            }
+        }
 
-                // Create the user
-                var user = new User { UserName = registerUserDto.Email, Email = registerUserDto.Email, Status = false };
-                IdentityResult result = await _userService.CreateAsync(user, registerUserDto.Password);
+        [HttpPost("create-admin")]
+        public async Task<IActionResult> RegisterAdminUser([FromBody] RegisterUserDto registerUserDto)
+        {
+            try
+            {
+                await _userService.CreateUserAsync(registerUserDto);
+                return Ok("Email confirmed successfully and account activated.");
+            }
+            catch (BusinessRuleValidationException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { V = $"An unexpected error occurred: {ex.Message}" });
+            }
+        }
 
-                if (!result.Succeeded)
-                {
-                    return BadRequest(result.Errors);
-                }
+        [HttpPost("create-patient")]
+        public async Task<IActionResult> RegisterPatientUser([FromBody] RegisterPatientUserDto registerPatientUserDto)
+        {
+            try
+            {
+                var user = await _userService.CreatePatientUserAsync(registerPatientUserDto);
+                _patientService.AddUser(user, registerPatientUserDto.Email, registerPatientUserDto.Phone);
+                await _userService.SendConfirmationEmail(user);
+                return Ok("The user has been successfully created. Please verify your email to complete the registration.");
+            }
+            catch (BusinessRuleValidationException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { V = $"An unexpected error occurred: {ex.Message}" });
+            }
+        }
 
-                // Assign the selected role to the user
-                _userService.AddToRoleAsync(user, registerUserDto.Role);
-
+        [HttpPost("create-staff")]
+        [Authorize(Policy = "Admin")]
+        public async Task<IActionResult> RegisterStaffUser([FromBody] RegisterUserDto registerUserDto)
+        {
+            try
+            {
+                var user = await _userService.CreateStaffUserAsync(registerUserDto);
                 _staffService.AddUser(user, registerUserDto.Email, registerUserDto.Phone);
-
-                SendConfirmationEmail(user, registerUserDto.Role);
+                await _userService.SendConfirmationEmail(user);
+                return Ok("The user has been successfully created. Please verify your email to complete the registration.");
             }
             catch (InvalidOperationException ex1)
             {
@@ -222,45 +151,17 @@ namespace DDDNetCore.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest("An error occurred.");
+                return BadRequest(new { V = $"An unexpected error occurred: {ex.Message}" });
             }
-
-            return Ok(new { Message = "User registered successfully." });
         }
 
-
-
-        private async void SendConfirmationEmail(User user, string role)
-        {
-            string token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-
-            var confirmationLink = "";
-
-            if (role.Equals("Patient"))
-            {
-                confirmationLink = Url.Action("ConfirmEmailPatient", "User", new { userId = user.Id, token = token }, Request.Scheme);
-            }
-            else
-            {
-                confirmationLink = Url.Action("ConfirmEmailStaff", "User", new { userId = user.Id, token = token }, Request.Scheme);
-            }
-
-            EmailMessageDto emailDto = new EmailMessageDto(
-                hospitalEmail,
-                user.Email,
-                "Account Activation",
-                "<p>Hello,</p><p>This email was sent to inform you that your user account in the HealthCare Clinic System has been created. </p><p><a href='" + confirmationLink + "'>Click in the link to confirm the activation of the account.</a></p><p>Thank you for choosing us,<br>HealthCare Clinic</p></body></html>"
-            );
-
-            await _emailService.SendConfirmationEmail(emailDto);
-        }
 
         // Delete Patient Account Request: api/Delete-PatientAccountDeletionRequest
         [HttpDelete("Delete-PatientAccountDeletionRequest")]
         [Authorize(Policy = "Patient")]
         public async Task<ActionResult> DeletePatientAccountRequest()
         {
-           IActionResult result = await GetUserInfo();
+            IActionResult result = await GetUserInfo();
 
             if (result is OkObjectResult okResult)
             {
@@ -287,6 +188,31 @@ namespace DDDNetCore.Controllers
                 return BadRequest("User info could not be retrieved.");
             }
         }
+
+        private async Task<IActionResult> GetUserInfo()
+        {
+            string? userEmail = User.FindFirstValue(ClaimTypes.Email);
+
+            if (string.IsNullOrEmpty(userEmail))
+            {
+                return NotFound("Email claim not found.");
+            }
+            User? user = await _userService.FindByEmailAsync(userEmail);
+
+            if (user != null)
+            {
+                return Ok(new
+                {
+                    user.Id,
+                    user.Email,
+                });
+            }
+            else
+            {
+                return NotFound("User not found.");
+            }
+        }
+
 
         // Update Deletion of Patient Account Confirmation: api/Update-PatientAccountDeletionConfirmation
         [HttpPut("Update-PatientAccountDeletionConfirmation")]
