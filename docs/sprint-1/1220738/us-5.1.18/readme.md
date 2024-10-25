@@ -53,7 +53,15 @@ This User Story is related to the Doctor.
 
 **Client Clarifications:**
 
-> None yet.
+> Question : Já referiu que os registos do medical record são adicionados manualmente. Apagar esses registos também o deverá ser? Mais especificamente na Us 5.1.18 diz "Once deleted, the operation request is removed from the patient’s medical record and cannot
+be recovered". Este delete do medical record deverá ser manual ou deverá acontecer ao mesmo tempo do delete do operation request?
+>
+> Answer : ver https://moodle.isep.ipp.pt/mod/forum/discuss.php?d=31956#p40557
+o sistema nao faz a ligação automatica entre medical history e operation request
+
+> Question : Does the system adds automically delete the operation request to the medical history of the patient?
+>
+> Answer : No need. it will be the doctor's responsibility to add it.
 
 ## 3. Analysis
 
@@ -62,7 +70,6 @@ This functionality talks about the removal of a operation requisition by a docto
 - The doctor is able to see the requisitions they have made and if that requisition has not been scheduled then they can ask to remove it from the system.
 - After choosing to remove a certain requisition, the system will ask for a confirmation, as a lot of data will be changed if that were to happen
 - The doctor can then confirm and after having done so, the system will remove the requisition from the system.
-- For the sake of this User Story, removing from the system will mean removing from a patient's file and the requisition list.
 - The system will then inform the Planning module of that change and updates the schedule if that were relying on this requisition.
 
 As explained by the client and acceptance criteria, after having removed this requistion from the system, it is not possible to revert that process.
