@@ -4,6 +4,7 @@ using System.Net.Sockets;
 using DDDNetCore.Domain.OperationRequest;
 using DDDNetCore.Domain.Shared;
 using DDDNetCore.Domain.Users;
+using Microsoft.IdentityModel.Tokens;
 
 namespace DDDNetCore.Domain.Patients
 {
@@ -151,7 +152,10 @@ namespace DDDNetCore.Domain.Patients
 
         public void AddRequestToHistory(AppointmentHistory appointmentHistory)
         {
-            this.AppointmentList.Add(appointmentHistory);
+            if(AppointmentList.IsNullOrEmpty()){
+                AppointmentList = new List<AppointmentHistory>();
+            }
+            AppointmentList.Add(appointmentHistory);  
         }
 
         public void RemoveRequestFromHistory(OperationRequestId operationRequestId)

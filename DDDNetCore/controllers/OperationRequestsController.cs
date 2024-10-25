@@ -44,6 +44,7 @@ namespace DDDNetCore.Controllers
 
         // POST: api/OperationRequest
         [HttpPost]
+        [Authorize(Policy = "Doctor")]
         public async Task<ActionResult<OperationRequestDto>> Create(CreatingOperationRequestDto dto)
         {
             try
@@ -158,7 +159,7 @@ namespace DDDNetCore.Controllers
         [HttpDelete]
         [Route("Delete-OperationRequestFromPatient")]
         [Authorize(Policy = "Doctor")]
-        public async Task<ActionResult> DeleteOperationRequestFromPatient([FromBody] RemovingFromPatientDto removingFromPatientDto) 
+        public async Task<ActionResult> DeleteOperationRequestFromPatient([FromBody] AddOrRemoveFromPatientDto removingFromPatientDto) 
         {
             try
             {
@@ -170,6 +171,34 @@ namespace DDDNetCore.Controllers
                 else
                 {
                     return NotFound($"Operation request with ID {removingFromPatientDto.PatientId} not found or wrong authorization."); 
+                }
+            }
+            catch (BusinessRuleValidationException ex)
+            {
+                return BadRequest(new { ex.Message }); 
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { ex.Message }); 
+            }
+        }
+
+        // POST: api/OperationRequest/Add-OperationRequestToPatient
+        [HttpPost]
+        [Route("Add-OperationRequestToPatient")]
+        [Authorize(Policy = "Doctor")]
+        public async Task<ActionResult> AddOperationRequestToPatient([FromBody] AddOrRemoveFromPatientDto addOrRemoveFromPatientDto) 
+        {
+            try
+            {
+                bool result = await _service.AddOperationRequestToPatient(addOrRemoveFromPatientDto.PatientId, addOrRemoveFromPatientDto.OperationRequestId, User.FindFirstValue(ClaimTypes.Email)); 
+                if (result)
+                {
+                    return Ok("Operation request successfully add.");
+                }
+                else
+                {
+                    return NotFound($"Operation request with ID {addOrRemoveFromPatientDto.PatientId} not found or wrong authorization."); 
                 }
             }
             catch (BusinessRuleValidationException ex)

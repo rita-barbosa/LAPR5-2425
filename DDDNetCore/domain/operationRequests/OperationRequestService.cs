@@ -19,11 +19,12 @@ namespace DDDNetCore.Domain.OperationRequest
         private readonly IOperationRequestRepository _repo;
         private readonly IStaffRepository _repoSta;
         private readonly LogService _logService;
+        private readonly PatientService _patientService;
         private readonly IPatientRepository _repoPat;
         private readonly IOperationTypeRepository _repoOpTy;
         private readonly UserService _userService;
 
-        public OperationRequestService(IUnitOfWork unitOfWork, IOperationRequestRepository repo, IStaffRepository repoSta, LogService logService, IPatientRepository repoPat, IOperationTypeRepository repoOpTy, UserService userService)
+        public OperationRequestService(IUnitOfWork unitOfWork, IOperationRequestRepository repo, IStaffRepository repoSta, LogService logService, PatientService patientService, IPatientRepository repoPat, IOperationTypeRepository repoOpTy, UserService userService)
         {
             this._unitOfWork = unitOfWork;
             this._repo = repo;
@@ -31,6 +32,7 @@ namespace DDDNetCore.Domain.OperationRequest
             this._repoPat = repoPat;
             this._repoOpTy = repoOpTy;
             this._logService = logService;
+            this._patientService = patientService;
             this._userService = userService;
         }
 
@@ -61,10 +63,8 @@ namespace DDDNetCore.Domain.OperationRequest
             Staff staff = await this._repoSta.GetByIdAsync(new StaffId(dto.StaffId)) ??
                 throw new BusinessRuleValidationException("Staff is invalid.");
 
-
             Patient patient = await this._repoPat.GetByIdAsync(new MedicalRecordNumber(dto.PatientId)) ??
                 throw new BusinessRuleValidationException("Patient is invalid.");
-
 
             OperationType opType = await this._repoOpTy.GetByIdWithStaffAsync(new OperationTypeId(dto.OperationTypeId)) ??
                 throw new BusinessRuleValidationException("Operation Type is invalid.");
@@ -239,6 +239,35 @@ namespace DDDNetCore.Domain.OperationRequest
             }
 
             patient.RemoveRequestFromHistory(new OperationRequestId(operationRequestId));
+            await _unitOfWork.CommitAsync();
+            return true;
+        }
+
+
+        public async Task<bool> AddOperationRequestToPatient(string patientId, string operationRequestId, string email)
+        {
+            User user = await _userService.FindByEmailAsync(email);
+            if (user == null)
+            {
+                throw new BusinessRuleValidationException("No user found with this email.");
+            }
+
+            Staff staff = await _repoSta.FindStaffWithUserId(user.Id.ToString());
+            if (staff == null)
+            {
+                throw new BusinessRuleValidationException("No staff found with this user.");
+            }
+
+            Patient patient = await _repoPat.GetByIdAsync(new MedicalRecordNumber(patientId));
+            if (patient == null)
+            {
+                throw new BusinessRuleValidationException("No patient found with this id.");
+            }
+
+            var appointmentHistory = new AppointmentHistory(operationRequestId, 1, 2, patient.Id);
+            await _unitOfWork.CommitAsync();
+
+            patient.AddRequestToHistory(appointmentHistory);
             await _unitOfWork.CommitAsync();
             return true;
         }

@@ -18,6 +18,7 @@ using DDDNetCore.Domain.Logs;
 using DDDNetCore.Infrastructure.EntityConfigurations;
 using DDDNetCore.Domain.OperationTypesRecords;
 using DDDNetCore.Infrastructure.OperationTypeRecords;
+using Microsoft.EntityFrameworkCore.Internal;
 
 
 namespace DDDNetCore.Infrastructure
@@ -35,6 +36,7 @@ namespace DDDNetCore.Infrastructure
         public DbSet<RequiredStaffRecord> RequiredStaffRecords { get; set; }
 
         public DbSet<Log> Logs { get; set; }
+        public DbSet<AppointmentHistory> appointmentHistories { get; set; }
         public DDDNetCoreDbContext(DbContextOptions options) : base(options)
         {
 
@@ -53,6 +55,7 @@ namespace DDDNetCore.Infrastructure
             modelBuilder.ApplyConfiguration(new LogEntityTypeConfiguration());
             modelBuilder.ApplyConfiguration(new OperationTypeRecordEntityTypeConfiguration());
             modelBuilder.ApplyConfiguration(new RequiredStaffRecordEntityTypeConfiguration());
+            modelBuilder.ApplyConfiguration(new AppointmentHistoryConfiguration());
         }
     }
 }
