@@ -154,5 +154,33 @@ namespace DDDNetCore.Controllers
             }
         }
 
+        // POST: api/OperationRequest/Delete-OperationRequest
+        [HttpDelete]
+        [Route("Delete-OperationRequestFromPatient")]
+        [Authorize(Policy = "Doctor")]
+        public async Task<ActionResult> DeleteOperationRequestFromPatient([FromBody] RemovingFromPatientDto removingFromPatientDto) 
+        {
+            try
+            {
+                bool result = await _service.DeleteOperationRequestFromPatient(removingFromPatientDto.PatientId, removingFromPatientDto.OperationRequestId, User.FindFirstValue(ClaimTypes.Email)); 
+                if (result)
+                {
+                    return Ok("Operation request successfully removed.");
+                }
+                else
+                {
+                    return NotFound($"Operation request with ID {removingFromPatientDto.PatientId} not found or wrong authorization."); 
+                }
+            }
+            catch (BusinessRuleValidationException ex)
+            {
+                return BadRequest(new { ex.Message }); 
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { ex.Message }); 
+            }
+        }
+
     }
 }

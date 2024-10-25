@@ -217,5 +217,30 @@ namespace DDDNetCore.Domain.OperationRequest
 
             return false;            
         }
+
+        public async Task<bool> DeleteOperationRequestFromPatient(string patientId, string operationRequestId, string email)
+        {
+            User user = await _userService.FindByEmailAsync(email);
+            if (user == null)
+            {
+                throw new BusinessRuleValidationException("No user found with this email.");
+            }
+
+            Staff staff = await _repoSta.FindStaffWithUserId(user.Id.ToString());
+            if (staff == null)
+            {
+                throw new BusinessRuleValidationException("No staff found with this user.");
+            }
+
+            Patient patient = await _repoPat.GetByIdAsync(new MedicalRecordNumber(patientId));
+            if (patient == null)
+            {
+                throw new BusinessRuleValidationException("No patient found with this id.");
+            }
+
+            patient.RemoveRequestFromHistory(new OperationRequestId(operationRequestId));
+            await _unitOfWork.CommitAsync();
+            return true;
+        }
     }
 }
