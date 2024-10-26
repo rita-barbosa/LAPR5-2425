@@ -54,7 +54,7 @@ namespace DDDNetCore.Domain.Patients
 
             await _unitOfWork.CommitAsync();
 
-            return new PatientDto(patient.Name.ToString(), patient.PhoneNumber.ToString(), patient.Email.ToString(), patient.Address.ToString(), patient.DateBirth.ToString("dd-MM-yyyy"), patient.Id.AsString());
+            return new PatientDto(patient.Name.ToString(), patient.PhoneNumber.ToString(), patient.Email.ToString(), patient.Address.ToString(), patient.DateBirth.ToString("yyyy-MM-dd"), patient.Id.AsString());
         }
 
         public async void AddUser(User user, string email, string phone)

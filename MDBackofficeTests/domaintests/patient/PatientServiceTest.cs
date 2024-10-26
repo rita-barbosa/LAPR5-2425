@@ -69,7 +69,7 @@ public class PatientServiceTests
        [Fact]
        public async Task CreatePatientProfile_ReturnsPatient()
        {
-        
+
         //Arrange
         var dtoMock = new CreatingPatientDto
             ("Rita",
@@ -95,7 +95,8 @@ public class PatientServiceTests
         Assert.Equal(dtoMock.Phone, result.Phone);
         Assert.Equal(dtoMock.Email, result.Email);
         Assert.Equal(dtoMock.Address, result.Address);
-        Assert.Equal(DateTime.Parse(dtoMock.DateBirth).ToString("yyyy-MM-dd"), DateTime.Parse(result.DateBirth).ToString("yyyy-MM-dd"));        _repoMock.Verify(r => r.AddAsync(It.IsAny<Patient>()), Times.Once);
+        Assert.Equal(dtoMock.DateBirth, result.DateBirth);        
+        _repoMock.Verify(r => r.AddAsync(It.IsAny<Patient>()), Times.Once);
         _unitOfWorkMock.Verify(u => u.CommitAsync(), Times.Once);
 
        } 
