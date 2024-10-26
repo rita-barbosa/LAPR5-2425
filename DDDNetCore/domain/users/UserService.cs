@@ -26,6 +26,7 @@ namespace DDDNetCore.Domain.Users
         private readonly IConfiguration _configuration;
         public UserService(UserManager<User> userManager, RoleManager<Role> roleManager,
                                 LogService logService,
+
                                 EmailService emailService, IConfiguration configuration,
                                 TokenService tokenService)
         {
@@ -56,6 +57,16 @@ namespace DDDNetCore.Domain.Users
             user.changeStatus(true);
             await UpdateAsync(user);
         }
+
+        public async Task ConfirmEmailStaffWithoutPassword(string userId, string token)
+        {
+            await ConfirmEmailVerifications(userId, token);
+
+            User user = await FindByIdAsync(userId);
+            user.changeStatus(true);
+            await UpdateAsync(user);
+        }
+
         private async Task ConfirmEmailVerifications(string userId, string token)
         {
             if (string.IsNullOrWhiteSpace(userId) || string.IsNullOrWhiteSpace(token))
@@ -198,6 +209,24 @@ namespace DDDNetCore.Domain.Users
             await SendConfirmationChangeEmail(user, oldEmail, await _userManager.GenerateEmailConfirmationTokenAsync(user));
         }
 
+        public async Task EditStaffUserProfile(string oldEmail, string newEmail, string staffId, bool emailChange, string changedInformation)
+        {
+            User user = await _userManager.FindByEmailAsync(oldEmail) ?? throw new BusinessRuleValidationException("Can't find the user with that email.");
+            if(emailChange){
+                string token = await _userManager.GenerateChangeEmailTokenAsync(user, newEmail);
+                var result = await _userManager.ChangeEmailAsync(user, newEmail, token);
+
+                if (!result.Succeeded)
+                {
+                    throw new BusinessRuleValidationException("Unable to update the user's email.");
+                }
+            }
+            user.changeStatus(false);
+            await _userManager.UpdateAsync(user);
+
+            await SendContactInformationConfirmationChange(user, oldEmail, await _userManager.GenerateEmailConfirmationTokenAsync(user), staffId, changedInformation);
+        }
+
         private async Task SendConfirmationChangeEmail(User user, string email, string token)
         {
             string confirmationLink = await ConfigureUrlConfirmation(token, user);
@@ -205,6 +234,21 @@ namespace DDDNetCore.Domain.Users
 
             await SendEmail(email, "Update Email Confirmation", body);
         }
+
+        private async Task SendContactInformationConfirmationChange(User user, string email, string token, string staffId, string changedInformation)
+        {
+            string confirmationLink = await ConfigureUrlConfirmationStaffProfile(token, user, staffId);
+            
+            
+            string body = "<p>Hello,</p>" +
+                        "<p>This email was sent to notify you that your contact information has been updated in the HealthCare Clinic System.</p>" +
+                        changedInformation +
+                        "<p><a href='" + confirmationLink + "'>Click here to confirm the change of your contact information.</a></p>" +
+                        "<p>Thank you for choosing us,<br>HealthCare Clinic</p></body></html>";
+
+            await SendEmail(email, "Update Contact Information Confirmation", body);
+        }
+
         public async Task SendConfirmationEmail(User user, string email)
         {
             string token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
@@ -233,6 +277,17 @@ namespace DDDNetCore.Domain.Users
             return role.Equals("Patient")
             ? $"{baseUrl}/activate-patient?userId={user.Id}&token={encodedToken}"
             : $"{baseUrl}/activate-staff?userId={user.Id}&token={encodedToken}";
+        }
+
+        private async Task<string> ConfigureUrlConfirmationStaffProfile(string token, User user, string staffId)
+        {
+            string? role = (await _userManager.GetRolesAsync(user)).FirstOrDefault();
+
+            if (role == null) throw new NullReferenceException("Can't obtain the user role.");
+
+            var encodedToken = Uri.EscapeDataString(token);
+            var baseUrl = _configuration["App:BaseUrl"];
+            return  $"{baseUrl}/staff/activate-staffProfile?userId={user.Id}&staffId={staffId}&token={encodedToken}";
         }
 
         private async Task<string> ConfigureUrlPasswordConfirmation(string token, User user)
