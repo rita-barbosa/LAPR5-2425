@@ -1,7 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using DDDNetCore.Domain.OperationTypesRecords;
-using DDDNetCore.Domain.OperationTypes;
 
 
 namespace DDDNetCore.Infrastructure.OperationTypeRecords
@@ -29,13 +28,13 @@ namespace DDDNetCore.Infrastructure.OperationTypeRecords
                 .HasColumnName("EffectiveDate");
             });
 
+            builder.OwnsOne(b => b.OperationTypeId, n =>
+            {
+                n.Property(operation  => operation.OpID)
+                    .IsRequired()
+                    .HasColumnName("OperationTypeId");
+            });
 
-            //OperationTypeId as value object
-            // builder.HasOne<OperationType>()
-            //    .WithMany()
-            //    .HasForeignKey(b => b.OperationTypeId)
-            //    .IsRequired();
-        
             // OperationTypeName as value object
             builder.OwnsOne(b => b.Name, n =>
             {

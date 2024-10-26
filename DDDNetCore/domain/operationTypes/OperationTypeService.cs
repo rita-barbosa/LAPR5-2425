@@ -55,21 +55,23 @@ namespace DDDNetCore.Domain.OperationTypes
                 dto.Phases
             );
 
-            await this._repo.AddAsync(operationType);
-            await this._unitOfWork.CommitAsync();
+            await _repo.AddAsync(operationType);
+            await _unitOfWork.CommitAsync();
 
             await _logService.CreateCreationLog(operationType.Id.Value, operationType.GetType().Name, "New operation type added: " + operationType.Name.OperationName);
 
-            await __recordService.AddAsync(operationType);
+            var operation = await _repo.GetByIdAsync(operationType.Id);
 
-            await this._unitOfWork.CommitAsync();
+            await __recordService.AddAsync(operation);
+
+            await _unitOfWork.CommitAsync();
 
             return ToDto(operationType);
         }
 
         public async Task<OperationTypeDto> UpdateAsync(OperationTypeDto dto)
         {
-            var operationType = await this._repo.GetByIdAsync(new OperationTypeId(dto.Name));
+            var operationType = await _repo.GetByIdAsync(new OperationTypeId(dto.Name));
 
             if (operationType == null)
                 return null;

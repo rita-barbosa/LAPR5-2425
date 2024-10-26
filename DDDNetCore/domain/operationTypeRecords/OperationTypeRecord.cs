@@ -14,7 +14,7 @@ namespace DDDNetCore.Domain.OperationTypesRecords
 
         public OperationTypeRecordVersion Version { get;}
         public Date EffectiveDate { get;}
-        public OperationTypeId OperationTypeId { get;}
+        public OperationTypeParentId OperationTypeId { get;}
         public OperationTypeName Name { get;}
         public EstimatedDuration EstimatedDuration { get;}
         public OperationTypeStatus Status { get;}
@@ -31,17 +31,17 @@ namespace DDDNetCore.Domain.OperationTypesRecords
 
         public OperationTypeRecord(Date date, int previousVersionNumber, OperationTypeId operationTypeId, OperationTypeName name, EstimatedDuration duration, OperationTypeStatus status, List<RequiredStaff> staff, List<Phase> phases)
         {
-            Id = new OperationTypeRecordId(new Guid().ToString());
+            Id = new OperationTypeRecordId(Guid.NewGuid().ToString());
             EffectiveDate = date;
             Version = new OperationTypeRecordVersion(previousVersionNumber + 1);
-            OperationTypeId = operationTypeId;
-            Name = name;
-            EstimatedDuration = duration;
-            Status = status;
+            OperationTypeId = new OperationTypeParentId(operationTypeId.Value);
+            Name = new OperationTypeName(name.OperationName);
+            EstimatedDuration = new EstimatedDuration(duration.TotalDurationMinutes);
+            Status = new OperationTypeStatus(status.Active);
 
             RequiredStaffRecords = new List<RequiredStaffRecord>();
             foreach (RequiredStaff requiredStaff in staff){
-                RequiredStaffRecords.Add(new RequiredStaffRecord(requiredStaff.StaffQuantity.NumberRequired, requiredStaff.Function.Description, requiredStaff.SpecializationId.ToString()));
+                RequiredStaffRecords.Add(new RequiredStaffRecord(requiredStaff.StaffQuantity.NumberRequired, requiredStaff.Function.Description, requiredStaff.SpecializationId.Value.ToString()));
             }
 
             if (phases.Count != NUMBER_OF_OPERATION_PHASES)

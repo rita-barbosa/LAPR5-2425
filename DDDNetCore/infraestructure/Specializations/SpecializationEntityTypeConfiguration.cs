@@ -17,12 +17,6 @@ namespace DDDNetCore.Infrastructure.Specializations
             .OnDelete(DeleteBehavior.Restrict);;
 
             builder.ToTable("Specialization");
-
-                        builder.HasMany(s => s.RequiredStaffRecords)
-            .WithOne()
-            .HasForeignKey(s => s.SpecializationId)
-            .IsRequired()
-            .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

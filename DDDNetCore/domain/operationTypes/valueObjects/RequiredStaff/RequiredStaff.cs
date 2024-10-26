@@ -1,60 +1,59 @@
-    using System;
-using System.Text.Json.Serialization;
+using System;
 using DDDNetCore.Domain.Shared;
-    using DDDNetCore.Domain.Specializations;
+using DDDNetCore.Domain.Specializations;
 
-    namespace DDDNetCore.Domain.OperationTypes.ValueObjects.RequiredStaff
+namespace DDDNetCore.Domain.OperationTypes.ValueObjects.RequiredStaff
+{
+    public class RequiredStaff : Entity<RequiredStaffId>
     {
-        public class RequiredStaff : Entity<RequiredStaffId>
+
+        public OperationTypeId OperationTypeId { get; set; }
+        public NumberStaff StaffQuantity { get;  private set; }
+        public Function Function { get;  private set; }
+        public SpecializationDenomination SpecializationId { get;  private set; }
+
+
+        public RequiredStaff(){
+            // for ORM
+        }
+
+        public RequiredStaff(int staffneeded, string function,  string specialization)
         {
+            this.Id = new RequiredStaffId(RandomSequenceGenerator.GenerateUniqueRandomSequence(5));
+            this.StaffQuantity = new NumberStaff(staffneeded);
+            this.SpecializationId = new SpecializationDenomination(specialization);
+            this.Function = Function.GetFunctionByDescription(function);
+        }
 
-            public OperationTypeId OperationTypeId { get; set; }
-            public NumberStaff StaffQuantity { get;  private set; }
-            public Function Function { get;  private set; }
-            public SpecializationDenomination SpecializationId { get;  private set; }
-
-
-            public RequiredStaff(){
-                // for ORM
-            }
-
-            public RequiredStaff(int staffneeded, string function,  string specialization)
+        private static Function MapFunction(string functionDescription)
+        {
+            return functionDescription.ToLower() switch
             {
-                this.Id = new RequiredStaffId(RandomSequenceGenerator.GenerateUniqueRandomSequence(5));
-                this.StaffQuantity = new NumberStaff(staffneeded);
-                this.SpecializationId = new SpecializationDenomination(specialization);
-                this.Function = Function.GetFunctionByDescription(function);
-            }
+                "intern" => Function.Intern,
+                "doctor" => Function.Doctor,
+                "nurse" => Function.Nurse,
+                "assistant" => Function.Assistant,
+                _ => throw new ArgumentException("Invalid function description")
+            };
+        }
 
-            private static Function MapFunction(string functionDescription)
-            {
-                return functionDescription.ToLower() switch
-                {
-                    "intern" => Function.Intern,
-                    "doctor" => Function.Doctor,
-                    "nurse" => Function.Nurse,
-                    "assistant" => Function.Assistant,
-                    _ => throw new ArgumentException("Invalid function description")
-                };
-            }
-
-            public void ChangeStaffQuantity(int quantity)
-            {
-                this.StaffQuantity = new NumberStaff(quantity);
-            }
+        public void ChangeStaffQuantity(int quantity)
+        {
+            this.StaffQuantity = new NumberStaff(quantity);
+        }
 
 
-            public void ChangeFunction(string function)
-            {
-                this.Function = MapFunction(function);
-            }
-
-            
-            public void ChangeSpecialization(string specialization)
-            {
-                this.SpecializationId = new SpecializationDenomination(specialization);
-            }
+        public void ChangeFunction(string function)
+        {
+            this.Function = MapFunction(function);
+        }
 
         
+        public void ChangeSpecialization(string specialization)
+        {
+            this.SpecializationId = new SpecializationDenomination(specialization);
         }
+
+    
     }
+}

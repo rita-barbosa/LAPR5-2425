@@ -20,19 +20,17 @@ namespace DDDNetCore.Domain.Users
     {
         private readonly UserManager<User> _userManager;
         private readonly RoleManager<Role> _roleManager;
-        private readonly StaffService _staffService;
         private readonly EmailService _emailService;
         private readonly TokenService _tokenService;
         private readonly LogService _logService;
         private readonly IConfiguration _configuration;
         public UserService(UserManager<User> userManager, RoleManager<Role> roleManager,
-                                 StaffService staffService, LogService logService,
+                                LogService logService,
                                 EmailService emailService, IConfiguration configuration,
                                 TokenService tokenService)
         {
             _userManager = userManager;
             _roleManager = roleManager;
-            _staffService = staffService;
             _emailService = emailService;
             _logService = logService;
             _tokenService = tokenService;

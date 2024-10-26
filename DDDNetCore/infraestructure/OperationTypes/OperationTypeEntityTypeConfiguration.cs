@@ -35,14 +35,6 @@ namespace DDDNetCore.Infrastructure.OperationTypes
                     .IsRequired()
                     .HasColumnName("OperationTypeStatus");
             });
-        
-            // OperationTypeStatus as value object
-            builder.OwnsOne(b => b.Status, st =>
-            {
-                st.Property(status => status.Active)
-                    .IsRequired()
-                    .HasColumnName("OperationTypeStatus");
-            });
 
             //RequiredStaff as value object
             builder.HasMany(s => s.RequiredStaff)
@@ -72,14 +64,6 @@ namespace DDDNetCore.Infrastructure.OperationTypes
                         .HasColumnName("PhaseDuration");
                 });
             });
-
-                        builder.HasMany(s => s.History)
-            .WithOne()
-            .HasForeignKey(s => s.OperationTypeId)
-            .IsRequired()
-            .OnDelete(DeleteBehavior.Restrict);
-
-
 
             // Configure the table name for Staff
             builder.ToTable("OperationType");

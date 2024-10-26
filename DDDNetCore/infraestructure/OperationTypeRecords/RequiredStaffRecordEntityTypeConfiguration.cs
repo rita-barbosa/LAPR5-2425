@@ -25,6 +25,13 @@ namespace DDDNetCore.Infrastructure.OperationTypeRecords
                     .IsRequired()
                     .HasColumnName("NumberRequired");
             });
+            
+            builder.OwnsOne<StaffSpecialization>(b => b.SpecializationId, f =>
+            {
+                f.Property(spec => spec.SpeciId)
+                    .IsRequired()
+                    .HasColumnName("Specialization");
+            });
 
             builder.ToTable("RequiredStaffRecords");
         

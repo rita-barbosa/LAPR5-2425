@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using DDDNetCore.Domain.OperationTypes.ValueObjects.RequiredStaff;
-using DDDNetCore.Domain.OperationTypesRecords;
 using DDDNetCore.Domain.Shared;
 
 namespace DDDNetCore.Domain.Specializations
@@ -9,7 +8,6 @@ namespace DDDNetCore.Domain.Specializations
     {
 
         public ICollection<RequiredStaff> RequiredStaff { get; set; }
-        public ICollection<RequiredStaffRecord> RequiredStaffRecords { get; set; }
 
         public Specialization(){
             //for EF Core
