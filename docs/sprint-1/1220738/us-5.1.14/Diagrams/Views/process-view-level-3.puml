@@ -5,83 +5,92 @@ participant "<<Route>>\n StaffRoute" as ROUTE
 participant "<<Controller>>\n StaffController" as CONTROL
 participant "<<Service>>\n StaffService" as STAFFSERV
 participant "<<Repository>>\n StaffRepository" as STAFFREPO
-participant "<<DTO>>\n ActiveStaffListDTO" as ACTIVESTAFFLISTDTO
+participant "<<DTO>>\n ActiveStaffListDto" as ACTIVESTAFFLISTDTO
 participant "<<Domain>>\n Staff" as STAFF
-participant "<<DTO>>\n StaffDTO" as STAFFDTO
-participant "<<component>>\n Persistence" as PERSISTENCE
-participant "<<component>>\n Planning" as PLAN
+participant "<<DTO>>\n IdPassDto" as STAFFDTO
+participant "<<Component>>\n Planning" as PLAN
+participant "<<Service>>\n LogService" as LOGServ
+participant "<<Domain>>\n Log" as LOG
+participant "<<Repository>>\n LogRepository" as LOGRepo
 
-[o-> ROUTE : GET(JSON)
+[o-> ROUTE : GET()
 note right : getting the \nlist of profiles
 
 Activate ROUTE
 
-ROUTE -> CONTROL : getActiveRoster(JSON)
+ROUTE -> CONTROL : GetActiveStaffProfiles()
 
 Activate CONTROL
 
-CONTROL -> STAFFSERV : getActiveRoster()
-ACTIVATE STAFFSERV
+CONTROL -> STAFFSERV : GetAllSync()
+Activate STAFFSERV
 
-STAFFSERV -> STAFFREPO : findAllActiveRoster()
-ACTIVATE STAFFREPO 
-STAFFREPO --> STAFFSERV : activeRoster
-DEACTIVATE STAFFREPO
+STAFFSERV -> STAFFREPO : GetAllSync() 
+Activate STAFFREPO
+
+STAFFREPO --> STAFFSERV : var list = List<Staff>
+Deactivate STAFFREPO
 
 STAFFSERV -> ACTIVESTAFFLISTDTO**
 
-loop For every profile in activeRoster
+loop for every profile in listOfProfiles
 STAFFSERV -> STAFF : toDTO()
 activate STAFF
-STAFF --> STAFFSERV : staffDTO
+STAFF --> STAFFSERV : profileDTO
 deactivate STAFF
-
-STAFFSERV -> ACTIVESTAFFLISTDTO : listAdd(staffDTO)
-ACTIVATE ACTIVESTAFFLISTDTO
-DEACTIVATE ACTIVESTAFFLISTDTO
+STAFFSERV -> ACTIVESTAFFLISTDTO : listAdd(profileDTO)
+activate ACTIVESTAFFLISTDTO
+ACTIVESTAFFLISTDTO --> STAFFSERV : return
+deactivate ACTIVESTAFFLISTDTO
 end
 
-STAFFSERV --> CONTROL : activeStaffListDTO
-DEACTIVATE STAFFSERV
+STAFFSERV --> CONTROL : activeStaffListDto
+Deactivate STAFFSERV
 
-CONTROL -> CONTROL : ok(activeStaffListDTO)
-CONTROL --> ROUTE : JSON
-DEACTIVATE CONTROL
+CONTROL -> CONTROL : Ok(activeStaffListDto)
 
-<-- ROUTE : JSON
+CONTROL --> ROUTE : json
+Deactivate CONTROL
+<-- ROUTE : json
 deactivate ROUTE
 
-[o-> ROUTE : POST(JSON)
+[o-> ROUTE : PUT(JSON)
 note right : after choosing\n a profile
 ACTIVATE ROUTE
 
-ROUTE -> CONTROL : deactivateStaffProfile(JSON)
+ROUTE -> CONTROL : DeactivateStaffProfile(JSON)
 ACTIVATE CONTROL
 
 CONTROL -> STAFFDTO** : toDTO(JSON)
 
-CONTROL -> STAFFSERV : deactivateStaffProfile(profileID)
+CONTROL -> STAFFSERV : DeactivateStaffProfile(idPassDto.Id)
 ACTIVATE STAFFSERV
 
-STAFFSERV -> STAFFREPO : findById(profileID)
+STAFFSERV -> STAFFREPO : GetByIdAsync(new StaffId(id))
 ACTIVATE STAFFREPO
 STAFFREPO --> STAFFSERV : staffProfile
 DEACTIVATE STAFFREPO
 
-STAFFSERV -> STAFF : deactivateProfile()
+STAFFSERV -> STAFF : DeactivateProfile()
 ACTIVATE STAFF
 DEACTIVATE STAFF
 
-STAFFSERV -> STAFFREPO : save(staffProfile)
-ACTIVATE STAFFREPO
-STAFFREPO -> PERSISTENCE
-STAFFREPO --> STAFFSERV : return
-DEACTIVATE STAFFREPO
+STAFFSERV -> LOGServ : CreateEditLog(id, staff.GetType().ToString(), "Deactivation of staff's profile.")
+activate LOGServ 
+LOGServ -> LOG**
+LOGServ -> LOGRepo : AddAsync(log)
+activate LOGRepo
+LOGRepo --> LOGServ : true
+deactivate LOGRepo
+LOGServ --> STAFFSERV : true
+deactivate LOGServ
+
+STAFFSERV -> STAFFSERV : CommitAsync()
 
 STAFFSERV --> CONTROL : return
 DEACTIVATE STAFFSERV
 
-CONTROL -> CONTROL : ok(sucess message)
+CONTROL -> CONTROL : Ok("Staff deactivated successfully.")
 CONTROL --> ROUTE : JSON
 DEACTIVATE CONTROL
 
