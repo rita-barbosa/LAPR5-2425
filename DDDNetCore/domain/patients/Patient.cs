@@ -62,7 +62,7 @@ namespace DDDNetCore.Domain.Patients
             PhoneNumber = new Phone(phoneNumber);
             EmergencyContact = new Phone(emergencyContact);
             Email = new Email(email);
-            string[] formats = { "dd/MM/yyyy" }; // Add any other formats you expect
+            string[] formats = { "dd/MM/yyyy", "yyyy-MM-dd" }; // Add any other formats you expect
             if (!DateTime.TryParseExact(dateBirth, formats, null, System.Globalization.DateTimeStyles.None, out DateTime dateOfBirth) || dateOfBirth > DateTime.Now)
             {
                 throw new BusinessRuleValidationException("The Date of Birth is either in an incorrect format or cannot be in the future. Please provide a valid past date.");
