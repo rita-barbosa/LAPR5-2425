@@ -14,16 +14,28 @@ participant "<<dto>>\n SpecializationDTO" as SpecializationDTO
 
 participant "<<dto>>\n SpecializationAndFunctionResponseDTO " as ResponseDTO
 
-participant "<<dto>>\n OperationTypeDTO" as OPTYDTO
 participant "<<service>>\n OperationTypeService" as OPTYServ
+participant "<<dto>>\n OperationTypeDTO" as OPTYDTO
 participant "<<domain>>\n Function" as Function
 participant "<<dto>>\n FunctionDTO" as FunctionDTO
 
 participant "<<repository>>\n OperationTypeRepository" as OPTYRepo
 participant "<<domain>>\n OperationType" as OPTY
 
+participant "<<service>>\n OperationTypeRecordService" as OPTYRecordServ
+participant "<<domain>>\n OperationTypeRecord" as Record
+
+participant "<<domain>>\n RequiredStaffRecord" as STAFFRecord
+
 participant "<<domain>>\n Phase" as PHASE
 participant "<<domain>>\n RequiredStaff" as STAFF
+
+participant "<<repository>>\n OperationTypeRecordRepository" as OPTYRecordRepo
+participant "<<domain>>\n OperationTypeRecord" as Record
+
+participant "<<service>>\n LogService" as LogServ
+participant "<<domain>>\n Log" as Log
+participant "<<repository>>\n LogRepository" as LogRepo
 
 
 [o-> ROUTE : GET() /api/operationtypes
@@ -83,6 +95,8 @@ deactivate ROUTE
 [o-> ROUTE : POST(json)
 activate ROUTE
 
+ROUTE -> OPTYDTO ** : toDto(json)
+
 ROUTE -> CONTROL : Create(operationTypeDTO)
 activate CONTROL
 
@@ -90,7 +104,7 @@ CONTROL -> OPTYServ : AddAsync(operationTypeDTO)
 activate OPTYServ
 
 
-OPTYServ -> OPTY ** : OperationType(operationTypeDTO)
+OPTYServ -> OPTY ** : OperationType(dto.Name, dto.EstimatedDuration, dto.Status, dto.RequiredStaff, dto.Phases)
 activate OPTY
 
 loop for each RequiredStaffDto within operationTypeDto
@@ -110,6 +124,53 @@ activate OPTYRepo
 OPTYRepo --> OPTYServ : operationTypeDto
 deactivate OPTYRepo
 
+OPTYServ -> LogServ : CreateCreationLog(operationTypeId, operationTypeClass, logDescription)
+activate LogServ
+
+LogServ -> Log ** : Log(getSequentialNumber(), objectClass, objectReference, 3, description)
+note right
+2 represents the
+Log type - Creation
+end note
+
+LogServ -> LogRepo : AddAsync(log)
+activate LogRepo
+
+LogRepo --> LogServ : log
+deactivate LogRepo
+
+LogServ --> OPTYServ : log
+deactivate LogServ
+
+OPTYServ -> OPTYRecordServ : AddAsync(operation)
+activate OPTYRecordServ
+
+OPTYRecordServ -> Record ** : OperationTypeRecord(todayDate, 0, Id, Name, EstimatedDuration, Status, RequiredStaff, Phases)
+
+OPTYRecordServ -> OPTYRecordRepo : AddAsync(operationRecord)
+activate OPTYRecordRepo
+
+OPTYRecordRepo --> OPTYRecordServ : operationTypeRecord
+deactivate OPTYRecordRepo
+
+OPTYRecordServ -> LogServ : CreateCreationLog(operationRecordId, operationRecordClass, logDescription)
+activate LogServ
+
+LogServ -> Log ** : Log(getSequentialNumber(), objectClass, objectReference, 2, description)
+
+LogServ -> LogRepo : AddAsync(log)
+activate LogRepo
+
+LogRepo --> LogServ : log
+deactivate LogRepo
+
+LogServ --> OPTYRecordServ : log
+deactivate LogServ
+
+OPTYRecordServ --> OPTYServ : operationTypeRecordDto
+deactivate OPTYRecordServ
+
+
 OPTYServ --> CONTROL : operationTypeDto
 deactivate OPTYServ
 
@@ -119,8 +180,16 @@ activate OPTYServ
 OPTYServ -> OPTYRepo : GetByIdWithStaffAsync(operationTypeId)
 activate OPTYRepo
 
-OPTYRepo --> OPTYServ : operationTypesWithRequiredStaffList
+OPTYRepo --> OPTYServ : operationTypeWithRequiredStaffList
 deactivate OPTYRepo
+
+OPTYServ -> OPTYServ : toDTO(operationTypeWithRequiredStaffList)
+activate OPTYServ
+
+OPTYServ -> OPTYDTO **
+
+OPTYServ --> OPTYServ : operationTypeDto
+deactivate OPTYServ
 
 OPTYServ --> CONTROL : operationTypeDto
 deactivate OPTYServ
