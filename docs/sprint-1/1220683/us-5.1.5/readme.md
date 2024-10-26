@@ -148,7 +148,7 @@ it's diagram was deemed irrelevant.
 
 > #### **Repository Pattern**
 >
->* **Components:** TokenRepository, PatientRepository, UserRepository
+>* **Components:** TokenRepository, PatientRepository, LogRepository
 >
 > The repositories are responsible for data access and retrieval, separating the logic for interacting with the database
 > from the services and other layers. This pattern helps in abstracting the persistence logic.
@@ -156,7 +156,7 @@ it's diagram was deemed irrelevant.
 
 > #### **DTO (Data Transfer Object) Pattern**
 >
->* **Components:** UserDTO, TokenDTO. EmailDTO
+>* **Components:** TokenDTO. EmailMessageDTO
 >
 > DTOs are used to transfer data between layers, especially from the controller layer to the service layer or vice versa.
 > The purpose is to carry data in a structured and decoupled way without exposing internal entity representations directly.
@@ -165,7 +165,7 @@ it's diagram was deemed irrelevant.
 
 > #### **Facade Pattern**
 >
->* **Components:** AuthenticationService, TokenService, PatientService, EmailService
+>* **Components:** UserService, UserManager, TokenService, PatientService, EmailService, LogService
 >
 > These services act as a Facade to simplify interaction with lower-level components like repositories. The Controller 
 > interacts with these service facades, keeping the complexity hidden from the higher layers.
