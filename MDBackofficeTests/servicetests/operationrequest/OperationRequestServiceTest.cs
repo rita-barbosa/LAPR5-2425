@@ -1,4 +1,3 @@
-using Castle.Core.Configuration;
 using DDDNetCore.Domain.Emails;
 using DDDNetCore.Domain.Logs;
 using DDDNetCore.Domain.OperationRequest;
@@ -20,7 +19,6 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moq;
 using Xunit;
-using IConfiguration = Microsoft.Extensions.Configuration.IConfiguration;
 
 namespace MDBackofficeTests.servicetests.operationrequest;
 public class OperationRequestServiceTests
@@ -148,11 +146,5 @@ public class OperationRequestServiceTests
         _repoMock.Verify(r => r.AddAsync(It.IsAny<OperationRequest>()), Times.Once);
         _unitOfWorkMock.Verify(u => u.CommitAsync(), Times.Once);
     }
-
-
-
-
-
-
 }
 
