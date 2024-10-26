@@ -58,7 +58,7 @@ namespace MDBackofficeTests.controllertests
         }
 
         [Fact]
-        public async Task Create_Returns_CreatedResult()
+        public async Task Create_ReturnsCreatedResult()
         {
             // Arrange
             var controller = new OperationRequestController(_service.Object);
