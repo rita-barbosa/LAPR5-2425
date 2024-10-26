@@ -43,10 +43,13 @@ namespace DDDNetCore.Domain.Shared
         {
             if (string.IsNullOrEmpty(description))
             {
-                return null;
+                throw new BusinessRuleValidationException("Function description cannot be null or empty.");
             }
 
-            _functions.TryGetValue(description, out var matchingFunction);
+            if (!_functions.TryGetValue(description, out var matchingFunction))
+            {
+                throw new BusinessRuleValidationException("Function has to be valid.");
+            }
             return new Function(matchingFunction.Description);
         }
         public string GetCorrespondingChar()

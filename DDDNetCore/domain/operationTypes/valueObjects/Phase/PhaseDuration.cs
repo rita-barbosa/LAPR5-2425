@@ -14,9 +14,9 @@ namespace DDDNetCore.Domain.OperationTypes.ValueObjects.Phase
 
         public PhaseDuration(int durationMinutes)
         {
-            if (durationMinutes < 0)
+            if (durationMinutes <= 0)
             {
-                throw new ArgumentException("The duration in minutes of an operation type's phase cannot be negative.");
+                throw new BusinessRuleValidationException("The duration in minutes of an operation type's phase cannot be negative.");
             }
             this.DurationMinutes = durationMinutes;
         }

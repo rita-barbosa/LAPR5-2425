@@ -15,7 +15,7 @@ namespace DDDNetCore.Domain.OperationTypes.ValueObjects.RequiredStaff
 
         public RequiredStaff(){
             // for ORM
-        }
+        } 
 
         public RequiredStaff(int staffneeded, string function,  string specialization)
         {

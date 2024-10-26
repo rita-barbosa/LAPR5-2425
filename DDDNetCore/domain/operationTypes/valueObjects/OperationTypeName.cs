@@ -16,7 +16,7 @@ namespace DDDNetCore.Domain.OperationTypes.ValueObjects
         {
             if (string.IsNullOrEmpty(name))
             {
-                throw new ArgumentException("Operation name cannot be null or empty.");
+                throw new BusinessRuleValidationException("Operation name cannot be null or empty.");
             }
             this.OperationName = name;
         }

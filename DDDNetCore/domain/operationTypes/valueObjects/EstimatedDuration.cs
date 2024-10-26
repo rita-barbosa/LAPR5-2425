@@ -1,5 +1,6 @@
 using System;
 using DDDNetCore.Domain.Shared;
+using Newtonsoft.Json.Linq;
 
 namespace DDDNetCore.Domain.OperationTypes.ValueObjects
 {
@@ -14,10 +15,13 @@ namespace DDDNetCore.Domain.OperationTypes.ValueObjects
 
         public EstimatedDuration(int minutes)
         {
-        
+            if (minutes == null || minutes == 0)
+            {
+                throw new BusinessRuleValidationException("Estimated duration cannot be null or 0.");
+            }
             if (minutes < 0)
             {
-                throw new ArgumentException("The estimated duration of the operation type cannot be negative.");
+                throw new BusinessRuleValidationException("The estimated duration of the operation type cannot be negative.");
             }
             this.TotalDurationMinutes = minutes;
         }
