@@ -12,7 +12,7 @@ using Moq;
 using Xunit;
 using IConfiguration = Microsoft.Extensions.Configuration.IConfiguration;
 
-namespace MDBackofficeTests.domaintests.patient;
+namespace MDBackofficeTests.servicetests.patient;
 
 public class PatientServiceTests
 {
