@@ -2,25 +2,37 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using DDDNetCore.Domain.Logs;
+using DDDNetCore.Domain.Emails;
 using DDDNetCore.Domain.Shared;
 using DDDNetCore.Domain.Specializations;
 using DDDNetCore.Domain.Users;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Configuration;
 
 namespace DDDNetCore.Domain.StaffProfiles
 {
     public class StaffService
     {
+        private readonly UserManager<User> _userManager;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IStaffRepository _repo;
         private readonly LogService _logService;
         private readonly ISpecializationRepository _repoSpec;
+        private readonly IConfiguration _configuration;
+        private readonly EmailService _emailService;
+        private readonly UserService _userService;
 
-        public StaffService(IUnitOfWork unitOfWork, LogService logService, IStaffRepository repo, ISpecializationRepository repoSpec)
+
+        public StaffService(IUnitOfWork unitOfWork, LogService logService, IStaffRepository repo, ISpecializationRepository repoSpec, UserManager<User> userManager, IConfiguration configuration, EmailService emailService, UserService userService)
         {
             this._unitOfWork = unitOfWork;
             this._repo = repo;
             this._logService = logService;
             this._repoSpec = repoSpec;
+            this._userManager = userManager;
+            this._configuration = configuration;
+            this._emailService = emailService;
+            this._userService = userService;
         }
         public async Task<StaffDto> GetByIdAsync(StaffId id)
         {
@@ -108,49 +120,95 @@ namespace DDDNetCore.Domain.StaffProfiles
             return listDto;
         }
 
-        public async Task<StaffDto> UpdateAsync(EditStaffDto dto)
+        public async Task<StaffDto> UpdateAsync(string id, EditStaffDto dto)
         {
-            var staff = await this._repo.GetByIdAsync(new StaffId(dto.StaffId));
+            var logEntries = new List<string>();
+            var staff = await this._repo.GetByIdAsync(new StaffId(id));
 
             if (staff == null)
                 return null;
 
-            if (dto.Phone != null)
+            bool phoneChange = false, emailChange = false, addressChange = false;
+            string oldEmail = staff.Email.ToString();
+
+            if (dto.Phone != null && dto.Phone != staff.Phone.ToString())
+                phoneChange = true;
+
+            if (dto.Email != null && dto.Email != staff.Email.ToString())
+                emailChange = true;
+
+            if (dto.Address != null && dto.Address != staff.Address.ToString())
+                addressChange = true;
+
+            string changedInformation = null;
+            if(phoneChange || emailChange || addressChange)
+                changedInformation = VerificationsToSendEmail(phoneChange, emailChange, addressChange, dto);
+                await EditStaffProfile(oldEmail, dto.Email, emailChange, staff, changedInformation);
+
+            if (phoneChange)
+            {
                 staff.ChangePhone(dto.Phone);
-
-            if (dto.Email != null)
+                logEntries.Add($"phone=[{dto.Phone}]");
+            }
+                
+            if (emailChange)
+            {
                 staff.ChangeEmail(dto.Email);
-
-            if (dto.Address != null)
+                logEntries.Add($"email=[{dto.Email}]");
+            }
+                
+            if (addressChange)
+            {
                 staff.ChangeAddress(dto.Address);
+                logEntries.Add($"address=[{dto.Address}]");
+            }      
 
-            if (dto.SpecializationId != null)
+            if (dto.SpecializationId != null){
                 staff.ChangeSpecialization(dto.SpecializationId);
+                logEntries.Add($"specialization=[{dto.SpecializationId}]");
+            }  
 
-            if (dto.Slots != null)
-                staff.ChangeSlots(dto.Slots);
+            var log = $"Edited information of staff profile. The information edited was: {string.Join(", ", logEntries)}.";
+            await _logService.CreateEditLog(staff.Id.AsString(), staff.GetType().ToString(), log);
 
             await this._unitOfWork.CommitAsync();
 
-            if (dto.Slots != null)
-            {
-                List<SlotsDto> slotsDto = new List<SlotsDto>();
-
-                foreach (var slot in dto.Slots)
-                {
-                    slotsDto.Add(new SlotsDto(slot.StartDate, slot.EndDate, slot.StartTime, slot.EndTime));
-                }
-
-                return new StaffDto(staff.Name.ToString(), staff.Phone.ToString(), staff.Email.ToString(),
-                staff.Address.ToString(), staff.SpecializationId.AsString(), staff.Id.AsString(), slotsDto);
-
-            }
-            else
-            {
+            
                 return new StaffDto(staff.Name.ToString(), staff.Phone.ToString(), staff.Email.ToString(),
                 staff.Address.ToString(), staff.Id.AsString(), staff.SpecializationId.AsString());
-            }
+        }
 
+        private async Task EditStaffProfile(string oldEmail, string newEmail, bool emailChange, Staff staff, string changedInformation)
+        {
+            staff.DeactivateProfile();
+            
+            await _userService.EditStaffUserProfile(oldEmail, newEmail, staff.Id.AsString(), emailChange, changedInformation);
+        }
+
+        private string VerificationsToSendEmail(bool phoneChange, bool emailChange, bool addressChange, EditStaffDto dto)
+        {
+            string changedInformation = "<p>The new information is as follows:</p><ul>";
+    
+            if (phoneChange)
+                changedInformation += "<li>Phone Number: " + dto.Phone + "</li>";
+            if (emailChange)
+                changedInformation += "<li>Email: " + dto.Email + "</li>";
+            if (addressChange)
+                changedInformation += "<li>Address: " + dto.Address + "</li>";
+            
+            changedInformation += "</ul>";
+
+            return changedInformation;
+        }
+
+        public async Task ConfirmEmailStaff(string userId, string staffId, string token)
+        {
+            var staff = await this._repo.GetByIdAsync(new StaffId(staffId));
+
+            await _userService.ConfirmEmailStaffWithoutPassword(userId, token);
+
+            staff.ActivateProfile();
+            await this._unitOfWork.CommitAsync();
         }
 
         public async Task<List<StaffDto>> FilterStaffProfiles(StaffQueryParametersDto dto)

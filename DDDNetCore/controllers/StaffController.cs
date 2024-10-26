@@ -71,32 +71,47 @@ namespace DDDNetCore.Controllers
 
         // PUT: api/Staff/5
         [HttpPut("{id}")]
+        [Authorize(Policy = "Admin")]
         public async Task<ActionResult<StaffDto>> EditStaffProfile(string id, EditStaffDto dto)
         {
-            if (id != dto.StaffId)
-            {
-                return BadRequest();
-            }
-
             try
             {
-                var staff = await _service.UpdateAsync(dto);
+                var staff = await _service.UpdateAsync(id, dto);
 
                 if (staff == null)
                 {
                     return NotFound();
                 }
 
-                //falta a parte de mandar o mail!!!!
-
-
-                return Ok(staff);
+                return Accepted(staff);
             }
             catch (BusinessRuleValidationException ex)
             {
-                return BadRequest(new { Message = ex.Message });
+                return BadRequest(new { ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { V = $"An unexpected error occurred: {ex.Message}" });
             }
 
+        }
+
+        [HttpPut("activate-staffProfile")]
+        public async Task<IActionResult> ConfirmEmailStaff([FromQuery] string userId, [FromQuery] string staffId, [FromQuery] string token)
+        {
+            try
+            {
+                await _service.ConfirmEmailStaff(userId, staffId, token);
+                return Ok("Email confirmed successfully and contact information changed.");
+            }
+            catch (BusinessRuleValidationException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { V = $"An unexpected error occurred: {ex.Message}" });
+            }
         }
 
         // POST: api/Staff/Filtered-List
