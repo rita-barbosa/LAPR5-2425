@@ -171,7 +171,7 @@ The process view levels are here represented as they represent a process specifi
 
 > #### **Repository Pattern**
 >
->* **Components:** OperationTypeRepository, SpecializationRepository
+>* **Components:** OperationTypeRepository, SpecializationRepository, LogRepository, OperationTypeRecordRepository
 >
 > The repositories are responsible for data access and retrieval, separating the logic for interacting with the database
 > from the services and other layers. This pattern helps in abstracting the persistence logic.
@@ -188,7 +188,7 @@ The process view levels are here represented as they represent a process specifi
 
 > #### **Facade Pattern**
 >
->* **Components:** OperationTypeService, SpecializationService
+>* **Components:** OperationTypeService, SpecializationService, OperationTypeRecordService, LogService 
 >
 > These services act as a Facade to simplify interaction with lower-level components like repositories. The Controller
 > interacts with these service facades, keeping the complexity hidden from the higher layers.
@@ -201,12 +201,137 @@ _// To do - layout still in development //_
 
 ## 5. Implementation
 
-_// To do //_
+Method in the Controller
 
+```
+// POST: api/operationTypes
+[HttpPost]
+public async Task<ActionResult<OperationTypeDto>> Create(OperationTypeDto dto)
+{
+    var operationType = await _service.AddAsync(dto);
+    return CreatedAtAction(nameof(GetGetById), new { id = new OperationTypeId(operationType.Name) }, operationType);
+}
+```
+
+Creation of the new OperationType
+
+```
+public async Task<OperationTypeDto> AddAsync(OperationTypeDto dto)
+{
+    var operationType = new OperationType(
+        dto.Name,
+        dto.EstimatedDuration,
+        dto.Status,
+        dto.RequiredStaff,
+        dto.Phases
+    );
+
+    await _repo.AddAsync(operationType);
+    await _unitOfWork.CommitAsync();
+
+    await _logService.CreateCreationLog(operationType.Id.Value, operationType.GetType().Name, "New operation type added: " + operationType.Name.OperationName);
+
+    var operation = await _repo.GetByIdAsync(operationType.Id);
+
+    await __recordService.AddAsync(operation);
+
+    await _unitOfWork.CommitAsync();
+
+    return ToDto(operationType);
+}
+```
+
+Creation of a new OperationTypeRecord:
+
+```
+public async Task<OperationTypeRecordDto> AddAsync(OperationType operationType)
+{
+    var todayDate = new Date(DateTime.Now.ToString("yyyy-MM-dd"));
+    var operationRecord = new OperationTypeRecord(new Date(todayDate.Start.ToString(), todayDate.End.ToString()), 0, operationType.Id, operationType.Name, operationType.EstimatedDuration, operationType.Status, operationType.RequiredStaff, operationType.Phases);
+    await _repo.AddAsync(operationRecord);
+    await _unitOfWork.CommitAsync();
+
+    await _logService.CreateCreationLog(operationRecord.Id.Value, operationRecord.GetType().Name, "New operation type version record created.");
+
+    List<RequiredStaffDto> requiredStaffDtos = [];
+    foreach (RequiredStaffRecord requiredStaffRecord in operationRecord.RequiredStaffRecords){
+        requiredStaffDtos.Add(new RequiredStaffDto{StaffQuantity = requiredStaffRecord.StaffQuantity.NumberRequired,
+         Function = requiredStaffRecord.Function.Description, Specialization = requiredStaffRecord.SpecializationId.SpeciId});
+    }
+
+    List<PhaseDto> phaseDtos = [];
+    foreach (PhaseRecord phase in operationRecord.Phases){
+        phaseDtos.Add(new PhaseDto{Description = phase.Description.Description, Duration = phase.Duration.DurationMinutes});
+    }
+
+   return  new OperationTypeRecordDto(operationRecord.Id.Value.ToString(), operationRecord.Version.Version,
+     operationRecord.EffectiveDate.ToString(), operationRecord.OperationTypeId.OpID,
+      operationRecord.Name.OperationName, operationRecord.EstimatedDuration.TotalDurationMinutes,
+       operationRecord.Status.Active, requiredStaffDtos, phaseDtos);
+}
+```
+
+Log record of the creation of a new OperationType:
+
+```
+public async Task<bool> CreateCreationLog(string objectReference, string objectClass, string description)
+{
+    try
+    {
+        Log log = new Log(await getSequentialNumber(), objectClass, objectReference, 2, description);
+        
+        await _repo.AddAsync(log);
+        await _unitOfWork.CommitAsync();
+
+        return true;
+    }
+    catch (Exception ex)
+    {
+        return false;
+    }
+}
+```
+
+The number "2" refers to the creation type log record.
+ 
 ## 6. Integration/Demonstration
 
-_// To do //_
+To create an Operation Type, the specializations must be already in the system.
+
+This demonstration happens in Postman, where a json is sent with the operation type data.
+
+![opType_Request200.png](Demonstration/opType_Request200.png)
+
+The following images prove the correct persistence and associated data in the database.
+
+* Operation Type
+
+![optype_table.png](Demonstration/optype_table.png)
+
+* RequiredStaff
+
+![requiredstaff_table.png](Demonstration/requiredstaff_table.png)
+
+* Phases
+
+![phase_table.png](Demonstration/phase_table.png)
+
+* Operation Type Record
+
+![record_table.png](Demonstration/record_table.png)
+
+* Required Staff Record 
+
+![requiredstaffRECORD_table.png](Demonstration/requiredstaffRECORD_table.png)
+
+* Phase Record
+
+![phaseRECORD_table.png](Demonstration/phaseRECORD_table.png)
+
+* System Logs
+
+![log_table.png](Demonstration/log_table.png)
 
 ## 7. Observations
 
-_// To do //_
+No observations.

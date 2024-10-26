@@ -10,7 +10,7 @@ participant "UserService" as SVC <<service>>
 participant "UserManager" as IEL <<service>>
 participant "HttpContext" as HC
 
-[o-> ROUTE: GET /api/login
+[o-> ROUTE: POST(json) /api/Login
 activate ROUTE
 
 ROUTE -> DTO **: create(json)

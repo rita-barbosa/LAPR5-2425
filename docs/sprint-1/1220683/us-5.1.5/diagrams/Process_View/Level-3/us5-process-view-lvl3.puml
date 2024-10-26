@@ -8,14 +8,9 @@ autonumber
 participant "<<route>>\n Routing" as ROUTE
 participant "<<controller>>\n PatientController" as CONTROL
 
-participant "<<service>>\n AuthenticationService" as AUTHServ
+participant "<<service>>\n UserService" as AUTHServ
 
-participant "<<dto>>\n UserDTO" as UserDTO
-
-participant "<<repository>>\n UserRepository" as AUTHRepo
-
-participant "<<service>>\n EmailService" as EMAILServ
-participant "<<dto>>\n EmailDTO" as EmailDTO
+participant "<<service>>\n UserManager" as AUTHRepo
 
 participant "<<service>>\n TokenService" as TOKENServ
 participant "<<domain>>\n Token" as TOKEN
@@ -24,88 +19,69 @@ participant "<<repository>>\n TokenRepository" as TOKENRepo
 
 participant "<<service>>\n PatientService" as PATIENTServ
 participant "<<repository>>\n PatientRepository" as PATIENTRepo
+participant "<<domain>>\n Patient" as PATIENT
 
+participant "<<service>>\n EmailService" as EMAILServ
+participant "<<dto>>\n EmailMessageDTO" as EmailDTO
 
-[o-> ROUTE : DELETE(json) /api/patients
+participant "<<service>>\n LogService" as LogServ
+participant "<<domain>>\n Log" as Log
+participant "<<repository>>\n LogRepository" as LogRepo
+
+[o-> ROUTE : DELETE() /api/patients
 activate ROUTE
 
-ROUTE -> CONTROL : deleteAccount(json)
+ROUTE -> CONTROL : DeletePatientAccountRequest()
 activate CONTROL
 
-CONTROL -> UserDTO** : toDTO(credentialsData)
+CONTROL -> CONTROL : GetUserInfo()
+activate CONTROL
 
-CONTROL -> AUTHServ : validatePatientUser(userDTO)
-activate AUTHServ
-
-
-AUTHServ -> AUTHRepo : findByID(usernameString)
-activate AUTHRepo
-
-
-AUTHRepo --> AUTHServ : user
-deactivate AUTHRepo
-
-AUTHServ -> AUTHRepo : isUserAPatient(user)
-activate AUTHRepo
-
-AUTHRepo --> AUTHServ : true
-deactivate AUTHRepo
-
-AUTHServ -> UserDTO ** : toDTO(user)
-
-AUTHServ --> CONTROL : completeUserDTO
-deactivate AUTHServ
-
-|||
-'SENDING EMAIL
-
-CONTROL -> EMAILServ : sendAccountDeletionConfirmationEmail(userDTO)
-activate EMAILServ
-
-EMAILServ -> TOKENServ : CreateAccountDeletionToken(userDTO.userEmail)
-activate TOKENServ
-
-TOKENServ -> TOKEN **
-
-TOKENServ -> TOKENRepo : save(token)
-activate TOKENRepo
-
-
-TOKENRepo --> TOKENServ : return
-deactivate TOKENRepo
-
-TOKENServ -> TokenDTO ** : toDTO(token)
-
-TOKENServ --> EMAILServ : tokenDTO
-deactivate TOKENServ
-
-EMAILServ -> EmailDTO ** : toDTO(ADMIN_EMAIL, emailString, emailTitle, emailBody)
-
-EMAILServ -> EMAILServ : sendEmail(emailDTO, tokenDTO)
-activate EMAILServ
-deactivate EMAILServ
-
-
-EMAILServ --> CONTROL : return
-deactivate EMAILServ
-
-CONTROL --> ROUTE : return
+CONTROL --> CONTROL : userInfo
+note left
+userInfo is an OkObjectResult
+which contains the user email
+and id
+end note
 deactivate CONTROL
 
-alt success
+CONTROL -> TOKENServ : CreateAccountDeletionToken(email)
+activate TOKENServ
+
+TOKENServ -> TOKEN ** :
+
+TOKENServ -> TOKENRepo : AddAsync(token)
+activate TOKENRepo
+
+TOKENRepo --> TOKENServ : tokenDTO
+deactivate TOKENRepo
+
+TOKENServ --> CONTROL :tokenDTO
+deactivate TOKENServ
+
+CONTROL -> PATIENTServ : ConfirmPatientAccountDeletionEmail(confirmationLink, email)
+activate PATIENTServ
+
+PATIENTServ -> EmailDTO ** : toDTO(HOSPITAL_EMAIL, email, "Account Deletion Confirmation", emailBody)
+
+PATIENTServ -> EMAILServ : SendAccountDeletionEmail(emailMessageDto)
+activate EMAILServ
+deactivate EMAILServ
+
+PATIENTServ --> CONTROL : return
+deactivate PATIENTServ
+
+CONTROL --> ROUTE : ok()
+deactivate CONTROL
+
 [o<-- ROUTE : 200 OK
-
-else failure
-
-[o<-- ROUTE : 400 Bad Request
 deactivate ROUTE
-end alt
 
 |||
 
 'CONFIRMATION
 
-[o-> ROUTE : GET(json)
+[o-> ROUTE : PUT(userId, token)
 note left
 After clicking on the
 link of the account
@@ -113,69 +89,131 @@ deletion confirmation email
 end note
 activate ROUTE
 
-ROUTE -> CONTROL : confirmAccountDeletion(json)
+ROUTE -> CONTROL : ConfirmPatientAccountDeletionNotProfile(userId, token)
 activate CONTROL
 
-CONTROL -> TokenDTO ** : toDTO(tokenData)
-CONTROL -> UserDTO ** : toDTO(credentialsData)
+CONTROL -> AUTHServ : UserExistsById(userId)
+activate AUTHServ
 
-CONTROL -> TOKENServ : validateToken(tokenDTO)
+AUTHServ --> CONTROL : true
+deactivate AUTHServ
+|||
+CONTROL -> TOKENServ : TokenExistsById(token)
 activate TOKENServ
 
-TOKENServ -> TOKENRepo : findByID(tokenDtoID)
+TOKENServ --> CONTROL : true
+deactivate TOKENServ
+
+|||
+CONTROL -> TOKENServ : IsTokenExpired(token)
+activate TOKENServ
+
+TOKENServ --> CONTROL : true
+deactivate TOKENServ
+
+|||
+CONTROL -> TOKENServ : IsTokenActive(token)
+activate TOKENServ
+
+TOKENServ --> CONTROL : true
+deactivate TOKENServ
+
+CONTROL -> AUTHServ : DeletePatientAccount(userId, token)
+activate AUTHServ
+
+AUTHServ -> TOKENServ : InactivateAsync(token)
+activate TOKENServ
+
+TOKENServ -> TOKENRepo : GetByIdAsync(tokenid)
 activate TOKENRepo
 
 TOKENRepo --> TOKENServ : token
 deactivate TOKENRepo
 
-TOKENServ -> TOKENServ : checkTokenValidityTime(token)
-activate TOKENServ
+TOKENServ -> TOKEN : MarkAsInative()
+activate TOKEN
+deactivate TOKEN
+
+TOKENServ -> TokenDTO **
+
+TOKENServ --> AUTHServ : tokenDTO
 deactivate TOKENServ
 
-TOKENServ --> CONTROL : true
-deactivate TOKENServ
-
-CONTROL -> AUTHServ : deleteAccount(userDTO)
+AUTHServ -> AUTHServ :  DeleteAsync(userId)
 activate AUTHServ
 
-AUTHServ -> AUTHServ : validatePatientUser(userDTO)
-activate AUTHServ
-deactivate AUTHServ
-
-AUTHServ -> PATIENTServ : deletePatientProfile(patientIDString)
-activate PATIENTServ
-
-PATIENTServ -> PATIENTRepo : getByID(patientIDString)
-activate PATIENTRepo
-
-PATIENTRepo --> PATIENTServ : patient
-deactivate PATIENTRepo
-
-PATIENTServ -> PATIENTRepo : remove(patient)
-activate PATIENTRepo
-
-
-PATIENTRepo --> PATIENTServ : return
-deactivate PATIENTRepo
-
-PATIENTServ --> AUTHServ : return
-deactivate PATIENTServ
-
-AUTHServ -> AUTHRepo :  findByID(usernameString)
+AUTHServ -> AUTHRepo : FindByIdAsync(userId)
 activate AUTHRepo
 
 AUTHRepo --> AUTHServ : user
 deactivate AUTHRepo
 
-AUTHServ -> AUTHRepo : remove(user)
-activate AUTHRepo
+|||
 
+AUTHServ -> AUTHRepo : DeleteAsync(user)
+activate AUTHRepo
 
 AUTHRepo --> AUTHServ : return
 deactivate AUTHRepo
 
+AUTHServ -> LogServ : CreateDeletionLog(userId, userClass, logDescription)
+activate LogServ
+
+LogServ -> Log ** : Log(getSequentialNumber(), objectClass, objectReference, 1, description)
+
+LogServ -> LogRepo : AddAsync(log)
+activate LogRepo
+
+LogRepo --> LogServ : log
+deactivate LogRepo
+
+LogServ --> AUTHServ : log
+deactivate LogServ
+
+AUTHServ --> AUTHServ : userEmail
+deactivate AUTHServ
+
 AUTHServ --> CONTROL : return
 deactivate AUTHServ
+
+|||
+
+CONTROL -> PATIENTServ : AnonymizeProfile(userEmail)
+activate PATIENTServ
+
+PATIENTServ -> PATIENTRepo : GetPatientWithEmail(email)
+activate PATIENTRepo
+
+PATIENTRepo --> PATIENTServ : patient
+deactivate PATIENTRepo
+
+|||
+
+PATIENTServ -> PATIENT : RemoveUser()
+activate PATIENT
+deactivate PATIENT
+
+PATIENTServ -> PATIENT : Anonymize()
+activate PATIENT
+deactivate PATIENT
+
+
+PATIENTServ -> LogServ : CreateDeletionLog(patientId, patientClass, logDescription)
+activate LogServ
+
+LogServ -> Log ** : Log(getSequentialNumber(), objectClass, objectReference, 1, description)
+
+LogServ -> LogRepo : AddAsync(log)
+activate LogRepo
+
+LogRepo --> LogServ : log
+deactivate LogRepo
+
+LogServ --> PATIENTServ : log
+deactivate LogServ
+
+PATIENTServ --> CONTROL : return
+deactivate PATIENTServ
 
 CONTROL --> ROUTE : return
 deactivate CONTROL

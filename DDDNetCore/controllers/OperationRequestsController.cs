@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using DDDNetCore.Domain.OperationRequest;
 using DDDNetCore.Domain.Shared;
-using Microsoft.AspNetCore.Authorization.Policy;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
 

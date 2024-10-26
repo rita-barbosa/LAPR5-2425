@@ -74,8 +74,6 @@ public class OperationRequestServiceTests
         );
         _patientServiceMock = new Mock<PatientService>(_unitOfWorkMock.Object, _logServiceMock.Object, _configurationMock.Object, _repoPatMock.Object,
                     _userServiceMock.Object, _emailServiceMock.Object);
-
-
     }
 
     [Fact]
@@ -149,7 +147,12 @@ public class OperationRequestServiceTests
         Assert.Equal(dtoMock.Description, result.Description);
         _repoMock.Verify(r => r.AddAsync(It.IsAny<OperationRequest>()), Times.Once);
         _unitOfWorkMock.Verify(u => u.CommitAsync(), Times.Once);
-
     }
+
+
+
+
+
+
 }
 

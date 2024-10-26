@@ -21,11 +21,16 @@ namespace DDDNetCore.Domain.Patients
         }
         public static Gender? GetGenderByDescription(string description)
         {
+             if (string.IsNullOrEmpty(description))
+            {
+                throw new BusinessRuleValidationException("Gender denomination cannot be null or empty");
+            }
+            
             return string.IsNullOrEmpty(description.ToLower()) ? null : description.ToLower() switch
             {
                 var d when string.Equals(d, Female.Denomination) => Female,
                 var d when string.Equals(d, Male.Denomination) => Male,
-                _ => null
+                _ => throw new BusinessRuleValidationException("Gender denomination must be 'female' or 'male'")
             };
         }
 
