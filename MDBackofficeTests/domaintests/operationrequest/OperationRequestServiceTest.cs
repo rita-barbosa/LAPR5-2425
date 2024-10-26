@@ -31,10 +31,9 @@ public class OperationRequestServiceTests
     private readonly Mock<IStaffRepository> _repoStaMock = new Mock<IStaffRepository>();
     private readonly Mock<IPatientRepository> _repoPatMock = new Mock<IPatientRepository>();
     private readonly Mock<IOperationTypeRepository> _repoOpTypeMock = new Mock<IOperationTypeRepository>();
-    private readonly Mock<ISpecializationRepository> _repoSpecMock = new Mock<ISpecializationRepository>();
     private readonly Mock<LogService> _logServiceMock = new Mock<LogService>(new Mock<IUnitOfWork>().Object, new Mock<ILogRepository>().Object);
-    private readonly UserService _userServiceMock;
-    private readonly PatientService _patientServiceMock;
+    private readonly Mock<UserService> _userServiceMock;
+    private readonly Mock<PatientService> _patientServiceMock;
 
     public OperationRequestServiceTests()
     {
@@ -42,7 +41,7 @@ public class OperationRequestServiceTests
         identityOptionsMock.Setup(o => o.Value).Returns(new IdentityOptions());
         var identityErrorDescriberMock = new Mock<IdentityErrorDescriber>();
 
-        var userManagerMock = new UserManager<User>(
+        var userManagerMock = new Mock<UserManager<User>>(
             new Mock<IUserStore<User>>().Object,
             identityOptionsMock.Object,
             new Mock<IPasswordHasher<User>>().Object,
@@ -54,7 +53,7 @@ public class OperationRequestServiceTests
             new Mock<ILogger<UserManager<User>>>().Object
         );
 
-        var roleManagerMock = new RoleManager<Role>(
+        var roleManagerMock = new Mock<RoleManager<Role>>(
             new Mock<IRoleStore<Role>>().Object,
             new List<IRoleValidator<Role>>(),
             new Mock<ILookupNormalizer>().Object,
@@ -62,20 +61,20 @@ public class OperationRequestServiceTests
              new Mock<ILogger<RoleManager<Role>>>().Object
         );
 
-        var tokenServiceMock = new Mock<TokenService>(_unitOfWorkMock.Object, new Mock<ITokenRepository>().Object, userManagerMock);
+        var tokenServiceMock = new Mock<TokenService>(_unitOfWorkMock.Object, new Mock<ITokenRepository>().Object, userManagerMock.Object);
         var _emailServiceMock = new Mock<EmailService>(tokenServiceMock.Object, new Mock<IEmailAdapter>().Object);
         var _configurationMock = new Mock<IConfiguration>();
 
-        _userServiceMock = new UserService(
-            userManagerMock,
-            roleManagerMock,
+        _userServiceMock = new Mock<UserService>(
+            userManagerMock.Object,
+            roleManagerMock.Object,
             _logServiceMock.Object,
             _emailServiceMock.Object,
            _configurationMock.Object,
             tokenServiceMock.Object 
         );
-        _patientServiceMock = new PatientService(_unitOfWorkMock.Object, _logServiceMock.Object, _configurationMock.Object, _repoPatMock.Object,
-                    _userServiceMock, _emailServiceMock.Object);
+        _patientServiceMock = new Mock<PatientService>(_unitOfWorkMock.Object, _logServiceMock.Object, _configurationMock.Object, _repoPatMock.Object,
+                    _userServiceMock.Object, _emailServiceMock.Object);
 
 
     }
@@ -136,8 +135,8 @@ public class OperationRequestServiceTests
 
 
         var service = new OperationRequestService(_unitOfWorkMock.Object, _repoMock.Object,
-                                                    _repoStaMock.Object, _logServiceMock.Object, _patientServiceMock,
-                                                    _repoPatMock.Object, _repoOpTypeMock.Object, _userServiceMock);
+                                                    _repoStaMock.Object, _logServiceMock.Object, _patientServiceMock.Object,
+                                                    _repoPatMock.Object, _repoOpTypeMock.Object, _userServiceMock.Object);
 
         //Act
         var result = await service.AddAsync(dtoMock);
