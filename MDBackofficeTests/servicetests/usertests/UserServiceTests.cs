@@ -20,7 +20,7 @@ namespace MDBackofficeTests.servicetests.usertests
 {
 
 
-    public class ResetPasswordServiceTests
+    public class UserServiceTests
     {
         private readonly UserService _userService;
         private readonly Mock<IUnitOfWork> _unitOfWorkMock = new Mock<IUnitOfWork>();
@@ -28,7 +28,8 @@ namespace MDBackofficeTests.servicetests.usertests
         private readonly Mock<UserManager<User>> _userManagerMock;
         private readonly Mock<IConfiguration> _configurationMock;
         private readonly Mock<TokenService> _tokenServiceMock;
-        public ResetPasswordServiceTests() {
+
+        public UserServiceTests() {
             var identityOptionsMock = new Mock<IOptions<IdentityOptions>>();
             identityOptionsMock.Setup(o => o.Value).Returns(new IdentityOptions());
             var identityErrorDescriberMock = new Mock<IdentityErrorDescriber>();
@@ -76,8 +77,8 @@ namespace MDBackofficeTests.servicetests.usertests
             userMock.Setup(u => u.UserName).Returns(email);
             userMock.Setup(u => u.Email).Returns(email);
             userMock.Setup(u => u.Status).Returns(true);
-            var resultMock = IdentityResult.Success; 
 
+            var resultMock = IdentityResult.Success;
             _userManagerMock.Setup(um => um.FindByEmailAsync(email)).ReturnsAsync(userMock.Object);
             _userManagerMock.Setup(um => um.UpdateAsync(userMock.Object)).ReturnsAsync(resultMock);
             _userManagerMock.Setup(um => um.GenerateEmailConfirmationTokenAsync(userMock.Object)).ReturnsAsync("test token");
@@ -106,8 +107,8 @@ namespace MDBackofficeTests.servicetests.usertests
             userMock.Setup(u => u.UserName).Returns(email);
             userMock.Setup(u => u.Email).Returns(email);
             userMock.Setup(u => u.Status).Returns(true);
-            var resultMock = IdentityResult.Success;
 
+            var resultMock = IdentityResult.Success;
             _userManagerMock.Setup(_userManagerMock => _userManagerMock.FindByEmailAsync(email)).ReturnsAsync(userMock.Object);//
             _userManagerMock.Setup(um => um.FindByIdAsync(id)).ReturnsAsync(userMock.Object);
             _userManagerMock.Setup(um => um.ConfirmEmailAsync(userMock.Object, token)).ReturnsAsync(resultMock);
@@ -123,6 +124,70 @@ namespace MDBackofficeTests.servicetests.usertests
             Assert.True(result);
             _userManagerMock.Verify(um => um.UpdateAsync(userMock.Object), Times.Once);
             _userManagerMock.Verify(um => um.ResetPasswordAsync(userMock.Object,token,password), Times.Once);
+        }
+
+
+        [Fact]
+        public async Task LoginCorrectCredentials_ReturnsTokenSuccessfully()
+        {
+            //Arrange
+            var email = "test@email.com";
+            var id = "testid";
+            var password = "NewPass00_d";
+          
+            var dtoMock = new LoginUserDto { Email = email, Password = password };
+
+            var userMock = new Mock<User>();
+
+
+            userMock.Setup(u => u.Id).Returns(id);
+            userMock.Setup(u => u.UserName).Returns(email);
+            userMock.Setup(u => u.Email).Returns(email);
+            userMock.Setup(u => u.Status).Returns(true);
+            userMock.Setup(u => u.PasswordHash).Returns(password);
+
+            
+            _userManagerMock.Setup(_userManagerMock => _userManagerMock.FindByEmailAsync(email)).ReturnsAsync(userMock.Object);
+            _userManagerMock.Setup(_userManagerMock => _userManagerMock.CheckPasswordAsync(userMock.Object, password)).ReturnsAsync(true);
+            _userManagerMock.Setup(um => um.GetRolesAsync(userMock.Object)).ReturnsAsync(["Doctor"]);
+            _configurationMock.Setup(c => c["Jwt:Key"]).Returns("AHSVFOSDYUDASJFNhvOUVu897GB876arbvn568n6CN865Vn5NFFn86f87Cb76cNvnVNYvhgvnu7676");
+            _configurationMock.Setup(c => c["Jwt:Issuer"]).Returns("testissuer");
+            _configurationMock.Setup(c => c["Jwt:Audiend"]).Returns("testaudience");
+
+            //Act
+            var result = await _userService.Login(dtoMock);
+
+            //Assert
+            Assert.NotNull(result);
+            _userManagerMock.Verify(um => um.CheckPasswordAsync(userMock.Object,password), Times.Once);
+        }
+        [Fact]
+        public async Task LoginInvalidCredentials_ReturnsTokenSuccessfully()
+        {
+            //Arrange
+            var email = "test@email.com";
+            var id = "testid";
+            var password = "NewPass00_d";
+
+            var dtoMock = new LoginUserDto { Email = email, Password = "wrong-password" };
+
+            var userMock = new Mock<User>();
+            userMock.Setup(u => u.Id).Returns(id);
+            userMock.Setup(u => u.UserName).Returns(email);
+            userMock.Setup(u => u.Email).Returns(email);
+            userMock.Setup(u => u.Status).Returns(true);
+            userMock.Setup(u => u.PasswordHash).Returns(password);
+
+            
+            _userManagerMock.Setup(_userManagerMock => _userManagerMock.FindByEmailAsync(email)).ReturnsAsync(userMock.Object);
+            _userManagerMock.Setup(_userManagerMock => _userManagerMock.CheckPasswordAsync(userMock.Object, password)).ReturnsAsync(true);
+            _userManagerMock.Setup(um => um.GetRolesAsync(userMock.Object)).ReturnsAsync(["Doctor"]);
+            _configurationMock.Setup(c => c["Jwt:Key"]).Returns("AHSVFOSDYUDASJFNhvOUVu897GB876arbvn568n6CN865Vn5NFFn86f87Cb76cNvnVNYvhgvnu7676");
+            _configurationMock.Setup(c => c["Jwt:Issuer"]).Returns("testissuer");
+            _configurationMock.Setup(c => c["Jwt:Audiend"]).Returns("testaudience");
+
+            
+            await Assert.ThrowsAsync<BusinessRuleValidationException>(() => _userService.Login(dtoMock));        
         }
     }
 }

@@ -71,10 +71,7 @@ namespace MDBackofficeTests.integrationtests.usertests
             _patientServiceMock = new Mock<PatientService>(_unitOfWorkMock.Object, _logServiceMock.Object, _configurationMock.Object, new Mock<IPatientRepository>().Object,
                     _userService, _emailServiceMock.Object);
              _staffServiceMock = new Mock<StaffService>(_unitOfWorkMock.Object, _logServiceMock.Object, new Mock<IStaffRepository>().Object, new Mock<ISpecializationRepository>().Object,
-                    _userManagerMock.Object, _configurationMock.Object, _emailServiceMock.Object, _userService);
-
-
-           
+                    _userManagerMock.Object, _configurationMock.Object, _emailServiceMock.Object, _userService);  
         }
 
 
