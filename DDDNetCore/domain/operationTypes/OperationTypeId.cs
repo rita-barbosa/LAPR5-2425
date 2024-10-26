@@ -8,9 +8,9 @@ namespace DDDNetCore.Domain.OperationTypes
 
         public OperationTypeId(String value) : base(value)
         {
-            if (string.IsNullOrEmpty(value) || string.IsNullOrWhiteSpace(value))
+            if (string.IsNullOrEmpty(value))
             {
-                throw new ArgumentException("Operation name cannot be null or empty.");
+                throw new BusinessRuleValidationException("Operation name cannot be null or empty.");
             }
         }
 

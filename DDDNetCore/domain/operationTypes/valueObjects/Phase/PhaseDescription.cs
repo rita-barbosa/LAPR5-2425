@@ -16,7 +16,7 @@ namespace DDDNetCore.Domain.OperationTypes.ValueObjects.Phase
         {
             if (string.IsNullOrEmpty(description))
             {
-                throw new ArgumentException("Operation Type Description cannot be null or empty.");
+                throw new BusinessRuleValidationException("Operation Type Description cannot be null or empty.");
             }
             this.Description = description;
         }

@@ -8,7 +8,7 @@ namespace DDDNetCore.Domain.Specializations
 
         public SpecializationDenomination(string denomination) : base(denomination)
         {
-            if (string.IsNullOrEmpty(denomination))
+            if (string.IsNullOrEmpty(denomination) || string.IsNullOrWhiteSpace(denomination))
             {
                 throw new BusinessRuleValidationException("Specializations must have a denomination");
             }

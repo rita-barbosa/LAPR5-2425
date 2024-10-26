@@ -14,9 +14,13 @@ namespace DDDNetCore.Domain.OperationTypes.ValueObjects.RequiredStaff
 
         public NumberStaff(int staffRequired)
         {
-            if (staffRequired < 0)
+            if (staffRequired == null)
             {
-                throw new ArgumentException("The number of required staff of the operation type cannot be negative.");
+                throw new BusinessRuleValidationException("The number of required staff of the operation type cannot be null.");
+            }
+            if (staffRequired <= 0)
+            {
+                throw new BusinessRuleValidationException("The number of required staff of the operation type cannot be negative or 0.");
             }
             this.NumberRequired = staffRequired;
         }
