@@ -5,6 +5,7 @@ using DDDNetCore.Domain.OperationTypes.ValueObjects.RequiredStaff;
 using DDDNetCore.Domain.OperationTypes.ValueObjects.Phase;
 using System;
 using DDDNetCore.Domain.Logs;
+using Microsoft.AspNetCore.Mvc;
 
 namespace DDDNetCore.Domain.OperationTypes
 {
@@ -14,7 +15,7 @@ namespace DDDNetCore.Domain.OperationTypes
         private readonly IUnitOfWork _unitOfWork;
         private readonly IOperationTypeRepository _repo;
       
-       private readonly OperationTypeRecordService __recordService;
+       private readonly OperationTypeRecordService _recordService;
 
         private readonly LogService _logService;
 
@@ -23,7 +24,7 @@ namespace DDDNetCore.Domain.OperationTypes
             _unitOfWork = unitOfWork;
             _repo = repo;
             _logService = logService;
-            __recordService = operationTypeRecordService;
+            _recordService = operationTypeRecordService;
         }
 
         public async Task<List<OperationTypeDto>> GetAllAsync()
@@ -62,7 +63,7 @@ namespace DDDNetCore.Domain.OperationTypes
 
             var operation = await _repo.GetByIdAsync(operationType.Id);
 
-            await __recordService.AddAsync(operation);
+            await _recordService.AddAsync(operation);
 
             await _unitOfWork.CommitAsync();
 
@@ -165,6 +166,44 @@ namespace DDDNetCore.Domain.OperationTypes
                     })
                 };
             }
+
+        }
+
+        public async Task EditOperationType(EditOpTypeDto editOpTypeDto)
+        {
+            var operationType = await _repo.GetByIdAsync(new OperationTypeId(editOpTypeDto.Id));
+            if (operationType == null)
+            {
+                throw new BusinessRuleValidationException("No operation type found with this Id.");
+            }
+
+            if (editOpTypeDto.EstimatedDuration != null)
+            {
+                operationType.ChangeEstimatedDuration(editOpTypeDto.EstimatedDuration);
+            }
+            
+            if (editOpTypeDto.Name != null)
+            {
+                operationType.ChangeName(editOpTypeDto.Name);
+            }
+
+            if (editOpTypeDto.Phases != null)
+            {
+                operationType.ChangePhases(editOpTypeDto.Phases);
+            }
+
+            if (editOpTypeDto.RequiredStaff != null)
+            {
+                operationType.ChangeRequiredStaff(editOpTypeDto.RequiredStaff);
+            }
+
+            var result = await this._unitOfWork.CommitAsync();
+
+            await _logService.CreateEditLog(operationType.Id.Value, operationType.GetType().Name, "Operation type edited: " + operationType.Name.OperationName);
+
+            await _recordService.AddAsync(operationType);
+
+            await _unitOfWork.CommitAsync();
 
         }
     }
