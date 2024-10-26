@@ -19,7 +19,7 @@ using Moq;
 using Xunit;
 using Microsoft.Extensions.Configuration;
 
-namespace MDBackofficeTests.integrationtests.tests.operationrequests
+namespace MDBackofficeTests.integrationtests.operationrequests
 {
 
 
@@ -36,7 +36,7 @@ namespace MDBackofficeTests.integrationtests.tests.operationrequests
 
         public OperationRequestIntegrationTests()
         {
-           _logServiceMock = new Mock<LogService>(new Mock<IUnitOfWork>().Object, new Mock<ILogRepository>().Object);
+            _logServiceMock = new Mock<LogService>(new Mock<IUnitOfWork>().Object, new Mock<ILogRepository>().Object);
 
             var identityOptionsMock = new Mock<IOptions<IdentityOptions>>();
             identityOptionsMock.Setup(o => o.Value).Returns(new IdentityOptions());
@@ -49,8 +49,8 @@ namespace MDBackofficeTests.integrationtests.tests.operationrequests
             var _emailServiceMock = new Mock<EmailService>(tokenServiceMock.Object, new Mock<IEmailAdapter>().Object);
             var _configurationMock = new Mock<IConfiguration>();
 
-             _userServiceMock = new Mock<UserService>(userManagerMock.Object, roleManagerMock.Object, _logServiceMock.Object, _emailServiceMock.Object, _configurationMock.Object, tokenServiceMock.Object);
-             _patientServiceMock = new Mock<PatientService>(_unitOfWorkMock.Object, _logServiceMock.Object, _configurationMock.Object, _repoPatMock.Object, _userServiceMock.Object, _emailServiceMock.Object);
+            _userServiceMock = new Mock<UserService>(userManagerMock.Object, roleManagerMock.Object, _logServiceMock.Object, _emailServiceMock.Object, _configurationMock.Object, tokenServiceMock.Object);
+            _patientServiceMock = new Mock<PatientService>(_unitOfWorkMock.Object, _logServiceMock.Object, _configurationMock.Object, _repoPatMock.Object, _userServiceMock.Object, _emailServiceMock.Object);
         }
 
         [Fact]
@@ -61,7 +61,7 @@ namespace MDBackofficeTests.integrationtests.tests.operationrequests
                                                     _repoStaMock.Object, _logServiceMock.Object, _patientServiceMock.Object,
                                                     _repoPatMock.Object, _repoOpTypeMock.Object, _userServiceMock.Object);
 
-            var  _controller = new OperationRequestController(_service);
+            var _controller = new OperationRequestController(_service);
             var staffId = "D202400001";
             var opTyId = "tumor removal";
             var patientId = "202410000001";
@@ -169,7 +169,7 @@ namespace MDBackofficeTests.integrationtests.tests.operationrequests
             var _service = new OperationRequestService(_unitOfWorkMock.Object, _repoMock.Object,
                                                  _repoStaMock.Object, _logServiceMock.Object, _patientServiceMock.Object,
                                                  _repoPatMock.Object, _repoOpTypeMock.Object, _userServiceMock.Object);
-   
+
             // Act
             var result = await _service.AddAsync(dtoMock);
 
