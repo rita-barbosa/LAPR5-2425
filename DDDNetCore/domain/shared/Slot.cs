@@ -20,5 +20,20 @@ namespace DDDNetCore.Domain.Shared
         }
 
         public override string ToString() => $"{Date}:{TimeInterval}";
+
+        public override bool Equals(object obj)
+        {
+            if (obj is Slot other)
+            {
+                return Date.Equals(other.Date) &&
+                       TimeInterval.Equals(other.TimeInterval);
+            }
+            return false;
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(Date, TimeInterval);
+        }
     }
 }

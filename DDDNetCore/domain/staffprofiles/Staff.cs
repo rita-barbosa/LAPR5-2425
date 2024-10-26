@@ -70,18 +70,22 @@ namespace DDDNetCore.Domain.StaffProfiles
         }
 
         public void ChangeEmail(string email){
+            if(this.Email.Equals(new Email(email))) throw new BusinessRuleValidationException("The new email is identical to the existing one.");
             this.Email = new Email(email);
         }
 
         public void ChangePhone(string phone){
+            if (this.Phone.Equals(new Phone(phone))) throw new BusinessRuleValidationException("The new phone number is identical to the existing one.");
             this.Phone = new Phone(phone);
         }
 
         public void ChangeAddress(string address){
+             if (this.Address.Equals(new ResidentialAddress(address))) throw new BusinessRuleValidationException("The new address is identical to the existing one.");
             this.Address = new ResidentialAddress(address);
         }
 
         public void ChangeSpecialization(string specialization){
+            if(SpecializationId.Equals(new SpecializationDenomination(specialization))) throw new BusinessRuleValidationException("The new specialization is identical to the existing one.");
             this.SpecializationId = new SpecializationDenomination(specialization);
         }
 

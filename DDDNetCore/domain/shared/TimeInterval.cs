@@ -25,5 +25,20 @@ namespace DDDNetCore.Domain.Shared
         {
             return $"{Start:HH}h{Start:mm}-{End:HH}h{End:mm}";
         }
+
+        public override bool Equals(object obj)
+        {
+            if (obj is TimeInterval other)
+            {
+                return Start == other.Start && End == other.End && Verification == other.Verification;
+            }
+            return false;
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(Start, End, Verification);
+        }
+
     }
 }
