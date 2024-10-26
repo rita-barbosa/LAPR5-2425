@@ -113,7 +113,7 @@ namespace DDDNetCore.Domain.Patients
         }
 
         public void ChangeDateBirth(string dateBirth){
-            if (!DateTime.TryParse(dateBirth, out DateTime dateOfBirth) || dateOfBirth > DateTime.Now)
+            if (!DateTime.TryParse(dateBirth, out DateTime dateOfBirth) || dateOfBirth > DateTime.Now || DateBirth.Equals(dateOfBirth))
             {
                 throw new BusinessRuleValidationException("The Date of Birth is either in an incorrect format or cannot be in the future. Please provide a valid past date.");
             }
