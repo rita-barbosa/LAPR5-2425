@@ -101,5 +101,10 @@ namespace DDDNetCore.Domain.StaffProfiles
             this.Status = false;
         }
 
+        public void ActivateProfile()
+        {
+            this.Status = true;
+        }
+
     }
 }
