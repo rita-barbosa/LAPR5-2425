@@ -8,7 +8,7 @@ autonumber
 participant "<<route>>\n Routing" as ROUTE
 participant "<<controller>>\n XProfileListingController" as CONTROL
 
-participant "<<dto>>\n QueryParametersDTO" as QueryDTO
+participant "<<dto>>\n XQueryParametersDto" as QueryDTO
 
 participant "<<service>>\n XService" as XServ
 participant "<<repository>>\n XRepository" as XRepo
@@ -53,26 +53,16 @@ deactivate ROUTE
 
 [o-> ROUTE : POST(json)
 activate ROUTE
+ROUTE -> QueryDTO ** : toDTO(json)
 
-ROUTE -> CONTROL : filterXProfiles(json)
-note left
-json contains the
-query parameters
-end note
+ROUTE -> CONTROL : GetFilteredXProfiles(queryParametersDTO)
 activate CONTROL
 
-CONTROL -> QueryDTO ** : toDTO(json)
-
-CONTROL -> XServ : filterXProfiles(queryParametersDTO)
+CONTROL -> XServ : FilterStaffProfiles(queryParametersDTO)
 activate XServ
 
-XServ -> QUERYServ : generateQueryText(queryParametersDTO)
-activate QUERYServ
 
-QUERYServ --> XServ : query
-deactivate QUERYServ
-
-XServ -> XRepo : findAllConditioned(query)
+XServ -> XRepo : FilterXProfiles(queryParametersDTO)
 activate XRepo
 
 XRepo --> XServ : XprofilesList
