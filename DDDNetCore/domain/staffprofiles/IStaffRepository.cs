@@ -12,5 +12,6 @@ namespace DDDNetCore.Domain.StaffProfiles
         Task<Staff> FindStaffWithUserId(string userId);
         Task<StaffId> FindLastStaffIdAsync();
         Task<Staff> GetStaffWithEmail(string email);
+        Task<List<Staff>> GetAllActiveAsync();
     }
 }

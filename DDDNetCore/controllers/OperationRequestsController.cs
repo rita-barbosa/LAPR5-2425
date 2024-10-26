@@ -23,9 +23,19 @@ namespace DDDNetCore.Controllers
 
         // GET: api/OperationRequest
         [HttpGet]
+        [Route("Get-AllOpRequests")]
         public async Task<ActionResult<IEnumerable<OperationRequestDto>>> GetAll()
         {
             return await _service.GetAllAsysnc();
+        }
+
+        // GET: api/OperationRequest
+        [HttpGet]
+        [Route("Get-AllOpRequestsFromDoctor")]
+        public async Task<ActionResult<IEnumerable<OperationRequestDto>>> GetAllFromDoctor()
+        {
+            string? userEmail = User.FindFirstValue(ClaimTypes.Email);
+            return await _service.GetAllFromDoctorAsysnc(userEmail);
         }
 
         // GET: api/OperationRequest/5
@@ -166,7 +176,7 @@ namespace DDDNetCore.Controllers
                 bool result = await _service.DeleteOperationRequestFromPatient(removingFromPatientDto.PatientId, removingFromPatientDto.OperationRequestId, User.FindFirstValue(ClaimTypes.Email)); 
                 if (result)
                 {
-                    return Ok("Operation request successfully removed.");
+                    return Ok("Operation request successfully removed from patient profile.");
                 }
                 else
                 {

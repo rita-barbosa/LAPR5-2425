@@ -5,33 +5,35 @@ participant "<<Route>>\n PatientRoute" as ROUTE
 participant "<<Controller>>\n PatientController" as CONTROL
 participant "<<Service>>\n PatientService" as AUTHServ
 participant "<<Repository>>\n PatientRepository" as PATIENTRepo
-participant "<<DTO>>\n PatientListDTO" as PatientListDTO
+participant "<<DTO>>\n List<PatientDto>" as PatientListDTO
 participant "<<Domain>>\n Patient" as PATIENT
-participant "<<DTO>>\n PatientDTO" as PatientDTO
-participant "<<EventWatcher>>\n DeletePatientProfileWatcher" as WATCHER
-participant "<<Action>>\n DeletePatientProfileAction" as ACTION
-participant "<<component>>\n Persistence" as PERSISTENCE
+participant "<<DTO>>\n IdPassDto" as PatientDTO
+participant "<<Service>>\n LogService" as LOGServ
+participant "<<Domain>>\n Log" as LOG
+participant "<<Repository>>\n LogRepository" as LOGRepo
+participant "<<Service>>\n UserService" as USERServ
+participant "<<Utility>>\n UserManager" as USERMan
 
-[o-> ROUTE : GET(json)
+[o-> ROUTE : GET()
 note right : getting the \nlist of profiles
 
 Activate ROUTE
 
-ROUTE -> CONTROL : getListOfProfiles(json)
+ROUTE -> CONTROL : GetPatientProfiles()
 
 Activate CONTROL
 
-CONTROL -> AUTHServ : getListOfProfiles()
+CONTROL -> AUTHServ : GetAllSync()
 Activate AUTHServ
 
-AUTHServ -> PATIENTRepo : findAll() 
+AUTHServ -> PATIENTRepo : GetAllSync() 
 Activate PATIENTRepo
 
-PATIENTRepo --> AUTHServ : listOfProfiles
+PATIENTRepo --> AUTHServ : var list = List<Patient>
 Deactivate PATIENTRepo
 
-
 AUTHServ -> PatientListDTO**
+
 loop for every profile in listOfProfiles
 AUTHServ -> PATIENT : toDTO()
 activate PATIENT
@@ -56,88 +58,81 @@ Deactivate ROUTE
 
 note right : after choosing\n a profile
 
-[o-> ROUTE : POST(json)
-note right : profile id
-
-Activate ROUTE
-
-ROUTE -> CONTROL : checkProfileByID(json)
-
-Activate CONTROL
-
-CONTROL -> PatientDTO** : toDTO(json)
-
-CONTROL -> AUTHServ : checkProfileByID(patientID)
-Activate AUTHServ
-
-AUTHServ -> PATIENTRepo : existsById(patientID)
-activate PATIENTRepo
-PATIENTRepo --> AUTHServ : true
-deactivate PATIENTRepo
-
-AUTHServ --> CONTROL : true
-deactivate AUTHServ
-
-CONTROL --> CONTROL : ok(true)
-CONTROL --> ROUTE : json
-deactivate CONTROL
-
-<-- ROUTE : json
-deactivate ROUTE
-
-[o-> ROUTE : POST(json)
+[o-> ROUTE : POST(JSON)
 note right : after getting\n the confirmation
 
 Activate ROUTE
 
-ROUTE -> CONTROL : deletePatientProfile(json)
+ROUTE -> CONTROL : DeletePatientProfile(id)
 
 Activate CONTROL
 
-CONTROL -> PatientDTO** : toDTO(json)
+CONTROL -> PatientDTO** : toDTO(id)
 
-CONTROL -> AUTHServ : deleteProfileByID(patientID)
+CONTROL -> AUTHServ : DeletePatientProfile(idPassDto.Id)
 Activate AUTHServ
 
-AUTHServ -> PATIENTRepo : findByID(patientID)
+AUTHServ -> PATIENTRepo : ExistsPatientWithId(id)
 activate PATIENTRepo
-PATIENTRepo --> AUTHServ : patientProfile
+PATIENTRepo --> AUTHServ : true
 deactivate PATIENTRepo
 
-AUTHServ -> PATIENT : changeStatusForDeletion()
+AUTHServ -> PATIENTRepo : GetByIdAsync(new MedicalRecordNumber(id))
+activate PATIENTRepo
+PATIENTRepo --> AUTHServ : patient
+deactivate PATIENTRepo
+
+AUTHServ -> AUTHServ : userRef = patient.UserReference
+
+AUTHServ -> PATIENT : Anonymize()
 activate PATIENT
+PATIENT --> AUTHServ : true
 deactivate PATIENT
 
-AUTHServ -> PATIENTRepo : save(patient)
-activate PATIENTRepo
-PATIENTRepo -> PERSISTENCE 
-PATIENTRepo --> AUTHServ : return
+alt If Anonymize returns true
 
-PATIENTRepo -> WATCHER : watcher notification
-activate WATCHER
+AUTHServ -> LOGServ : CreateDeletionLog(patient.Id.Value,\npatient.GetType().ToString(),\n"Anonymization of patient's profile.")
+activate LOGServ 
+LOGServ -> LOG**
+LOGServ -> LOGRepo : AddAsync(log)
+activate LOGRepo
+LOGRepo --> LOGServ : true
+deactivate LOGRepo
+LOGServ --> AUTHServ : true
+deactivate LOGServ
 
-WATCHER -> ACTION**
-activate ACTION
-deactivate WATCHER
-deactivate PATIENTRepo
+AUTHServ -> USERServ : DeleteByIdAsync(patient.UserReference)
+activate USERServ
+USERServ -> USERMan : DeleteAsync(FindByIdAsync(userReference))
+activate USERMan
+USERMan --> USERServ : true 
+deactivate USERMan
+USERServ --> AUTHServ : true
+deactivate USERServ
+
+alt If it returns true
+
+AUTHServ -> LOGServ : CreateDeletionLog(userRef,\n"DDDNetCore.Domain.Users",\n"Deletion of patient's account.")
+activate LOGServ 
+LOGServ -> LOG**
+LOGServ -> LOGRepo : AddAsync(log)
+activate LOGRepo
+LOGRepo --> LOGServ : true
+deactivate LOGRepo
+LOGServ --> AUTHServ : true
+deactivate LOGServ
+
+end
+end
 
 AUTHServ --> CONTROL : return
 deactivate AUTHServ
 
-CONTROL --> CONTROL : ok(return)
+CONTROL --> CONTROL : Ok(Patient profile and account succefully deleted)
 CONTROL --> ROUTE : json
 deactivate CONTROL
 
 <-- ROUTE : json
 deactivate ROUTE
-
-== After the GDPR time ==
-
-ACTION -> PATIENTRepo : delete(patient)
-activate PATIENTRepo
-PATIENTRepo -> PERSISTENCE
-PATIENTRepo --> ACTION : return
-deactivate PATIENTRepo
-deactivate ACTION
 
 @enduml

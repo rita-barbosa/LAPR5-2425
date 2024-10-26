@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using DDDNetCore.Domain.Users;
 using Microsoft.AspNetCore.Identity;
 using DDDNetCore.Domain.Logs;
+using Microsoft.AspNetCore.Mvc;
 
 namespace DDDNetCore.Domain.OperationRequest
 {
@@ -270,6 +271,29 @@ namespace DDDNetCore.Domain.OperationRequest
             patient.AddRequestToHistory(appointmentHistory);
             await _unitOfWork.CommitAsync();
             return true;
+        }
+
+        internal async Task<ActionResult<IEnumerable<OperationRequestDto>>> GetAllFromDoctorAsysnc(string userEmail)
+        {
+            User user = await _userService.FindByEmailAsync(userEmail);
+            if (user == null)
+            {
+                throw new BusinessRuleValidationException("No user found with this email.");
+            }
+
+            Staff staff = await _repoSta.FindStaffWithUserId(user.Id.ToString());
+            if (staff == null)
+            {
+                throw new BusinessRuleValidationException("No staff found with this user.");
+            }
+
+            var list = await this._repo.GetAllFromDoctorAsync(staff.Id.ToString());
+
+            List<OperationRequestDto> listDto = list.ConvertAll<OperationRequestDto>(opRequest =>
+                new OperationRequestDto(opRequest.Id.AsGuid(), opRequest.DeadLineDate.ToString(), opRequest.Priority.ToString(),
+                 opRequest.DateOfRequest.ToString(), opRequest.Status.ToString(), opRequest.StaffId.AsString(), opRequest.Description.DescriptionText, opRequest.PatientId.AsString(), opRequest.OperationTypeId.AsString()));
+
+            return listDto;
         }
     }
 }

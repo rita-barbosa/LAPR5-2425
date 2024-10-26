@@ -108,6 +108,7 @@ namespace DDDNetCore.Controllers
 
         //GET: api/Patient
         [HttpGet]
+        [Route("Get-PatientProfiles")]
         public async Task<ActionResult<IEnumerable<PatientDto>>> GetPatientProfiles()
         {
             return await _service.GetAllAsysnc();
