@@ -98,6 +98,16 @@ namespace DDDNetCore.Domain.StaffProfiles
             return listDto;
         }
 
+        public async Task<List<StaffDto>> GetAllActiveAsync()
+        {
+            var list = await this._repo.GetAllActiveAsync();
+
+            List<StaffDto> listDto = list.ConvertAll<StaffDto>(staff => new StaffDto(staff.Name.ToString(),
+                staff.Phone.ToString(), staff.Email.ToString(), staff.Address.ToString(), staff.Id.AsString(), staff.SpecializationId.AsString()));
+
+            return listDto;
+        }
+
         public async Task<StaffDto> UpdateAsync(EditStaffDto dto)
         {
             var staff = await this._repo.GetByIdAsync(new StaffId(dto.StaffId));

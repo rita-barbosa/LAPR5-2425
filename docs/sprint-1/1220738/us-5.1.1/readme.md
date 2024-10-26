@@ -129,24 +129,41 @@ However level 3 is shown below.
 
 #### 4.1.2 Process View - Staff
 
-![Process View - Admin](Diagrams\Views\process-view-level-3-staff-profile.svg)
+![Process View - Admin](Diagrams\Views\process-view-level-3-confirm-email.svg)
 
 ### 4.2. Domain Model Excerpt
 
 ![Domain Model Excerpt](Diagrams\Domain-Model\domain-model-excerpt.svg)
 
-### 4.3. Class Diagram
+### 4.3. Applied Patterns
 
-_// To do //_
+> #### **Repository Pattern**
+>
+>* **Components:** UserRepository, StaffRepository
+>
+> The repositories handle data access and retrieval, isolating the database interaction logic from services and other 
+> layers. This approach abstracts the persistence logic, promoting separation of concerns.
 
-### 4.4. Applied Patterns
 
-_// To do //_
+> #### **DTO (Data Transfer Object) Pattern**
+>
+>* **Components:** CreatingStaffDto, ConfirmEmailUserDto, RegisterUserDto
+>
+> DTOs are utilized to transfer data between layers, particularly from the controller layer to the service layer and 
+> vice versa. Their main purpose is to convey data in a structured and decoupled manner without revealing the internal 
+> representations of entities. Additionally, this pattern is not required to adhere to business rules.
 
-### 4.5. Tests
+
+> #### **Facade Pattern**
+>
+>* **Components:** UserService, OperationTypeService
+>
+> These services function as a facade, simplifying the interaction with lower-level components such as repositories. 
+> The controller communicates with these service facades, concealing the complexity from the upper layers.
+
+### 4.4. Tests
 
 _// To do - layout still in development //_ 
-
 
 ## 5. Implementation
 

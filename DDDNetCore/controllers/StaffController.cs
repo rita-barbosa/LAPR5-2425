@@ -54,11 +54,18 @@ namespace DDDNetCore.Controllers
             }
         }
 
-        // GET: api/Staff
         [HttpGet]
+        [Route("Get-StaffProfiles")]
         public async Task<ActionResult<IEnumerable<StaffDto>>> GetStaffProfiles()
         {
             return await _service.GetAllAsync();
+        }
+
+        [HttpGet]
+        [Route("Get-ActiveStaffProfiles")]
+        public async Task<ActionResult<IEnumerable<StaffDto>>> GetActiveStaffProfiles()
+        {
+            return await _service.GetAllActiveAsync();
         }
 
 

@@ -97,35 +97,53 @@ The process view levels are here represented as they represent a process specifi
 The level 1 and 2 of this view was considered not to add more information in addition to the SSD shown above.
 However level 3 is shown below.
 
-##### Process View - Level 3 - Part 1
+#### 4.1.1 Process View - Admin
 
-This process describes the first part, where the user registers itself into the system and the system confirms the email's authenticity.
+##### Create Staff Profile
 
-![Process View Level 3 Part 1](diagrams\Views\process-view-level-3-no-iam-part-1.svg)
+![Process View - Admin](Diagrams\Views\process-view-level-3-patient-profile.svg)
 
-##### Process View - Level 3 - Part 2
+##### Create User
 
-This process describes the second part, where the patient confirms the email, and associates it's newly registered account with the already existing profile.
+![Process View - Admin](Diagrams\Views\process-view-level-3-user.svg)
 
-![Process View Level 3 Part 2](diagrams\Views\process-view-level-3-no-iam-part-2.svg)
+#### 4.1.2 Process View - Staff
+
+![Process View - Admin](Diagrams\Views\process-view-level-3-confirm-email.svg)
 
 ### 4.1. Domain Model Excerpt
 
 ![Domain Model Excerpt](Diagrams\Domain-Model\domain-model-excerpt.svg)
 
-### 4.2. Class Diagram
+### 4.2. Applied Patterns
 
-_// To do //_
+> #### **Repository Pattern**
+>
+>* **Components:** UserRepository, PatientRepository
+>
+> The repositories handle data access and retrieval, isolating the database interaction logic from services and other 
+> layers. This approach abstracts the persistence logic, promoting separation of concerns.
 
-### 4.3. Applied Patterns
 
-_// To do //_
+> #### **DTO (Data Transfer Object) Pattern**
+>
+>* **Components:** CreatingPatientDto, ConfirmEmailUserDto, RegisterUserDto
+>
+> DTOs are utilized to transfer data between layers, particularly from the controller layer to the service layer and 
+> vice versa. Their main purpose is to convey data in a structured and decoupled manner without revealing the internal 
+> representations of entities. Additionally, this pattern is not required to adhere to business rules.
 
-### 4.4. Tests
+
+> #### **Facade Pattern**
+>
+>* **Components:** UserService, PatientService
+>
+> These services function as a facade, simplifying the interaction with lower-level components such as repositories. 
+> The controller communicates with these service facades, concealing the complexity from the upper layers.
+
+### 4.3. Tests
 
 _// To do - layout still in development //_ 
-
-
 
 ## 5. Implementation
 
