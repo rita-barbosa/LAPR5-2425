@@ -105,7 +105,7 @@ namespace MDBackofficeTests.integrationtests.tests.operationrequests
             _repoPatMock.Setup(_repoPatMock => _repoPatMock.GetByIdAsync(It.IsAny<MedicalRecordNumber>()))
                 .ReturnsAsync(patientMock.Object);
             _repoOpTypeMock.Setup(_repoOpTypeMock => _repoOpTypeMock.GetByIdWithStaffAsync(It.IsAny<OperationTypeId>())).ReturnsAsync(operationTypeMock.Object);
-            //_unitOfWorkMock.Setup(u => u.CommitAsync()).ReturnsAsync(1);
+            _unitOfWorkMock.Setup(u => u.CommitAsync()).ReturnsAsync(1);
 
             // Act
             var result = await _controller.Create(dtoMock);
@@ -164,6 +164,7 @@ namespace MDBackofficeTests.integrationtests.tests.operationrequests
             _repoPatMock.Setup(_repoPatMock => _repoPatMock.GetByIdAsync(It.IsAny<MedicalRecordNumber>()))
                 .ReturnsAsync(patientMock);
             _repoOpTypeMock.Setup(_repoOpTypeMock => _repoOpTypeMock.GetByIdWithStaffAsync(It.IsAny<OperationTypeId>())).ReturnsAsync(operationTypeMock);
+            _unitOfWorkMock.Setup(u => u.CommitAsync()).ReturnsAsync(1);
 
             var _service = new OperationRequestService(_unitOfWorkMock.Object, _repoMock.Object,
                                                  _repoStaMock.Object, _logServiceMock.Object, _patientServiceMock.Object,
@@ -182,6 +183,5 @@ namespace MDBackofficeTests.integrationtests.tests.operationrequests
             _repoMock.Verify(r => r.AddAsync(It.IsAny<OperationRequest>()), Times.Once);
             _unitOfWorkMock.Verify(u => u.CommitAsync(), Times.Once);
         }
-
     }
 }
