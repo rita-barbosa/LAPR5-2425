@@ -24,7 +24,7 @@ namespace MDBackofficeTests.controllertests
 {
 
 
-    public class OperationRequestTest
+    public class OperationRequestControllerTests
     {
 
         private readonly Mock<OperationRequestService> _service;
@@ -33,7 +33,7 @@ namespace MDBackofficeTests.controllertests
         private readonly Mock<IStaffRepository> _repoStaMock = new Mock<IStaffRepository>();
         private readonly Mock<IPatientRepository> _repoPatMock = new Mock<IPatientRepository>();
         private readonly Mock<IOperationTypeRepository> _repoOpTypeMock = new Mock<IOperationTypeRepository>();
-        public OperationRequestTest()
+        public OperationRequestControllerTests()
         {
             Mock<LogService> _logServiceMock = new Mock<LogService>(new Mock<IUnitOfWork>().Object, new Mock<ILogRepository>().Object);
 

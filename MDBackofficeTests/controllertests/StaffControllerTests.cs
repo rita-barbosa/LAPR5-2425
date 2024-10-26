@@ -6,78 +6,58 @@ using DDDNetCore.Domain.Users;
 using DDDNetCore.Domain.Tokens;
 using DDDNetCore.Infrastructure.Emails;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moq;
 using Xunit;
 using IConfiguration = Microsoft.Extensions.Configuration.IConfiguration;
 using DDDNetCore.Domain.StaffProfiles;
+using DDDNetCore.Controllers;
+using Microsoft.AspNetCore.Mvc;
 using DDDNetCore.Domain.Patients;
 
-namespace MDBackofficeTests.servicetests.staff;
-
-public class StaffServiceTest
+namespace MDBackofficeTests.controllertests
 {
+    public class StaffControllerTests
+    {
+        private readonly Mock<StaffService> _service;
         private readonly Mock<IUnitOfWork> _unitOfWorkMock = new Mock<IUnitOfWork>();
         private readonly Mock<IStaffRepository> _repoMock = new Mock<IStaffRepository>();
-        private readonly Mock<LogService> _logServiceMock = new Mock<LogService>(new Mock<IUnitOfWork>().Object, new Mock<ILogRepository>().Object);
         private readonly Mock<ISpecializationRepository> _repoSpecMock = new Mock<ISpecializationRepository>();
         private readonly Mock<IConfiguration> _configurationMock = new Mock<IConfiguration>();
         private readonly Mock<UserManager<User>> _userManagerMock;
-        private readonly Mock<UserService> _userServiceMock;
-        private readonly Mock<EmailService> _emailServiceMock;
-        private readonly StaffService _service;
-        public StaffServiceTest()
+
+        private readonly StaffController _controller;
+
+        public StaffControllerTests()
         {
+            Mock<LogService> _logServiceMock = new Mock<LogService>(new Mock<IUnitOfWork>().Object, new Mock<ILogRepository>().Object);
+
             var identityOptionsMock = new Mock<IOptions<IdentityOptions>>();
-                identityOptionsMock.Setup(o => o.Value).Returns(new IdentityOptions());
+            identityOptionsMock.Setup(o => o.Value).Returns(new IdentityOptions());
             var identityErrorDescriberMock = new Mock<IdentityErrorDescriber>();
 
-            _userManagerMock = new Mock<UserManager<User>>(
-                new Mock<IUserStore<User>>().Object,
-                identityOptionsMock.Object,
-                new Mock<IPasswordHasher<User>>().Object,
-                new List<IUserValidator<User>> { new Mock<IUserValidator<User>>().Object },
-                new List<IPasswordValidator<User>> { new Mock<IPasswordValidator<User>>().Object },
-                new Mock<ILookupNormalizer>().Object,
-                identityErrorDescriberMock.Object, 
-                new Mock<IServiceProvider>().Object,
-                new Mock<ILogger<UserManager<User>>>().Object
-            );
+            _userManagerMock = new Mock<UserManager<User>>(new Mock<IUserStore<User>>().Object, identityOptionsMock.Object, new Mock<IPasswordHasher<User>>().Object, new List<IUserValidator<User>> { new Mock<IUserValidator<User>>().Object }, new List<IPasswordValidator<User>> { new Mock<IPasswordValidator<User>>().Object }, new Mock<ILookupNormalizer>().Object, identityErrorDescriberMock.Object, new Mock<IServiceProvider>().Object, new Mock<ILogger<UserManager<User>>>().Object);
+            var roleManagerMock = new Mock<RoleManager<Role>>(new Mock<IRoleStore<Role>>().Object, new List<IRoleValidator<Role>>(), new Mock<ILookupNormalizer>().Object, identityErrorDescriberMock.Object, new Mock<ILogger<RoleManager<Role>>>().Object);
 
-            var roleManagerMock = new Mock<RoleManager<Role>>(
-                new Mock<IRoleStore<Role>>().Object,
-                new List<IRoleValidator<Role>>(),
-                new Mock<ILookupNormalizer>().Object,
-                identityErrorDescriberMock.Object,
-                new Mock<ILogger<RoleManager<Role>>>().Object
-            );
-
-                var tokenServiceMock = new Mock<TokenService>(_unitOfWorkMock.Object, new Mock<ITokenRepository>().Object, _userManagerMock.Object);
-                var _emailServMock = new Mock<EmailService>(tokenServiceMock.Object, new Mock<IEmailAdapter>().Object);
-
-            _userServiceMock = new Mock<UserService>(
-                _userManagerMock.Object,
-                roleManagerMock.Object,
-                _logServiceMock.Object,
-                _emailServMock.Object,
-                _configurationMock.Object,
-                tokenServiceMock.Object 
-            );
-
-            _emailServiceMock = new Mock<EmailService>(tokenServiceMock.Object, new Mock<IEmailAdapter>().Object);
-            _service = new StaffService(_unitOfWorkMock.Object, _logServiceMock.Object,
-                                         _repoMock.Object, _repoSpecMock.Object,
-                                         _userManagerMock.Object, _configurationMock.Object, _emailServiceMock.Object,
-                                         _userServiceMock.Object);
-    }
-
+            var tokenServiceMock = new Mock<TokenService>(_unitOfWorkMock.Object, new Mock<ITokenRepository>().Object, _userManagerMock.Object);
+            var _emailServiceMock = new Mock<EmailService>(tokenServiceMock.Object, new Mock<IEmailAdapter>().Object);
+         
+            var _userServiceMock = new Mock<UserService>(_userManagerMock.Object, roleManagerMock.Object, _logServiceMock.Object, _emailServiceMock.Object, _configurationMock.Object, tokenServiceMock.Object);
+            
+            _service = new Mock<StaffService>(_unitOfWorkMock.Object, _logServiceMock.Object,
+                                            _repoMock.Object, _repoSpecMock.Object,
+                                            _userManagerMock.Object, _configurationMock.Object, _emailServiceMock.Object,
+                                            _userServiceMock.Object);
+            _controller = new StaffController(_service.Object);
+        }
 
         [Fact]
         public async Task CreateStaffProfile_ReturnsOkResult()
         {
             // Arrange
+            
+
             var specializationId = "Ortopethics";
             var dtoMock = new CreatingStaffDto
             ("12345",
@@ -95,22 +75,19 @@ public class StaffServiceTest
             _repoSpecMock.Setup(_repoSpecMock => _repoSpecMock.GetByIdAsync(It.IsAny<SpecializationDenomination>()))
                 .ReturnsAsync(specializationMock.Object);
 
+            _unitOfWorkMock.Setup(u => u.CommitAsync()).ReturnsAsync(1);
+
             // Act
-            var result = await _service.CreateStaffProfile(dtoMock);
+            var result = await _controller.CreateStaffProfile(dtoMock);
 
             // Assert
-            Assert.NotNull(result);
-            Assert.Equal(specializationId, result.SpecializationId);
-            Assert.Equal(dtoMock.Phone, result.Phone);
-            Assert.Equal(dtoMock.Email, result.Email);
-            Assert.Equal(dtoMock.Address, result.Address);
-            _repoMock.Verify(r => r.AddAsync(It.IsAny<Staff>()), Times.Once);
-            _unitOfWorkMock.Verify(u => u.CommitAsync(), Times.Once);
-
+            var actionResult = Assert.IsType<ActionResult<StaffDto>>(result); // Ensure it's the correct ActionResult type
+            var okObjectResult = Assert.IsType<OkObjectResult>(actionResult.Result);
+            Assert.NotNull(okObjectResult.Value);
+            
         }
-
         [Fact]
-        public async Task UpdateAsync_ReturnsStaffDto()
+        public async Task EditStaffProfile_ReturnsAcceptedStaffDto()
         {
             //Arrange
             var dtoMock = new EditStaffDto
@@ -128,7 +105,7 @@ public class StaffServiceTest
             userMock.Setup(u => u.Email).Returns(email);
             userMock.Setup(u => u.Status).Returns(true);
 
-            var staffMock = new Mock<Staff>("00001", "Portugal, 4570-860, Rua das Oliveiras", "12345", "Rita", "Barbosa", "Rita Barbosa",email, "+351", "987654321", "Doctor", "Orthopedics");
+            var staffMock = new Mock<Staff>("00001", "Portugal, 4570-860, Rua das Oliveiras", "12345", "Rita", "Barbosa", "Rita Barbosa", email, "+351", "987654321", "Doctor", "Orthopedics");
             var id = "D202400001";
 
             var dtoResult = new StaffDto("Rita Barbosa", "+351 910000011", "test@email.com", "New, 1234-234, Updated", id, "cardiology");
@@ -145,14 +122,16 @@ public class StaffServiceTest
             _unitOfWorkMock.Setup(u => u.CommitAsync()).ReturnsAsync(1);
 
             //Act
-            var result = await _service.UpdateAsync(id, dtoMock);
+            var result = await _controller.EditStaffProfile(id, dtoMock);
 
             //Assert
-            Assert.NotNull(result);
-            Assert.Equal(dtoResult.Name, result.Name);
-            Assert.Equal(dtoResult.Phone, result.Phone);
-            Assert.Equal(dtoResult.Email, result.Email);
-            Assert.Equal(dtoResult.Address, result.Address);
-            Assert.Equal(dtoResult.SpecializationId, result.SpecializationId);
+            var acceptedResult = Assert.IsType<AcceptedResult>(result.Result);
+            var returnedStaff = Assert.IsType<StaffDto>(acceptedResult.Value);
+            Assert.Equal(dtoResult.Name, returnedStaff.Name);
+            Assert.Equal(dtoResult.Phone, returnedStaff.Phone);
+            Assert.Equal(dtoResult.Email, returnedStaff.Email);
+            Assert.Equal(dtoResult.Address, returnedStaff.Address);
+            Assert.Equal(dtoResult.SpecializationId, returnedStaff.SpecializationId);
         }
+    }
 }
