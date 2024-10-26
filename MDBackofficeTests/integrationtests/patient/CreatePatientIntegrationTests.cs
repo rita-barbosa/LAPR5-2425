@@ -53,11 +53,11 @@ namespace MDBackofficeTests.integrationtests.patient
         public async Task CreateWithValidData_ReturnsCreatedResult_IntegrationControllerService()
         {
             // Pass mocked dependencies to PatientService
-            var _service = new Mock<PatientService>(_unitOfWorkMock.Object, _logServiceMock.Object, 
+            var _service = new PatientService(_unitOfWorkMock.Object, _logServiceMock.Object, 
                                             _configurationMock.Object, _repoMock.Object, 
                                             _userServiceMock.Object, _emailServiceMock.Object);
 
-            var _controller = new PatientController(_service.Object);
+            var _controller = new PatientController(_service);
 
             var dtoMock = new CreatingPatientDto
                 ("Rita",
