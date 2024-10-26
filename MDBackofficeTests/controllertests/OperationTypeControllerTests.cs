@@ -1,11 +1,9 @@
 ﻿using DDDNetCore.Domain.Logs;
-using DDDNetCore.Domain.OperationTypes;
-using DDDNetCore.Domain.OperationTypes.ValueObjects;
 using DDDNetCore.Domain.OperationTypes.ValueObjects.Phase;
 using DDDNetCore.Domain.OperationTypes.ValueObjects.RequiredStaff;
+using DDDNetCore.Domain.OperationTypes;
 using DDDNetCore.Domain.OperationTypesRecords;
 using DDDNetCore.Domain.Shared;
-using DDDNetCore.Infrastructure.OperationTypeRecords;
 using Moq;
 using System;
 using System.Collections.Generic;
@@ -13,26 +11,31 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Xunit;
+using DDDNetCore.Controllers;
+using Microsoft.AspNetCore.Mvc;
 
-namespace MDBackofficeTests.servicetests.operationtype
+namespace MDBackofficeTests.controllertests
 {
-    public class OperationTypeServiceTests
+    public class OperationTypeControllerTests
     {
         private readonly Mock<IUnitOfWork> _unitOfWorkMock = new();
         private readonly Mock<LogService> _logServiceMock = new(new Mock<IUnitOfWork>().Object, new Mock<ILogRepository>().Object);
         private readonly Mock<IOperationTypeRepository> _repoMock = new Mock<IOperationTypeRepository>();
         private readonly Mock<OperationTypeRecordService> _opRecordService;
         private readonly OperationTypeService _service;
+        private readonly OperationTypesController _controller;
 
-        public OperationTypeServiceTests()
+        public OperationTypeControllerTests()
         {
             _opRecordService = new Mock<OperationTypeRecordService>(_unitOfWorkMock.Object, _logServiceMock.Object, new Mock<IOperationTypeRecordRepository>().Object);
 
-            _service = new OperationTypeService(_unitOfWorkMock.Object, _repoMock.Object,_logServiceMock.Object,_opRecordService.Object);
+            _service = new OperationTypeService(_unitOfWorkMock.Object, _repoMock.Object, _logServiceMock.Object, _opRecordService.Object);
+
+            _controller = new OperationTypesController(_service);
         }
 
         [Fact]
-        public async Task FilterOperationTypes_ReturnsCorrectOperationTypeDtos()
+        public async Task GetFilteredOperationTypes_ReturnsOkOperationTypeDtos()
         {
             // Arrange
             var queryParameters = new OperationTypeQueryParametersDto
@@ -77,7 +80,7 @@ namespace MDBackofficeTests.servicetests.operationtype
             {
                 new Mock<OperationType>("test type 1", 100, true, reqStaffDto,phasesDto),
             };
-       
+
 
             var expectedDtos = new List<OperationTypeDto>
             {
@@ -87,21 +90,25 @@ namespace MDBackofficeTests.servicetests.operationtype
             var operationTypeObjects = operationTypes.Select(mock => mock.Object).ToList();
             _repoMock.Setup(repo => repo.FilterOperationTypes(queryParameters))
                     .ReturnsAsync(operationTypeObjects);
-           
+
             // Act
-            var result = await _service.FilterOperationTypes(queryParameters);
-  
+            var result = await _controller.GetFilteredOperationTypes(queryParameters);
+
             // Assert
-            Assert.Equal(expectedDtos.Count, result.Count);
+            var okResult = Assert.IsType<OkObjectResult>(result.Result);
+            var actualDtos = Assert.IsType<List<OperationTypeDto>>(okResult.Value);
+            Assert.Equal(expectedDtos.Count, actualDtos.Count);
+
             for (int i = 0; i < expectedDtos.Count; i++)
             {
-                Assert.Equal(expectedDtos[i].Name, result[i].Name);
-                Assert.Equal(expectedDtos[i].EstimatedDuration, result[i].EstimatedDuration);
-                Assert.Equal(expectedDtos[i].Status, result[i].Status);                
-
+                Assert.Equal(expectedDtos[i].Name, actualDtos[i].Name);
+                Assert.Equal(expectedDtos[i].EstimatedDuration, actualDtos[i].EstimatedDuration);
+                Assert.Equal(expectedDtos[i].Status, actualDtos[i].Status);
             }
+
             _repoMock.Verify(repo => repo.FilterOperationTypes(queryParameters), Times.Once);
         }
+
+
     }
 }
-
