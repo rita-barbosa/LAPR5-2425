@@ -1,5 +1,6 @@
 using DDDNetCore.Domain.Patients;
 using DDDNetCore.Domain.Shared;
+using System.Xml;
 using Xunit;
 
 namespace MDBackofficeTests.domaintests.patient;
@@ -260,5 +261,134 @@ public class PatientTests
     }
 
 
+    [Fact]
+    public void WhenChangingPhoneWithDifferentPhoneNumber_ThenUpdatesPhoneNumber()
+    {
+        // Arrange
+        var countryCode = "+351";
+        var phoneNumber = "987654321";
+        var newPhone =    "+351 900001234";
+        var entity = new Patient("Rita", "Barbosa", "Rita Barbosa", "Portugal, 4590-850, Rua da Sardinha", "Female", countryCode, phoneNumber, "9100087827", "ritabarbosa@email.com", "2004-12-15", "000001");
 
+        // Act
+        entity.ChangePhone(newPhone);
+
+        // Assert
+        Assert.Equal(new Phone(newPhone), entity.PhoneNumber);
+    }
+
+    [Fact]
+    public void WhenChangingPhoneWithIdenticalPhoneNumber_ThenThrowBusinessRuleValidationException()
+    {
+        // Arrange
+        var countryCode = "+351";
+        var phoneNumber = "123456789";
+        var entity = new Patient("Rita", "Barbosa", "Rita Barbosa", "Portugal, 4590-850, Rua da Sardinha", "Female", countryCode, phoneNumber, "9100087827", "ritabarbosa@email.com", "2004-12-15", "000001");
+
+        // Act & Assert
+        Assert.Throws<BusinessRuleValidationException>(() => entity.ChangePhone("${countryCode} {phoneNumber}"));
+    }
+    [Fact]
+    public void WhenChangingEmailWithDifferentPhoneNumber_ThenUpdatesEmail()
+    {
+        // Arrange
+        var email = "test1@email.com";
+        var newEmail = "update@email.com";
+        var entity = new Patient("Rita", "Barbosa", "Rita Barbosa", "Portugal, 4590-850, Rua da Sardinha", "Female", "+351", "987654321", "9100087827", email, "2004-12-15", "000001");
+
+        // Act
+        entity.ChangeEmail(newEmail);
+
+        // Assert
+        Assert.Equal(new Email(newEmail), entity.Email);
+    }
+
+    [Fact]
+    public void WhenChangingEmailWithIdenticalPhoneNumber_ThenThrowBusinessRuleValidationException()
+    {
+        // Arrange
+        var email = "test@email.com";
+        var entity = new Patient("Rita", "Barbosa", "Rita Barbosa", "Portugal, 4590-850, Rua da Sardinha", "Female", "+351", "987654321", "9100087827", email, "2004-12-15", "000001");
+
+        // Act & Assert
+        Assert.Throws<BusinessRuleValidationException>(() => entity.ChangePhone(email));
+    }
+
+    [Fact]
+    public void WhenChangingAddressWithDifferentAddress_ThenUpdatesAddress()
+    {
+        // Arrange
+        var address = "Portugal, 4590-850, Rua da Sardinha";
+        var newAddress = "Portugal, 4500-750, Rua das Flores";
+        var entity = new Patient("Rita", "Barbosa", "Rita Barbosa", address, "Female", "+351", "987654321", "9100087827", "test@email.com", "2004-12-15", "000001");
+
+        // Act
+        entity.ChangeAddress(newAddress);
+
+        // Assert
+        Assert.Equal(new ResidentialAddress(newAddress), entity.Address);
+    }
+
+    [Fact]
+    public void WhenChangingAddressWithIdenticalAddress_ThenThrowBusinessRuleValidationException()
+    {
+        // Arrange
+        var address = "Portugal, 4590-850, Rua da Sardinha";
+        var entity = new Patient("Rita", "Barbosa", "Rita Barbosa", address, "Female", "+351", "987654321", "9100087827", "test@email.com", "2004-12-15", "000001");
+
+        // Act & Assert
+        Assert.Throws<BusinessRuleValidationException>(() => entity.ChangeAddress(address));
+    }
+
+    [Fact]
+    public void WhenChangingNameWithDifferentName_ThenUpdatesName()
+    {
+        // Arrange
+        var oldName = "Rita Barbosa";
+        var newName = "Rita Silva";
+        var entity = new Patient("Rita", "Barbosa", oldName, "Portugal, 4590-850, Rua da Sardinha", "Female", "+351", "987654321", "9100087827", "test@email.com", "2004-12-15", "000001");
+
+        // Act
+        entity.ChangeName(newName);
+
+        // Assert
+        Assert.Equal(new Name(newName), entity.Name);
+    }
+
+    [Fact]
+    public void WhenChangingNameWithIdenticalName_ThenThrowBusinessRuleValidationException()
+    {
+        // Arrange
+        var name = "Rita Barbosa";
+        var entity = new Patient("Rita", "Barbosa", name, "Portugal, 4590-850, Rua da Sardinha", "Female", "+351", "987654321", "9100087827", "test@email.com", "2004-12-15", "000001");
+
+        // Act & Assert
+        Assert.Throws<BusinessRuleValidationException>(() => entity.ChangeName(name));
+    }
+
+    [Fact]
+    public void WhenChangingDateOfBirthWithDifferentDate_ThenUpdatesDateOfBirth()
+    {
+        // Arrange
+        var oldDateOfBirth = "2004-12-15";
+        var newDateOfBirth = "2003-08-05";
+        var entity = new Patient("Rita", "Barbosa", "Rita Barbosa", "Portugal, 4590-850, Rua da Sardinha", "Female", "+351", "987654321", "9100087827", "test@email.com", oldDateOfBirth, "000001");
+
+        // Act
+        entity.ChangeDateBirth(newDateOfBirth);
+
+        // Assert
+        Assert.Equal(DateTime.Parse(newDateOfBirth), entity.DateBirth);
+    }
+
+    [Fact]
+    public void WhenChangingDateOfBirthWithIdenticalDate_ThenThrowBusinessRuleValidationException()
+    {
+        // Arrange
+        var dateOfBirth = "2004-12-15";
+        var entity = new Patient("Rita", "Barbosa", "Rita Barbosa", "Portugal, 4590-850, Rua da Sardinha", "Female", "+351", "987654321", "9100087827", "test@email.com", dateOfBirth, "000001");
+
+        // Act & Assert
+        Assert.Throws<BusinessRuleValidationException>(() =>    entity.ChangeDateBirth(dateOfBirth));
+    }
 }
