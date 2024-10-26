@@ -8,12 +8,12 @@ public class PatientTests
 {
 
     [Theory]
-    [InlineData("Rita", "Barbosa", "Rita Barbosa", "Portugal, 4590-850, Rua da Sardinha", "Female", "+351", "910000000", "9100087827", "ritabarbosa@email.com", "20/10/2004", "000001")]
-    [InlineData("Ana", "Guterres", "Ana Guterres", "Portugal, 4580-856, Rua da Faneca", "FEMALE", "+351", "910000001", "9100087845", "anaguterres@example.com", "15/12/2004", "000002")]
-    [InlineData("Ana", "Guterres", "Ana Guterres", "Portugal, 4580-856, Rua da Faneca", "fEMALE", "+351", "910000001", "9100087845", "anaguterres@example.com", "15/12/2004", "000005")]
-    [InlineData("Test", "Second", "Test First Second", "Portugal, 4580-856, Rua do Salmão", "Male", "+351", "910000002", "9104987845", "test@example.com", "09/04/2006", "000003")]
-    [InlineData("João", "Last", "João Last", "Portugal, 4580-856, Rua do Bacalhau", "MALE", "+351", "910000003", "91120871245", "lastTest@example.com", "15/12/2000", "000004")]
-    [InlineData("João", "Last", "João Last", "Portugal, 4580-856, Rua do Bacalhau", "mALE", "+351", "910000003", "91120871245", "lastTest@example.com", "15/12/2000", "000004")]
+    [InlineData("Rita", "Barbosa", "Rita Barbosa", "Portugal, 4590-850, Rua da Sardinha", "Female", "+351", "910000000", "9100087827", "ritabarbosa@email.com", "2004-12-15", "000001")]
+    [InlineData("Ana", "Guterres", "Ana Guterres", "Portugal, 4580-856, Rua da Faneca", "FEMALE", "+351", "910000001", "9100087845", "anaguterres@example.com", "2004-12-15", "000002")]
+    [InlineData("Ana", "Guterres", "Ana Guterres", "Portugal, 4580-856, Rua da Faneca", "fEMALE", "+351", "910000001", "9100087845", "anaguterres@example.com", "2004-12-15", "000005")]
+    [InlineData("Test", "Second", "Test First Second", "Portugal, 4580-856, Rua do Salmão", "Male", "+351", "910000002", "9104987845", "test@example.com", "2006-04-09", "000003")]
+    [InlineData("João", "Last", "João Last", "Portugal, 4580-856, Rua do Bacalhau", "MALE", "+351", "910000003", "91120871245", "lastTest@example.com", "2000-12-15", "000004")]
+    [InlineData("João", "Last", "João Last", "Portugal, 4580-856, Rua do Bacalhau", "mALE", "+351", "910000003", "91120871245", "lastTest@example.com", "2000-12-15", "000004")]
     public void WhenPassingCorrectData_ThenPatientInstantiated(string firstName, string lastName, string fullName, string address, string gender, string countryCode, string phoneNumber, string emergencyContact, string email, string dateBirth, string seqNumber)
     {
         new Patient(
