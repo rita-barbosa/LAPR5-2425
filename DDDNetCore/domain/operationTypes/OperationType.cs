@@ -10,7 +10,6 @@ namespace DDDNetCore.Domain.OperationTypes
 {
     public class OperationType : Entity<OperationTypeId>, IAggregateRoot
     {
-
         public EstimatedDuration EstimatedDuration { get; private set; }
         public OperationTypeStatus Status { get; private set; }
         public OperationTypeName Name { get; private set; }

@@ -26,11 +26,19 @@ namespace DDDNetCore.Domain.OperationTypes
 
         public async Task<OperationTypeRecordDto> AddAsync(OperationType operationType)
         {
+            var operationRecord1 = await _repo.GetLastFromOpType(operationType.Id);
             var todayDate = new Date(DateTime.Now.ToString("yyyy-MM-dd"));
-            var operationRecord = new OperationTypeRecord(new Date(todayDate.Start.ToString(), todayDate.End.ToString()), 0, operationType.Id, operationType.Name, operationType.EstimatedDuration, operationType.Status, operationType.RequiredStaff, operationType.Phases);
+            OperationTypeRecord operationRecord;
+            if (operationRecord1 == null)
+            {
+                operationRecord = new OperationTypeRecord(new Date(todayDate.Start.ToString(), todayDate.End.ToString()), 0, operationType.Id, operationType.Name, operationType.EstimatedDuration, operationType.Status, operationType.RequiredStaff, operationType.Phases);
+            }
+            else
+            {
+                operationRecord = new OperationTypeRecord(new Date(todayDate.Start.ToString(), todayDate.End.ToString()), operationRecord1.Version.Version+1, operationType.Id, operationType.Name, operationType.EstimatedDuration, operationType.Status, operationType.RequiredStaff, operationType.Phases);
+            }
             await _repo.AddAsync(operationRecord);
             await _unitOfWork.CommitAsync();
-
             await _logService.CreateCreationLog(operationRecord.Id.Value, operationRecord.GetType().Name, "New operation type version record created.");
 
             List<RequiredStaffDto> requiredStaffDtos = [];

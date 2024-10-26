@@ -1,12 +1,11 @@
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
-using DDDNetCore.Domain.OperationTypes;
-using DDDNetCore.Domain.OperationTypes.ValueObjects.RequiredStaff;
 using DDDNetCore.Domain.Shared;
 using Microsoft.AspNetCore.Authorization;
 using System.Collections.Generic;
 using Microsoft.IdentityModel.Tokens;
+using DDDNetCore.Domain.OperationTypes;
 
 namespace DDDNetCore.Controllers
 {
@@ -60,6 +59,26 @@ namespace DDDNetCore.Controllers
 
             return Ok(operationType);
         }
+
+        [HttpPut("Edit-OperationType")]
+        [Authorize(Policy = "Admin")]
+        public async Task<IActionResult> EditOperationType([FromBody] EditOpTypeDto editOpTypeDto)
+        {
+            try
+            {
+                await _service.EditOperationType(editOpTypeDto);
+            }
+            catch (BusinessRuleValidationException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { error = $"An unexpected error occurred: {ex.Message}" });
+            }
+            return Ok(new { message = "Operation successfully edited." });
+        }
+
 
         [HttpDelete("{id}")]
         [Authorize(Policy = "Admin")]
