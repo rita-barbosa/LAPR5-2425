@@ -124,7 +124,7 @@ namespace MDBackofficeTests.integrationtests.operationrequests
             var staffId = "D202400001";
             var opTyId = "tumor removal";
             var patientId = "202410000001";
-            var dtoMock = new CreatingOperationRequestDto
+            var dto = new CreatingOperationRequestDto
             ("2024-12-31",
                 "Elective",
                 "2024-10-25",
@@ -134,8 +134,8 @@ namespace MDBackofficeTests.integrationtests.operationrequests
                 patientId,
                 opTyId
             );
-            var staffMock = new Staff("00001", "country, 12345, street test", "12345", "first", "last", "first last", "email@email.com", "+123", "12345678", "doctor", "ortho");
-            var patientMock = new Patient("first", "last", "first last", "country, 12345, street test", "female", "+123", "12345678", "98765432", "email@email.com", "2000-10-10", "000001");
+            var staff = new Staff("00001", "country, 12345, street test", "12345", "first", "last", "first last", "email@email.com", "+123", "12345678", "doctor", "ortho");
+            var patient = new Patient("first", "last", "first last", "country, 12345, street test", "female", "+123", "12345678", "98765432", "email@email.com", "2000-10-10", "000001");
             var phases = new List<PhaseDto>
             {
                 new PhaseDto {
@@ -159,11 +159,11 @@ namespace MDBackofficeTests.integrationtests.operationrequests
                     Specialization = "ortho"
                 }
             };
-            var operationTypeMock = new OperationType(opTyId, 100, true, reqStaff, phases);
-            _repoStaMock.Setup(_repoMock => _repoMock.GetByIdAsync(It.IsAny<StaffId>())).ReturnsAsync(staffMock);
+            var operationType = new OperationType(opTyId, 100, true, reqStaff, phases);
+            _repoStaMock.Setup(_repoMock => _repoMock.GetByIdAsync(It.IsAny<StaffId>())).ReturnsAsync(staff);
             _repoPatMock.Setup(_repoPatMock => _repoPatMock.GetByIdAsync(It.IsAny<MedicalRecordNumber>()))
-                .ReturnsAsync(patientMock);
-            _repoOpTypeMock.Setup(_repoOpTypeMock => _repoOpTypeMock.GetByIdWithStaffAsync(It.IsAny<OperationTypeId>())).ReturnsAsync(operationTypeMock);
+                .ReturnsAsync(patient);
+            _repoOpTypeMock.Setup(_repoOpTypeMock => _repoOpTypeMock.GetByIdWithStaffAsync(It.IsAny<OperationTypeId>())).ReturnsAsync(operationType);
             _unitOfWorkMock.Setup(u => u.CommitAsync()).ReturnsAsync(1);
 
             var _service = new OperationRequestService(_unitOfWorkMock.Object, _repoMock.Object,
@@ -171,7 +171,7 @@ namespace MDBackofficeTests.integrationtests.operationrequests
                                                  _repoPatMock.Object, _repoOpTypeMock.Object, _userServiceMock.Object);
 
             // Act
-            var result = await _service.AddAsync(dtoMock);
+            var result = await _service.AddAsync(dto);
 
             // Assert
             Assert.NotNull(result);
@@ -179,7 +179,7 @@ namespace MDBackofficeTests.integrationtests.operationrequests
             Assert.Equal(staffId, result.StaffId);
             Assert.Equal(patientId, result.PatientId);
             Assert.Equal(opTyId, result.OperationTypeId);
-            Assert.Equal(dtoMock.Description, result.Description);
+            Assert.Equal(dto.Description, result.Description);
             _repoMock.Verify(r => r.AddAsync(It.IsAny<OperationRequest>()), Times.Once);
             _unitOfWorkMock.Verify(u => u.CommitAsync(), Times.Once);
         }

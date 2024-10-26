@@ -100,14 +100,14 @@ namespace DDDNetCore.Domain.Tokens
             return new TokenTypeDto( tokenType.ExpirationDurationHours.Hours, tokenType.TypeDenomination.Denomination );
         }
 
-        public async Task<bool> ConfirmEmailToken(string userId, string token)
+        public virtual async Task<bool> ConfirmEmailToken(string userId, string token)
         {
             User user = await _userManager.FindByIdAsync(userId);
             var result = await _userManager.ConfirmEmailAsync(user, token);
             return result.Succeeded;
         }
 
-        public async Task<string> GeneratePasswordResetTokenAsync(User user){
+        public virtual async Task<string> GeneratePasswordResetTokenAsync(User user){
             return await _userManager.GeneratePasswordResetTokenAsync(user);
         }
 

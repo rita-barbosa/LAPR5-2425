@@ -1,14 +1,11 @@
 using System.Security.Claims;
 using DDDNetCore.Domain.Users;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Configuration;
 using System;
 using DDDNetCore.Domain.Patients;
 using DDDNetCore.Domain.StaffProfiles;
-using DDDNetCore.Domain.Emails;
 using DDDNetCore.Domain.Tokens;
 using DDDNetCore.Domain.Shared;
 
@@ -19,26 +16,16 @@ namespace DDDNetCore.Controllers
     [Route("api/")]
     public class UserController : ControllerBase
     {
-        private static string hospitalEmail = "noreply.healthcare.dg38@gmail.com";
-        private readonly UserManager<User> _userManager;
-        private readonly RoleManager<Role> _roleManager;
         private readonly PatientService _patientService;
         private readonly StaffService _staffService;
-        private readonly EmailService _emailService;
         private readonly TokenService _tokenService;
-        private readonly IConfiguration _configuration;
-
         private readonly UserService _userService;
-        public UserController(UserService userService, UserManager<User> userManager, RoleManager<Role> roleManager, PatientService patientService, StaffService staffService, EmailService emailService, TokenService tokenService, IConfiguration configuration)
+        public UserController(UserService userService, PatientService patientService, StaffService staffService, TokenService tokenService)
         {
             _userService = userService;
-            _userManager = userManager;
-            _roleManager = roleManager;
             _patientService = patientService;
             _staffService = staffService;
-            _emailService = emailService;
-            _tokenService = tokenService;
-            _configuration = configuration;
+         _tokenService = tokenService;
         }
 
         [HttpPost("Login")]

@@ -5,9 +5,9 @@ namespace DDDNetCore.Domain.Users
 
     public class User : IdentityUser
     {
-        public bool Status { get; set; }
+        public virtual bool Status { get; set; }
 
-        public void changeStatus(bool status)
+        public virtual void changeStatus(bool status)
         {
             this.Status = status;
         }
