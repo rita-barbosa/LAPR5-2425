@@ -5,7 +5,7 @@ public static class RandomSequenceGenerator
 {
     private static readonly Random _random = new Random();
     private static readonly HashSet<string> _generatedSequences = new HashSet<string>();
-
+    private static readonly object _lock = new object();
     // Generates a random integer within a specified range
     public static int GenerateRandomNumber(int min, int max)
     {
@@ -16,15 +16,18 @@ public static class RandomSequenceGenerator
     public static string GenerateUniqueRandomSequence(int length)
     {
         if (length <= 0) throw new ArgumentException("Length must be greater than zero.");
-        
+
         string uniqueSequence;
-        do
+        lock (_lock)
         {
-            uniqueSequence = GenerateRandomAlphanumeric(length);
-        } while (_generatedSequences.Contains(uniqueSequence));
-        
-        // Add the newly generated sequence to the set to avoid future duplicates
-        _generatedSequences.Add(uniqueSequence);
+            do
+            {
+                uniqueSequence = GenerateRandomAlphanumeric(length);
+            } while (_generatedSequences.Contains(uniqueSequence));
+
+            // Add the newly generated sequence to the set to avoid future duplicates
+            _generatedSequences.Add(uniqueSequence);
+        }
         return uniqueSequence;
     }
 
@@ -38,7 +41,7 @@ public static class RandomSequenceGenerator
         {
             result[i] = chars[_random.Next(chars.Length)];
         }
-        
+
         return new string(result);
     }
 }

@@ -31,7 +31,7 @@ This User Story is related to the Admin.
 
 - **5.1.21.1. -** Admins can search for and select an existing operation type to edit. 
 
-- **5.1.21.2. -** Editable fields include operation name, required staff by specialization, and estimated duration. 
+- **5.1.21.2. -** Editable fields include operation name, required staff by specialization, and estimated duration, both each phase and total. 
 
 - **5.1.21.3. -** Changes are reflected in the system immediately for future operation requests. 
 
@@ -92,18 +92,13 @@ However level 3 is shown below.
 
 ![Domain Model Excerpt](Diagrams\Domain-Model\domain-model-excerpt.svg)
 
-### 4.3. Class Diagram
+### 4.3. Applied Patterns
 
 _// To do //_
 
-### 4.4. Applied Patterns
-
-_// To do //_
-
-### 4.5. Tests
+### 4.4. Tests
 
 _// To do - layout still in development //_ 
-
 
 ## 5. Implementation
 
