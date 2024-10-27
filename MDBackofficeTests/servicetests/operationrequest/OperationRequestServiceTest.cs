@@ -375,6 +375,39 @@ public class OperationRequestServiceTests
             Assert.True(result);
         }
 
+    [Fact]
+    public async Task UpdateAsync_ShouldUpdateOperationRequest_WhenFieldsAreChanged()
+    {
+        // Arrange
+        var operationRequestId = new Mock<OperationRequestId>("6B29FC40-CA47-1067-B31D-00DD010662DA");
+        var initialDeadLineDate = "2024-12-31";
+        var initialPriority = "Elective";
+        var initialDescription = "Initial Description";
+
+        var updatedDeadLineDate = "2025-01-31";
+        var updatedPriority = "Urgent";
+        var updatedDescription = "Updated Description";
+
+        UpdateOperationRequestDto dto = new UpdateOperationRequestDto("6B29FC40-CA47-1067-B31D-00DD010662DA", updatedDeadLineDate, updatedPriority, updatedDescription);
+
+        var operationRequestMock = new Mock<OperationRequest>("6B29FC40-CA47-1067-B31D-00DD010662DA", initialDeadLineDate, initialPriority, "2024-10-25", "D202400001", initialDescription, "202410000001", "tumor removal");
+
+        _repoMock.Setup(repo => repo.GetByIdAsync(It.IsAny<OperationRequestId>())).ReturnsAsync(operationRequestMock.Object);
+        _unitOfWorkMock.Setup(u => u.CommitAsync()).ReturnsAsync(1);
+
+        // Act
+        var result = await _service.UpdateAsync(dto);
+
+        // Assert
+        Assert.NotNull(result);
+        Assert.Equal(updatedDeadLineDate, result.DeadLineDate);
+        Assert.Equal(updatedPriority, result.Priority);
+        Assert.Equal(updatedDescription, result.Description);
+
+        // Verify that CommitAsync is called to save changes
+        _unitOfWorkMock.Verify(uow => uow.CommitAsync(), Times.Once);
+    }
+
 
 }
 
