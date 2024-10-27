@@ -245,6 +245,39 @@ namespace MDBackofficeTests.controllertests
         }
 
 
+         [Fact]
+        public async Task Login_FiveFailedAttempts_ThrowsBusinessRuleValidationException()
+        {
+             //Arrange
+            var email = "test@email.com";
+            var dtoMock = new LoginUserDto { Email = email, Password = "wrong-password" };
+            
+            var userMock = new Mock<User>();
+            userMock.Setup(u => u.UserName).Returns(email);
+            userMock.Setup(u => u.Email).Returns(email);
+            userMock.Setup(u => u.Status).Returns(true);
+
+            _userManagerMock.Setup(um => um.FindByEmailAsync(email)).ReturnsAsync(userMock.Object);
+            _userManagerMock.Setup(um => um.IsLockedOutAsync(userMock.Object)).ReturnsAsync(false);
+            _signinManagerMock.Setup(sm => sm.PasswordSignInAsync(userMock.Object, dtoMock.Password, false, true)).ReturnsAsync(SignInResult.Failed);
+
+            // Act
+            for (int i = 0; i < 5; i++)
+            {
+                await Assert.ThrowsAsync<BusinessRuleValidationException>(() => _userServiceMock.Object.Login(dtoMock));
+            }
+
+            _userManagerMock.Setup(um => um.IsLockedOutAsync(userMock.Object)).ReturnsAsync(true);
+            _signinManagerMock.Setup(sm => sm.PasswordSignInAsync(userMock.Object, dtoMock.Password, false, true)).ReturnsAsync(SignInResult.LockedOut);
+
+
+            var result = await _controller.Login(dtoMock);
+
+            //Assert
+            Assert.IsType<BadRequestObjectResult>(result);
+        }
+
+
         [Fact]
         public async Task RegisterStaffUser_ReturnsOkResult()
         {
