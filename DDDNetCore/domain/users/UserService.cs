@@ -126,12 +126,11 @@ namespace DDDNetCore.Domain.Users
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
-        public async Task<bool> UserExistsById(string userId)
+        public virtual async Task<bool> UserExistsById(string userId)
         {
             var user = await _userManager.FindByIdAsync(userId) ?? throw new BusinessRuleValidationException("Unable to find the specified user.");
             return true;
         }
-
 
         public async Task<bool> UserExistsByEmail(string email)
         {
@@ -366,10 +365,10 @@ namespace DDDNetCore.Domain.Users
             return user.Email;
         }
 
-        public async Task<string> DeletePatientAccount(string userId, string token)
+        public virtual async Task<string> DeletePatientAccount(string userId, string token)
         {
             //token was used so make it inactive
-            await _tokenService.InactivateAsync(new TokenId(token));
+            await _tokenService.InactivateAsync(token);
             //delete account
             return await DeleteAsync(userId);
         }

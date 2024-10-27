@@ -64,10 +64,11 @@ namespace DDDNetCore.Domain.Tokens
 
             return new TokenDto { TokenId = Token.Id.AsString(), UserId = Token.UserId.ToString(), ExpirationTime = Token.ExpirationTime.ToString(), Code = Token.Id.AsString(), TokenType = dto.TokenType, Active = Token.Active };
         }
-
-        public async Task<TokenDto> InactivateAsync(TokenId id)
+        
+        public virtual async Task<TokenDto> InactivateAsync(string id)
         {
-            var token = await this._repo.GetByIdAsync(id); 
+            TokenId tokenId = new TokenId(id);
+            var token = await this._repo.GetByIdAsync(tokenId); 
 
             if (token == null)
                 return null;   
@@ -119,7 +120,7 @@ namespace DDDNetCore.Domain.Tokens
         }
 
 
-                 public async Task<bool> TokenExistsById(string token)
+        public virtual async Task<bool> TokenExistsById(string token)
         {
             var tokenDto = await GetByIdAsync(new TokenId(token));
             if (tokenDto == null)
@@ -129,7 +130,7 @@ namespace DDDNetCore.Domain.Tokens
             return true;
         }
 
-        internal async Task<bool> IsTokenExpired(string token)
+        public virtual async Task<bool> IsTokenExpired(string token)
         {
             TokenDto tokenDto = await GetByIdAsync(new TokenId(token));   
             var expirationDate = DateTime.Parse(tokenDto.ExpirationTime);
@@ -143,8 +144,7 @@ namespace DDDNetCore.Domain.Tokens
             
             return false;
         }
-
-        internal async Task<bool> IsTokenActive(string token)
+        public virtual async Task<bool> IsTokenActive(string token)
         {
             TokenDto tokenDto = await GetByIdAsync(new TokenId(token)); 
             return tokenDto.Active; 

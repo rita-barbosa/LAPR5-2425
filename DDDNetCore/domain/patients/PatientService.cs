@@ -278,16 +278,25 @@ namespace DDDNetCore.Domain.Patients
             await _emailService.SendAccountDeletionEmail(emailMessageDto);
         }
 
-        public async void AnonymizeProfile(string email)
+        public virtual async Task<bool> AnonymizeProfile(string email)
         {
-            var patient = await _repo.GetPatientWithEmail(email);
+            try
+            {
+                var patient = await _repo.GetPatientWithEmail(email);
 
-            patient.RemoveUser();
-            patient.Anonymize();
+                patient.RemoveUser();
+                patient.Anonymize();
 
-            await _logService.CreateDeletionLog(patient.Id.AsString(), patient.GetType().Name, "Anonymization of patient profile.");
+                await _logService.CreateDeletionLog(patient.Id.AsString(), patient.GetType().Name, "Anonymization of patient profile.");
 
-            await _unitOfWork.CommitAsync();
+                await _unitOfWork.CommitAsync();
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
         }
 
 

@@ -32,7 +32,7 @@ namespace DDDNetCore.Domain.Logs
             }
         }
 
-        public async Task<bool> CreateCreationLog(string objectReference, string objectClass, string description)
+        public virtual async Task<bool> CreateCreationLog(string objectReference, string objectClass, string description)
         {
             try
             {
