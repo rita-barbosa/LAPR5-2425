@@ -23,7 +23,7 @@ one time link
 end note
 activate ROUTE
 
-ROUTE -> CONTROL : confirmPatientStaff(userId, token, newPassword)
+ROUTE -> CONTROL : ConfirmEmailPatient(userId, token, newPassword)
 activate CONTROL
 
 CONTROL -> UserDTO** 

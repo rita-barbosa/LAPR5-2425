@@ -8,9 +8,9 @@ participant "<<Service>>\n UserService" as AUTHServ
 participant "<<Utility>>\n RoleManager" as ROLEMan
 participant "<<Domain>>\n User" as USER
 participant "<<Utility>>\n UserManager" as USERMan
-participant "<<Service>>\n PatientService" as STAFFServ
-participant "<<Repository>>\n PatientRepository" as STAFFRepo
-participant "<<Domain>>\n Patient" as STAFF
+participant "<<Service>>\n PatientService" as PATServ
+participant "<<Repository>>\n PatientRepository" as PATRepo
+participant "<<Domain>>\n Patient" as PAT
 participant "<<Service>>\n EmailService" as EMAILServ
 participant "<<Domain>>\n Email" as EMAIL
 participant "<<Object>>\n MimeMessage" as Mime
@@ -19,7 +19,7 @@ participant "<<Interface>>\n IEmailAdapter" as IEmailAdapter
 [o-> ROUTE : POST(userData)
 Activate ROUTE
 
-ROUTE -> CONTROL : RegisterStaffUser(userData)
+ROUTE -> CONTROL : RegisterPatientUser(userData)
 Activate CONTROL
 
 CONTROL -> UserDTO** : toDTO(userData)
@@ -47,37 +47,37 @@ deactivate AUTHServ
 AUTHServ --> CONTROL : user
 deactivate AUTHServ
 
-CONTROL -> STAFFServ : addUser(user, registerUserDto.Email, registerUserDto.Phone)
-activate STAFFServ
-STAFFServ -> STAFFRepo : ExistsPatientWithEmailOrPhone(email,\nphone.Split(' ')[0],\nphone.Split(' ')[1])
-activate STAFFRepo
-STAFFRepo --> STAFFServ : true
-deactivate STAFFRepo
+CONTROL -> PATServ : addUser(user, registerUserDto.Email, registerUserDto.Phone)
+activate PATServ
+PATServ -> PATRepo : ExistsPatientWithEmailOrPhone(email,\nphone.Split(' ')[0],\nphone.Split(' ')[1])
+activate PATRepo
+PATRepo --> PATServ : true
+deactivate PATRepo
 
-STAFFServ -> STAFFRepo : getPatientWithEmail(email)
-activate STAFFRepo
-STAFFRepo --> STAFFServ : staff
-deactivate STAFFRepo
+PATServ -> PATRepo : getPatientWithEmail(email)
+activate PATRepo
+PATRepo --> PATServ : patient
+deactivate PATRepo
 
-STAFFServ -> STAFF : addUser(user)
-activate STAFF
-deactivate STAFF
+PATServ -> PAT : addUser(user)
+activate PAT
+deactivate PAT
 
-STAFFServ -> STAFFServ : commitAsync()
-activate STAFFServ
-deactivate STAFFServ
+PATServ -> PATServ : commitAsync()
+activate PATServ
+deactivate PATServ
 
-STAFFServ --> CONTROL : return
-deactivate STAFFServ
+PATServ --> CONTROL : return
+deactivate PATServ
 
-CONTROL -> STAFFServ : getProfileEmail(user.Email.ToString(), registerUserDto.Phone)
-activate STAFFServ
-STAFFServ -> STAFFRepo : findPatientWithEmailOrPhone(email, phone.Split(' ')[0], phone.Split(' ')[1])
-activate STAFFRepo 
-STAFFRepo --> STAFFServ : email
-deactivate STAFFRepo
-STAFFServ --> CONTROL : email
-deactivate STAFFServ
+CONTROL -> PATServ : getProfileEmail(user.Email.ToString(), registerUserDto.Phone)
+activate PATServ
+PATServ -> PATRepo : findPatientWithEmailOrPhone(email, phone.Split(' ')[0], phone.Split(' ')[1])
+activate PATRepo
+PATRepo --> PATServ : email
+deactivate PATRepo
+PATServ --> CONTROL : email
+deactivate PATServ
 
 CONTROL -> AUTHServ : sendConfirmationEmail(user, email)
 
@@ -123,6 +123,7 @@ deactivate IEmailAdapter
 EMAILServ -> AUTHServ : return
 deactivate EMAILServ
 AUTHServ --> AUTHServ : return
+deactivate AUTHServ
 AUTHServ --> CONTROL : return
 deactivate AUTHServ
 
