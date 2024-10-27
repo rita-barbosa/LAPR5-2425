@@ -31,6 +31,7 @@ public class OperationRequestServiceTests
     private readonly Mock<LogService> _logServiceMock = new Mock<LogService>(new Mock<IUnitOfWork>().Object, new Mock<ILogRepository>().Object);
     private readonly Mock<UserService> _userServiceMock;
     private readonly Mock<PatientService> _patientServiceMock;
+    private readonly OperationRequestService _service;
 
     public OperationRequestServiceTests()
     {
@@ -72,6 +73,10 @@ public class OperationRequestServiceTests
         );
         _patientServiceMock = new Mock<PatientService>(_unitOfWorkMock.Object, _logServiceMock.Object, _configurationMock.Object, _repoPatMock.Object,
                     _userServiceMock.Object, _emailServiceMock.Object);
+
+        _service = new OperationRequestService(_unitOfWorkMock.Object, _repoMock.Object,
+                                                    _repoStaMock.Object, _logServiceMock.Object, _patientServiceMock.Object,
+                                                    _repoPatMock.Object, _repoOpTypeMock.Object, _userServiceMock.Object);
     }
 
     [Fact]
@@ -146,5 +151,87 @@ public class OperationRequestServiceTests
         _repoMock.Verify(r => r.AddAsync(It.IsAny<OperationRequest>()), Times.Once);
         _unitOfWorkMock.Verify(u => u.CommitAsync(), Times.Once);
     }
+
+
+    [Fact]
+    public async Task GetOperationRequestByFiltersAsync_ReturnsCorrectOperationRequestDtos()
+    {
+        // Arrange
+        var staffId = "D202400001";
+        var opTyId = "tumor removal";
+        var patientId = "202410000001";
+        var email = "email@email.com";
+        var priority = "Elective";
+        var name = "John Doe";
+        var operationType = "tumor removal";
+        var status = "Requested";
+        var dateOfRequest = "2024-10-25";
+        var deadLineDate = "2024-12-31";
+
+        var staffMock = new Staff("00001", "country, 12345, street test", "12345", "first", "last", "first last", "email@email.com", "+123", "12345678", "doctor", "ortho");
+        var patientMock = new Mock<Patient>("first", "last", "first last", "country, 12345, street test", "female", "+123", "12345678", "98765432", "email@email.com", "2000-10-10", "000001");
+        var phases = new List<PhaseDto>
+        {
+            new PhaseDto {
+                        Description = "descrip",
+                        Duration = 25
+                        },
+            new PhaseDto {
+                        Description = "descrip2",
+                        Duration = 50
+                        },
+            new PhaseDto {
+                        Description = "descrip3",
+                        Duration = 25
+                        }
+        };
+
+        var reqStaff = new List<RequiredStaffDto>
+        {
+            new RequiredStaffDto{
+                StaffQuantity = 1,
+                Function = "doctor",
+                Specialization = "ortho"
+            }
+        };
+
+        var operationTypeMock = new Mock<OperationType>(opTyId, 100, true, reqStaff,phases);
+
+        var operationRequests = new List<Mock<OperationRequest>>
+        {
+            new Mock<OperationRequest>("TestCode","2024-12-31","Elective","2024-10-25",
+            staffId,"descript",patientId,opTyId),
+        };
+
+        var expectedDtos = new List<ListOperationRequestDto> 
+        {
+            new ListOperationRequestDto("first last", "tumor removal", "Requested"),
+        };
+
+        _repoStaMock.Setup(repo => repo.GetStaffWithEmail(email)).ReturnsAsync(staffMock);
+
+        var operationRequestObjects = operationRequests.Select(mock => mock.Object).ToList();
+        _repoMock.Setup(repo => repo.FindAllConditioned(new StaffId(staffId), name, priority, operationType, status, dateOfRequest, deadLineDate))
+            .ReturnsAsync(operationRequestObjects);
+        _repoPatMock.Setup(repo => repo.GetByIdAsync(new MedicalRecordNumber(patientId))).ReturnsAsync(patientMock.Object);
+
+
+        // Act
+        var result = await _service.GetOperationRequestByFiltersAsync(email, name, priority, operationType, status, dateOfRequest, deadLineDate);
+
+        // Assert
+        Assert.Equal(expectedDtos.Count, result.Count);
+        for (int i = 0; i < expectedDtos.Count; i++)
+        {
+            Assert.Equal(expectedDtos[i].PatientName, result[i].PatientName);
+            Assert.Equal(expectedDtos[i].OperationType, result[i].OperationType);
+            Assert.Equal(expectedDtos[i].Status, result[i].Status);
+        }
+
+        _repoMock.Verify(repo => repo.FindAllConditioned(new StaffId(staffId), name, priority, operationType, status, dateOfRequest, deadLineDate), Times.Once);
+
+    }
+
+    
 }
 
