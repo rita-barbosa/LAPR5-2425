@@ -225,6 +225,67 @@ namespace MDBackofficeTests.integrationtests.usertests
              await Assert.ThrowsAsync<BusinessRuleValidationException>(() => _userService.Login(dtoMock));
         }
 
+        [Fact]
+        public async Task Login_FiveFailedAttempts_TriggersLockout_IntegrationControllerService()
+        {
+            // Arrange
+            var email = "test@email.com";
+            var dtoMock = new LoginUserDto { Email = email, Password = "wrong-password" };
+            
+            var userMock = new Mock<User>();
+            userMock.Setup(u => u.UserName).Returns(email);
+            userMock.Setup(u => u.Email).Returns(email);
+            userMock.Setup(u => u.Status).Returns(true);
+
+            _userManagerMock.Setup(um => um.FindByEmailAsync(email)).ReturnsAsync(userMock.Object);
+            _userManagerMock.Setup(um => um.IsLockedOutAsync(userMock.Object)).ReturnsAsync(false);
+            _signinManagerMock.Setup(sm => sm.PasswordSignInAsync(userMock.Object, dtoMock.Password, false, true)).ReturnsAsync(SignInResult.Failed);
+
+            // Act
+            for (int i = 0; i < 5; i++)
+            {
+                await Assert.ThrowsAsync<BusinessRuleValidationException>(() => _userService.Login(dtoMock));
+            }
+
+            _userManagerMock.Setup(um => um.IsLockedOutAsync(userMock.Object)).ReturnsAsync(true);
+            _signinManagerMock.Setup(sm => sm.PasswordSignInAsync(userMock.Object, dtoMock.Password, false, true)).ReturnsAsync(SignInResult.LockedOut);
+
+            //Assert
+            var exception = await Assert.ThrowsAsync<BusinessRuleValidationException>(() => _userService.Login(dtoMock));
+            Assert.Equal("Account is locked out. Please try again later.", exception.Message);
+        }
+
+        [Fact]
+        public async Task Login_FiveFailedAttempts_TriggersLockout_IntegrationServiceDomain()
+        {
+            // Arrange
+            var email = "test@email.com";
+            var password = "NewPass00_d";
+            var dtoMock = new LoginUserDto { Email = email, Password = "wrong-password" };
+            
+            var user = new User();
+            user.UserName = email;
+            user.Email = email;
+            user.Status = true;
+            user.PasswordHash = password;
+
+            _userManagerMock.Setup(_userManagerMock => _userManagerMock.FindByEmailAsync(email)).ReturnsAsync(user);
+            _signinManagerMock.Setup(sm => sm.PasswordSignInAsync(user, dtoMock.Password, false, true)).ReturnsAsync(SignInResult.Failed);
+          
+            // Act
+            for (int i = 0; i < 5; i++)
+            {
+                await Assert.ThrowsAsync<BusinessRuleValidationException>(() => _userService.Login(dtoMock));
+            }
+
+            _userManagerMock.Setup(um => um.IsLockedOutAsync(user)).ReturnsAsync(true);
+            _signinManagerMock.Setup(sm => sm.PasswordSignInAsync(user, dtoMock.Password, false, true)).ReturnsAsync(SignInResult.LockedOut);
+
+            //Assert
+            var exception = await Assert.ThrowsAsync<BusinessRuleValidationException>(() => _userService.Login(dtoMock));
+            Assert.Equal("Account is locked out. Please try again later.", exception.Message);
+        }
+
     }
 }
 
