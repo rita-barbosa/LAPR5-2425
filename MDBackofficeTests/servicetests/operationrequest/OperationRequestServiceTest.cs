@@ -34,6 +34,7 @@ public class OperationRequestServiceTests
     private readonly Mock<UserService> _userServiceMock;
     private readonly Mock<PatientService> _patientServiceMock;
     private readonly OperationRequestService _service;
+    private readonly Mock<UserManager<User>> _userManagerMock;
 
     public OperationRequestServiceTests()
     {
@@ -41,7 +42,7 @@ public class OperationRequestServiceTests
         identityOptionsMock.Setup(o => o.Value).Returns(new IdentityOptions());
         var identityErrorDescriberMock = new Mock<IdentityErrorDescriber>();
 
-        var userManagerMock = new Mock<UserManager<User>>(
+        _userManagerMock = new Mock<UserManager<User>>(
             new Mock<IUserStore<User>>().Object,
             identityOptionsMock.Object,
             new Mock<IPasswordHasher<User>>().Object,
@@ -61,11 +62,11 @@ public class OperationRequestServiceTests
              new Mock<ILogger<RoleManager<Role>>>().Object
         );
 
-        var tokenServiceMock = new Mock<TokenService>(_unitOfWorkMock.Object, new Mock<ITokenRepository>().Object, userManagerMock.Object);
+        var tokenServiceMock = new Mock<TokenService>(_unitOfWorkMock.Object, new Mock<ITokenRepository>().Object, _userManagerMock.Object);
         var _emailServiceMock = new Mock<EmailService>(tokenServiceMock.Object, new Mock<IEmailAdapter>().Object);
         var _configurationMock = new Mock<IConfiguration>();
 
-        var signinManagerMock = new Mock<SignInManager<User>>(userManagerMock.Object,
+        var signinManagerMock = new Mock<SignInManager<User>>(_userManagerMock.Object,
                                                                new Mock<IHttpContextAccessor>().Object,
                                                                new Mock<IUserClaimsPrincipalFactory<User>>().Object,
                                                                identityOptionsMock.Object,
@@ -73,7 +74,7 @@ public class OperationRequestServiceTests
                                                                new Mock<IAuthenticationSchemeProvider>().Object,
                                                                new Mock<IUserConfirmation<User>>().Object);
         _userServiceMock = new Mock<UserService>(
-                userManagerMock.Object,
+                _userManagerMock.Object,
                 roleManagerMock.Object,
                 _logServiceMock.Object,
                 signinManagerMock.Object,
@@ -178,6 +179,7 @@ public class OperationRequestServiceTests
         var dateOfRequest = "2024-10-25";
         var deadLineDate = "2024-12-31";
 
+
         var staffMock = new Staff("00001", "country, 12345, street test", "12345", "first", "last", "first last", "email@email.com", "+123", "12345678", "doctor", "ortho");
         var patientMock = new Mock<Patient>("first", "last", "first last", "country, 12345, street test", "female", "+123", "12345678", "98765432", "email@email.com", "2000-10-10", "000001");
         var phases = new List<PhaseDto>
@@ -241,6 +243,136 @@ public class OperationRequestServiceTests
         _repoMock.Verify(repo => repo.FindAllConditioned(new StaffId(staffId), name, priority, operationType, status, dateOfRequest, deadLineDate), Times.Once);
 
     }
+    
+    [Fact]
+    public async Task DeleteOperationRequest_ReturnsOkResponse()
+    {
+       // Arrange
+        var staffId = "D202400001";
+        var opTyId = "tumor removal";
+        var patientId = "202410000001";
+        var email = "email@email.com";
+
+        var staffMock = new Mock<Staff>("00001", "country, 12345, street test", "12345", "first", "last", "first last", "email@email.com", "+123", "12345678", "doctor", "ortho");
+        var patientMock = new Mock<Patient>("first", "last", "first last", "country, 12345, street test", "female", "+123", "12345678", "98765432", "email@email.com", "2000-10-10", "000001");
+        var phases = new List<PhaseDto>
+        {
+            new PhaseDto {
+                        Description = "descrip",
+                        Duration = 25
+                        },
+            new PhaseDto {
+                        Description = "descrip2",
+                        Duration = 50
+                        },
+            new PhaseDto {
+                        Description = "descrip3",
+                        Duration = 25
+                        }
+        };
+
+        var reqStaff = new List<RequiredStaffDto>
+        {
+            new RequiredStaffDto{
+                StaffQuantity = 1,
+                Function = "doctor",
+                Specialization = "ortho"
+            }
+        };
+
+        var operationTypeMock = new Mock<OperationType>(opTyId, 100, true, reqStaff,phases);
+
+        var operationRequest = new Mock<OperationRequest>("TestCode","2024-12-31","Elective","2024-10-25",
+            staffId,"descript",patientId,opTyId);
+
+        var password = "NewPass00_d";
+
+        var userMock = new Mock<User>();
+        userMock.Setup(u => u.Id).Returns(patientId);
+        userMock.Setup(u => u.UserName).Returns(email);
+        userMock.Setup(u => u.Email).Returns(email);
+        userMock.Setup(u => u.Status).Returns(true);
+        userMock.Setup(u => u.PasswordHash).Returns(password);
+
+        _userManagerMock.Setup(r => r.FindByEmailAsync(email)).ReturnsAsync(userMock.Object);
+        _repoStaMock.Setup(r => r.FindStaffWithUserId(patientId)).ReturnsAsync(staffMock.Object);
+        _repoMock.Setup(repo => repo.GetByIdAsync(It.IsAny<OperationRequestId>())).ReturnsAsync(operationRequest.Object);
+
+        _repoMock.Setup(r => r.Remove(operationRequest.Object));
+        _unitOfWorkMock.Setup(r => r.CommitAsync()).ReturnsAsync(1);
+
+        // Act
+        var result = await _service.DeleteOperationRequest(operationRequest.Object.Id.Value, email);
+
+        //Assert
+        Assert.True(result);
+    }
+
+
+         [Fact]
+        public async Task DeleteOperationRequestFromPatient_ReturnsOkResponse()
+        {
+            // Arrange
+            var staffId = "D202400001";
+            var opTyId = "tumor removal";
+            var patientId = "202410000001";
+            var email = "email@email.com";
+
+            var staffMock = new Mock<Staff>("00001", "country, 12345, street test", "12345", "first", "last", "first last", "email@email.com", "+123", "12345678", "doctor", "ortho");
+            var patientMock = new Mock<Patient>("first", "last", "first last", "country, 12345, street test", "female", "+123", "12345678", "98765432", "email@email.com", "2000-10-10", "000001");
+            var phases = new List<PhaseDto>
+            {
+                new PhaseDto {
+                            Description = "descrip",
+                            Duration = 25
+                            },
+                new PhaseDto {
+                            Description = "descrip2",
+                            Duration = 50
+                            },
+                new PhaseDto {
+                            Description = "descrip3",
+                            Duration = 25
+                            }
+            };
+
+            var reqStaff = new List<RequiredStaffDto>
+            {
+                new RequiredStaffDto{
+                    StaffQuantity = 1,
+                    Function = "doctor",
+                    Specialization = "ortho"
+                }
+            };
+
+            var operationTypeMock = new Mock<OperationType>(opTyId, 100, true, reqStaff,phases);
+
+            var operationRequest = new Mock<OperationRequest>("TestCode","2024-12-31","Elective","2024-10-25",
+                staffId,"descript",patientId,opTyId);
+
+            var password = "NewPass00_d";
+
+            var userMock = new Mock<User>();
+            userMock.Setup(u => u.Id).Returns(patientId);
+            userMock.Setup(u => u.UserName).Returns(email);
+            userMock.Setup(u => u.Email).Returns(email);
+            userMock.Setup(u => u.Status).Returns(true);
+            userMock.Setup(u => u.PasswordHash).Returns(password);
+            
+            _userManagerMock.Setup(r => r.FindByEmailAsync(email)).ReturnsAsync(userMock.Object);
+            _repoStaMock.Setup(r => r.FindStaffWithUserId(patientId)).ReturnsAsync(staffMock.Object);
+            _repoPatMock.Setup(r => r.GetByIdAsync(It.IsAny<MedicalRecordNumber>())).ReturnsAsync(patientMock.Object);
+            _repoMock.Setup(repo => repo.GetByIdAsync(It.IsAny<OperationRequestId>())).ReturnsAsync(operationRequest.Object);
+            patientMock.Setup(r => r.RemoveRequestFromHistory(operationRequest.Object.Id));
+            _repoMock.Setup(r => r.Remove(operationRequest.Object));
+            _unitOfWorkMock.Setup(r => r.CommitAsync()).ReturnsAsync(1);
+
+            // Act
+            var result = await _service.DeleteOperationRequestFromPatient(patientId, operationRequest.Object.Id.Value, email);
+
+            //Assert
+            Assert.True(result);
+        }
 
     
 }

@@ -158,7 +158,7 @@ namespace MDBackoffice.Domain.Patients
             AppointmentList.Add(appointmentHistory);  
         }
 
-        public void RemoveRequestFromHistory(OperationRequestId operationRequestId)
+        public virtual void RemoveRequestFromHistory(OperationRequestId operationRequestId)
         {
             foreach (AppointmentHistory appointmentHistory in this.AppointmentList)
             {
