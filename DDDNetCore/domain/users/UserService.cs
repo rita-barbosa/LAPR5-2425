@@ -260,7 +260,7 @@ namespace DDDNetCore.Domain.Users
                         changedInformation +
                         "<p><a href='" + confirmationLink + "'>Click here to confirm the change of your contact information.</a></p>" +
                         "<p>Thank you for choosing us,<br>HealthCare Clinic</p></body></html>";
-
+            
             await SendEmail(email, "Update Contact Information Confirmation", body);
         }
 
