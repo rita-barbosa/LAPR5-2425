@@ -6,7 +6,12 @@ namespace DDDNetCore.Domain.Shared
     public class StaffQueryParametersDto
     {
 
-        public required List<StaffListingFilterParametersDto> queryFilters {get; set;}
+        public List<StaffListingFilterParametersDto> queryFilters {get; set;}
+
+        public StaffQueryParametersDto(List<StaffListingFilterParametersDto> QueryFilters)
+        {
+            queryFilters = QueryFilters;
+        }
 
     }
 }

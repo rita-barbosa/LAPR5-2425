@@ -100,7 +100,7 @@ namespace DDDNetCore.Domain.StaffProfiles
             }
         }
 
-        public async Task<List<StaffDto>> GetAllAsync()
+        public virtual async Task<List<StaffDto>> GetAllAsync()
         {
             var list = await this._repo.GetAllAsync();
 
@@ -211,7 +211,7 @@ namespace DDDNetCore.Domain.StaffProfiles
             await this._unitOfWork.CommitAsync();
         }
 
-        public async Task<List<StaffDto>> FilterStaffProfiles(StaffQueryParametersDto dto)
+        public virtual async Task<List<StaffDto>> FilterStaffProfiles(StaffQueryParametersDto dto)
         {
             List<Staff> filteredStaffs = await _repo.FilterStaffProfiles(dto);
             List<StaffDto> StaffDtoListFiltered = [];
