@@ -6,7 +6,12 @@ namespace DDDNetCore.Domain.Shared
     public class PatientQueryParametersDto
     {
 
-        public required List<PatientListingFilterParametersDto> queryFilters {get; set;}
+        public List<PatientListingFilterParametersDto> QueryFilters { get; set; }
+
+        public PatientQueryParametersDto(List<PatientListingFilterParametersDto> _queryFilters)
+        {
+            QueryFilters = _queryFilters;  
+        }
 
     }
 }

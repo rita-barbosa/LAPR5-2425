@@ -175,4 +175,67 @@ public class PatientServiceTests
         Assert.NotNull(result);
         Assert.Equal(false, result);
     }
+
+    [Fact]
+    public async Task GetAllAsync_ReturnsPatientListDto()
+    {
+        // Arrange
+        var patientMock = new Mock<Patient>("first", "last", "first last", "country, 12345, street test", "female", "+123", "12345678", "98765432", "email@email.com", "2000-10-10", "000001");
+
+        List<Patient> result = new List<Patient> { patientMock.Object };
+
+        _repoMock.Setup(_repo => _repo.GetAllAsync()).ReturnsAsync(result);
+
+        // Act
+        var patients = await _service.GetAllAsysnc();
+
+        // Assert
+        Assert.NotNull(patients);
+        Assert.IsType<List<PatientDto>>(patients);
+        Assert.Single(patients);
+    }
+
+    [Fact]
+    public async Task FilterPatientProfiles_ReturnsPatientListDto()
+    {
+        //Arrange
+        string firstName = "Duarte";
+        string lastName = "Matos";
+        string email = "exampleemail@gmail.com";
+        string gender = "male";
+        string date = "2004-12-15";
+        string medicalRecordNumber = "202410000001";
+
+        PatientListingFilterParametersDto listingFilterParametersDto
+            = new PatientListingFilterParametersDto(
+                firstName,
+                lastName,
+                email,
+                gender,
+                date,
+                medicalRecordNumber);
+
+        List<PatientListingFilterParametersDto> listingFilterParametersDtosList = new List<PatientListingFilterParametersDto>
+            {
+                listingFilterParametersDto
+            };
+
+        PatientQueryParametersDto dto = new PatientQueryParametersDto(listingFilterParametersDtosList);
+        var id = "202410000001";
+
+        var patientMock = new Mock<Patient>("Duarte", "Matos", "Duarte Matos", "country, 12345, street test", "male", "+123", "12345678", "98765432", "exampleemail@gmail.com", "2004-12-15", "000001");
+
+        List<Patient> result = new List<Patient> { patientMock.Object };
+
+        _repoMock.Setup(_repo => _repo.FilterPatientProfiles(dto)).ReturnsAsync(result);
+
+        // Act
+        var patients = await _service.FilterPatientProfiles(dto);
+
+        // Assert
+        Assert.NotNull(patients);
+        Assert.IsType<List<PatientDto>>(patients);
+        Assert.Single(patients);
+    }
+
 }

@@ -45,7 +45,7 @@ namespace DDDNetCore.Infrastructure.Patients
         {
            IQueryable<Patient> combinedQuery = null;
 
-            foreach (PatientListingFilterParametersDto filter in dto.queryFilters)
+            foreach (PatientListingFilterParametersDto filter in dto.QueryFilters)
             {
 
                 var query = _context.Patients.AsQueryable();

@@ -121,7 +121,7 @@ namespace DDDNetCore.Domain.Patients
         }
 
 
-        public async Task<List<PatientDto>> FilterPatientProfiles(PatientQueryParametersDto dto)
+        public virtual async Task<List<PatientDto>> FilterPatientProfiles(PatientQueryParametersDto dto)
         {
             List<Patient> filteredPatients = await _repo.FilterPatientProfiles(dto);
             List<PatientDto> patientDtoListFiltered = [];
@@ -134,7 +134,7 @@ namespace DDDNetCore.Domain.Patients
             return patientDtoListFiltered;
         }
 
-        public async Task<List<PatientDto>> GetAllAsysnc()
+        public virtual async Task<List<PatientDto>> GetAllAsysnc()
         {
             var list = await _repo.GetAllAsync();
 
