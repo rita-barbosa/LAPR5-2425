@@ -29,11 +29,7 @@ opt search filters appliance
     ADM -> SYS : selects an operation type
     SYS --> ADM : shows operation type
 
-        alt view, edit or remove operation types
-
-        ADM -> SYS : asks to see operation type details
-        SYS --> ADM : show operation type details
-        else
+        alt
         |||
         ref over ADM, SYS : US 5.1.21 (edit operation type)
 

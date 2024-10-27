@@ -42,18 +42,9 @@ activate UI
 <-- UI : shows operation type
 deactivate UI
 
-    alt views details
-        [o-> UI : view details of operation type
-        activate UI
-
-        UI -> BACK : showOperationTypeDetails(json)
-        activate BACK
-
-        BACK --> UI : answer
-        deactivate BACK
-
-    else edit operation type
+    alt  edit operation type
         [o-> UI : edit operation type
+        activate UI
 
         UI -> BACK : US 5.1.21
         activate BACK

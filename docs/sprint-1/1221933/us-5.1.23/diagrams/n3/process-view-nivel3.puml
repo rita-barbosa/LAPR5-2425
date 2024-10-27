@@ -4,17 +4,14 @@
 title "US 5.1.23. Process View (Level 3)"
 autonumber
 
-participant "route:\nListOperationTypesRoute" as ROUTE
-participant "controller:\nListOperationTypesController" as CTRL
-participant "query:\nQueryParametersDTO" as QueryDTO
+participant "route:\nOperationTypeRoute" as ROUTE
+participant "controller:\nOperationTypeController" as CTRL
+participant "query:\nOperationTypeQueryParametersDto" as QueryDTO
 participant "service:\n OperationTypeService" as SER
 participant "repository:\nOperationTypeRepository" as REPO
-participant "mapper:\nOperationTypeMapper" as MAPPER
 participant "dto:\nOperationTypeDTO" as DTO
-participant "service:\nDynamicQueryGenerationService" as QUERYServ
 
-
-[o-> ROUTE : GET()
+[o-> ROUTE : GET() /api/Xs
 activate ROUTE
 
 ROUTE -> CTRL : getAllOperationTypes()
@@ -30,13 +27,8 @@ REPO --> SER : operationTypeList
 deactivate REPO
 
     loop for all the operation types in the list
-        SER -> MAPPER : toDTO(operationType)
-        activate MAPPER
+        SER -> DTO ** : toDTO(operationType)
 
-        MAPPER -> DTO **
-
-        MAPPER --> SER : operationTypeDTO
-        deactivate MAPPER
     end loop
 
 SER --> CTRL : operationTypeDTOList
@@ -44,6 +36,8 @@ deactivate SER
 
 
 CTRL -> CTRL : json(operationTypeDTOList)
+activate CTRL
+deactivate CTRL
 
 CTRL --> ROUTE : json
 deactivate CTRL
@@ -56,82 +50,44 @@ deactivate ROUTE
 [o-> ROUTE : POST(json)
 activate ROUTE
 
-ROUTE -> CTRL : filterOperationTypes(json)
+ROUTE -> CTRL : GetFilteredOperationTypes(json)
 activate CTRL
 
 CTRL -> QueryDTO ** : toDTO(json)
 
-CTRL -> SER : filterOperationTypes(queryParametersDTO)
+CTRL -> SER : FilterOperationTypes(queryParametersDTO)
 activate SER
 
-SER -> QUERYServ : generateQueryText(queryParametersDTO)
-activate QUERYServ
 
-QUERYServ --> SER : query
-deactivate QUERYServ
-
-SER -> REPO : findAllConditioned(query)
+SER -> REPO : FilterOperationTypes(queryParametersDTO)
 activate REPO
 
 REPO --> SER : operationTypesList
 deactivate REPO
 
     loop for all the operation types in the list
-        SER -> MAPPER : toDTO(operationType)
-        activate MAPPER
-
-        MAPPER -> DTO **
-
-        MAPPER --> SER : operationTypeDTO
-        deactivate MAPPER
+        SER -> DTO ** : toDTO(operationType)
     end loop
 
 SER --> CTRL : filterOperationTypesDTOList
 deactivate SER
 
-CTRL --> ROUTE : filterOperationTypesDTOList
+CTRL -> CTRL : json(OperationTypeDTOList)
+activate CTRL
 deactivate CTRL
 
-<-- ROUTE : filterOperationTypesDTOList
+CTRL --> ROUTE : json
+deactivate CTRL
+
+<-- ROUTE : ok(json)
 deactivate ROUTE
 
 |||
 
-alt view details
+alt edit operation type
 
-[o-> ROUTE : GET()
-activate ROUTE
-
-ROUTE -> CTRL : getOperationType(operationTypeId)
-activate CTRL
-
-CTRL -> SER : getOperationType(operationTypeId)
-activate SER
-
-SER -> REPO : findByID()
-activate REPO
-
-REPO --> SER : operationType
-deactivate REPO
-        SER -> MAPPER : toDTO(operationType)
-        activate MAPPER
-
-        MAPPER -> DTO **
-
-        MAPPER --> SER : operationTypeDTO
-        deactivate MAPPER
-
-SER --> CTRL : operationTypeDTO
-deactivate SER
-
-
-CTRL --> ROUTE : operationTypeDTO
-deactivate CTRL
-
-
-else edit operation type
-
-    [o-> ROUTE : PUT(updatedProfileData)
+    [o-> ROUTE : PUT(json)
+    activate ROUTE
 
     ROUTE -> CTRL : editOperationType(updatedProfileData)
     activate CTRL
@@ -146,7 +102,7 @@ else edit operation type
 
 else delete operation type
 
-    [o-> ROUTE : DELETE(operationType)
+    [o-> ROUTE : DELETE(json)
 
     ROUTE -> CTRL : deleteOperationType(operationType)
     activate CTRL
@@ -161,8 +117,14 @@ else delete operation type
 
 end alt
 
-<-- ROUTE : answer
+alt success
+[o<-- ROUTE : 200 OK
+
+else failure
+
+[o<-- ROUTE : 400 Bad Request
 deactivate ROUTE
+end alt
 
 
 @enduml

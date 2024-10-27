@@ -35,12 +35,7 @@ SYS --> ADM : shows operation type
 deactivate SYS
 activate ADM
 
-    alt views details
-        ADM --> SYS : asks to see operation type details
-        activate SYS
-        deactivate SYS
-
-    else edit operation type
+    alt  edit operation type
         ADM --> SYS : US 5.1.21
         activate SYS
         deactivate SYS

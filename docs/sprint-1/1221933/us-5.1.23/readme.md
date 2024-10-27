@@ -16,10 +16,6 @@
       * [Development View](#development-view)
       * [Physical View](#physical-view)
     * [4.2. Applied Patterns](#42-applied-patterns)
-    * [4.3. Tests](#43-tests)
-  * [5. Implementation](#5-implementation)
-  * [6. Integration/Demonstration](#6-integrationdemonstration)
-  * [7. Observations](#7-observations)
 <!-- TOC -->
 
 
@@ -82,7 +78,6 @@ Once the filters are applied, the system displays operation types in a searchabl
 - Estimated Duration
 
 Finally, the admin can select an operation type to:
-- View
 - Edit
 - Deactivate
 
@@ -136,7 +131,7 @@ The diagrams are available in the [team decision views folder](../../team-decisi
 
 > #### **DTO (Data Transfer Object) Pattern**
 >
->* **Components:** QueryParametersDTO, OperationTypeDTO
+>* **Components:** OperationTypeQueryParametersDto, OperationTypeDTO
 >
 > DTOs are utilized to transfer data between layers, particularly from the controller layer to the service layer and 
 > vice versa. Their main purpose is to convey data in a structured and decoupled manner without revealing the internal 
@@ -145,24 +140,7 @@ The diagrams are available in the [team decision views folder](../../team-decisi
 
 > #### **Facade Pattern**
 >
->* **Components:** DynamicQueryGenerationService, OperationTypeService
+>* **Components:** OperationTypeService
 >
 > These services function as a facade, simplifying the interaction with lower-level components such as repositories. 
 > The controller communicates with these service facades, concealing the complexity from the upper layers.
-
-### 4.3. Tests
-
-_// To do - layout still in development //_ 
-
-
-## 5. Implementation
-
-_// To do //_
-
-## 6. Integration/Demonstration
-
-_// To do //_
-
-## 7. Observations
-
-_// To do //_
