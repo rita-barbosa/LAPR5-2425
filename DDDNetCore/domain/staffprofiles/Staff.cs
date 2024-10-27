@@ -54,7 +54,7 @@ namespace DDDNetCore.Domain.StaffProfiles
             Slots.Add(slot);
         }
 
-        public void AddUser(User user)
+        public virtual void AddUser(User user)
         {
             if (user == null)
             {

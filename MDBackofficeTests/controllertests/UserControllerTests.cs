@@ -30,11 +30,14 @@ namespace MDBackofficeTests.controllertests
         private readonly Mock<IUnitOfWork> _unitOfWorkMock = new();
         private readonly Mock<LogService> _logServiceMock = new(new Mock<IUnitOfWork>().Object, new Mock<ILogRepository>().Object);
         private readonly Mock<UserManager<User>> _userManagerMock;
+        private readonly Mock<RoleManager<Role>> _roleManagerMock;
         private readonly Mock<IConfiguration> _configurationMock;
         private readonly Mock<TokenService> _tokenServiceMock;
         private readonly Mock<PatientService> _patientServiceMock;
         private readonly Mock<SignInManager<User>> _signinManagerMock;
-
+        private readonly Mock<StaffService> _staffServiceMock;
+        private readonly Mock<IStaffRepository> _staffRepoMock;
+        private readonly Mock<ISpecializationRepository> _specRepoMock;
 
         public UserControllerTests() {
             var identityOptionsMock = new Mock<IOptions<IdentityOptions>>();
@@ -53,7 +56,7 @@ namespace MDBackofficeTests.controllertests
                 new Mock<ILogger<UserManager<User>>>().Object
             );
 
-            var roleManagerMock = new Mock<RoleManager<Role>>(
+            _roleManagerMock = new Mock<RoleManager<Role>>(
                 new Mock<IRoleStore<Role>>().Object,
                 new List<IRoleValidator<Role>>(),
                 new Mock<ILookupNormalizer>().Object,
@@ -73,14 +76,15 @@ namespace MDBackofficeTests.controllertests
                                                                new Mock<IAuthenticationSchemeProvider>().Object,
                                                                new Mock<IUserConfirmation<User>>().Object);
 
-            _userServiceMock = new Mock<UserService>(_userManagerMock.Object, roleManagerMock.Object, _logServiceMock.Object, _signinManagerMock.Object, _emailServiceMock.Object, _configurationMock.Object, _tokenServiceMock.Object);
+            _userServiceMock = new Mock<UserService>(_userManagerMock.Object, _roleManagerMock.Object, _logServiceMock.Object, _signinManagerMock.Object, _emailServiceMock.Object, _configurationMock.Object, _tokenServiceMock.Object);
 
             _patientServiceMock = new Mock<PatientService>(_unitOfWorkMock.Object, _logServiceMock.Object, _configurationMock.Object, new Mock<IPatientRepository>().Object,
                     _userServiceMock.Object, _emailServiceMock.Object);
-            var _staffServiceMock = new Mock<StaffService>(_unitOfWorkMock.Object, _logServiceMock.Object, new Mock<IStaffRepository>().Object, new Mock<ISpecializationRepository>().Object,
+            _staffServiceMock = new Mock<StaffService>(_unitOfWorkMock.Object, _logServiceMock.Object, new Mock<IStaffRepository>().Object, new Mock<ISpecializationRepository>().Object,
                     _userManagerMock.Object, _configurationMock.Object, _emailServiceMock.Object, _userServiceMock.Object);
 
-            
+            _staffRepoMock = new Mock<IStaffRepository>();
+            _specRepoMock = new Mock<ISpecializationRepository>();
              _controller = new UserController(_userServiceMock.Object, _patientServiceMock.Object, _staffServiceMock.Object, _tokenServiceMock.Object);
         }
 
@@ -236,5 +240,85 @@ namespace MDBackofficeTests.controllertests
             Assert.IsType<OkObjectResult>(result);
             Assert.Equal("Patient account successfully deleted!\nSome of your non-identifiable data will be retained, as per our GDPR policies.", ((OkObjectResult)result).Value);
         }
+
+        
+        // [Fact]
+        // public async Task RegisterStaffUser_ReturnsOkResult()
+        // {
+        //     // Arrange
+        //     var email = "test@email.com";
+        //     var password = "NewPass00_d";
+        //     var role = "doctor";
+        //     var id = "testid";
+        //     var phone = "+351 960444772";
+
+        //     var dtoMock = new RegisterUserDto 
+        //     { 
+        //         Email = email, 
+        //         Password = password, 
+        //         Phone = phone, 
+        //         Role = role 
+        //     };
+
+        //     var userMock = new Mock<User>();
+        //     userMock.Setup(u => u.Id).Returns(id);
+        //     userMock.Setup(u => u.UserName).Returns(email);
+        //     userMock.Setup(u => u.Email).Returns(email);
+        //     userMock.Setup(u => u.Status).Returns(true);
+        //     userMock.Setup(u => u.PasswordHash).Returns(password);
+
+
+        //     var resultMock = IdentityResult.Success;
+        //     var address = "Portugal, 4570-860, Rua das Oliveiras";
+        //     var specialization = "Orthopedics";
+        //     var seqNumber = "00001";
+
+        //                 var specMock = new Mock<Specialization>(specialization);
+
+        //     var staffMock = new Mock<Staff>(seqNumber, address, "12345", "Rita", "Barbosa", "Rita Barbosa", email, "+351", "987654321", "Doctor", specialization);
+        //     var staffDto = new StaffDto(staffMock.Object.Id.Value, staffMock.Object.Name.ToString(), staffMock.Object.Phone.ToString(), staffMock.Object.Email.ToString(), staffMock.Object.Address.ToString(), staffMock.Object.SpecializationId.Value, [] );
+        //     var createStaffProfile = new CreatingStaffDto(
+        //         staffMock.Object.LicenseNumber.Number,
+        //         address,
+        //         staffMock.Object.Name.FirstName,
+        //         staffMock.Object.Name.LastName,
+        //         phone,
+        //         email,
+        //         role,
+        //         specialization
+        //     );
+
+        //     _roleManagerMock.Setup(rm => rm.RoleExistsAsync(role)).ReturnsAsync(true);
+        //     _userManagerMock.Setup(um => um.CreateAsync(It.IsAny<User>(), password)).ReturnsAsync(resultMock);
+        //     _userManagerMock.Setup(um => um.AddToRoleAsync(It.IsAny<User>(), role)).ReturnsAsync(resultMock);
+
+        //     var phoneParts = phone.Split(' ');
+        //     var token = "CfDJ8KD8LY591fpNkZ3b0mdMEjS%2FwICNeSVZtBH%2BuWjgbM9nRHXVdZ4FfMKoz3IgZCOKrqHJ174qTbTu643CvatPrcm0CL2n7nUZD7WabvBsKinP%2BUH1miQtuGKYMMuVkospyKh1uY9QI1eWqNHqqt77EOMpk9fQdR65DqPFbetshw1zgC7PYptcxP90DSDJ9n85EJ9tfvDtyvjxIL6l7wLwBzEhHazvOSZGVob%2FlbPetI6SU9vH%2FTrHUvinVzf4XtXLOg%3D%3D";
+
+
+        //     _staffRepoMock.Setup(repo => repo.ExistsStaffWithEmailOrPhone(email, phoneParts[0], phoneParts[1])).ReturnsAsync(true);
+        //     _staffRepoMock.Setup(repo => repo.GetStaffWithEmail(email)).ReturnsAsync(staffMock.Object);
+        //     staffMock.Setup(s => s.AddUser(userMock.Object));
+        //     _unitOfWorkMock.Setup(unit => unit.CommitAsync());
+
+        //     _staffRepoMock.Setup(s => s.FindStaffWithEmailOrPhone(email, phoneParts[0], phoneParts[1])).ReturnsAsync(staffMock.Object);
+        //     _userManagerMock.Setup(u => u.GenerateEmailConfirmationTokenAsync(userMock.Object)).ReturnsAsync(token);
+
+        //     // Act
+        //     var result = await _controller.RegisterStaffUser(dtoMock);
+
+        //     // Assert
+        //     Assert.IsType<OkObjectResult>(result); // Verify we get an Ok result
+        //     var okResult = result as OkObjectResult;
+        //     Assert.Equal("The user has been successfully created. Please verify your email to complete the registration.", okResult.Value);
+
+        //     // Verify interactions
+        //     _userManagerMock.Verify(um => um.CreateAsync(It.IsAny<User>(), password), Times.Once);
+        //     _userManagerMock.Verify(um => um.AddToRoleAsync(It.IsAny<User>(), role), Times.Once);
+        //     _staffServiceMock.Verify(staffService => staffService.AddUser(It.IsAny<User>(), email, phone), Times.Once);
+        //     _staffServiceMock.Verify(staffService => staffService.GetProfileEmail(email, phone), Times.Once);
+        //     _userServiceMock.Verify(userService => userService.SendConfirmationEmail(It.IsAny<User>(), email), Times.Once);
+        // }
+
     }
 }

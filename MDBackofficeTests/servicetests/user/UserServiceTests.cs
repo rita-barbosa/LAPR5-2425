@@ -199,7 +199,30 @@ namespace MDBackofficeTests.servicetests.user
         }
 
 
-          [Fact]
+        [Fact]
+        public async Task Login_FiveFailedAttempts_ThrowsBusinessRuleValidationException()
+        {
+            //Arrange
+            var email = "test@email.com";
+            var id = "testid";
+            var password = "NewPass00_d";
+
+            var dtoMock = new LoginUserDto { Email = email, Password = "wrong-password" };
+
+            var userMock = new Mock<User>();
+            userMock.Setup(u => u.Id).Returns(id);
+            userMock.Setup(u => u.UserName).Returns(email);
+            userMock.Setup(u => u.Email).Returns(email);
+            userMock.Setup(u => u.Status).Returns(true);
+            userMock.Setup(u => u.PasswordHash).Returns(password);
+
+            _userManagerMock.Setup(_userManagerMock => _userManagerMock.FindByEmailAsync(email)).ReturnsAsync(userMock.Object);
+            _signinManagerMock.Setup(sm => sm.PasswordSignInAsync(userMock.Object, dtoMock.Password, false, true)).ReturnsAsync(SignInResult.Failed);
+
+            await Assert.ThrowsAsync<BusinessRuleValidationException>(() => _userService.Login(dtoMock));        
+        }
+
+        [Fact]
         public async Task CreateStaffUserAsync_ReturnsUser()
         {
             // Arrange

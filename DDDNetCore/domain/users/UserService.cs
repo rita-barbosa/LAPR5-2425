@@ -264,7 +264,7 @@ namespace DDDNetCore.Domain.Users
             await SendEmail(email, "Update Contact Information Confirmation", body);
         }
 
-        public async Task SendConfirmationEmail(User user, string email)
+        public virtual async Task SendConfirmationEmail(User user, string email)
         {
             string token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
             string confirmationLink = await ConfigureUrlConfirmation(token, user);
