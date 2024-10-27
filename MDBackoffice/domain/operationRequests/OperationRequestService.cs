@@ -101,7 +101,7 @@ namespace MDBackoffice.Domain.OperationRequest
         }
 
 
-        public async Task<OperationRequestDto> UpdateAsync(UpdateOperationRequestDto dto)
+        public virtual async Task<OperationRequestDto> UpdateAsync(UpdateOperationRequestDto dto)
         {
             var opRequest = await _repo.GetByIdAsync(new OperationRequestId(dto.Id));
 
@@ -205,7 +205,7 @@ namespace MDBackoffice.Domain.OperationRequest
             }
         }
 
-        public async Task<bool> CheckDoctorIsRequestingDoctor(string? userEmail, string id)
+        public virtual async Task<bool> CheckDoctorIsRequestingDoctor(string? userEmail, string id)
         {
 
             var request = await GetByIdAsync(new OperationRequestId(id));
@@ -273,7 +273,7 @@ namespace MDBackoffice.Domain.OperationRequest
             return true;
         }
 
-        public async Task<ActionResult<IEnumerable<OperationRequestDto>>> GetAllFromDoctorAsysnc(string userEmail)
+        public virtual async Task<ActionResult<IEnumerable<OperationRequestDto>>> GetAllFromDoctorAsysnc(string userEmail)
         {
             User user = await _userService.FindByEmailAsync(userEmail);
             if (user == null)

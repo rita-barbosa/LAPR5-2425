@@ -87,7 +87,7 @@ namespace MDBackoffice.Infrastructure.OperationRequests
             return result;
         }
 
-        public virtual async Task<List<OperationRequest>> GetAllFromDoctorAsync(string id)
+        public async Task<List<OperationRequest>> GetAllFromDoctorAsync(string id)
         {
             return await _context.OperationRequests
                 .Where(opRequest => opRequest.StaffId != null && opRequest.StaffId.ToString().Equals(id))

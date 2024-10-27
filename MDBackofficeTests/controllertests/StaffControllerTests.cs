@@ -143,6 +143,9 @@ namespace MDBackofficeTests.controllertests
             Assert.Equal(dtoResult.SpecializationId, returnedStaff.SpecializationId);
         }
 
+
+
+
         [Fact]
         public async Task GetStaffProfiles_ReturnsStaffDtoList()
         {
@@ -222,5 +225,27 @@ namespace MDBackofficeTests.controllertests
             // Assert
             Assert.IsType<OkObjectResult>(result);
         }
+        
+        [Fact]
+        public async Task ConfirmEmailPatient_ReturnsOkResult()
+        {
+            // Arrange
+            var userId = "valid_user_id";
+            var token = "valid_token";
+            var staffId = "D202400001";
+            var email = "ritabarbosa@email.com";
+
+            var staffMock = new Mock<Staff>("00001", "Portugal, 4570-860, Rua das Oliveiras", "12345", "Rita", "Barbosa", "Rita Barbosa", email, "+351", "987654321", "Doctor", "Orthopedics");
+
+            _service.Setup(service => service.ConfirmEmailStaff(userId,staffId, token))
+                            .Returns(Task.CompletedTask);
+
+            // Act
+            var result = await _controller.ConfirmEmailStaff(userId, staffId, token);
+
+            // Assert
+            var okResult = Assert.IsType<OkObjectResult>(result);
+        }
+
     }
 }

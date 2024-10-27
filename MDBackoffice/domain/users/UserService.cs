@@ -163,7 +163,7 @@ namespace MDBackoffice.Domain.Users
             return await _userManager.FindByIdAsync(userId);
         }
 
-        public virtual async Task<User> FindByEmailAsync(string userEmail)
+        public async Task<User> FindByEmailAsync(string userEmail)
         {
             return await _userManager.FindByEmailAsync(userEmail);
         }
