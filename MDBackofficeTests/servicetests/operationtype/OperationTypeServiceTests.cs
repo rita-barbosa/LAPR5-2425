@@ -102,6 +102,55 @@ namespace MDBackofficeTests.servicetests.operationtype
             }
             _repoMock.Verify(repo => repo.FilterOperationTypes(queryParameters), Times.Once);
         }
+
+
+        [Fact]
+        public async Task InactivateAsync_ReturnsOperationTypeDTO()
+        {
+            // Arrange
+            var operationTypeId = "test type 1";
+             var phasesDto = new List<PhaseDto>
+            {
+                new PhaseDto {
+                            Description = "descrip",
+                            Duration = 25
+                            },
+                new PhaseDto {
+                            Description = "descrip2",
+                            Duration = 50
+                            },
+                new PhaseDto {
+                            Description = "descrip3",
+                            Duration = 25
+                            }
+            };
+
+            var reqStaffDto = new List<RequiredStaffDto>
+            {
+                new RequiredStaffDto{
+                    StaffQuantity = 1,
+                    Function = "doctor",
+                    Specialization = "ortho"
+                }
+            };
+
+            var operationTypeMock = new Mock<OperationType>("test type 1", 100, true, reqStaffDto,phasesDto);
+
+            var expectedDto = new OperationTypeDto {Name ="test type 1",EstimatedDuration = 100, Status = true,RequiredStaff = reqStaffDto,Phases = phasesDto };
+
+            _repoMock.Setup(repo => repo.GetByIdAsync(It.IsAny<OperationTypeId>())).ReturnsAsync(operationTypeMock.Object);
+            _unitOfWorkMock.Setup(u => u.CommitAsync()).ReturnsAsync(1);
+
+            // Act
+            var result = await _service.InactivateAsync(operationTypeId);
+
+            // Assert 
+            Assert.NotNull(result);
+            Assert.Equal(expectedDto.Name, result.Name);
+            Assert.Equal(expectedDto.EstimatedDuration, result.EstimatedDuration);
+            Assert.NotEqual(expectedDto.Status, result.Status);
+        }
+
     }
 }
 

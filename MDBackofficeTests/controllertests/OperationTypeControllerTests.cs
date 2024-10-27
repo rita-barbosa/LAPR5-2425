@@ -110,5 +110,54 @@ namespace MDBackofficeTests.controllertests
         }
 
 
+        [Fact]
+        public async Task RemoveOperationType_ValidId_ReturnsOkResult()
+        {
+            // Arrange
+            var operationTypeId = "test type 1";
+             var phasesDto = new List<PhaseDto>
+            {
+                new PhaseDto {
+                            Description = "descrip",
+                            Duration = 25
+                            },
+                new PhaseDto {
+                            Description = "descrip2",
+                            Duration = 50
+                            },
+                new PhaseDto {
+                            Description = "descrip3",
+                            Duration = 25
+                            }
+            };
+
+            var reqStaffDto = new List<RequiredStaffDto>
+            {
+                new RequiredStaffDto{
+                    StaffQuantity = 1,
+                    Function = "doctor",
+                    Specialization = "ortho"
+                }
+            };
+
+            var operationType = new OperationType("test type 1", 100, true, reqStaffDto,phasesDto);
+
+            var expectedDto = new OperationTypeDto {Name ="test type 1",EstimatedDuration = 100, Status = true,RequiredStaff = reqStaffDto,Phases = phasesDto };
+
+            _repoMock.Setup(repo => repo.GetByIdAsync(new OperationTypeId(operationTypeId))).ReturnsAsync(operationType);
+            _unitOfWorkMock.Setup(u => u.CommitAsync()).ReturnsAsync(1);
+
+            // Act
+            var result = await _controller.RemoveOperationType(operationTypeId);
+
+            // Assert
+            var okResult = Assert.IsType<OkObjectResult>(result.Result);
+            var actualDto = Assert.IsType<OperationTypeDto>(okResult.Value);
+            Assert.Equal(expectedDto.Name, actualDto.Name);
+            Assert.Equal(expectedDto.EstimatedDuration, actualDto.EstimatedDuration);
+            Assert.NotEqual(expectedDto.Status, actualDto.Status);
+        }
+
+
     }
 }
