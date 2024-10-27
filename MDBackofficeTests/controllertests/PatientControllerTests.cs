@@ -15,6 +15,7 @@ using DDDNetCore.Controllers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
+using System.Collections.Generic;
 
 
 namespace MDBackofficeTests.controllertests
@@ -114,6 +115,65 @@ namespace MDBackofficeTests.controllertests
             Assert.Equal(dtoResult.DateBirth, returnedPatient.DateBirth);
             Assert.Equal(dtoResult.PatientId, returnedPatient.PatientId);
         }
+
+        [Fact]
+        public async Task GetPatientProfiles_ReturnsPatientDtoList()
+        {
+            //Arrange
+            List<PatientDto> result = new List<PatientDto>();
+            _service.Setup(p => p.GetAllAsysnc()).ReturnsAsync(result);
+
+            //Act
+            var resultList = _controller.GetPatientProfiles();
+
+            //Assert
+            var okResult = Assert.IsType<ActionResult<IEnumerable<PatientDto>>>(resultList.Result);
+            var returnedPatient = Assert.IsType<List<PatientDto>>(okResult.Value);
+        }
+
+        [Fact]
+        public async Task GetFilteredPatientProfiles_ReturnsPatientDtoList()
+        {
+            // Arrange
+            string firstName = "Duarte";
+            string lastName = "Matos";
+            string email = "exampleemail@gmail.com";
+            string gender = "Male";
+            string date = "2004-12-15";
+            string medicalRecordNumber = "202410000001";
+
+            PatientListingFilterParametersDto listingFilterParametersDto
+                = new PatientListingFilterParametersDto(
+                    firstName,
+                    lastName,
+                    email,
+                    gender,
+                    date,
+                    medicalRecordNumber);
+
+            List<PatientListingFilterParametersDto> listingFilterParametersDtosList = new List<PatientListingFilterParametersDto>
+            {
+                listingFilterParametersDto
+            };
+
+            PatientQueryParametersDto dto = new PatientQueryParametersDto(listingFilterParametersDtosList);
+            var id = "202410000001";
+
+            List<PatientDto> result = new List<PatientDto>();
+            var dtoResult = new PatientDto("Rita Barbosa", "+351 910000000", "ritabarbosa@email.com", "Test, 1234-234, Test Test", "2004-12-15", id);
+
+            result.Add(dtoResult);
+
+            _service.Setup(p => p.FilterPatientProfiles(dto)).ReturnsAsync(result);
+
+            //Act
+            var resultController = await _controller.GetFilteredPatientProfiles(dto);
+
+            //Assert
+            var okResult = Assert.IsType<OkObjectResult>(resultController.Result);
+            var returnedPatient = Assert.IsType<List<PatientDto>>(okResult.Value);
+        }
+
     }
 }
 
