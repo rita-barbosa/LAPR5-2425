@@ -147,6 +147,84 @@ public class PatientServiceTests
             Assert.Equal(dtoResult.PatientId, result.PatientId);
         }
 
+
+    [Fact]
+    public async Task DeletePatientProfile_ReturnsTask()
+    {
+        // Arrange
+        var id = "202410000001";
+        var dtoMock = new EditPatientDto
+        (
+            "Rita Barbosa",
+            "+351 910000000",
+            "ritabarbosa@email.com",
+            "Test, 1234-234, Test Test",
+            "2004-12-15"
+        );
+
+        var patientMock = new Mock<Patient>("first", "last", "first last", "country, 12345, street test", "female", "+123", "12345678", "98765432", "email@email.com", "2000-10-10", "000001");
+        var dtoResult = new PatientDto("Rita Barbosa", "+351 910000000", "ritabarbosa@email.com", "Test, 1234-234, Test Test", "2004-12-15", id);
+
+        _repoMock.Setup(r => r.ExistsPatientWithId(id)).ReturnsAsync(true);
+        _repoMock.Setup(_repoPatMock => _repoPatMock.GetByIdAsync(It.IsAny<MedicalRecordNumber>()))
+            .ReturnsAsync(patientMock.Object);
+
+        patientMock.Setup(p => p.Anonymize()).Returns(true);
+
+        _logServiceMock.Setup(l => l.CreateDeletionLog(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
+            .ReturnsAsync(true);
+
+        _userServiceMock.Setup(u => u.DeleteByIdAsync(patientMock.Object.UserReference)).ReturnsAsync(IdentityResult.Success);
+
+        _unitOfWorkMock.Setup(u => u.CommitAsync()).ReturnsAsync(1);
+
+        // Act
+        await _service.DeletePatientProfile(id);
+
+        // Assert
+        _repoMock.Verify(um => um.ExistsPatientWithId(id), Times.Once);
+        _repoMock.Verify(um => um.GetByIdAsync(new MedicalRecordNumber(id)), Times.Once);
+        _userServiceMock.Verify(um => um.DeleteByIdAsync(patientMock.Object.UserReference), Times.Once);
+        _logServiceMock.Verify(um => um.CreateDeletionLog(patientMock.Object.UserReference, "DDDNetCore.Domain.Users", "Deletion of patient's account."), Times.Once);
+    }
+
+
+    [Fact]
+    public async Task DeletePatientProfile_ReturnsBusinessRuleValidationException()
+    {
+        // Arrange
+        var id = "202410000001";
+        var dtoMock = new EditPatientDto
+        (
+            "Rita Barbosa",
+            "+351 910000000",
+            "ritabarbosa@email.com",
+            "Test, 1234-234, Test Test",
+            "2004-12-15"
+        );
+
+        var patientMock = new Mock<Patient>("first", "last", "first last", "country, 12345, street test", "female", "+123", "12345678", "98765432", "email@email.com", "2000-10-10", "000001");
+
+        var dtoResult = new PatientDto("Rita Barbosa", "+351 910000000", "ritabarbosa@email.com", "Test, 1234-234, Test Test", "2004-12-15", id);
+
+        _repoMock.Setup(r => r.ExistsPatientWithId(id)).ReturnsAsync(true);
+        _repoMock.Setup(_repoPatMock => _repoPatMock.GetByIdAsync(It.IsAny<MedicalRecordNumber>()))
+            .ReturnsAsync(patientMock.Object);
+        
+        patientMock.Setup(p => p.Anonymize()).Returns(false);
+
+        // Act
+        var exception = await Assert.ThrowsAsync<BusinessRuleValidationException>(async () => await _service.DeletePatientProfile(id));
+
+        // Assert
+        Assert.Equal("It was not possible to anonymize the profile.", exception.Message);
+
+        _repoMock.Verify(um => um.ExistsPatientWithId(id), Times.Once);
+        _repoMock.Verify(um => um.GetByIdAsync(new MedicalRecordNumber(id)), Times.Once);
+        _userServiceMock.Verify(um => um.DeleteByIdAsync(It.IsAny<string>()), Times.Never);
+    }
+
+
     [Fact]
     public async Task AnonymizeProfile_ReturnsBool()
     {

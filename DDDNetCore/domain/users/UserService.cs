@@ -203,7 +203,7 @@ namespace DDDNetCore.Domain.Users
 
             return user;
         }
-        public async Task<IdentityResult> DeleteByIdAsync(string userReference)
+        public virtual async Task<IdentityResult> DeleteByIdAsync(string userReference)
         {
             return await _userManager.DeleteAsync(await _userManager.FindByIdAsync(userReference));
         }

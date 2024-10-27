@@ -94,7 +94,7 @@ namespace DDDNetCore.Domain.Patients
             UserReference = null;
         }
 
-        public bool Anonymize()
+        public virtual bool Anonymize()
         {
             try
             {

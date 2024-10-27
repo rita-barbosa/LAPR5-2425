@@ -15,7 +15,6 @@ using DDDNetCore.Controllers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
-using System.Collections.Generic;
 
 
 namespace MDBackofficeTests.controllertests
@@ -26,6 +25,8 @@ namespace MDBackofficeTests.controllertests
         private readonly Mock<IUnitOfWork> _unitOfWorkMock = new Mock<IUnitOfWork>();
         private readonly Mock<IPatientRepository> _repoMock = new Mock<IPatientRepository>();
         private readonly PatientController _controller;
+        private readonly Mock<UserService> _userServiceMock;
+
         public PatientControllerTests()
         {
             Mock<LogService> _logServiceMock = new Mock<LogService>(new Mock<IUnitOfWork>().Object, new Mock<ILogRepository>().Object);
@@ -49,7 +50,7 @@ namespace MDBackofficeTests.controllertests
                                                                new Mock<IAuthenticationSchemeProvider>().Object,
                                                                new Mock<IUserConfirmation<User>>().Object);
 
-            var _userServiceMock = new Mock<UserService>(userManagerMock.Object, roleManagerMock.Object, _logServiceMock.Object,signinManagerMock.Object, _emailServiceMock.Object, _configurationMock.Object, tokenServiceMock.Object);
+            _userServiceMock = new Mock<UserService>(userManagerMock.Object, roleManagerMock.Object, _logServiceMock.Object,signinManagerMock.Object, _emailServiceMock.Object, _configurationMock.Object, tokenServiceMock.Object);
             
             _service = new Mock<PatientService>(_unitOfWorkMock.Object, _logServiceMock.Object, 
                                             _configurationMock.Object, _repoMock.Object, 
@@ -81,6 +82,44 @@ namespace MDBackofficeTests.controllertests
             var createdAtActionResult = Assert.IsType<CreatedAtActionResult>(actionResult.Result);
             Assert.Equal("GetPatientById", createdAtActionResult.ActionName);
         }
+
+        [Fact]
+        public async Task DeletePatientProfile_ReturnsOkResult()
+        {
+            //Arrange
+            var id = "202410000001";
+            var dtoMock = new EditPatientDto
+            (
+                "Rita Barbosa",
+                "+351 910000000",
+                "ritabarbosa@email.com",
+                "Test, 1234-234, Test Test",
+                "2004-12-15"
+            );
+            var dtoId = new IdPassDto(id);
+
+            var patientMock = new Mock<Patient>("first", "last", "first last", "country, 12345, street test", "female", "+123", "12345678", "98765432", "email@email.com", "2000-10-10", "000001");
+            var dtoResult = new PatientDto("Rita Barbosa", "+351 910000000", "ritabarbosa@email.com", "Test, 1234-234, Test Test", "2004-12-15", id);
+
+            _repoMock.Setup(r => r.ExistsPatientWithId(id)).ReturnsAsync(true);
+            _repoMock.Setup(_repoPatMock => _repoPatMock.GetByIdAsync(It.IsAny<MedicalRecordNumber>()))
+            .ReturnsAsync(patientMock.Object);
+
+            patientMock.Setup(p => p.Anonymize()).Returns(true);
+            _userServiceMock.Setup(u => u.DeleteByIdAsync(patientMock.Object.UserReference)).ReturnsAsync(IdentityResult.Success);
+
+            _unitOfWorkMock.Setup(u => u.CommitAsync()).ReturnsAsync(1);
+
+
+            //Act
+            var result = await _controller.DeletePatientProfile(dtoId);
+
+            //Assert
+            Assert.IsType<OkObjectResult>(result);
+            _repoMock.Verify(um => um.ExistsPatientWithId(id), Times.Once);
+            _repoMock.Verify(um => um.GetByIdAsync(new MedicalRecordNumber(id)), Times.Once);
+            _userServiceMock.Verify(um => um.DeleteByIdAsync(patientMock.Object.UserReference), Times.Once);
+    }
 
         [Fact]
         public async Task UpdateAsync_ReturnsOkPatientDto()

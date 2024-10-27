@@ -15,7 +15,7 @@ namespace DDDNetCore.Domain.Logs
             this._repo = repo;
         }
         
-        public async Task<bool> CreateDeletionLog(string objectReference, string objectClass, string description)
+        public virtual async Task<bool> CreateDeletionLog(string objectReference, string objectClass, string description)
         {
             try
             {
