@@ -29,6 +29,7 @@ namespace MDBackofficeTests.controllertests
         private readonly Mock<UserManager<User>> _userManagerMock;
         private readonly Mock<IConfiguration> _configurationMock;
         private readonly Mock<TokenService> _tokenServiceMock;
+        private readonly Mock<PatientService> _patientServiceMock;
 
 
         public UserControllerTests() {
@@ -68,7 +69,7 @@ namespace MDBackofficeTests.controllertests
                 _configurationMock.Object,
                 _tokenServiceMock.Object
             );
-            var _patientServiceMock = new Mock<PatientService>(_unitOfWorkMock.Object, _logServiceMock.Object, _configurationMock.Object, new Mock<IPatientRepository>().Object,
+            _patientServiceMock = new Mock<PatientService>(_unitOfWorkMock.Object, _logServiceMock.Object, _configurationMock.Object, new Mock<IPatientRepository>().Object,
                     _userServiceMock.Object, _emailServiceMock.Object);
             var _staffServiceMock = new Mock<StaffService>(_unitOfWorkMock.Object, _logServiceMock.Object, new Mock<IStaffRepository>().Object, new Mock<ISpecializationRepository>().Object,
                     _userManagerMock.Object, _configurationMock.Object, _emailServiceMock.Object, _userServiceMock.Object);
@@ -205,6 +206,29 @@ namespace MDBackofficeTests.controllertests
 
             //Assert
             Assert.IsType<BadRequestObjectResult>(result);
+        }
+
+        [Fact]
+        public async Task ConfirmPatientAccountDeletionNotProfile_SuccessReturnsOk()
+        {
+            // Arrange
+            var userId = "testUserId";
+            var token = "validToken";
+            var userEmail = "user@example.com";
+
+            _userServiceMock.Setup(u => u.UserExistsById(userId)).ReturnsAsync(true);
+            _tokenServiceMock.Setup(t => t.TokenExistsById(token)).ReturnsAsync(true);
+            _tokenServiceMock.Setup(t => t.IsTokenExpired(token)).ReturnsAsync(false);
+            _tokenServiceMock.Setup(t => t.IsTokenActive(token)).ReturnsAsync(true);
+            _userServiceMock.Setup(u => u.DeletePatientAccount(userId, token)).ReturnsAsync(userEmail);
+
+            // Act
+            var result = await _controller.ConfirmPatientAccountDeletionNotProfile(userId, token);
+
+            // Assert
+            _patientServiceMock.Verify(p => p.AnonymizeProfile(userEmail), Times.Once);
+            Assert.IsType<OkObjectResult>(result);
+            Assert.Equal("Patient account successfully deleted!\nSome of your non-identifiable data will be retained, as per our GDPR policies.", ((OkObjectResult)result).Value);
         }
     }
 }
