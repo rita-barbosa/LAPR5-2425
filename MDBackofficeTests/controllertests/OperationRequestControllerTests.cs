@@ -14,7 +14,6 @@ using MDBackoffice.Infrastructure.Emails;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.JsonPatch.Operations;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -125,7 +124,7 @@ namespace MDBackofficeTests.controllertests
                 }
             };
 
-            var operationTypeMock = new Mock<DDDNetCore.Domain.OperationTypes.OperationType>(opTyId, 100, true, reqStaff, phases);
+            var operationTypeMock = new Mock<OperationType>(opTyId, 100, true, reqStaff, phases);
 
 
 
@@ -205,7 +204,7 @@ namespace MDBackofficeTests.controllertests
                 }
             };
 
-            var operationTypeMock = new Mock<DDDNetCore.Domain.OperationTypes.OperationType>(opTyId, 100, true, reqStaff,phases);
+            var operationTypeMock = new Mock<OperationType>(opTyId, 100, true, reqStaff,phases);
 
             var operationRequests = new List<Mock<OperationRequest>>
             {
