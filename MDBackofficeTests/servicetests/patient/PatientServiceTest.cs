@@ -11,6 +11,7 @@ using Microsoft.Extensions.Options;
 using Moq;
 using Xunit;
 using IConfiguration = Microsoft.Extensions.Configuration.IConfiguration;
+using DDDNetCore.Infrastructure;
 
 namespace MDBackofficeTests.servicetests.patient;
 
@@ -99,5 +100,36 @@ public class PatientServiceTests
         _repoMock.Verify(r => r.AddAsync(It.IsAny<Patient>()), Times.Once);
         _unitOfWorkMock.Verify(u => u.CommitAsync(), Times.Once);
 
-       } 
+       }
+
+       [Fact]
+       public async Task AnonymizeProfile_ReturnsBool()
+       {
+        //Arrange
+        var dtoMock = new CreatingPatientDto
+            ("Rita",
+                "Barbosa",
+                "Portugal, 4590-850, Rua da Sardinha",
+                "+351 910000000",
+                "ritabarbosa@email.com",
+                "+351 912345678",
+                "Female",
+                "2004-12-15");
+
+        _unitOfWorkMock.Setup(u => u.CommitAsync()).ReturnsAsync(1);
+
+        var service = new PatientService(_unitOfWorkMock.Object, _logServiceMock.Object,
+                                            _configurationMock.Object, _repoMock.Object,
+                                            _userServiceMock.Object, _emailServiceMock.Object);
+
+        //Act
+        var profile = await service.CreatePatientProfile(dtoMock);
+        var result = await service.AnonymizeProfile(profile.Email);
+
+        //Assert
+        Assert.NotNull(result);
+        Assert.Equal(false, result);
+       }
+
+
 }

@@ -189,5 +189,34 @@ namespace MDBackofficeTests.servicetests.usertests
             
             await Assert.ThrowsAsync<BusinessRuleValidationException>(() => _userService.Login(dtoMock));        
         }
+
+        [Fact]
+        public async Task DeletePatientAccount_Success()
+        {
+            //Arrange
+            var email = "test@email.com";
+            var id = "testid";
+            var password = "NewPass00_d";
+            var token = Guid.NewGuid().ToString();
+
+            var userMock = new Mock<User>();
+
+            userMock.Setup(u => u.Id).Returns(id);
+            userMock.Setup(u => u.UserName).Returns(email);
+            userMock.Setup(u => u.Email).Returns(email);
+
+            _userManagerMock.Setup(_userManagerMock => _userManagerMock.FindByIdAsync(id)).ReturnsAsync(userMock.Object);
+            _tokenServiceMock.Setup(t => t.InactivateAsync(token)).ReturnsAsync(new TokenDto());
+
+            //Act
+            var result = await _userService.DeleteAsync(id);
+
+            //Assert
+            Assert.NotNull(result);
+            Assert.IsType<string>(result);
+            Assert.Equal(email, result);
+ 
+        }
+
     }
 }
