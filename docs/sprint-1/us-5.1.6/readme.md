@@ -1,21 +1,17 @@
 # US 5.1.6
 
 <!-- TOC -->
-* [US 5.1.6](#us-516)
-  * [1. Context](#1-context)
-  * [2. Requirements](#2-requirements)
-  * [3. Analysis](#3-analysis)
-  * [4. Design](#4-design)
-    * [4.1. Realization](#41-realization)
-    * [Process View](#process-view)
-      * [Level 1](#level-1)
-      * [Level 2](#level-2)
-      * [Level 3](#level-3)
-    * [4.3. Applied Patterns](#43-applied-patterns)
-    * [4.4. Tests](#44-tests)
-  * [5. Implementation](#5-implementation)
-  * [6. Integration/Demonstration](#6-integrationdemonstration)
-  * [7. Observations](#7-observations)
+- [US 5.1.6](#us-516)
+  - [1. Context](#1-context)
+  - [2. Requirements](#2-requirements)
+  - [3. Analysis](#3-analysis)
+  - [4. Design](#4-design)
+    - [4.1. Realization](#41-realization)
+    - [Process View](#process-view)
+      - [Level 1](#level-1)
+      - [Level 2](#level-2)
+      - [Level 3](#level-3)
+    - [4.3. Applied Patterns](#43-applied-patterns)
 <!-- TOC -->
 
 ## 1. Context
@@ -123,19 +119,3 @@ it's diagram was deemed irrelevant.
 >
 > These services act as a Facade to simplify interaction with lower-level components like repositories. The Controller
 > interacts with these service facades, keeping the complexity hidden from the higher layers.
-
-### 4.4. Tests
-
-_// To do - layout still in development //_
-
-## 5. Implementation
-
-_// To do //_
-
-## 6. Integration/Demonstration
-
-_// To do //_
-
-## 7. Observations
-
-_// To do //_

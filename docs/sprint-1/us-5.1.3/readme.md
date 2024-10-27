@@ -1,20 +1,20 @@
 # US 5.1.3
 
 <!-- TOC -->
-* [US 5.1.3](#us-513)
-  * [1. Context](#1-context)
-  * [2. Requirements](#2-requirements)
-  * [3. Analysis](#3-analysis)
-    * [System Sequence Diagram](#system-sequence-diagram)
-    * [Domain Model](#domain-model)
-  * [4. Design](#4-design)
-    * [4.1. Realization](#41-realization)
-    * [4.2. Class Diagram](#42-class-diagram)
-    * [4.3. Applied Patterns](#43-applied-patterns)
-    * [4.4. Tests](#44-tests)
-  * [5. Implementation](#5-implementation)
-  * [6. Integration/Demonstration](#6-integrationdemonstration)
-  * [7. Observations](#7-observations)
+- [US 5.1.3](#us-513)
+  - [1. Context](#1-context)
+  - [2. Requirements](#2-requirements)
+  - [3. Analysis](#3-analysis)
+    - [System Sequence Diagram](#system-sequence-diagram)
+    - [Domain Model](#domain-model)
+  - [4. Design](#4-design)
+      - [Process View](#process-view)
+      - [4.1.1 Process View - Admin](#411-process-view---admin)
+        - [Create Staff Profile](#create-staff-profile)
+        - [Create User](#create-user)
+      - [4.1.2 Process View - Staff](#412-process-view---staff)
+    - [4.1. Domain Model Excerpt](#41-domain-model-excerpt)
+    - [4.2. Applied Patterns](#42-applied-patterns)
 <!-- TOC -->
 
 
@@ -140,19 +140,3 @@ However level 3 is shown below.
 >
 > These services function as a facade, simplifying the interaction with lower-level components such as repositories. 
 > The controller communicates with these service facades, concealing the complexity from the upper layers.
-
-### 4.3. Tests
-
-_// To do - layout still in development //_ 
-
-## 5. Implementation
-
-_// To do //_
-
-## 6. Integration/Demonstration
-
-_// To do //_
-
-## 7. Observations
-
-_// To do //_

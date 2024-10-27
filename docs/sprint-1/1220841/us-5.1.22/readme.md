@@ -86,24 +86,3 @@ The diagrams can be found in the [team decision views folder](../../team-decisio
 #### Physical View
 
 The diagrams can be found in the [team decision views folder](../../team-decisions/views/general-views.md#4-physical-view).
-
-### 4.3. Applied Patterns
-
-_// To do //_
-
-### 4.4. Tests
-
-_// To do - layout still in development //_ 
-
-
-## 5. Implementation
-
-_// To do //_
-
-## 6. Integration/Demonstration
-
-_// To do //_
-
-## 7. Observations
-
-_// To do //_

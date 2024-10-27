@@ -1,6 +1,6 @@
 @startuml
 
-title "US 5.1.6 - Process View [Level 3]"
+title "US 5.1.7 - Process View [Level 3]"
 
 autonumber
 participant "UserRoute" as ROUTE <<route>>
@@ -8,9 +8,10 @@ participant "LoginUserDto" as DTO <<dto>>
 participant "UserController" as CTRL <<controller>>
 participant "UserService" as SVC <<service>>
 participant "UserManager" as IEL <<service>>
+participant "SigninManager" as SIM <<service>>
 participant "HttpContext" as HC
 
-[o-> ROUTE: GET /api/login
+[o-> ROUTE: POST(json) /api/Login
 activate ROUTE
 
 ROUTE -> DTO **: create(json)
@@ -28,15 +29,25 @@ IEL --> SVC : user
 deactivate IEL
 
 alt userStatus == true
-    SVC -> IEL: CheckPasswordAsync(user, password)
+    SVC -> IEL: IsLockedOutAsync()
     activate IEL
     deactivate IEL
 
+    alt lockedOut == false
+
+    SVC -> SIM : PasswordSignInAsync(user,password,isPersistent,lockoutOnFailure)
+    activate SIM
+
+    SIM --> SVC: result
+    deactivate SIM
+    
     SVC -> SVC: GenerateJwtToken(user)
     activate SVC
 
     SVC --> SVC: token
     deactivate SVC
+    |||
+    end alt
     |||
 end alt
 

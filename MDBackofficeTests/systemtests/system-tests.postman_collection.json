@@ -1,0 +1,5142 @@
+{
+	"info": {
+		"_postman_id": "e09f2908-7b40-4308-aa64-584c3f863f19",
+		"name": "api-sprint1-tests",
+		"description": "System Tests:\n\n- Done by: 1220841\n    \n    - us-5.1.2\n        \n    - us-5.1.7\n        \n    - us-5.1.9\n        \n    - us-5.1.13\n        \n    - us-5.1.16\n        \n    - us-5.1.23\n        \n- Done by: 1221933\n    \n    - us-5.1.4\n        \n    - us-5.1.8\n        \n    - us-5.1.12\n        \n    - us-5.1.19\n        \n    - us-5.1.22",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "38849391",
+		"_collection_link": "https://survivivers.postman.co/workspace/SURVIVIVERS-Workspace~e30004ea-85e0-4928-8908-3f5a367e5e7d/collection/38849391-e09f2908-7b40-4308-aa64-584c3f863f19?action=share&source=collection_link&creator=38849391"
+	},
+	"item": [
+		{
+			"name": "1220841",
+			"item": [
+				{
+					"name": "us-5.1.2",
+					"item": [
+						{
+							"name": "setup",
+							"item": [
+								{
+									"name": "Create Backoffice User",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Successful create staff request\", function () {\r",
+													"    pm.expect(pm.response.code).to.be.oneOf([200]);\r",
+													"});"
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{auth-token}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n  \"licenseNumber\": \"12645\",\r\n  \"firstName\": \"Ana\",\r\n  \"lastName\": \"Guterres\",\r\n  \"phone\": \"+351 900000002\",\r\n  \"email\": \"ritabarbosa26.rb@gmail.com\",\r\n  \"address\" : \"Portugal, 4590-850, Rua da Sardinha\",\r\n  \"function\": \"doctor\",\r\n  \"specializationId\": \"Orthopaedics\"\r\n} ",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "https://localhost:5001/api/Staff/Create-StaffProfile",
+											"protocol": "https",
+											"host": [
+												"localhost"
+											],
+											"port": "5001",
+											"path": [
+												"api",
+												"Staff",
+												"Create-StaffProfile"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Register Backoffice User",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Successful staff user register request\", function () {\r",
+													"    pm.expect(pm.response.code).to.be.oneOf([200]);\r",
+													"});"
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{auth-token}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n  \"email\": \"ritabarbosa26.rb@gmail.com\",\r\n  \"password\": \"Abcde1245!\",\r\n  \"role\": \"Doctor\",\r\n  \"phone\": \"+351 900000002\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "https://localhost:5001/api/create-staff",
+											"protocol": "https",
+											"host": [
+												"localhost"
+											],
+											"port": "5001",
+											"path": [
+												"api",
+												"create-staff"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Activate Backoffice User",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Successful activate staff user request\", function () {\r",
+													"    pm.expect(pm.response.code).to.be.oneOf([200]);\r",
+													"});"
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"request": {
+										"auth": {
+											"type": "noauth"
+										},
+										"method": "PUT",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"newpassword\" :  \"Abcde12345!\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": ""
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Login Backoffice User",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 200\", function () {\r",
+													"    pm.response.to.have.status(200);\r",
+													"});\r",
+													"\r",
+													"var jsonResponse = pm.response.json();\r",
+													"var token = jsonResponse.token; \r",
+													"\r",
+													"pm.collectionVariables.set(\"auth-token-doctor\", token);"
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"request": {
+										"auth": {
+											"type": "noauth"
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": " {\r\n   \"email\": \"ritabarbosa26.rb@gmail.com\",\r\n  \"password\": \"Abcde12345!\"\r\n }",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "https://localhost:5001/api/Login",
+											"protocol": "https",
+											"host": [
+												"localhost"
+											],
+											"port": "5001",
+											"path": [
+												"api",
+												"Login"
+											]
+										}
+									},
+									"response": []
+								}
+							],
+							"description": "Data that must be available in the database to fulfill the user story requirements."
+						},
+						{
+							"name": "Send Reset Password Email",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Successful send reset password email request\", function () {\r",
+											"    pm.expect(pm.response.code).to.be.oneOf([200]);\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"url": {
+									"raw": "https://localhost:5001/api/send-passwordemail?email=ritabarbosa26.rb@gmail.com",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "5001",
+									"path": [
+										"api",
+										"send-passwordemail"
+									],
+									"query": [
+										{
+											"key": "email",
+											"value": "ritabarbosa26.rb@gmail.com"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Reset Password",
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"newpassword\" :  \"Abcde12345!\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": ""
+								}
+							},
+							"response": []
+						}
+					],
+					"description": "This is the folder for the system tests of us-5.1.2.\n\nIt's important to notice that it is necesssary to do a setup of some information before.\n\n---\n\nImplemented by: Ana Guterres (1221933)  \nTested by: Rita Barbosa (1220841)"
+				},
+				{
+					"name": "us-5.1.7",
+					"item": [
+						{
+							"name": "setup",
+							"item": [
+								{
+									"name": "Create Patient Profile",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Successful POST request\", function () {\r",
+													"    pm.expect(pm.response.code).to.be.oneOf([201, 202]);\r",
+													"});\r",
+													"\r",
+													""
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{auth-token}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n  \"firstName\": \"Rita\",\r\n  \"lastName\": \"Barbosa\",\r\n  \"phone\": \"+351 910000000\",\r\n  \"email\": \"ritabarbosa2604@gmail.com\",\r\n  \"address\" : \"Portugal, 4590-850, Rua da Sardinha\",\r\n  \"emergencyContact\": \"+351 9100087827\",\r\n  \"gender\": \"Female\",\r\n  \"dateBirth\": \"20/10/2004\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "https://localhost:5001/api/Patient/Create-PatientProfile",
+											"protocol": "https",
+											"host": [
+												"localhost"
+											],
+											"port": "5001",
+											"path": [
+												"api",
+												"Patient",
+												"Create-PatientProfile"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Register Patient User",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Successful patient user register request\", function () {\r",
+													"    pm.expect(pm.response.code).to.be.oneOf([200]);\r",
+													"});"
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"request": {
+										"auth": {
+											"type": "noauth"
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n  \"email\": \"ritabarbosa2604@gmail.com\",\r\n  \"password\": \"Abcde12345!\",\r\n  \"phone\": \"+351 910000000\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "https://localhost:5001/api/create-patient",
+											"protocol": "https",
+											"host": [
+												"localhost"
+											],
+											"port": "5001",
+											"path": [
+												"api",
+												"create-patient"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Activate Patient Account",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Successful activate patient user request\", function () {\r",
+													"    pm.expect(pm.response.code).to.be.oneOf([200]);\r",
+													"});"
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"request": {
+										"auth": {
+											"type": "noauth"
+										},
+										"method": "PUT",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": ""
+										}
+									},
+									"response": []
+								}
+							],
+							"description": "Data that must be available in the database to fulfill the user story requirements."
+						},
+						{
+							"name": "Login-Patient-User",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"var jsonResponse = pm.response.json();\r",
+											"var token = jsonResponse.token; \r",
+											"\r",
+											"pm.collectionVariables.set(\"auth-token-patient\", token);"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": " {\r\n   \"email\": \"ritabarbosa2604@gmail.com\",\r\n  \"password\": \"Abcde12345!\"\r\n }",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://localhost:5001/api/Login",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "5001",
+									"path": [
+										"api",
+										"Login"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"description": "This is the folder for the system tests of us-5.1.7.\n\nIt's important to notice that it is necesssary to do a setup of some information before.\n\n---\n\nImplemented by: Ana Guterres (1221933)  \nTested by: Rita Barbosa (1220841)"
+				},
+				{
+					"name": "us-5.1.9",
+					"item": [
+						{
+							"name": "setup",
+							"item": [
+								{
+									"name": "admin",
+									"item": [
+										{
+											"name": "Register-Admin-User",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"Successful POST request\", function () {\r",
+															"    pm.expect(pm.response.code).to.be.oneOf([200]);\r",
+															"});"
+														],
+														"type": "text/javascript",
+														"packages": {}
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "noauth"
+												},
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\r\n  \"email\": \"ritabarbosa26@gmail.com\",\r\n  \"password\": \"Abcde12345!\",\r\n  \"role\": \"Admin\",\r\n  \"phone\": \"+351 919919919\"\r\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "https://localhost:5001/api/create-admin",
+													"protocol": "https",
+													"host": [
+														"localhost"
+													],
+													"port": "5001",
+													"path": [
+														"api",
+														"create-admin"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "Login-Admin-User",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"Status code is 200\", function () {\r",
+															"    pm.response.to.have.status(200);\r",
+															"});\r",
+															"\r",
+															"var jsonResponse = pm.response.json();\r",
+															"var token = jsonResponse.token; \r",
+															"\r",
+															"pm.collectionVariables.set(\"auth-token\", token);"
+														],
+														"type": "text/javascript",
+														"packages": {}
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "noauth"
+												},
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": " {\r\n  \"email\": \"ritabarbosa26@gmail.com\",\r\n  \"password\": \"Abcde12345!\"\r\n }",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "https://localhost:5001/api/Login",
+													"protocol": "https",
+													"host": [
+														"localhost"
+													],
+													"port": "5001",
+													"path": [
+														"api",
+														"Login"
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								},
+								{
+									"name": "patient",
+									"item": [
+										{
+											"name": "Create Patient Profile",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"Successful POST request\", function () {\r",
+															"    pm.expect(pm.response.code).to.be.oneOf([201, 202]);\r",
+															"});\r",
+															"\r",
+															""
+														],
+														"type": "text/javascript",
+														"packages": {}
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "bearer",
+													"bearer": [
+														{
+															"key": "token",
+															"value": "{{auth-token}}",
+															"type": "string"
+														}
+													]
+												},
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\r\n  \"firstName\": \"Rita\",\r\n  \"lastName\": \"Barbosa\",\r\n  \"phone\": \"+351 910000000\",\r\n  \"email\": \"ritabarbosa2604@gmail.com\",\r\n  \"address\" : \"Portugal, 4590-850, Rua da Sardinha\",\r\n  \"emergencyContact\": \"+351 9100087827\",\r\n  \"gender\": \"Female\",\r\n  \"dateBirth\": \"20/10/2004\"\r\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "https://localhost:5001/api/Patient/Create-PatientProfile",
+													"protocol": "https",
+													"host": [
+														"localhost"
+													],
+													"port": "5001",
+													"path": [
+														"api",
+														"Patient",
+														"Create-PatientProfile"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "Register Patient User",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"Successful patient user register request\", function () {\r",
+															"    pm.expect(pm.response.code).to.be.oneOf([200]);\r",
+															"});"
+														],
+														"type": "text/javascript",
+														"packages": {}
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "noauth"
+												},
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\r\n  \"email\": \"ritabarbosa2604@gmail.com\",\r\n  \"password\": \"Abcde12345!\",\r\n  \"phone\": \"+351 910000000\"\r\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "https://localhost:5001/api/create-patient",
+													"protocol": "https",
+													"host": [
+														"localhost"
+													],
+													"port": "5001",
+													"path": [
+														"api",
+														"create-patient"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "Activate Patient Account",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"Successful activate patient user request\", function () {\r",
+															"    pm.expect(pm.response.code).to.be.oneOf([200]);\r",
+															"});"
+														],
+														"type": "text/javascript",
+														"packages": {}
+													}
+												}
+											],
+											"request": {
+												"method": "PUT",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": ""
+												}
+											},
+											"response": []
+										}
+									]
+								}
+							],
+							"description": "Data that must be available in the database to fulfill the user story requirements."
+						},
+						{
+							"name": "Edit Patient Profile",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Successful edit patient profile request\", function () {\r",
+											"    pm.expect(pm.response.code).to.be.oneOf([200]);\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{auth-token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"name\" : \"Joaquina Guterres\",\r\n  \"phone\": \"+351 911333444\",  \r\n  \"email\": \"ritabfbarbosa@gmail.com\",\r\n  \"address\" : \"Portugal, 1234-098, Rua do Salgado\",\r\n  \"dateBirth\" : \"24-10-2005\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://localhost:5001/api/Patient/202410000001",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "5001",
+									"path": [
+										"api",
+										"Patient",
+										"202410000001"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"description": "This is the folder for the system tests of us-5.1.9.\n\nIt's important to notice that it is necesssary to do a setup of some information before.\n\n---\n\nImplemented by: Ana Guterres (1221933)  \nTested by: Rita Barbosa (1220841)"
+				},
+				{
+					"name": "us-5.1.13",
+					"item": [
+						{
+							"name": "setup",
+							"item": [
+								{
+									"name": "admin",
+									"item": [
+										{
+											"name": "Register-Admin-User",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"Successful POST request\", function () {\r",
+															"    pm.expect(pm.response.code).to.be.oneOf([200]);\r",
+															"});"
+														],
+														"type": "text/javascript",
+														"packages": {}
+													}
+												}
+											],
+											"request": {
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\r\n  \"email\": \"ritabarbosa26@gmail.com\",\r\n  \"password\": \"Abcde12345!\",\r\n  \"role\": \"Admin\",\r\n  \"phone\": \"+351 919919919\"\r\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "https://localhost:5001/api/create-admin",
+													"protocol": "https",
+													"host": [
+														"localhost"
+													],
+													"port": "5001",
+													"path": [
+														"api",
+														"create-admin"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "Login-Admin-User",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"Status code is 200\", function () {\r",
+															"    pm.response.to.have.status(200);\r",
+															"});\r",
+															"\r",
+															"var jsonResponse = pm.response.json();\r",
+															"var token = jsonResponse.token; \r",
+															"\r",
+															"pm.collectionVariables.set(\"auth-token\", token);"
+														],
+														"type": "text/javascript",
+														"packages": {}
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "noauth"
+												},
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": " {\r\n  \"email\": \"ritabarbosa26@gmail.com\",\r\n  \"password\": \"Abcde12345!\"\r\n }",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "https://localhost:5001/api/Login",
+													"protocol": "https",
+													"host": [
+														"localhost"
+													],
+													"port": "5001",
+													"path": [
+														"api",
+														"Login"
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								},
+								{
+									"name": "staff",
+									"item": [
+										{
+											"name": "Create Staff Profile",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"Successful create staff request\", function () {\r",
+															"    pm.expect(pm.response.code).to.be.oneOf([200]);\r",
+															"});"
+														],
+														"type": "text/javascript",
+														"packages": {}
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "bearer",
+													"bearer": [
+														{
+															"key": "token",
+															"value": "{{auth-token}}",
+															"type": "string"
+														}
+													]
+												},
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\r\n  \"licenseNumber\": \"12645\",\r\n  \"firstName\": \"Ana\",\r\n  \"lastName\": \"Guterres\",\r\n  \"phone\": \"+351 900000002\",\r\n  \"email\": \"ritabarbosa26.rb@gmail.com\",\r\n  \"address\" : \"Portugal, 4590-850, Rua da Sardinha\",\r\n  \"function\": \"doctor\",\r\n  \"specializationId\": \"Orthopaedics\"\r\n} ",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "https://localhost:5001/api/Staff/Create-StaffProfile",
+													"protocol": "https",
+													"host": [
+														"localhost"
+													],
+													"port": "5001",
+													"path": [
+														"api",
+														"Staff",
+														"Create-StaffProfile"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "Register-Doctor-User",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"Successful staff user register request\", function () {\r",
+															"    pm.expect(pm.response.code).to.be.oneOf([200]);\r",
+															"});"
+														],
+														"type": "text/javascript",
+														"packages": {}
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "bearer",
+													"bearer": [
+														{
+															"key": "token",
+															"value": "{{auth-token}}",
+															"type": "string"
+														}
+													]
+												},
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\r\n  \"email\": \"ritabarbosa26.rb@gmail.com\",\r\n  \"password\": \"Abcde12345!\",\r\n  \"role\": \"Doctor\",\r\n  \"phone\": \"+351 900000002\"\r\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "https://localhost:5001/api/create-staff",
+													"protocol": "https",
+													"host": [
+														"localhost"
+													],
+													"port": "5001",
+													"path": [
+														"api",
+														"create-staff"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "Activate Staff Account",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"Successful activate staff user request\", function () {\r",
+															"    pm.expect(pm.response.code).to.be.oneOf([200]);\r",
+															"});"
+														],
+														"type": "text/javascript",
+														"packages": {}
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "noauth"
+												},
+												"method": "PUT",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\r\n    \"newpassword\" :  \"Abcde12345!\"\r\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": ""
+												}
+											},
+											"response": []
+										}
+									]
+								}
+							],
+							"description": "Data that must be available in the database to fulfill the user story requirements."
+						},
+						{
+							"name": "Edit Staff Profile",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Successful edit of staff profile request\", function () {\r",
+											"    pm.expect(pm.response.code).to.be.oneOf([202]);\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{auth-token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"staffId\": \"D202400001\",\r\n  \"phone\": \"+351 913388914\",\r\n  \"email\": \"newemail2@gmail.com\",\r\n  \"slots\": [\r\n    {\r\n       \"startDate\": \"23-10-2024\",\r\n       \"endDate\": \"24-10-2024\",\r\n       \"startTime\": \"20:00\",\r\n       \"endTime\": \"05:00\"\r\n    },\r\n    {\r\n        \"startDate\": \"25-11-2024\",\r\n       \"endDate\": \"29-11-2024\",\r\n       \"startTime\": \"10:00\",\r\n       \"endTime\": \"08:00\"\r\n    }\r\n  ]\r\n\r\n} ",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://localhost:5001/api/Staff/D202400001",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "5001",
+									"path": [
+										"api",
+										"Staff",
+										"D202400001"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"description": "This is the folder for the system tests of us-5.1.13.\n\nIt's important to notice that it is necesssary to do a setup of some information before.\n\n---\n\nImplemented by: Ana Guterres (1221933)  \nTested by: Rita Barbosa (1220841)"
+				},
+				{
+					"name": "us-5.1.16",
+					"item": [
+						{
+							"name": "setup",
+							"item": [
+								{
+									"name": "admin",
+									"item": [
+										{
+											"name": "Register-Admin-User Copy",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"Successful POST request\", function () {\r",
+															"    pm.expect(pm.response.code).to.be.oneOf([200]);\r",
+															"});"
+														],
+														"type": "text/javascript",
+														"packages": {}
+													}
+												}
+											],
+											"request": {
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\r\n  \"email\": \"ritabarbosa26@gmail.com\",\r\n  \"password\": \"Abcde12345!\",\r\n  \"role\": \"Admin\",\r\n  \"phone\": \"+351 919919919\"\r\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "https://localhost:5001/api/create-admin",
+													"protocol": "https",
+													"host": [
+														"localhost"
+													],
+													"port": "5001",
+													"path": [
+														"api",
+														"create-admin"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "Login-AdminUser Copy",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"Status code is 200\", function () {\r",
+															"    pm.response.to.have.status(200);\r",
+															"});\r",
+															"\r",
+															"var jsonResponse = pm.response.json();\r",
+															"var token = jsonResponse.token; \r",
+															"\r",
+															"pm.collectionVariables.set(\"auth-token\", token);"
+														],
+														"type": "text/javascript",
+														"packages": {}
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "noauth"
+												},
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": " {\r\n  \"email\": \"ritabarbosa26@gmail.com\",\r\n  \"password\": \"Abcde12345!\"\r\n }",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "https://localhost:5001/api/Login",
+													"protocol": "https",
+													"host": [
+														"localhost"
+													],
+													"port": "5001",
+													"path": [
+														"api",
+														"Login"
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								},
+								{
+									"name": "operation-type",
+									"item": [
+										{
+											"name": "specializations",
+											"item": [
+												{
+													"name": "Create-Orthopaedics",
+													"event": [
+														{
+															"listen": "test",
+															"script": {
+																"exec": [
+																	"pm.test(\"Successful POST request\", function () {\r",
+																	"    pm.expect(pm.response.code).to.be.oneOf([201, 202]);\r",
+																	"});"
+																],
+																"type": "text/javascript",
+																"packages": {}
+															}
+														}
+													],
+													"request": {
+														"auth": {
+															"type": "noauth"
+														},
+														"method": "POST",
+														"header": [
+															{
+																"key": "Content-Type",
+																"value": "application/json",
+																"type": "text"
+															}
+														],
+														"body": {
+															"mode": "raw",
+															"raw": "{\r\n  \"denomination\": \"Orthopaedics\"\r\n}",
+															"options": {
+																"raw": {
+																	"language": "json"
+																}
+															}
+														},
+														"url": {
+															"raw": "https://localhost:5001/api/Specializations",
+															"protocol": "https",
+															"host": [
+																"localhost"
+															],
+															"port": "5001",
+															"path": [
+																"api",
+																"Specializations"
+															]
+														}
+													},
+													"response": []
+												},
+												{
+													"name": "Create-Anesthesia",
+													"event": [
+														{
+															"listen": "test",
+															"script": {
+																"exec": [
+																	"pm.test(\"Successful POST request\", function () {\r",
+																	"    pm.expect(pm.response.code).to.be.oneOf([201, 202]);\r",
+																	"});"
+																],
+																"type": "text/javascript",
+																"packages": {}
+															}
+														}
+													],
+													"request": {
+														"auth": {
+															"type": "noauth"
+														},
+														"method": "POST",
+														"header": [
+															{
+																"key": "Content-Type",
+																"value": "application/json",
+																"type": "text"
+															}
+														],
+														"body": {
+															"mode": "raw",
+															"raw": "{\r\n  \"denomination\": \"Anesthesia\"\r\n}",
+															"options": {
+																"raw": {
+																	"language": "json"
+																}
+															}
+														},
+														"url": {
+															"raw": "https://localhost:5001/api/Specializations",
+															"protocol": "https",
+															"host": [
+																"localhost"
+															],
+															"port": "5001",
+															"path": [
+																"api",
+																"Specializations"
+															]
+														}
+													},
+													"response": []
+												},
+												{
+													"name": "Create-Instrumenting",
+													"event": [
+														{
+															"listen": "test",
+															"script": {
+																"exec": [
+																	"pm.test(\"Successful POST request\", function () {\r",
+																	"    pm.expect(pm.response.code).to.be.oneOf([201, 202]);\r",
+																	"});"
+																],
+																"type": "text/javascript",
+																"packages": {}
+															}
+														}
+													],
+													"request": {
+														"auth": {
+															"type": "noauth"
+														},
+														"method": "POST",
+														"header": [
+															{
+																"key": "Content-Type",
+																"value": "application/json",
+																"type": "text"
+															}
+														],
+														"body": {
+															"mode": "raw",
+															"raw": "{\r\n  \"denomination\": \"Instrumenting\"\r\n}",
+															"options": {
+																"raw": {
+																	"language": "json"
+																}
+															}
+														},
+														"url": {
+															"raw": "https://localhost:5001/api/Specializations",
+															"protocol": "https",
+															"host": [
+																"localhost"
+															],
+															"port": "5001",
+															"path": [
+																"api",
+																"Specializations"
+															]
+														}
+													},
+													"response": []
+												},
+												{
+													"name": "Create-Circulating",
+													"event": [
+														{
+															"listen": "test",
+															"script": {
+																"exec": [
+																	"pm.test(\"Successful POST request\", function () {\r",
+																	"    pm.expect(pm.response.code).to.be.oneOf([201, 202]);\r",
+																	"});"
+																],
+																"type": "text/javascript",
+																"packages": {}
+															}
+														}
+													],
+													"request": {
+														"auth": {
+															"type": "noauth"
+														},
+														"method": "POST",
+														"header": [
+															{
+																"key": "Content-Type",
+																"value": "application/json",
+																"type": "text"
+															}
+														],
+														"body": {
+															"mode": "raw",
+															"raw": "{\r\n  \"denomination\": \"Circulating\"\r\n}",
+															"options": {
+																"raw": {
+																	"language": "json"
+																}
+															}
+														},
+														"url": {
+															"raw": "https://localhost:5001/api/Specializations",
+															"protocol": "https",
+															"host": [
+																"localhost"
+															],
+															"port": "5001",
+															"path": [
+																"api",
+																"Specializations"
+															]
+														}
+													},
+													"response": []
+												},
+												{
+													"name": "Create-Surgical-Assistance",
+													"event": [
+														{
+															"listen": "test",
+															"script": {
+																"exec": [
+																	"pm.test(\"Successful POST request\", function () {\r",
+																	"    pm.expect(pm.response.code).to.be.oneOf([201, 202]);\r",
+																	"});"
+																],
+																"type": "text/javascript",
+																"packages": {}
+															}
+														}
+													],
+													"request": {
+														"auth": {
+															"type": "noauth"
+														},
+														"method": "POST",
+														"header": [
+															{
+																"key": "Content-Type",
+																"value": "application/json",
+																"type": "text"
+															}
+														],
+														"body": {
+															"mode": "raw",
+															"raw": "{\r\n  \"denomination\": \"Surgical Assistance\"\r\n}",
+															"options": {
+																"raw": {
+																	"language": "json"
+																}
+															}
+														},
+														"url": {
+															"raw": "https://localhost:5001/api/Specializations",
+															"protocol": "https",
+															"host": [
+																"localhost"
+															],
+															"port": "5001",
+															"path": [
+																"api",
+																"Specializations"
+															]
+														}
+													},
+													"response": []
+												}
+											],
+											"description": "Requests related to specializations."
+										},
+										{
+											"name": "Create-ACL-Reconstruction-Surgery Copy",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"Successful POST request\", function () {\r",
+															"    pm.expect(pm.response.code).to.be.oneOf([201]);\r",
+															"});"
+														],
+														"type": "text/javascript",
+														"packages": {}
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "bearer",
+													"bearer": [
+														{
+															"key": "token",
+															"value": "{{auth-token}}",
+															"type": "string"
+														}
+													]
+												},
+												"method": "POST",
+												"header": [
+													{
+														"key": "Content-Type",
+														"value": "application/json",
+														"type": "text"
+													}
+												],
+												"body": {
+													"mode": "raw",
+													"raw": "{\r\n  \"name\": \"ACL Reconstruction Surgery\",\r\n  \"estimatedDuration\": 135,\r\n  \"status\": true,\r\n  \"requiredStaff\": [\r\n    {\r\n      \"staffQuantity\": 3,\r\n      \"function\": \"Doctor\",\r\n      \"specialization\": \"Orthopaedics\"\r\n    },\r\n    {\r\n      \"staffQuantity\": 1,\r\n      \"function\": \"Doctor\",\r\n      \"specialization\": \"Anesthesia\"\r\n    },\r\n    {\r\n      \"staffQuantity\": 1,\r\n      \"function\": \"Nurse\",\r\n      \"specialization\": \"Instrumenting\"\r\n    },\r\n    {\r\n      \"staffQuantity\": 1,\r\n      \"function\": \"Nurse\",\r\n      \"specialization\": \"Circulating\"\r\n    },\r\n    {\r\n      \"staffQuantity\": 1,\r\n      \"function\": \"Nurse\",\r\n      \"specialization\": \"Anesthesia\"\r\n    },\r\n    {\r\n      \"staffQuantity\": 1,\r\n      \"function\": \"Assistant\",\r\n      \"specialization\": \"Surgical Assistance\"\r\n    }\r\n  ],\r\n  \"phases\": [\r\n    {\r\n      \"description\": \"Anesthesia\",\r\n      \"duration\": 45\r\n    },\r\n    {\r\n      \"description\": \"Surgery\",\r\n      \"duration\": 60\r\n    },\r\n    {\r\n      \"description\": \"Cleaning\",\r\n      \"duration\": 30\r\n    }\r\n  ]\r\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "https://localhost:5001/api/OperationTypes",
+													"protocol": "https",
+													"host": [
+														"localhost"
+													],
+													"port": "5001",
+													"path": [
+														"api",
+														"OperationTypes"
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								},
+								{
+									"name": "patient",
+									"item": [
+										{
+											"name": "Create Patient Profile",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"Successful POST request\", function () {\r",
+															"    pm.expect(pm.response.code).to.be.oneOf([201, 202]);\r",
+															"});\r",
+															"\r",
+															""
+														],
+														"type": "text/javascript",
+														"packages": {}
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "bearer",
+													"bearer": [
+														{
+															"key": "token",
+															"value": "{{auth-token}}",
+															"type": "string"
+														}
+													]
+												},
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\r\n  \"firstName\": \"Rita\",\r\n  \"lastName\": \"Barbosa\",\r\n  \"phone\": \"+351 910000000\",\r\n  \"email\": \"ritabarbosa2604@gmail.com\",\r\n  \"address\" : \"Portugal, 4590-850, Rua da Sardinha\",\r\n  \"emergencyContact\": \"+351 9100087827\",\r\n  \"gender\": \"Female\",\r\n  \"dateBirth\": \"20/10/2004\"\r\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "https://localhost:5001/api/Patient/Create-PatientProfile",
+													"protocol": "https",
+													"host": [
+														"localhost"
+													],
+													"port": "5001",
+													"path": [
+														"api",
+														"Patient",
+														"Create-PatientProfile"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "Register Patient User",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"Successful patient user register request\", function () {\r",
+															"    pm.expect(pm.response.code).to.be.oneOf([200]);\r",
+															"});"
+														],
+														"type": "text/javascript",
+														"packages": {}
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "noauth"
+												},
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\r\n  \"email\": \"ritabarbosa2604@gmail.com\",\r\n  \"password\": \"Abcde12345!\",\r\n  \"phone\": \"+351 910000000\"\r\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "https://localhost:5001/api/create-patient",
+													"protocol": "https",
+													"host": [
+														"localhost"
+													],
+													"port": "5001",
+													"path": [
+														"api",
+														"create-patient"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "Activate Patient Account",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"Successful activate patient user request\", function () {\r",
+															"    pm.expect(pm.response.code).to.be.oneOf([200]);\r",
+															"});"
+														],
+														"type": "text/javascript",
+														"packages": {}
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "noauth"
+												},
+												"method": "PUT",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": ""
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "Login-Patient-User",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"Status code is 200\", function () {\r",
+															"    pm.response.to.have.status(200);\r",
+															"});\r",
+															"\r",
+															"var jsonResponse = pm.response.json();\r",
+															"var token = jsonResponse.token; \r",
+															"\r",
+															"pm.collectionVariables.set(\"auth-token-patient\", token);"
+														],
+														"type": "text/javascript",
+														"packages": {}
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "noauth"
+												},
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": " {\r\n   \"email\": \"ritabarbosa2604@gmail.com\",\r\n  \"password\": \"Abcde12345!\"\r\n }",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "https://localhost:5001/api/Login",
+													"protocol": "https",
+													"host": [
+														"localhost"
+													],
+													"port": "5001",
+													"path": [
+														"api",
+														"Login"
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								},
+								{
+									"name": "staff",
+									"item": [
+										{
+											"name": "Create Staff Profile",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"Successful create staff request\", function () {\r",
+															"    pm.expect(pm.response.code).to.be.oneOf([200]);\r",
+															"});"
+														],
+														"type": "text/javascript",
+														"packages": {}
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "bearer",
+													"bearer": [
+														{
+															"key": "token",
+															"value": "{{auth-token}}",
+															"type": "string"
+														}
+													]
+												},
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\r\n  \"licenseNumber\": \"12645\",\r\n  \"firstName\": \"Ana\",\r\n  \"lastName\": \"Guterres\",\r\n  \"phone\": \"+351 900000002\",\r\n  \"email\": \"ritabarbosa26.rb@gmail.com\",\r\n  \"address\" : \"Portugal, 4590-850, Rua da Sardinha\",\r\n  \"function\": \"doctor\",\r\n  \"specializationId\": \"Orthopaedics\"\r\n} ",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "https://localhost:5001/api/Staff/Create-StaffProfile",
+													"protocol": "https",
+													"host": [
+														"localhost"
+													],
+													"port": "5001",
+													"path": [
+														"api",
+														"Staff",
+														"Create-StaffProfile"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "Register-Doctor-User",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"Successful staff user register request\", function () {\r",
+															"    pm.expect(pm.response.code).to.be.oneOf([200]);\r",
+															"});"
+														],
+														"type": "text/javascript",
+														"packages": {}
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "bearer",
+													"bearer": [
+														{
+															"key": "token",
+															"value": "{{auth-token}}",
+															"type": "string"
+														}
+													]
+												},
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\r\n  \"email\": \"ritabarbosa26.rb@gmail.com\",\r\n  \"password\": \"Abcde12345!\",\r\n  \"role\": \"Doctor\",\r\n  \"phone\": \"+351 900000002\"\r\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "https://localhost:5001/api/create-staff",
+													"protocol": "https",
+													"host": [
+														"localhost"
+													],
+													"port": "5001",
+													"path": [
+														"api",
+														"create-staff"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "Activate Staff Account",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"Successful activate staff user request\", function () {\r",
+															"    pm.expect(pm.response.code).to.be.oneOf([200]);\r",
+															"});"
+														],
+														"type": "text/javascript",
+														"packages": {}
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "noauth"
+												},
+												"method": "PUT",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\r\n    \"newpassword\" :  \"Abcde12345!\"\r\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": ""
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "Login-Doctor-User",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"Status code is 200\", function () {\r",
+															"    pm.response.to.have.status(200);\r",
+															"});\r",
+															"\r",
+															"var jsonResponse = pm.response.json();\r",
+															"var token = jsonResponse.token; \r",
+															"\r",
+															"pm.collectionVariables.set(\"auth-token-doctor\", token);"
+														],
+														"type": "text/javascript",
+														"packages": {}
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "noauth"
+												},
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": " {\r\n   \"email\": \"ritabarbosa26.rb@gmail.com\",\r\n  \"password\": \"Abcde12345!\"\r\n }",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "https://localhost:5001/api/Login",
+													"protocol": "https",
+													"host": [
+														"localhost"
+													],
+													"port": "5001",
+													"path": [
+														"api",
+														"Login"
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								}
+							],
+							"description": "Data that must be available in the database to fulfill the user story requirements."
+						},
+						{
+							"name": "Create Operation Request",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Successful | Create operation request\", function () {\r",
+											"    pm.expect(pm.response.code).to.be.oneOf([201]);\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{auth-token-doctor}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"deadLineDate\": \"2024-10-29\",\r\n  \"priority\": \"Elective\",\r\n  \"dateOfRequest\": \"2024-10-23\",\r\n  \"status\": \"requested\",\r\n  \"staffId\": \"D202400001\",\r\n  \"description\": \"news to be done\",\r\n  \"patientId\": \"202410000001\",\r\n  \"operationTypeId\": \"ACL Reconstruction Surgery\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://localhost:5001/api/OperationRequest",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "5001",
+									"path": [
+										"api",
+										"OperationRequest"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"description": "This is the folder for the system tests of us-5.1.16.\n\nIt's important to notice that it is necesssary to do a setup of some information before.\n\n---\n\nImplemented by: Ana Guterres (1221933)  \nTested by: Rita Barbosa (1220841)"
+				},
+				{
+					"name": "us-5.1.23",
+					"item": [
+						{
+							"name": "setup",
+							"item": [
+								{
+									"name": "specializations",
+									"item": [
+										{
+											"name": "Create-Orthopaedics",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"Successful POST request\", function () {\r",
+															"    pm.expect(pm.response.code).to.be.oneOf([201, 202]);\r",
+															"});"
+														],
+														"type": "text/javascript",
+														"packages": {}
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "noauth"
+												},
+												"method": "POST",
+												"header": [
+													{
+														"key": "Content-Type",
+														"value": "application/json",
+														"type": "text"
+													}
+												],
+												"body": {
+													"mode": "raw",
+													"raw": "{\r\n  \"denomination\": \"Orthopaedics\"\r\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "https://localhost:5001/api/Specializations",
+													"protocol": "https",
+													"host": [
+														"localhost"
+													],
+													"port": "5001",
+													"path": [
+														"api",
+														"Specializations"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "Create-Anesthesia",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"Successful POST request\", function () {\r",
+															"    pm.expect(pm.response.code).to.be.oneOf([201, 202]);\r",
+															"});"
+														],
+														"type": "text/javascript",
+														"packages": {}
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "noauth"
+												},
+												"method": "POST",
+												"header": [
+													{
+														"key": "Content-Type",
+														"value": "application/json",
+														"type": "text"
+													}
+												],
+												"body": {
+													"mode": "raw",
+													"raw": "{\r\n  \"denomination\": \"Anesthesia\"\r\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "https://localhost:5001/api/Specializations",
+													"protocol": "https",
+													"host": [
+														"localhost"
+													],
+													"port": "5001",
+													"path": [
+														"api",
+														"Specializations"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "Create-Instrumenting",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"Successful POST request\", function () {\r",
+															"    pm.expect(pm.response.code).to.be.oneOf([201, 202]);\r",
+															"});"
+														],
+														"type": "text/javascript",
+														"packages": {}
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "noauth"
+												},
+												"method": "POST",
+												"header": [
+													{
+														"key": "Content-Type",
+														"value": "application/json",
+														"type": "text"
+													}
+												],
+												"body": {
+													"mode": "raw",
+													"raw": "{\r\n  \"denomination\": \"Instrumenting\"\r\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "https://localhost:5001/api/Specializations",
+													"protocol": "https",
+													"host": [
+														"localhost"
+													],
+													"port": "5001",
+													"path": [
+														"api",
+														"Specializations"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "Create-Circulating",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"Successful POST request\", function () {\r",
+															"    pm.expect(pm.response.code).to.be.oneOf([201, 202]);\r",
+															"});"
+														],
+														"type": "text/javascript",
+														"packages": {}
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "noauth"
+												},
+												"method": "POST",
+												"header": [
+													{
+														"key": "Content-Type",
+														"value": "application/json",
+														"type": "text"
+													}
+												],
+												"body": {
+													"mode": "raw",
+													"raw": "{\r\n  \"denomination\": \"Circulating\"\r\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "https://localhost:5001/api/Specializations",
+													"protocol": "https",
+													"host": [
+														"localhost"
+													],
+													"port": "5001",
+													"path": [
+														"api",
+														"Specializations"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "Create-Surgical-Assistance",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"Successful POST request\", function () {\r",
+															"    pm.expect(pm.response.code).to.be.oneOf([201, 202]);\r",
+															"});"
+														],
+														"type": "text/javascript",
+														"packages": {}
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "noauth"
+												},
+												"method": "POST",
+												"header": [
+													{
+														"key": "Content-Type",
+														"value": "application/json",
+														"type": "text"
+													}
+												],
+												"body": {
+													"mode": "raw",
+													"raw": "{\r\n  \"denomination\": \"Surgical Assistance\"\r\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "https://localhost:5001/api/Specializations",
+													"protocol": "https",
+													"host": [
+														"localhost"
+													],
+													"port": "5001",
+													"path": [
+														"api",
+														"Specializations"
+													]
+												}
+											},
+											"response": []
+										}
+									],
+									"description": "Requests related to specializations."
+								},
+								{
+									"name": "Create-ACL-Reconstruction-Surgery Copy",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Successful POST request\", function () {\r",
+													"    pm.expect(pm.response.code).to.be.oneOf([201]);\r",
+													"});"
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{auth-token}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n  \"name\": \"ACL Reconstruction Surgery\",\r\n  \"estimatedDuration\": 135,\r\n  \"status\": true,\r\n  \"requiredStaff\": [\r\n    {\r\n      \"staffQuantity\": 3,\r\n      \"function\": \"Doctor\",\r\n      \"specialization\": \"Orthopaedics\"\r\n    },\r\n    {\r\n      \"staffQuantity\": 1,\r\n      \"function\": \"Doctor\",\r\n      \"specialization\": \"Anesthesia\"\r\n    },\r\n    {\r\n      \"staffQuantity\": 1,\r\n      \"function\": \"Nurse\",\r\n      \"specialization\": \"Instrumenting\"\r\n    },\r\n    {\r\n      \"staffQuantity\": 1,\r\n      \"function\": \"Nurse\",\r\n      \"specialization\": \"Circulating\"\r\n    },\r\n    {\r\n      \"staffQuantity\": 1,\r\n      \"function\": \"Nurse\",\r\n      \"specialization\": \"Anesthesia\"\r\n    },\r\n    {\r\n      \"staffQuantity\": 1,\r\n      \"function\": \"Assistant\",\r\n      \"specialization\": \"Surgical Assistance\"\r\n    }\r\n  ],\r\n  \"phases\": [\r\n    {\r\n      \"description\": \"Anesthesia\",\r\n      \"duration\": 45\r\n    },\r\n    {\r\n      \"description\": \"Surgery\",\r\n      \"duration\": 60\r\n    },\r\n    {\r\n      \"description\": \"Cleaning\",\r\n      \"duration\": 30\r\n    }\r\n  ]\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "https://localhost:5001/api/OperationTypes",
+											"protocol": "https",
+											"host": [
+												"localhost"
+											],
+											"port": "5001",
+											"path": [
+												"api",
+												"OperationTypes"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Create-Hip-Replacement-Surgery",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Successful POST request\", function () {\r",
+													"    pm.expect(pm.response.code).to.be.oneOf([201]);\r",
+													"});"
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{auth-token}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n  \"name\": \"Hip Replacement Surgery\",\r\n  \"estimatedDuration\": 165,\r\n  \"status\": true,\r\n  \"requiredStaff\": [\r\n    {\r\n      \"staffQuantity\": 2,\r\n      \"function\": \"Doctor\",\r\n      \"specialization\": \"Orthopaedics\"\r\n    },\r\n    {\r\n      \"staffQuantity\": 1,\r\n      \"function\": \"Doctor\",\r\n      \"specialization\": \"Anesthesia\"\r\n    },\r\n    {\r\n      \"staffQuantity\": 1,\r\n      \"function\": \"Nurse\",\r\n      \"specialization\": \"Instrumenting\"\r\n    },\r\n    {\r\n      \"staffQuantity\": 1,\r\n      \"function\": \"Nurse\",\r\n      \"specialization\": \"Circulating\"\r\n    },\r\n    {\r\n      \"staffQuantity\": 1,\r\n      \"function\": \"Nurse\",\r\n      \"specialization\": \"Anesthesia\"\r\n    },\r\n    {\r\n      \"staffQuantity\": 1,\r\n      \"function\": \"Assistant\",\r\n      \"specialization\": \"Surgical Assistance\"\r\n    }\r\n  ],\r\n  \"phases\": [\r\n    {\r\n      \"description\": \"Anesthesia\",\r\n      \"duration\": 45\r\n    },\r\n    {\r\n      \"description\": \"Surgery\",\r\n      \"duration\": 75\r\n    },\r\n    {\r\n      \"description\": \"Cleaning\",\r\n      \"duration\": 45\r\n    }\r\n  ]\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "https://localhost:5001/api/OperationTypes",
+											"protocol": "https",
+											"host": [
+												"localhost"
+											],
+											"port": "5001",
+											"path": [
+												"api",
+												"OperationTypes"
+											]
+										}
+									},
+									"response": []
+								}
+							],
+							"description": "Data that must be available in the database to fulfill the user story requirements."
+						},
+						{
+							"name": "Get Operation Types Filtered List Copy",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{auth-token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"queryFilters\": [\r\n    {\r\n      \"name\": \"ACL Reconstruction Surgery\",\r\n      \"specialization\": \"Orthopaedics\",\r\n      \"status\": \"true\"\r\n    }\r\n  ]\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://localhost:5001/api/OperationTypes/Filtered-List",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "5001",
+									"path": [
+										"api",
+										"OperationTypes",
+										"Filtered-List"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"description": "This is the folder for the system tests of us-5.1.23.\n\nIt's important to notice that it is necesssary to do a setup of some information before.\n\n---\n\nImplemented by: Ana Guterres (1221933)  \nTested by: Rita Barbosa (1220841)"
+				}
+			],
+			"description": "User stories tested:\n\n- us-5.1.2\n    \n- us-5.1.7\n    \n- us-5.1.9\n    \n- us-5.1.13\n    \n- us-5.1.16\n    \n- us-5.1.23"
+		},
+		{
+			"name": "1221933",
+			"item": [
+				{
+					"name": "us-5.1.3",
+					"item": [
+						{
+							"name": "setup",
+							"item": [
+								{
+									"name": "admin",
+									"item": [
+										{
+											"name": "Register-Admin-User",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"Successful POST request\", function () {\r",
+															"    pm.expect(pm.response.code).to.be.oneOf([200]);\r",
+															"});"
+														],
+														"type": "text/javascript",
+														"packages": {}
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "noauth"
+												},
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\r\n  \"email\": \"ritabarbosa26@gmail.com\",\r\n  \"password\": \"Abcde12345!\",\r\n  \"role\": \"Admin\",\r\n  \"phone\": \"+351 919919919\"\r\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "https://localhost:5001/api/create-admin",
+													"protocol": "https",
+													"host": [
+														"localhost"
+													],
+													"port": "5001",
+													"path": [
+														"api",
+														"create-admin"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "Login-Admin-User",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"Status code is 200\", function () {\r",
+															"    pm.response.to.have.status(200);\r",
+															"});\r",
+															"\r",
+															"var jsonResponse = pm.response.json();\r",
+															"var token = jsonResponse.token; \r",
+															"\r",
+															"pm.collectionVariables.set(\"auth-token\", token);"
+														],
+														"type": "text/javascript",
+														"packages": {}
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "noauth"
+												},
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": " {\r\n  \"email\": \"ritabarbosa26@gmail.com\",\r\n  \"password\": \"Abcde12345!\"\r\n }",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "https://localhost:5001/api/Login",
+													"protocol": "https",
+													"host": [
+														"localhost"
+													],
+													"port": "5001",
+													"path": [
+														"api",
+														"Login"
+													]
+												}
+											},
+											"response": []
+										}
+									],
+									"auth": {
+										"type": "noauth"
+									},
+									"event": [
+										{
+											"listen": "prerequest",
+											"script": {
+												"type": "text/javascript",
+												"packages": {},
+												"exec": [
+													""
+												]
+											}
+										},
+										{
+											"listen": "test",
+											"script": {
+												"type": "text/javascript",
+												"packages": {},
+												"exec": [
+													""
+												]
+											}
+										}
+									]
+								},
+								{
+									"name": "Create Patient Profile Copy",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Successful POST request\", function () {\r",
+													"    pm.expect(pm.response.code).to.be.oneOf([201, 202]);\r",
+													"});\r",
+													"\r",
+													""
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{auth-token}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n  \"firstName\": \"Rita\",\r\n  \"lastName\": \"Barbosa\",\r\n  \"phone\": \"+351 910000000\",\r\n  \"email\": \"ritabarbosa2604@gmail.com\",\r\n  \"address\" : \"Portugal, 4590-850, Rua da Sardinha\",\r\n  \"emergencyContact\": \"+351 9100087827\",\r\n  \"gender\": \"Female\",\r\n  \"dateBirth\": \"20/10/2004\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "https://localhost:5001/api/Patient/Create-PatientProfile",
+											"protocol": "https",
+											"host": [
+												"localhost"
+											],
+											"port": "5001",
+											"path": [
+												"api",
+												"Patient",
+												"Create-PatientProfile"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "Register Patient User",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Successful patient user register request\", function () {\r",
+											"    pm.expect(pm.response.code).to.be.oneOf([200]);\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"email\": \"ritabarbosa2604@gmail.com\",\r\n  \"password\": \"Abcde12345!\",\r\n  \"phone\": \"+351 910000000\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://localhost:5001/api/create-patient",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "5001",
+									"path": [
+										"api",
+										"create-patient"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Activate Patient Account",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Successful activate patient user request\", function () {\r",
+											"    pm.expect(pm.response.code).to.be.oneOf([200]);\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": ""
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "us-5.1.4",
+					"item": [
+						{
+							"name": "setup",
+							"item": [
+								{
+									"name": "admin",
+									"item": [
+										{
+											"name": "Register-Admin-User",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"Successful POST request\", function () {\r",
+															"    pm.expect(pm.response.code).to.be.oneOf([200]);\r",
+															"});"
+														],
+														"type": "text/javascript",
+														"packages": {}
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "noauth"
+												},
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\r\n  \"email\": \"ritabarbosa26@gmail.com\",\r\n  \"password\": \"Abcde12345!\",\r\n  \"role\": \"Admin\",\r\n  \"phone\": \"+351 919919919\"\r\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "https://localhost:5001/api/create-admin",
+													"protocol": "https",
+													"host": [
+														"localhost"
+													],
+													"port": "5001",
+													"path": [
+														"api",
+														"create-admin"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "Login-Admin-User",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"Status code is 200\", function () {\r",
+															"    pm.response.to.have.status(200);\r",
+															"});\r",
+															"\r",
+															"var jsonResponse = pm.response.json();\r",
+															"var token = jsonResponse.token; \r",
+															"\r",
+															"pm.collectionVariables.set(\"auth-token\", token);"
+														],
+														"type": "text/javascript",
+														"packages": {}
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "noauth"
+												},
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": " {\r\n  \"email\": \"ritabarbosa26@gmail.com\",\r\n  \"password\": \"Abcde12345!\"\r\n }",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "https://localhost:5001/api/Login",
+													"protocol": "https",
+													"host": [
+														"localhost"
+													],
+													"port": "5001",
+													"path": [
+														"api",
+														"Login"
+													]
+												}
+											},
+											"response": []
+										}
+									],
+									"auth": {
+										"type": "noauth"
+									},
+									"event": [
+										{
+											"listen": "prerequest",
+											"script": {
+												"type": "text/javascript",
+												"packages": {},
+												"exec": [
+													""
+												]
+											}
+										},
+										{
+											"listen": "test",
+											"script": {
+												"type": "text/javascript",
+												"packages": {},
+												"exec": [
+													""
+												]
+											}
+										}
+									]
+								},
+								{
+									"name": "patient",
+									"item": [
+										{
+											"name": "Create Patient Profile",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"Successful POST request\", function () {\r",
+															"    pm.expect(pm.response.code).to.be.oneOf([201, 202]);\r",
+															"});\r",
+															"\r",
+															""
+														],
+														"type": "text/javascript",
+														"packages": {}
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "bearer",
+													"bearer": [
+														{
+															"key": "token",
+															"value": "{{auth-token}}",
+															"type": "string"
+														}
+													]
+												},
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\r\n  \"firstName\": \"Rita\",\r\n  \"lastName\": \"Barbosa\",\r\n  \"phone\": \"+351 910000000\",\r\n  \"email\": \"ritabarbosa2604@gmail.com\",\r\n  \"address\" : \"Portugal, 4590-850, Rua da Sardinha\",\r\n  \"emergencyContact\": \"+351 9100087827\",\r\n  \"gender\": \"Female\",\r\n  \"dateBirth\": \"20/10/2004\"\r\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "https://localhost:5001/api/Patient/Create-PatientProfile",
+													"protocol": "https",
+													"host": [
+														"localhost"
+													],
+													"port": "5001",
+													"path": [
+														"api",
+														"Patient",
+														"Create-PatientProfile"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "Register Patient User",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"Successful patient user register request\", function () {\r",
+															"    pm.expect(pm.response.code).to.be.oneOf([200]);\r",
+															"});"
+														],
+														"type": "text/javascript",
+														"packages": {}
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "noauth"
+												},
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\r\n  \"email\": \"ritabarbosa2604@gmail.com\",\r\n  \"password\": \"Abcde12345!\",\r\n  \"phone\": \"+351 910000000\"\r\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "https://localhost:5001/api/create-patient",
+													"protocol": "https",
+													"host": [
+														"localhost"
+													],
+													"port": "5001",
+													"path": [
+														"api",
+														"create-patient"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "Activate Patient Account",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"Successful activate patient user request\", function () {\r",
+															"    pm.expect(pm.response.code).to.be.oneOf([200]);\r",
+															"});"
+														],
+														"type": "text/javascript",
+														"packages": {}
+													}
+												}
+											],
+											"request": {
+												"method": "PUT",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": ""
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "Login-Patient-User",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"Status code is 200\", function () {\r",
+															"    pm.response.to.have.status(200);\r",
+															"});\r",
+															"\r",
+															"var jsonResponse = pm.response.json();\r",
+															"var token = jsonResponse.token; \r",
+															"\r",
+															"pm.collectionVariables.set(\"auth-token-patient\", token);"
+														],
+														"type": "text/javascript",
+														"packages": {}
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "noauth"
+												},
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": " {\r\n   \"email\": \"ritabarbosa2604@gmail.com\",\r\n   \"password\": \"Abcde12345!\"\r\n }",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "https://localhost:5001/api/Login",
+													"protocol": "https",
+													"host": [
+														"localhost"
+													],
+													"port": "5001",
+													"path": [
+														"api",
+														"Login"
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								}
+							],
+							"description": "Data that must be available in the database to fulfill the user story requirements."
+						},
+						{
+							"name": "Update Patient/User Profile",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status Code Accepted \", function () {\r",
+											"    pm.response.to.have.status(202);\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{auth-token-patient}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"Lousie Barbosa\",\r\n    \"phone\": \"+31 910233500001\",\r\n    \"address\": \"France, 2322-234, Rue de le bien\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://localhost:5001/api/Patient",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "5001",
+									"path": [
+										"api",
+										"Patient"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"description": "This is the folder for the system tests of us-5.1.4.\n\nIt's important to notice that it is necesssary to do a setup of some information before.\n\n---\n\nImplemented by: Rita Barbosa (1220841)  \nTested by: Ana Guterres (1221933)"
+				},
+				{
+					"name": "us-5.1.8",
+					"item": [
+						{
+							"name": "setup",
+							"item": [
+								{
+									"name": "admin",
+									"item": [
+										{
+											"name": "Register-Admin-User",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"Successful POST request\", function () {\r",
+															"    pm.expect(pm.response.code).to.be.oneOf([200]);\r",
+															"});"
+														],
+														"type": "text/javascript",
+														"packages": {}
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "noauth"
+												},
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\r\n  \"email\": \"ritabarbosa26@gmail.com\",\r\n  \"password\": \"Abcde12345!\",\r\n  \"role\": \"Admin\",\r\n  \"phone\": \"+351 919919919\"\r\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "https://localhost:5001/api/create-admin",
+													"protocol": "https",
+													"host": [
+														"localhost"
+													],
+													"port": "5001",
+													"path": [
+														"api",
+														"create-admin"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "Login-Admin-User",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"Status code is 200\", function () {\r",
+															"    pm.response.to.have.status(200);\r",
+															"});\r",
+															"\r",
+															"var jsonResponse = pm.response.json();\r",
+															"var token = jsonResponse.token; \r",
+															"\r",
+															"pm.collectionVariables.set(\"auth-token\", token);"
+														],
+														"type": "text/javascript",
+														"packages": {}
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "noauth"
+												},
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": " {\r\n  \"email\": \"ritabarbosa26@gmail.com\",\r\n  \"password\": \"Abcde12345!\"\r\n }",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "https://localhost:5001/api/Login",
+													"protocol": "https",
+													"host": [
+														"localhost"
+													],
+													"port": "5001",
+													"path": [
+														"api",
+														"Login"
+													]
+												}
+											},
+											"response": []
+										}
+									],
+									"auth": {
+										"type": "noauth"
+									},
+									"event": [
+										{
+											"listen": "prerequest",
+											"script": {
+												"type": "text/javascript",
+												"packages": {},
+												"exec": [
+													""
+												]
+											}
+										},
+										{
+											"listen": "test",
+											"script": {
+												"type": "text/javascript",
+												"packages": {},
+												"exec": [
+													""
+												]
+											}
+										}
+									]
+								}
+							],
+							"description": "Data that must be available in the database to fulfill the user story requirements."
+						},
+						{
+							"name": "Create Patient Profile",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Successful POST request\", function () {\r",
+											"    pm.expect(pm.response.code).to.be.oneOf([201, 202]);\r",
+											"});\r",
+											"\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{auth-token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"firstName\": \"Rita\",\r\n  \"lastName\": \"Barbosa\",\r\n  \"phone\": \"+351 910000010\",\r\n  \"email\": \"ritabfbarbosa@gmail.com\",\r\n  \"address\" : \"Portugal, 4590-850, Rua da Sardinha\",\r\n  \"emergencyContact\": \"+351 9100087827\",\r\n  \"gender\": \"Female\",\r\n  \"dateBirth\": \"20/10/2004\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://localhost:5001/api/Patient/Create-PatientProfile",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "5001",
+									"path": [
+										"api",
+										"Patient",
+										"Create-PatientProfile"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"description": "This is the folder for the system tests of us-5.1.8.\n\nIt's important to notice that it is necesssary to do a setup of some information before.\n\n---\n\nImplemented by: Rita Barbosa (1220841)  \nTested by: Ana Guterres (1221933)"
+				},
+				{
+					"name": "us-5.1.12",
+					"item": [
+						{
+							"name": "setup",
+							"item": [
+								{
+									"name": "admin",
+									"item": [
+										{
+											"name": "Register-Admin-User",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"Successful POST request\", function () {\r",
+															"    pm.expect(pm.response.code).to.be.oneOf([200]);\r",
+															"});"
+														],
+														"type": "text/javascript",
+														"packages": {}
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "noauth"
+												},
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\r\n  \"email\": \"ritabarbosa26@gmail.com\",\r\n  \"password\": \"Abcde12345!\",\r\n  \"role\": \"Admin\",\r\n  \"phone\": \"+351 919919919\"\r\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "https://localhost:5001/api/create-admin",
+													"protocol": "https",
+													"host": [
+														"localhost"
+													],
+													"port": "5001",
+													"path": [
+														"api",
+														"create-admin"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "Login-Admin-User",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"Status code is 200\", function () {\r",
+															"    pm.response.to.have.status(200);\r",
+															"});\r",
+															"\r",
+															"var jsonResponse = pm.response.json();\r",
+															"var token = jsonResponse.token; \r",
+															"\r",
+															"pm.collectionVariables.set(\"auth-token\", token);"
+														],
+														"type": "text/javascript",
+														"packages": {}
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "noauth"
+												},
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": " {\r\n  \"email\": \"ritabarbosa26@gmail.com\",\r\n  \"password\": \"Abcde12345!\"\r\n }",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "https://localhost:5001/api/Login",
+													"protocol": "https",
+													"host": [
+														"localhost"
+													],
+													"port": "5001",
+													"path": [
+														"api",
+														"Login"
+													]
+												}
+											},
+											"response": []
+										}
+									],
+									"auth": {
+										"type": "noauth"
+									},
+									"event": [
+										{
+											"listen": "prerequest",
+											"script": {
+												"type": "text/javascript",
+												"packages": {},
+												"exec": [
+													""
+												]
+											}
+										},
+										{
+											"listen": "test",
+											"script": {
+												"type": "text/javascript",
+												"packages": {},
+												"exec": [
+													""
+												]
+											}
+										}
+									]
+								}
+							],
+							"description": "Data that must be available in the database to fulfill the user story requirements."
+						},
+						{
+							"name": "Create Staff Profile",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Successful create staff request\", function () {\r",
+											"    pm.expect(pm.response.code).to.be.oneOf([200]);\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{auth-token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"licenseNumber\": \"12645\",\r\n  \"firstName\": \"Ana\",\r\n  \"lastName\": \"Guterres\",\r\n  \"phone\": \"+351 900000002\",\r\n  \"email\": \"anaogute@gmail.com\",\r\n  \"address\" : \"Portugal, 4590-850, Rua da Sardinha\",\r\n  \"function\": \"doctor\",\r\n  \"specializationId\": \"Orthopaedics\"\r\n} ",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://localhost:5001/api/Staff/Create-StaffProfile",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "5001",
+									"path": [
+										"api",
+										"Staff",
+										"Create-StaffProfile"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"description": "This is the folder for the system tests of us-5.1.12.\n\nIt's important to notice that it is necesssary to do a setup of some information before.\n\n---\n\nImplemented by: Rita Barbosa (1220841)  \nTested by: Ana Guterres (1221933)"
+				},
+				{
+					"name": "us-5.1.19",
+					"item": [
+						{
+							"name": "setup",
+							"item": [
+								{
+									"name": "admin",
+									"item": [
+										{
+											"name": "Register-Admin-User Copy",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"Successful POST request\", function () {\r",
+															"    pm.expect(pm.response.code).to.be.oneOf([200]);\r",
+															"});"
+														],
+														"type": "text/javascript",
+														"packages": {}
+													}
+												}
+											],
+											"request": {
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\r\n  \"email\": \"ritabarbosa26@gmail.com\",\r\n  \"password\": \"Abcde12345!\",\r\n  \"role\": \"Admin\",\r\n  \"phone\": \"+351 919919919\"\r\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "https://localhost:5001/api/create-admin",
+													"protocol": "https",
+													"host": [
+														"localhost"
+													],
+													"port": "5001",
+													"path": [
+														"api",
+														"create-admin"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "Login-AdminUser Copy",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"Status code is 200\", function () {\r",
+															"    pm.response.to.have.status(200);\r",
+															"});\r",
+															"\r",
+															"var jsonResponse = pm.response.json();\r",
+															"var token = jsonResponse.token; \r",
+															"\r",
+															"pm.collectionVariables.set(\"auth-token\", token);"
+														],
+														"type": "text/javascript",
+														"packages": {}
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "noauth"
+												},
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": " {\r\n  \"email\": \"ritabarbosa26@gmail.com\",\r\n  \"password\": \"Abcde12345!\"\r\n }",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "https://localhost:5001/api/Login",
+													"protocol": "https",
+													"host": [
+														"localhost"
+													],
+													"port": "5001",
+													"path": [
+														"api",
+														"Login"
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								},
+								{
+									"name": "operation-type",
+									"item": [
+										{
+											"name": "specializations",
+											"item": [
+												{
+													"name": "Create-Orthopaedics",
+													"event": [
+														{
+															"listen": "test",
+															"script": {
+																"exec": [
+																	"pm.test(\"Successful POST request\", function () {\r",
+																	"    pm.expect(pm.response.code).to.be.oneOf([201, 202]);\r",
+																	"});"
+																],
+																"type": "text/javascript",
+																"packages": {}
+															}
+														}
+													],
+													"request": {
+														"auth": {
+															"type": "noauth"
+														},
+														"method": "POST",
+														"header": [
+															{
+																"key": "Content-Type",
+																"value": "application/json",
+																"type": "text"
+															}
+														],
+														"body": {
+															"mode": "raw",
+															"raw": "{\r\n  \"denomination\": \"Orthopaedics\"\r\n}",
+															"options": {
+																"raw": {
+																	"language": "json"
+																}
+															}
+														},
+														"url": {
+															"raw": "https://localhost:5001/api/Specializations",
+															"protocol": "https",
+															"host": [
+																"localhost"
+															],
+															"port": "5001",
+															"path": [
+																"api",
+																"Specializations"
+															]
+														}
+													},
+													"response": []
+												},
+												{
+													"name": "Create-Anesthesia",
+													"event": [
+														{
+															"listen": "test",
+															"script": {
+																"exec": [
+																	"pm.test(\"Successful POST request\", function () {\r",
+																	"    pm.expect(pm.response.code).to.be.oneOf([201, 202]);\r",
+																	"});"
+																],
+																"type": "text/javascript",
+																"packages": {}
+															}
+														}
+													],
+													"request": {
+														"auth": {
+															"type": "noauth"
+														},
+														"method": "POST",
+														"header": [
+															{
+																"key": "Content-Type",
+																"value": "application/json",
+																"type": "text"
+															}
+														],
+														"body": {
+															"mode": "raw",
+															"raw": "{\r\n  \"denomination\": \"Anesthesia\"\r\n}",
+															"options": {
+																"raw": {
+																	"language": "json"
+																}
+															}
+														},
+														"url": {
+															"raw": "https://localhost:5001/api/Specializations",
+															"protocol": "https",
+															"host": [
+																"localhost"
+															],
+															"port": "5001",
+															"path": [
+																"api",
+																"Specializations"
+															]
+														}
+													},
+													"response": []
+												},
+												{
+													"name": "Create-Instrumenting",
+													"event": [
+														{
+															"listen": "test",
+															"script": {
+																"exec": [
+																	"pm.test(\"Successful POST request\", function () {\r",
+																	"    pm.expect(pm.response.code).to.be.oneOf([201, 202]);\r",
+																	"});"
+																],
+																"type": "text/javascript",
+																"packages": {}
+															}
+														}
+													],
+													"request": {
+														"auth": {
+															"type": "noauth"
+														},
+														"method": "POST",
+														"header": [
+															{
+																"key": "Content-Type",
+																"value": "application/json",
+																"type": "text"
+															}
+														],
+														"body": {
+															"mode": "raw",
+															"raw": "{\r\n  \"denomination\": \"Instrumenting\"\r\n}",
+															"options": {
+																"raw": {
+																	"language": "json"
+																}
+															}
+														},
+														"url": {
+															"raw": "https://localhost:5001/api/Specializations",
+															"protocol": "https",
+															"host": [
+																"localhost"
+															],
+															"port": "5001",
+															"path": [
+																"api",
+																"Specializations"
+															]
+														}
+													},
+													"response": []
+												},
+												{
+													"name": "Create-Circulating",
+													"event": [
+														{
+															"listen": "test",
+															"script": {
+																"exec": [
+																	"pm.test(\"Successful POST request\", function () {\r",
+																	"    pm.expect(pm.response.code).to.be.oneOf([201, 202]);\r",
+																	"});"
+																],
+																"type": "text/javascript",
+																"packages": {}
+															}
+														}
+													],
+													"request": {
+														"auth": {
+															"type": "noauth"
+														},
+														"method": "POST",
+														"header": [
+															{
+																"key": "Content-Type",
+																"value": "application/json",
+																"type": "text"
+															}
+														],
+														"body": {
+															"mode": "raw",
+															"raw": "{\r\n  \"denomination\": \"Circulating\"\r\n}",
+															"options": {
+																"raw": {
+																	"language": "json"
+																}
+															}
+														},
+														"url": {
+															"raw": "https://localhost:5001/api/Specializations",
+															"protocol": "https",
+															"host": [
+																"localhost"
+															],
+															"port": "5001",
+															"path": [
+																"api",
+																"Specializations"
+															]
+														}
+													},
+													"response": []
+												},
+												{
+													"name": "Create-Surgical-Assistance",
+													"event": [
+														{
+															"listen": "test",
+															"script": {
+																"exec": [
+																	"pm.test(\"Successful POST request\", function () {\r",
+																	"    pm.expect(pm.response.code).to.be.oneOf([201, 202]);\r",
+																	"});"
+																],
+																"type": "text/javascript",
+																"packages": {}
+															}
+														}
+													],
+													"request": {
+														"auth": {
+															"type": "noauth"
+														},
+														"method": "POST",
+														"header": [
+															{
+																"key": "Content-Type",
+																"value": "application/json",
+																"type": "text"
+															}
+														],
+														"body": {
+															"mode": "raw",
+															"raw": "{\r\n  \"denomination\": \"Surgical Assistance\"\r\n}",
+															"options": {
+																"raw": {
+																	"language": "json"
+																}
+															}
+														},
+														"url": {
+															"raw": "https://localhost:5001/api/Specializations",
+															"protocol": "https",
+															"host": [
+																"localhost"
+															],
+															"port": "5001",
+															"path": [
+																"api",
+																"Specializations"
+															]
+														}
+													},
+													"response": []
+												}
+											],
+											"description": "Requests related to specializations."
+										},
+										{
+											"name": "Create-ACL-Reconstruction-Surgery Copy",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"Successful POST request\", function () {\r",
+															"    pm.expect(pm.response.code).to.be.oneOf([201]);\r",
+															"});"
+														],
+														"type": "text/javascript",
+														"packages": {}
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "bearer",
+													"bearer": [
+														{
+															"key": "token",
+															"value": "{{auth-token}}",
+															"type": "string"
+														}
+													]
+												},
+												"method": "POST",
+												"header": [
+													{
+														"key": "Content-Type",
+														"value": "application/json",
+														"type": "text"
+													}
+												],
+												"body": {
+													"mode": "raw",
+													"raw": "{\r\n  \"name\": \"ACL Reconstruction Surgery\",\r\n  \"estimatedDuration\": 135,\r\n  \"status\": true,\r\n  \"requiredStaff\": [\r\n    {\r\n      \"staffQuantity\": 3,\r\n      \"function\": \"Doctor\",\r\n      \"specialization\": \"Orthopaedics\"\r\n    },\r\n    {\r\n      \"staffQuantity\": 1,\r\n      \"function\": \"Doctor\",\r\n      \"specialization\": \"Anesthesia\"\r\n    },\r\n    {\r\n      \"staffQuantity\": 1,\r\n      \"function\": \"Nurse\",\r\n      \"specialization\": \"Instrumenting\"\r\n    },\r\n    {\r\n      \"staffQuantity\": 1,\r\n      \"function\": \"Nurse\",\r\n      \"specialization\": \"Circulating\"\r\n    },\r\n    {\r\n      \"staffQuantity\": 1,\r\n      \"function\": \"Nurse\",\r\n      \"specialization\": \"Anesthesia\"\r\n    },\r\n    {\r\n      \"staffQuantity\": 1,\r\n      \"function\": \"Assistant\",\r\n      \"specialization\": \"Surgical Assistance\"\r\n    }\r\n  ],\r\n  \"phases\": [\r\n    {\r\n      \"description\": \"Anesthesia\",\r\n      \"duration\": 45\r\n    },\r\n    {\r\n      \"description\": \"Surgery\",\r\n      \"duration\": 60\r\n    },\r\n    {\r\n      \"description\": \"Cleaning\",\r\n      \"duration\": 30\r\n    }\r\n  ]\r\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "https://localhost:5001/api/OperationTypes",
+													"protocol": "https",
+													"host": [
+														"localhost"
+													],
+													"port": "5001",
+													"path": [
+														"api",
+														"OperationTypes"
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								},
+								{
+									"name": "patient",
+									"item": [
+										{
+											"name": "Create Patient Profile",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"Successful POST request\", function () {\r",
+															"    pm.expect(pm.response.code).to.be.oneOf([201, 202]);\r",
+															"});\r",
+															"\r",
+															""
+														],
+														"type": "text/javascript",
+														"packages": {}
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "bearer",
+													"bearer": [
+														{
+															"key": "token",
+															"value": "{{auth-token}}",
+															"type": "string"
+														}
+													]
+												},
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\r\n  \"firstName\": \"Rita\",\r\n  \"lastName\": \"Barbosa\",\r\n  \"phone\": \"+351 910000000\",\r\n  \"email\": \"ritabarbosa2604@gmail.com\",\r\n  \"address\" : \"Portugal, 4590-850, Rua da Sardinha\",\r\n  \"emergencyContact\": \"+351 9100087827\",\r\n  \"gender\": \"Female\",\r\n  \"dateBirth\": \"20/10/2004\"\r\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "https://localhost:5001/api/Patient/Create-PatientProfile",
+													"protocol": "https",
+													"host": [
+														"localhost"
+													],
+													"port": "5001",
+													"path": [
+														"api",
+														"Patient",
+														"Create-PatientProfile"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "Register Patient User",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"Successful patient user register request\", function () {\r",
+															"    pm.expect(pm.response.code).to.be.oneOf([200]);\r",
+															"});"
+														],
+														"type": "text/javascript",
+														"packages": {}
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "noauth"
+												},
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\r\n  \"email\": \"ritabarbosa2604@gmail.com\",\r\n  \"password\": \"Abcde12345!\",\r\n  \"phone\": \"+351 910000000\"\r\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "https://localhost:5001/api/create-patient",
+													"protocol": "https",
+													"host": [
+														"localhost"
+													],
+													"port": "5001",
+													"path": [
+														"api",
+														"create-patient"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "Activate Patient Account",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"Successful activate patient user request\", function () {\r",
+															"    pm.expect(pm.response.code).to.be.oneOf([200]);\r",
+															"});"
+														],
+														"type": "text/javascript",
+														"packages": {}
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "noauth"
+												},
+												"method": "PUT",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": ""
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "Login-Patient-User",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"Status code is 200\", function () {\r",
+															"    pm.response.to.have.status(200);\r",
+															"});\r",
+															"\r",
+															"var jsonResponse = pm.response.json();\r",
+															"var token = jsonResponse.token; \r",
+															"\r",
+															"pm.collectionVariables.set(\"auth-token-patient\", token);"
+														],
+														"type": "text/javascript",
+														"packages": {}
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "noauth"
+												},
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": " {\r\n   \"email\": \"ritabarbosa2604@gmail.com\",\r\n  \"password\": \"Abcde12345!\"\r\n }",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "https://localhost:5001/api/Login",
+													"protocol": "https",
+													"host": [
+														"localhost"
+													],
+													"port": "5001",
+													"path": [
+														"api",
+														"Login"
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								},
+								{
+									"name": "staff",
+									"item": [
+										{
+											"name": "Create Staff Profile",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"Successful create staff request\", function () {\r",
+															"    pm.expect(pm.response.code).to.be.oneOf([200]);\r",
+															"});"
+														],
+														"type": "text/javascript",
+														"packages": {}
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "bearer",
+													"bearer": [
+														{
+															"key": "token",
+															"value": "{{auth-token}}",
+															"type": "string"
+														}
+													]
+												},
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\r\n  \"licenseNumber\": \"12645\",\r\n  \"firstName\": \"Ana\",\r\n  \"lastName\": \"Guterres\",\r\n  \"phone\": \"+351 900000002\",\r\n  \"email\": \"ritabarbosa26.rb@gmail.com\",\r\n  \"address\" : \"Portugal, 4590-850, Rua da Sardinha\",\r\n  \"function\": \"doctor\",\r\n  \"specializationId\": \"Orthopaedics\"\r\n} ",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "https://localhost:5001/api/Staff/Create-StaffProfile",
+													"protocol": "https",
+													"host": [
+														"localhost"
+													],
+													"port": "5001",
+													"path": [
+														"api",
+														"Staff",
+														"Create-StaffProfile"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "Register-Doctor-User",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"Successful staff user register request\", function () {\r",
+															"    pm.expect(pm.response.code).to.be.oneOf([200]);\r",
+															"});"
+														],
+														"type": "text/javascript",
+														"packages": {}
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "bearer",
+													"bearer": [
+														{
+															"key": "token",
+															"value": "{{auth-token}}",
+															"type": "string"
+														}
+													]
+												},
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\r\n  \"email\": \"ritabarbosa26.rb@gmail.com\",\r\n  \"password\": \"Abcde12345!\",\r\n  \"role\": \"Doctor\",\r\n  \"phone\": \"+351 900000002\"\r\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "https://localhost:5001/api/create-staff",
+													"protocol": "https",
+													"host": [
+														"localhost"
+													],
+													"port": "5001",
+													"path": [
+														"api",
+														"create-staff"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "Activate Staff Account",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"Successful activate staff user request\", function () {\r",
+															"    pm.expect(pm.response.code).to.be.oneOf([200]);\r",
+															"});"
+														],
+														"type": "text/javascript",
+														"packages": {}
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "noauth"
+												},
+												"method": "PUT",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\r\n    \"newpassword\" :  \"Abcde12345!\"\r\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": ""
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "Login-Doctor-User",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"Status code is 200\", function () {\r",
+															"    pm.response.to.have.status(200);\r",
+															"});\r",
+															"\r",
+															"var jsonResponse = pm.response.json();\r",
+															"var token = jsonResponse.token; \r",
+															"\r",
+															"pm.collectionVariables.set(\"auth-token-doctor\", token);"
+														],
+														"type": "text/javascript",
+														"packages": {}
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "noauth"
+												},
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": " {\r\n   \"email\": \"ritabarbosa26.rb@gmail.com\",\r\n  \"password\": \"Abcde12345!\"\r\n }",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "https://localhost:5001/api/Login",
+													"protocol": "https",
+													"host": [
+														"localhost"
+													],
+													"port": "5001",
+													"path": [
+														"api",
+														"Login"
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								},
+								{
+									"name": "operation-request",
+									"item": [
+										{
+											"name": "Create Operation Request 1",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"Successful | Create operation request\", function () {\r",
+															"    pm.expect(pm.response.code).to.be.oneOf([201]);\r",
+															"});\r",
+															""
+														],
+														"type": "text/javascript",
+														"packages": {}
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "bearer",
+													"bearer": [
+														{
+															"key": "token",
+															"value": "{{auth-token-doctor}}",
+															"type": "string"
+														}
+													]
+												},
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\r\n  \"deadLineDate\": \"2024-10-29\",\r\n  \"priority\": \"Elective\",\r\n  \"dateOfRequest\": \"2024-10-23\",\r\n  \"status\": \"requested\",\r\n  \"staffId\": \"D202400001\",\r\n  \"description\": \"news to be done\",\r\n  \"patientId\": \"202410000001\",\r\n  \"operationTypeId\": \"ACL Reconstruction Surgery\"\r\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "https://localhost:5001/api/OperationRequest",
+													"protocol": "https",
+													"host": [
+														"localhost"
+													],
+													"port": "5001",
+													"path": [
+														"api",
+														"OperationRequest"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "Create Operation Request 2",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"Successful | Create operation request\", function () {\r",
+															"    pm.expect(pm.response.code).to.be.oneOf([201]);\r",
+															"});\r",
+															""
+														],
+														"type": "text/javascript",
+														"packages": {}
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "bearer",
+													"bearer": [
+														{
+															"key": "token",
+															"value": "{{auth-token-doctor}}",
+															"type": "string"
+														}
+													]
+												},
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\r\n  \"deadLineDate\": \"2024-10-29\",\r\n  \"priority\": \"Emergency\",\r\n  \"dateOfRequest\": \"2024-10-23\",\r\n  \"status\": \"requested\",\r\n  \"staffId\": \"D202400001\",\r\n  \"description\": \"news to be done\",\r\n  \"patientId\": \"202410000002\",\r\n  \"operationTypeId\": \"Hip Replacement Surgery\"\r\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "https://localhost:5001/api/OperationRequest",
+													"protocol": "https",
+													"host": [
+														"localhost"
+													],
+													"port": "5001",
+													"path": [
+														"api",
+														"OperationRequest"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "Create Operation Request 3",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"Successful | Create operation request\", function () {\r",
+															"    pm.expect(pm.response.code).to.be.oneOf([201]);\r",
+															"});\r",
+															""
+														],
+														"type": "text/javascript",
+														"packages": {}
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "bearer",
+													"bearer": [
+														{
+															"key": "token",
+															"value": "{{auth-token-doctor}}",
+															"type": "string"
+														}
+													]
+												},
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\r\n  \"deadLineDate\": \"2024-10-29\",\r\n  \"priority\": \"Elective\",\r\n  \"dateOfRequest\": \"2024-10-15\",\r\n  \"status\": \"requested\",\r\n  \"staffId\": \"D202400002\",\r\n  \"description\": \"news to be done\",\r\n  \"patientId\": \"202410000002\",\r\n  \"operationTypeId\": \"Hip Replacement Surgery\"\r\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "https://localhost:5001/api/OperationRequest",
+													"protocol": "https",
+													"host": [
+														"localhost"
+													],
+													"port": "5001",
+													"path": [
+														"api",
+														"OperationRequest"
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								}
+							],
+							"description": "Data that must be available in the database to fulfill the user story requirements."
+						},
+						{
+							"name": "Get Filtered Operation Requests Copy",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{auth-token-doctor}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "https://localhost:5001/api/OperationRequest/filtered",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "5001",
+									"path": [
+										"api",
+										"OperationRequest",
+										"filtered"
+									],
+									"query": [
+										{
+											"key": "name",
+											"value": "Rita Barbosa",
+											"disabled": true
+										},
+										{
+											"key": "dateofrequest",
+											"value": "2024-10-23",
+											"disabled": true
+										},
+										{
+											"key": "priority",
+											"value": "Emergency",
+											"disabled": true
+										},
+										{
+											"key": "status",
+											"value": "Requested",
+											"disabled": true
+										},
+										{
+											"key": "deadlinedate",
+											"value": "2024-10-29",
+											"disabled": true
+										},
+										{
+											"key": "operationType",
+											"value": "Hip Replacement Surgery",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"description": "This is the folder for the system tests of us-5.1.19.\n\nIt's important to notice that it is necesssary to do a setup of some information before.\n\n---\n\nImplemented by: Rita Barbosa (1220841)  \nTested by: Ana Guterres (1221933)"
+				},
+				{
+					"name": "us-5.1.22",
+					"item": [
+						{
+							"name": "setup",
+							"item": [
+								{
+									"name": "admin",
+									"item": [
+										{
+											"name": "Register-Admin-User",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"Successful POST request\", function () {\r",
+															"    pm.expect(pm.response.code).to.be.oneOf([200]);\r",
+															"});"
+														],
+														"type": "text/javascript",
+														"packages": {}
+													}
+												}
+											],
+											"request": {
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\r\n  \"email\": \"ritabarbosa26@gmail.com\",\r\n  \"password\": \"Abcde12345!\",\r\n  \"role\": \"Admin\",\r\n  \"phone\": \"+351 919919919\"\r\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "https://localhost:5001/api/create-admin",
+													"protocol": "https",
+													"host": [
+														"localhost"
+													],
+													"port": "5001",
+													"path": [
+														"api",
+														"create-admin"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "Login-Admin-User",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"Status code is 200\", function () {\r",
+															"    pm.response.to.have.status(200);\r",
+															"});\r",
+															"\r",
+															"var jsonResponse = pm.response.json();\r",
+															"var token = jsonResponse.token; \r",
+															"\r",
+															"pm.collectionVariables.set(\"auth-token\", token);"
+														],
+														"type": "text/javascript",
+														"packages": {}
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "noauth"
+												},
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": " {\r\n  \"email\": \"ritabarbosa26@gmail.com\",\r\n  \"password\": \"Abcde12345!\"\r\n }",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "https://localhost:5001/api/Login",
+													"protocol": "https",
+													"host": [
+														"localhost"
+													],
+													"port": "5001",
+													"path": [
+														"api",
+														"Login"
+													]
+												}
+											},
+											"response": []
+										}
+									],
+									"auth": {
+										"type": "noauth"
+									},
+									"event": [
+										{
+											"listen": "prerequest",
+											"script": {
+												"type": "text/javascript",
+												"packages": {},
+												"exec": [
+													""
+												]
+											}
+										},
+										{
+											"listen": "test",
+											"script": {
+												"type": "text/javascript",
+												"packages": {},
+												"exec": [
+													""
+												]
+											}
+										}
+									]
+								},
+								{
+									"name": "operation-type",
+									"item": [
+										{
+											"name": "specializations",
+											"item": [
+												{
+													"name": "Create-Orthopaedics",
+													"event": [
+														{
+															"listen": "test",
+															"script": {
+																"exec": [
+																	"pm.test(\"Successful POST request\", function () {\r",
+																	"    pm.expect(pm.response.code).to.be.oneOf([201, 202]);\r",
+																	"});"
+																],
+																"type": "text/javascript",
+																"packages": {}
+															}
+														}
+													],
+													"request": {
+														"auth": {
+															"type": "noauth"
+														},
+														"method": "POST",
+														"header": [
+															{
+																"key": "Content-Type",
+																"value": "application/json",
+																"type": "text"
+															}
+														],
+														"body": {
+															"mode": "raw",
+															"raw": "{\r\n  \"denomination\": \"Orthopaedics\"\r\n}",
+															"options": {
+																"raw": {
+																	"language": "json"
+																}
+															}
+														},
+														"url": {
+															"raw": "https://localhost:5001/api/Specializations",
+															"protocol": "https",
+															"host": [
+																"localhost"
+															],
+															"port": "5001",
+															"path": [
+																"api",
+																"Specializations"
+															]
+														}
+													},
+													"response": []
+												},
+												{
+													"name": "Create-Anesthesia",
+													"event": [
+														{
+															"listen": "test",
+															"script": {
+																"exec": [
+																	"pm.test(\"Successful POST request\", function () {\r",
+																	"    pm.expect(pm.response.code).to.be.oneOf([201, 202]);\r",
+																	"});"
+																],
+																"type": "text/javascript",
+																"packages": {}
+															}
+														}
+													],
+													"request": {
+														"auth": {
+															"type": "noauth"
+														},
+														"method": "POST",
+														"header": [
+															{
+																"key": "Content-Type",
+																"value": "application/json",
+																"type": "text"
+															}
+														],
+														"body": {
+															"mode": "raw",
+															"raw": "{\r\n  \"denomination\": \"Anesthesia\"\r\n}",
+															"options": {
+																"raw": {
+																	"language": "json"
+																}
+															}
+														},
+														"url": {
+															"raw": "https://localhost:5001/api/Specializations",
+															"protocol": "https",
+															"host": [
+																"localhost"
+															],
+															"port": "5001",
+															"path": [
+																"api",
+																"Specializations"
+															]
+														}
+													},
+													"response": []
+												},
+												{
+													"name": "Create-Instrumenting",
+													"event": [
+														{
+															"listen": "test",
+															"script": {
+																"exec": [
+																	"pm.test(\"Successful POST request\", function () {\r",
+																	"    pm.expect(pm.response.code).to.be.oneOf([201, 202]);\r",
+																	"});"
+																],
+																"type": "text/javascript",
+																"packages": {}
+															}
+														}
+													],
+													"request": {
+														"auth": {
+															"type": "noauth"
+														},
+														"method": "POST",
+														"header": [
+															{
+																"key": "Content-Type",
+																"value": "application/json",
+																"type": "text"
+															}
+														],
+														"body": {
+															"mode": "raw",
+															"raw": "{\r\n  \"denomination\": \"Instrumenting\"\r\n}",
+															"options": {
+																"raw": {
+																	"language": "json"
+																}
+															}
+														},
+														"url": {
+															"raw": "https://localhost:5001/api/Specializations",
+															"protocol": "https",
+															"host": [
+																"localhost"
+															],
+															"port": "5001",
+															"path": [
+																"api",
+																"Specializations"
+															]
+														}
+													},
+													"response": []
+												},
+												{
+													"name": "Create-Circulating",
+													"event": [
+														{
+															"listen": "test",
+															"script": {
+																"exec": [
+																	"pm.test(\"Successful POST request\", function () {\r",
+																	"    pm.expect(pm.response.code).to.be.oneOf([201, 202]);\r",
+																	"});"
+																],
+																"type": "text/javascript",
+																"packages": {}
+															}
+														}
+													],
+													"request": {
+														"auth": {
+															"type": "noauth"
+														},
+														"method": "POST",
+														"header": [
+															{
+																"key": "Content-Type",
+																"value": "application/json",
+																"type": "text"
+															}
+														],
+														"body": {
+															"mode": "raw",
+															"raw": "{\r\n  \"denomination\": \"Circulating\"\r\n}",
+															"options": {
+																"raw": {
+																	"language": "json"
+																}
+															}
+														},
+														"url": {
+															"raw": "https://localhost:5001/api/Specializations",
+															"protocol": "https",
+															"host": [
+																"localhost"
+															],
+															"port": "5001",
+															"path": [
+																"api",
+																"Specializations"
+															]
+														}
+													},
+													"response": []
+												},
+												{
+													"name": "Create-Surgical-Assistance",
+													"event": [
+														{
+															"listen": "test",
+															"script": {
+																"exec": [
+																	"pm.test(\"Successful POST request\", function () {\r",
+																	"    pm.expect(pm.response.code).to.be.oneOf([201, 202]);\r",
+																	"});"
+																],
+																"type": "text/javascript",
+																"packages": {}
+															}
+														}
+													],
+													"request": {
+														"auth": {
+															"type": "noauth"
+														},
+														"method": "POST",
+														"header": [
+															{
+																"key": "Content-Type",
+																"value": "application/json",
+																"type": "text"
+															}
+														],
+														"body": {
+															"mode": "raw",
+															"raw": "{\r\n  \"denomination\": \"Surgical Assistance\"\r\n}",
+															"options": {
+																"raw": {
+																	"language": "json"
+																}
+															}
+														},
+														"url": {
+															"raw": "https://localhost:5001/api/Specializations",
+															"protocol": "https",
+															"host": [
+																"localhost"
+															],
+															"port": "5001",
+															"path": [
+																"api",
+																"Specializations"
+															]
+														}
+													},
+													"response": []
+												}
+											],
+											"description": "Requests related to specializations."
+										},
+										{
+											"name": "Create-ACL-Reconstruction-Surgery Copy",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"Successful POST request\", function () {\r",
+															"    pm.expect(pm.response.code).to.be.oneOf([201]);\r",
+															"});"
+														],
+														"type": "text/javascript",
+														"packages": {}
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "bearer",
+													"bearer": [
+														{
+															"key": "token",
+															"value": "{{auth-token}}",
+															"type": "string"
+														}
+													]
+												},
+												"method": "POST",
+												"header": [
+													{
+														"key": "Content-Type",
+														"value": "application/json",
+														"type": "text"
+													}
+												],
+												"body": {
+													"mode": "raw",
+													"raw": "{\r\n  \"name\": \"ACL Reconstruction Surgery\",\r\n  \"estimatedDuration\": 135,\r\n  \"status\": true,\r\n  \"requiredStaff\": [\r\n    {\r\n      \"staffQuantity\": 3,\r\n      \"function\": \"Doctor\",\r\n      \"specialization\": \"Orthopaedics\"\r\n    },\r\n    {\r\n      \"staffQuantity\": 1,\r\n      \"function\": \"Doctor\",\r\n      \"specialization\": \"Anesthesia\"\r\n    },\r\n    {\r\n      \"staffQuantity\": 1,\r\n      \"function\": \"Nurse\",\r\n      \"specialization\": \"Instrumenting\"\r\n    },\r\n    {\r\n      \"staffQuantity\": 1,\r\n      \"function\": \"Nurse\",\r\n      \"specialization\": \"Circulating\"\r\n    },\r\n    {\r\n      \"staffQuantity\": 1,\r\n      \"function\": \"Nurse\",\r\n      \"specialization\": \"Anesthesia\"\r\n    },\r\n    {\r\n      \"staffQuantity\": 1,\r\n      \"function\": \"Assistant\",\r\n      \"specialization\": \"Surgical Assistance\"\r\n    }\r\n  ],\r\n  \"phases\": [\r\n    {\r\n      \"description\": \"Anesthesia\",\r\n      \"duration\": 45\r\n    },\r\n    {\r\n      \"description\": \"Surgery\",\r\n      \"duration\": 60\r\n    },\r\n    {\r\n      \"description\": \"Cleaning\",\r\n      \"duration\": 30\r\n    }\r\n  ]\r\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "https://localhost:5001/api/OperationTypes",
+													"protocol": "https",
+													"host": [
+														"localhost"
+													],
+													"port": "5001",
+													"path": [
+														"api",
+														"OperationTypes"
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								}
+							],
+							"description": "Data that must be available in the database to fulfill the user story requirements.",
+							"auth": {
+								"type": "noauth"
+							},
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"type": "text/javascript",
+										"packages": {},
+										"exec": [
+											""
+										]
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"packages": {},
+										"exec": [
+											""
+										]
+									}
+								}
+							]
+						},
+						{
+							"name": "Inactivate Operation Type",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{auth-token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://localhost:5001/api/OperationTypes/ACL Reconstruction Surgery",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "5001",
+									"path": [
+										"api",
+										"OperationTypes",
+										"ACL Reconstruction Surgery"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"description": "This is the folder for the system tests of us-5.1.22.\n\nIt's important to notice that it is necesssary to do a setup of some information before.\n\n---\n\nImplemented by: Rita Barbosa (1220841)  \nTested by: Ana Guterres (1221933)"
+				}
+			],
+			"description": "User stories tested:\n\n- us-5.1.3\n    \n- us-5.1.4\n    \n- us-5.1.8\n    \n- us-5.1.12\n    \n- us-5.1.19\n    \n- us-5.1.22"
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "auth-token",
+			"value": ""
+		},
+		{
+			"key": "auth-token-doctor",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "auth-token-patient",
+			"value": "",
+			"type": "string"
+		}
+	]
+}

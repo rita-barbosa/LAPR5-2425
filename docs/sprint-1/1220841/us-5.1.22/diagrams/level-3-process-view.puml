@@ -16,25 +16,24 @@ activate ROUTE
 
 ROUTE -> pat_dto **: create(json)
 
-ROUTE -> CTRL: removeOperationType(operationTypeId)
+ROUTE -> CTRL: RemoveOperationType(operationTypeId)
 activate CTRL
 
-CTRL -> SVC: inactivateOperationType(operationTypeId)
+CTRL -> SVC: InactivateAsync(operationTypeId)
 activate SVC
 
-SVC -> REPO : getById(operationTypeId)
+SVC -> REPO : GetByIdAsync(operationTypeId)
 activate REPO
 REPO --> SVC : operationType
 deactivate REPO
 
-SVC -> OT: markAsInactive()
+SVC -> OT: Inactive()
 activate OT
 deactivate OT
 
 SVC -> REPO : save(operationType)
 activate REPO
 deactivate REPO
-
 
 SVC --> CTRL: success
 deactivate SVC

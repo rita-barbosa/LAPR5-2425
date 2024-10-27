@@ -14,10 +14,6 @@
         - [Level 3](#level-3)
       - [Development View](#development-view)
       - [Physical View](#physical-view)
-    - [4.4. Tests](#44-tests)
-  - [5. Implementation](#5-implementation)
-  - [6. Integration/Demonstration](#6-integrationdemonstration)
-  - [7. Observations](#7-observations)
 <!-- TOC -->
 
 ## 1. Context
@@ -113,19 +109,3 @@ The diagrams can be found in the [team decision views folder](../../team-decisio
 The diagrams can be found in the [team decision views folder](../../team-decisions/views/general-views.md#4-physical-view).
 
 
-
-### 4.4. Tests
-
-_// To do - layout still in development //_
-
-## 5. Implementation
-
-_// To do //_
-
-## 6. Integration/Demonstration
-
-_// To do //_
-
-## 7. Observations
-
-_// To do //_
