@@ -3,7 +3,7 @@
 <!-- TOC -->
 * [US 5.1.9](#us-519)
   * [1. Context](#1-context)
-  * [2. Requirements](#2-requirements)
+  * [2. Requirements](#2-requirements-)
   * [3. Analysis](#3-analysis)
     * [System Sequence Diagram](#system-sequence-diagram)
     * [Domain Model](#domain-model)
@@ -17,10 +17,6 @@
       * [Development View](#development-view)
       * [Physical View](#physical-view)
     * [4.3. Applied Patterns](#43-applied-patterns)
-    * [4.4. Tests](#44-tests)
-  * [5. Implementation](#5-implementation)
-  * [6. Integration/Demonstration](#6-integrationdemonstration)
-  * [7. Observations](#7-observations)
 <!-- TOC -->
 
 
@@ -28,7 +24,7 @@
 
 This is the first time this user story is being requested.
 
-## 2. Requirements
+## 2. Requirements 
 
 **US 5.1.9:** As an Admin, I want to edit an existing patient profile, so that I can update their information when needed.
 
@@ -87,7 +83,7 @@ This is the first time this user story is being requested.
 > **Question:** When one of the contents that administrator edits is a sensitive content (eg. email), the notification 
 > is sent for what patient's email, the email in patient account, the old email of patient or the new email of patient?
 >
-> **Answer:**
+> **Answer:** If the email is changed, the notification should be sent to the "old" email
 
 
 ## 3. Analysis
@@ -121,14 +117,6 @@ The system will log all the profile changes for auditing purposes.
 
 The logical, physical, development and scenario views diagrams are generic for all the use cases of the backoffice component.
 
-This user story is very similar to  [US 5.1.13.](../us-5.1.13/readme.md), so were made generic diagrams of the process views
-for each level.
-
-In the following diagrams, the listed variables represent the respective concepts:
-
-* **Y** is 9, represents the user story: us-5.1.9.
-* **X** represents Patient.
-
 #### Logical View
 
 The diagrams are available in the [team decision views folder](../../team-decisions/views/general-views.md#1-logical-view).
@@ -137,15 +125,15 @@ The diagrams are available in the [team decision views folder](../../team-decisi
 
 ##### Level 1
 
-![Process View - Level 1](../general-process-view-diagrams/edit-profiles/n1/process-view-nivel1.svg)
+![Process View - Level 1](diagrams/n1/process-view-nivel1.svg)
 
 ##### Level 2
 
-![Process View - Level 2](../general-process-view-diagrams/edit-profiles/n2/process-view-nivel2.svg)
+![Process View - Level 2](diagrams/n2/process-view-nivel2.svg)
 
 ##### Level 3
 
-![Process View - Level 3](../general-process-view-diagrams/edit-profiles/n3/process-view-nivel3.svg)
+![Process View - Level 3](diagrams/n3/process-view-nivel3.svg)
 
 #### Development View
 
@@ -159,7 +147,7 @@ The diagrams are available in the [team decision views folder](../../team-decisi
 
 > #### **Repository Pattern**
 >
->* **Components:** PatientRepository, TokenRepository
+>* **Components:** PatientRepository
 >
 > The repositories handle data access and retrieval, isolating the database interaction logic from services and other
 > layers. This approach abstracts the persistence logic, promoting separation of concerns.
@@ -167,7 +155,7 @@ The diagrams are available in the [team decision views folder](../../team-decisi
 
 > #### **DTO (Data Transfer Object) Pattern**
 >
->* **Components:** PatientDTO, TokenDTO
+>* **Components:** PatientDTO, EmailMessageDTO, EditPatientDTO
 >
 > DTOs are utilized to transfer data between layers, particularly from the controller layer to the service layer and
 > vice versa. Their main purpose is to convey data in a structured and decoupled manner without revealing the internal
@@ -176,25 +164,7 @@ The diagrams are available in the [team decision views folder](../../team-decisi
 
 > #### **Facade Pattern**
 >
->* **Components:** PatientService, EmailService, TokenService
+>* **Components:** PatientService, LogService, EmailService
 >
 > These services function as a facade, simplifying the interaction with lower-level components such as repositories.
 > The controller communicates with these service facades, concealing the complexity from the upper layers.
-
-
-### 4.4. Tests
-
-_// To do - layout still in development //_ 
-
-
-## 5. Implementation
-
-_// To do //_
-
-## 6. Integration/Demonstration
-
-_// To do //_
-
-## 7. Observations
-
-_// To do //_
