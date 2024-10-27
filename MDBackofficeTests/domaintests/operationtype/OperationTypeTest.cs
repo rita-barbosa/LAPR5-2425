@@ -92,26 +92,6 @@ public class OperationTypeTests
     }
 
     [Theory]
-    [MemberData(nameof(OperationTypeTestInvalidStatus))]
-    public void WhenPassingInvalidStatus_ThenThrowsException(
-        string name,
-        int duration,
-        bool status,
-        List<RequiredStaffDto> staff,
-        List<PhaseDto> phases)
-    {
-        Assert.Throws<BusinessRuleValidationException>(() =>
-           new OperationType(
-            name,
-            duration,
-            status,
-            staff,
-            phases
-        )
-           );
-    }
-
-    [Theory]
     [MemberData(nameof(OperationTypeTestInvalidNumberOfStaff))]
     public void WhenPassingInvalidNumberOfStaff_ThenThrowsException(
         string name,

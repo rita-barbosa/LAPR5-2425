@@ -15,10 +15,6 @@ namespace DDDNetCore.Domain.OperationTypes.ValueObjects
 
         public OperationTypeStatus(bool status)
         {
-            if (status == false)
-            {
-                throw new BusinessRuleValidationException("Status cannot be false.");
-            }
             this.Active = status;
         }
 
