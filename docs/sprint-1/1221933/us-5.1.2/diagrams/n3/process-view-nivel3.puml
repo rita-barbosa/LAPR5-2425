@@ -5,141 +5,103 @@ title "US 5.1.2. Process View (Level 3)"
 
 autonumber
 
-participant "route:\nPasswordResetRoute" as ROUTE
-participant "controller:\nPasswordResetController" as CTRL
-
-participant "dto:\nUserDTO" as UserDTO
-participant "service:\nAuthenticationService" as AUTHServ
-participant "domain:\nUser" as USER
-participant "domain:\nUserPassword" as PASS
-participant "repository:\nUserRepository" as AUTHRepo
-participant "service:\nEmailService" as EMAILServ
+participant "route:\nUserRoute" as ROUTE
+participant "controller:\nUserController" as CTRL
+participant "service:\nUserService" as UserServ
 participant "service:\nTokenManagementService" as TOKENServ
-participant "domain:\nToken" as TOK
-participant "dto:\nTokenDTO" as TOKENDTO
+participant "service:\nUserManager" as UserMan
+participant "domain:\nUser" as USER
 participant "repository:\nTokenRepository" as TOKENRepo
 
-[o-> ROUTE : POST(json)
+
+[o-> ROUTE : PUT(email)
 activate ROUTE
 
-ROUTE -> CTRL : requestPasswordAlteration(credentialsData)
+ROUTE -> CTRL : ResetPassword(email)
 activate CTRL
 
-CTRL -> UserDTO** : toDTO(credentialsData)
-CTRL -> AUTHServ : checkIfUserExists(userDTO)
-activate AUTHServ
+CTRL -> UserServ : ResetPassword(email)
+activate UserServ
 
-AUTHServ -> AUTHRepo : existsById(usernameString)
-activate AUTHRepo
+UserServ -> UserMan : FindByEmailAsync(email)
+activate UserMan
 
-AUTHRepo --> AUTHServ : boolean
-deactivate AUTHRepo
+UserMan --> UserServ : user or exception
+deactivate UserMan
 
-AUTHServ --> CTRL : boolean
-deactivate AUTHServ
-
-
-CTRL -> EMAILServ : sendPasswordResetLink(userDTO)
-activate EMAILServ
-
-EMAILServ -> TOKENServ : generateResetPasswordToken()
-activate TOKENServ
-
-TOKENServ -> TOK **
-
-TOKENServ -> TOKENRepo : save(token)
-activate TOKENRepo
-
-TOKENRepo --> TOKENServ : return
-deactivate TOKENRepo
-
-TOKENServ -> TOKENDTO ** : toDTO(token)
-
-TOKENServ --> EMAILServ : tokenDTO
-deactivate TOKENServ
-
-EMAILServ -> EMAILServ : sendEmail(emailString, tokenDTO, emailTitle, emailBody)
-
-EMAILServ --> CTRL : return
-deactivate EMAILServ
-
-CTRL --> ROUTE : return
-deactivate CTRL
-
-deactivate CTRL
-<-- ROUTE : return
-
-deactivate ROUTE
-
-|||
-
-[o-> ROUTE : PUT(credentialsData, tokenData)
-activate ROUTE
-
-ROUTE -> CTRL : updatePassword(credentialsData, tokenData)
-activate CTRL
-
-CTRL -> TOKENDTO ** : toDTO(tokenData)
-
-CTRL -> TOKENServ : validateToken(tokenDTO)
-activate TOKENServ
-
-TOKENServ -> TOKENRepo : findByID(tokenDtoID)
-activate TOKENRepo
-
-TOKENRepo --> TOKENServ : token
-deactivate TOKENRepo
-
-TOKENServ -> TOKENServ : checkTokenValidityUsage(token)
-TOKENServ -> TOK : updateValidity()
-activate TOK
-TOK --> TOKENServ : return
-deactivate TOK
-
-TOKENServ -> TOKENRepo : save(token)
-activate TOKENRepo
-
-TOKENRepo --> TOKENServ : return
-deactivate TOKENRepo
-
-TOKENServ --> CTRL : true
-deactivate TOKENServ
-
-CTRL -> UserDTO ** : toDTO(credentialsData)
-
-CTRL -> AUTHServ : updateAccountPassword(userDTO)
-activate AUTHServ
-
-AUTHServ -> AUTHRepo : findById(usernameString)
-activate AUTHRepo
-AUTHRepo --> AUTHServ : user
-deactivate AUTHRepo
-
-AUTHServ -> PASS : checkPasswordIsValid(passwordString)
-activate PASS
-PASS --> AUTHServ : boolean
-deactivate PASS
-
-opt boolean == true
-AUTHServ -> USER : updatePassword(passwordString)
+UserServ -> USER : changeStatus(false)
 activate USER
-USER --> AUTHServ : return
 deactivate USER
 
+UserServ -> UserMan : GenerateEmailConfirmationToken(user)
+activate UserMan
+UserMan --> UserServ : token
+deactivate UserMan
 
-AUTHServ -> AUTHRepo : save(user)
-activate AUTHRepo
-AUTHRepo --> AUTHServ : return
-deactivate AUTHRepo
+UserServ -> UserServ : ConfigureUrlPasswordConfirmation(token, user)
+activate UserServ
+deactivate UserServ
 
-AUTHServ --> CTRL : return
-deactivate AUTHServ
+UserServ -> UserServ : SendPasswordEmail(email, token)
+activate UserServ
+deactivate UserServ
 
-CTRL --> ROUTE : return
+
+UserServ --> CTRL : success/failure
+deactivate UserServ
+
+CTRL --> ROUTE : return message
 deactivate CTRL
+
+<-- ROUTE : return message
+deactivate ROUTE
+
+[o-> ROUTE : PUT(email, token, newPassword)
+activate ROUTE
+
+ROUTE -> CTRL : UpdatePassword(email, token, newPassword)
+activate CTRL
+
+CTRL -> UserServ : UpdatePassword(email, token, newPassword)
+activate UserServ
+
+UserServ -> TOKENServ : ConfirmEmailToken(userId, token)
+activate TOKENServ
+
+TOKENServ -> UserMan : findByIdAsync(userId)
+activate UserMan
+
+UserMan --> TOKENServ : user
+deactivate UserMan
+
+TOKENServ -> UserMan : ConfirmEmailAsync(user, token)
+activate UserMan
+
+UserMan --> TOKENServ : result
+deactivate UserMan
+
+TOKENServ --> UserServ : result
+deactivate TOKENServ
+
+
+opt result is true
+UserServ -> UserMan : ResetPasswordAsync(user, token, newPassword)
+activate UserMan
+deactivate UserMan
+
+UserServ -> USER : changeStatus(true)
+activate USER
+deactivate USER
 
 end opt
 
-<-- ROUTE : success/error
+UserServ --> CTRL : success/failure
+deactivate UserServ
+
+CTRL --> ROUTE : return Ok("Password was changed successfully.")
+deactivate CTRL
+
+<-- ROUTE : message
+deactivate ROUTE
 
 @enduml

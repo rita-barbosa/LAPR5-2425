@@ -16,10 +16,6 @@
       * [Development View](#development-view)
       * [Physical View](#physical-view)
     * [4.3. Applied Patterns](#43-applied-patterns)
-    * [4.4. Tests](#44-tests)
-  * [5. Implementation](#5-implementation)
-  * [6. Integration/Demonstration](#6-integrationdemonstration)
-  * [7. Observations](#7-observations)
 <!-- TOC -->
 
 
@@ -108,37 +104,9 @@ The diagrams are available in the [team decision views folder](../../team-decisi
 > layers. This approach abstracts the persistence logic, promoting separation of concerns.
 
 
-> #### **DTO (Data Transfer Object) Pattern**
->
->* **Components:** UserDTO, TokenDTO
->
-> DTOs are utilized to transfer data between layers, particularly from the controller layer to the service layer and
-> vice versa. Their main purpose is to convey data in a structured and decoupled manner without revealing the internal
-> representations of entities. Additionally, this pattern is not required to adhere to business rules.
-
-
 > #### **Facade Pattern**
 >
->* **Components:** AuthenticationService, EmailService, TokenManagementService 
+>* **Components:** UserService, UserManager, TokenManagementService 
 >
 > These services function as a facade, simplifying the interaction with lower-level components such as repositories.
 > The controller communicates with these service facades, concealing the complexity from the upper layers.
-
-
-
-### 4.4. Tests
-
-_// To do - layout still in development //_ 
-
-
-## 5. Implementation
-
-_// To do //_
-
-## 6. Integration/Demonstration
-
-_// To do //_
-
-## 7. Observations
-
-_// To do //_
