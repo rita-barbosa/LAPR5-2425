@@ -16,11 +16,14 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.JsonPatch.Internal;
+using Microsoft.AspNetCore.JsonPatch.Operations;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moq;
 using Xunit;
+using OperationType = DDDNetCore.Domain.OperationTypes.OperationType;
 
 namespace MDBackofficeTests.servicetests.operationrequest;
 public class OperationRequestServiceTests
@@ -239,9 +242,9 @@ public class OperationRequestServiceTests
         }
 
         _repoMock.Verify(repo => repo.FindAllConditioned(new StaffId(staffId), name, priority, operationType, status, dateOfRequest, deadLineDate), Times.Once);
-
+    
     }
 
-    
+
 }
 

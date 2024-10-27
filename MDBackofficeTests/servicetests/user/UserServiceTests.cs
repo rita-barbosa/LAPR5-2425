@@ -66,14 +66,14 @@ namespace MDBackofficeTests.servicetests.user
             _configurationMock = new Mock<IConfiguration>();
 
             _userService = new UserService(
-                _userManagerMock.Object,
-                _roleManagerMock.Object,
-                _logServiceMock.Object,
-                _signinManagerMock.Object,
-                _emailServiceMock.Object,
-               _configurationMock.Object,
-                _tokenServiceMock.Object
-            );
+                    _userManagerMock.Object,
+                    _roleManagerMock.Object,
+                    _logServiceMock.Object,
+                    _signinManagerMock.Object,
+                    _emailServiceMock.Object,
+                    _configurationMock.Object,
+                    _tokenServiceMock.Object
+                );
         }
 
         [Fact]
