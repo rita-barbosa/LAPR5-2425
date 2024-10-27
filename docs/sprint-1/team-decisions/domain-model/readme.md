@@ -7,7 +7,6 @@ We have identified nine key concepts that are considered aggregate root entities
 * User
 * Staff
 * Patient
-* Doctor
 * Appointment
 * OperationRequest
 * OperationType
