@@ -224,4 +224,28 @@ public class StaffServiceTest
         Assert.IsType<List<StaffDto>>(staffs);
         Assert.Single(staffs);
     }
+
+     [Fact]
+    public async Task DeactivateStaffProfile_ReturnsOkResult()
+    {
+        // Arrange
+        string email = "exampleemail@gmail.com";
+
+        var staffMock = new Mock<Staff>("00001", "Portugal, 4570-860, Rua das Oliveiras", "12345", "Rita", "Barbosa", "Rita Barbosa", email, "+351", "987654321", "Doctor", "Orthopedics");
+        var id = "D202400001";
+        
+
+        var specializationMock = new Mock<Specialization>("Ortopethics");
+
+        _repoMock.Setup(_repoPatMock => _repoPatMock.GetByIdAsync(It.IsAny<StaffId>()))
+            .ReturnsAsync(staffMock.Object);
+        staffMock.Setup(r => r.DeactivateProfile());
+        _unitOfWorkMock.Setup(u => u.CommitAsync()).ReturnsAsync(1);
+
+        // Act
+        var result = await _service.DeactivateStaffProfile(id);
+
+        // Assert
+        Assert.True(result);
+    }
 }

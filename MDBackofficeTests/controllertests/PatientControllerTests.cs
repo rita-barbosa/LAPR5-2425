@@ -15,6 +15,8 @@ using DDDNetCore.Controllers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
+using System.Collections.Generic;
+using System.Security.Claims;
 
 
 namespace MDBackofficeTests.controllertests
@@ -25,6 +27,8 @@ namespace MDBackofficeTests.controllertests
         private readonly Mock<IUnitOfWork> _unitOfWorkMock = new Mock<IUnitOfWork>();
         private readonly Mock<IPatientRepository> _repoMock = new Mock<IPatientRepository>();
         private readonly PatientController _controller;
+        private readonly Mock<UserManager<User>> _userManagerMock;
+        private readonly Mock<IConfiguration> _configurationMock = new Mock<IConfiguration>();
         private readonly Mock<UserService> _userServiceMock;
 
         public PatientControllerTests()
@@ -36,21 +40,20 @@ namespace MDBackofficeTests.controllertests
             var identityErrorDescriberMock = new Mock<IdentityErrorDescriber>();
 
             
-            var userManagerMock = new Mock<UserManager<User>>(new Mock<IUserStore<User>>().Object, identityOptionsMock.Object, new Mock<IPasswordHasher<User>>().Object, new List<IUserValidator<User>> { new Mock<IUserValidator<User>>().Object }, new List<IPasswordValidator<User>> { new Mock<IPasswordValidator<User>>().Object }, new Mock<ILookupNormalizer>().Object, identityErrorDescriberMock.Object, new Mock<IServiceProvider>().Object, new Mock<ILogger<UserManager<User>>>().Object);
+            _userManagerMock = new Mock<UserManager<User>>(new Mock<IUserStore<User>>().Object, identityOptionsMock.Object, new Mock<IPasswordHasher<User>>().Object, new List<IUserValidator<User>> { new Mock<IUserValidator<User>>().Object }, new List<IPasswordValidator<User>> { new Mock<IPasswordValidator<User>>().Object }, new Mock<ILookupNormalizer>().Object, identityErrorDescriberMock.Object, new Mock<IServiceProvider>().Object, new Mock<ILogger<UserManager<User>>>().Object);
             var roleManagerMock = new Mock<RoleManager<Role>>(new Mock<IRoleStore<Role>>().Object, new List<IRoleValidator<Role>>(), new Mock<ILookupNormalizer>().Object, identityErrorDescriberMock.Object, new Mock<ILogger<RoleManager<Role>>>().Object);
 
-            var tokenServiceMock = new Mock<TokenService>(_unitOfWorkMock.Object, new Mock<ITokenRepository>().Object, userManagerMock.Object);
+            var tokenServiceMock = new Mock<TokenService>(_unitOfWorkMock.Object, new Mock<ITokenRepository>().Object, _userManagerMock.Object);
             var _emailServiceMock = new Mock<EmailService>(tokenServiceMock.Object, new Mock<IEmailAdapter>().Object);
-            var _configurationMock = new Mock<IConfiguration>();
-            var signinManagerMock = new Mock<SignInManager<User>>(userManagerMock.Object,
+
+            var signinManagerMock = new Mock<SignInManager<User>>(_userManagerMock.Object,
                                                                new Mock<IHttpContextAccessor>().Object,
                                                                new Mock<IUserClaimsPrincipalFactory<User>>().Object,
                                                                identityOptionsMock.Object,
                                                                new Mock<ILogger<SignInManager<User>>>().Object,
                                                                new Mock<IAuthenticationSchemeProvider>().Object,
                                                                new Mock<IUserConfirmation<User>>().Object);
-
-            _userServiceMock = new Mock<UserService>(userManagerMock.Object, roleManagerMock.Object, _logServiceMock.Object,signinManagerMock.Object, _emailServiceMock.Object, _configurationMock.Object, tokenServiceMock.Object);
+             _userServiceMock = new Mock<UserService>(_userManagerMock.Object, roleManagerMock.Object, _logServiceMock.Object,signinManagerMock.Object, _emailServiceMock.Object, _configurationMock.Object, tokenServiceMock.Object);
             
             _service = new Mock<PatientService>(_unitOfWorkMock.Object, _logServiceMock.Object, 
                                             _configurationMock.Object, _repoMock.Object, 
@@ -213,6 +216,72 @@ namespace MDBackofficeTests.controllertests
             var returnedPatient = Assert.IsType<List<PatientDto>>(okResult.Value);
         }
 
+        [Fact]
+        public async Task EditProfile_ReturnsAcceptedPatientDto()
+        {
+            //Arrange
+            var oldEmail = "tes@email.com";
+            var newEmail = "tesNew@email.com";
+            var email = "test@email.com";
+            var id = "testid";
+            var password = "NewPass00_d";
+
+            var dtoMock = new EditPatientProfileDto
+            ("Rita Barbosa",
+              "+351 910000000",
+              "+351 910000010",
+              newEmail,
+              "Test, 1234-234, Test Test");
+
+
+            var patientMock = new Mock<Patient>("first", "last", "first last", "country, 12345, street test", "female", "+123", "12345678", "98765432", oldEmail, "2000-10-10", "000001");
+            var userMock = new Mock<User>();
+            userMock.Setup(u => u.Id).Returns(id);
+            userMock.Setup(u => u.UserName).Returns(email);
+            userMock.Setup(u => u.Email).Returns(email);
+            userMock.Setup(u => u.Status).Returns(true);
+            userMock.Setup(u => u.PasswordHash).Returns(password);
+
+            var token = "test-token";
+            var idPatient = "202410000001";
+
+            var dtoResult = new PatientDto("Rita Barbosa", "+351 910000000", newEmail, "Test, 1234-234, Test Test", "2000-10-10", idPatient);
+
+            var mockClaimsPrincipal = new Mock<ClaimsPrincipal>();
+            mockClaimsPrincipal
+                .Setup(x => x.FindFirst(ClaimTypes.Email))
+                .Returns(new Claim(ClaimTypes.Email, oldEmail));
+
+            _controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext { User = mockClaimsPrincipal.Object }
+            };
+
+
+            _repoMock.Setup(_repoPatMock => _repoPatMock.FindPatientWithUserEmail(oldEmail))
+                        .ReturnsAsync(patientMock.Object);
+            _userManagerMock.Setup(_userManagerMock => _userManagerMock.FindByEmailAsync(oldEmail)).ReturnsAsync(userMock.Object);
+            _userManagerMock.Setup(_userManagerMock => _userManagerMock.GenerateChangeEmailTokenAsync(userMock.Object, newEmail)).ReturnsAsync(token);
+            _userManagerMock.Setup(_userManagerMock => _userManagerMock.ChangeEmailAsync(userMock.Object, newEmail, token)).ReturnsAsync(IdentityResult.Success);
+            _userManagerMock.Setup(_userManagerMock => _userManagerMock.UpdateAsync(userMock.Object));
+            _userManagerMock.Setup(_userManagerMock => _userManagerMock.GetRolesAsync(userMock.Object)).ReturnsAsync(["Patient"]);
+            _configurationMock.Setup(c => c["App:Email"]).Returns("testemail@email.com");
+            _configurationMock.Setup(c => c["App:BaseUrl"]).Returns("https://test/api");
+            _unitOfWorkMock.Setup(u => u.CommitAsync()).ReturnsAsync(1);
+
+            //Act
+            var result = await _controller.EditPatientProfile(dtoMock);
+
+            //Assert
+            var okResult = Assert.IsType<AcceptedResult>(result.Result);
+            var returnedPatient = Assert.IsType<PatientDto>(okResult.Value);
+            Assert.Equal(dtoResult.Name, returnedPatient.Name);
+            Assert.Equal(dtoResult.Phone, returnedPatient.Phone);
+            Assert.Equal(dtoResult.Email, returnedPatient.Email);
+            Assert.Equal(dtoResult.Address, returnedPatient.Address);
+            Assert.Equal(dtoResult.DateBirth, returnedPatient.DateBirth);
+            Assert.Equal(dtoResult.PatientId, returnedPatient.PatientId);
+        }
     }
 }
 
