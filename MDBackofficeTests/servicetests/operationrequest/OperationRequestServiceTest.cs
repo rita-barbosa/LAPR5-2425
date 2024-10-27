@@ -23,7 +23,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moq;
 using Xunit;
-using OperationType = DDDNetCore.Domain.OperationTypes.OperationType;
+using OperationType = MDBackoffice.Domain.OperationTypes.OperationType;
 
 namespace MDBackofficeTests.servicetests.operationrequest;
 public class OperationRequestServiceTests
