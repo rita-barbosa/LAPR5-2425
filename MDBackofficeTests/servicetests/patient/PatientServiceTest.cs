@@ -190,7 +190,7 @@ public class PatientServiceTests
 
 
     [Fact]
-    public async Task DeletePatientProfile_ReturnsBusinessRuleValidationException()
+    public async Task DeletePatientProfile_ReturnsBusinessRuleValidationException() 
     {
         // Arrange
         var id = "202410000001";
