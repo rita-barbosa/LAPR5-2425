@@ -164,4 +164,64 @@ public class StaffServiceTest
             Assert.Equal(dtoResult.Address, result.Address);
             Assert.Equal(dtoResult.SpecializationId, result.SpecializationId);
         }
+
+    [Fact]
+    public async Task GetAllAsync_ReturnsStaffListDto()
+    {
+        // Arrange
+        var email = "ritabarbosa@email.com";
+        var staffMock = new Mock<Staff>("00001", "Portugal, 4570-860, Rua das Oliveiras", "12345", "Rita", "Barbosa", "Rita Barbosa", email, "+351", "987654321", "Doctor", "Orthopedics");
+
+        List<Staff> result = new List<Staff> { staffMock.Object };
+
+        _repoMock.Setup(_repo => _repo.GetAllAsync()).ReturnsAsync(result);
+
+        // Act
+        var staffs = await _service.GetAllAsync();
+
+        // Assert
+        Assert.NotNull(staffs);
+        Assert.IsType<List<StaffDto>>(staffs);
+        Assert.Single(staffs);
+    }
+
+    [Fact]
+    public async Task FilterPatientProfiles_ReturnsPatientListDto()
+    {
+        //Arrange
+        string firstName = "Duarte";
+        string lastName = "Matos";
+        string email = "exampleemail@gmail.com";
+        string specialization = "Cardiology";
+
+        StaffListingFilterParametersDto listingFilterParametersDto
+            = new StaffListingFilterParametersDto(
+                firstName,
+                lastName,
+                email,
+                specialization
+                );
+
+        List<StaffListingFilterParametersDto> listingFilterParametersDtosList = new List<StaffListingFilterParametersDto>
+            {
+                listingFilterParametersDto
+            };
+
+        StaffQueryParametersDto dto = new StaffQueryParametersDto(listingFilterParametersDtosList);
+        var id = "202410000001";
+
+        var staffMock = new Mock<Staff>("00001", "Portugal, 4570-860, Rua das Oliveiras", "12345", "Rita", "Barbosa", "Rita Barbosa", email, "+351", "987654321", "Doctor", "Orthopedics");
+
+        List<Staff> result = new List<Staff> { staffMock.Object };
+
+        _repoMock.Setup(_repo => _repo.FilterStaffProfiles(dto)).ReturnsAsync(result);
+
+        // Act
+        var staffs = await _service.FilterStaffProfiles(dto);
+
+        // Assert
+        Assert.NotNull(staffs);
+        Assert.IsType<List<StaffDto>>(staffs);
+        Assert.Single(staffs);
+    }
 }
