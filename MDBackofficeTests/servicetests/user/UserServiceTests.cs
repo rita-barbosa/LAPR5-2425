@@ -9,11 +9,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace MDBackofficeTests.servicetests.user
@@ -26,6 +21,7 @@ namespace MDBackofficeTests.servicetests.user
         private readonly Mock<IUnitOfWork> _unitOfWorkMock = new Mock<IUnitOfWork>();
         private readonly Mock<LogService> _logServiceMock = new Mock<LogService>(new Mock<IUnitOfWork>().Object, new Mock<ILogRepository>().Object);
         private readonly Mock<UserManager<User>> _userManagerMock;
+        private readonly Mock<RoleManager<Role>> _roleManagerMock;
         private readonly Mock<IConfiguration> _configurationMock;
         private readonly Mock<TokenService> _tokenServiceMock;
 
@@ -46,7 +42,7 @@ namespace MDBackofficeTests.servicetests.user
                 new Mock<ILogger<UserManager<User>>>().Object
             );
 
-            var roleManagerMock = new Mock<RoleManager<Role>>(
+            _roleManagerMock = new Mock<RoleManager<Role>>(
                 new Mock<IRoleStore<Role>>().Object,
                 new List<IRoleValidator<Role>>(),
                 new Mock<ILookupNormalizer>().Object,
@@ -60,7 +56,7 @@ namespace MDBackofficeTests.servicetests.user
 
             _userService = new UserService(
                 _userManagerMock.Object,
-                roleManagerMock.Object,
+                _roleManagerMock.Object,
                 _logServiceMock.Object,
                 _emailServiceMock.Object,
                _configurationMock.Object,
@@ -189,5 +185,37 @@ namespace MDBackofficeTests.servicetests.user
             
             await Assert.ThrowsAsync<BusinessRuleValidationException>(() => _userService.Login(dtoMock));        
         }
+
+
+          [Fact]
+        public async Task CreateStaffUserAsync_ReturnsUser()
+        {
+            // Arrange
+            var email = "test@gmail.com";
+            var password = "#Test12345";
+            var role = "doctor";
+            var phone = "+351 960444772";
+
+            var registerUserDto = new RegisterUserDto { Email = email, Password = password, Role = role, Phone = phone };
+
+            _roleManagerMock.Setup(rm => rm.RoleExistsAsync(role)).ReturnsAsync(true);
+
+            _userManagerMock.Setup(um => um.CreateAsync(It.IsAny<User>(), password))
+                            .ReturnsAsync(IdentityResult.Success);
+
+            _userManagerMock.Setup(um => um.AddToRoleAsync(It.IsAny<User>(), role))
+                            .ReturnsAsync(IdentityResult.Success);
+
+            // Act
+            var result = await _userService.CreateStaffUserAsync(registerUserDto);
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Equal(email, result.Email);
+            _userManagerMock.Verify(r => r.CreateAsync(It.IsAny<User>(), password), Times.Once);
+            _userManagerMock.Verify(r => r.AddToRoleAsync(It.IsAny<User>(), role), Times.Once);
+            _roleManagerMock.Verify(r => r.RoleExistsAsync(role), Times.Once);
+        }
+        
     }
 }
