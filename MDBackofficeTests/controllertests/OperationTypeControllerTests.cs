@@ -1,17 +1,12 @@
-﻿using DDDNetCore.Domain.Logs;
-using DDDNetCore.Domain.OperationTypes.ValueObjects.Phase;
-using DDDNetCore.Domain.OperationTypes.ValueObjects.RequiredStaff;
-using DDDNetCore.Domain.OperationTypes;
-using DDDNetCore.Domain.OperationTypesRecords;
-using DDDNetCore.Domain.Shared;
+﻿using MDBackoffice.Domain.Logs;
+using MDBackoffice.Domain.OperationTypes.ValueObjects.Phase;
+using MDBackoffice.Domain.OperationTypes.ValueObjects.RequiredStaff;
+using MDBackoffice.Domain.OperationTypes;
+using MDBackoffice.Domain.OperationTypesRecords;
+using MDBackoffice.Domain.Shared;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Xunit;
-using DDDNetCore.Controllers;
+using MDBackoffice.Controllers;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MDBackofficeTests.controllertests
@@ -109,6 +104,105 @@ namespace MDBackofficeTests.controllertests
             _repoMock.Verify(repo => repo.FilterOperationTypes(queryParameters), Times.Once);
         }
 
+
+        [Fact]
+        public async Task RemoveOperationType_ValidId_ReturnsOkResult()
+        {
+            // Arrange
+            var operationTypeId = "test type 1";
+             var phasesDto = new List<PhaseDto>
+            {
+                new PhaseDto {
+                            Description = "descrip",
+                            Duration = 25
+                            },
+                new PhaseDto {
+                            Description = "descrip2",
+                            Duration = 50
+                            },
+                new PhaseDto {
+                            Description = "descrip3",
+                            Duration = 25
+                            }
+            };
+
+            var reqStaffDto = new List<RequiredStaffDto>
+            {
+                new RequiredStaffDto{
+                    StaffQuantity = 1,
+                    Function = "doctor",
+                    Specialization = "ortho"
+                }
+            };
+
+            var operationType = new OperationType("test type 1", 100, true, reqStaffDto,phasesDto);
+
+            var expectedDto = new OperationTypeDto {Name ="test type 1",EstimatedDuration = 100, Status = true,RequiredStaff = reqStaffDto,Phases = phasesDto };
+
+            _repoMock.Setup(repo => repo.GetByIdAsync(new OperationTypeId(operationTypeId))).ReturnsAsync(operationType);
+            _unitOfWorkMock.Setup(u => u.CommitAsync()).ReturnsAsync(1);
+
+            // Act
+            var result = await _controller.RemoveOperationType(operationTypeId);
+
+            // Assert
+            var okResult = Assert.IsType<OkObjectResult>(result.Result);
+            var actualDto = Assert.IsType<OperationTypeDto>(okResult.Value);
+            Assert.Equal(expectedDto.Name, actualDto.Name);
+            Assert.Equal(expectedDto.EstimatedDuration, actualDto.EstimatedDuration);
+            Assert.NotEqual(expectedDto.Status, actualDto.Status);
+        }
+
+
+        [Fact]
+        public async Task EditOperationType_ReturnsOkResult()
+        {
+            // Arrange
+             var phasesDto = new List<PhaseDto>
+            {
+                new PhaseDto {
+                            Description = "descrip",
+                            Duration = 25
+                            },
+                new PhaseDto {
+                            Description = "descrip2",
+                            Duration = 50
+                            },
+                new PhaseDto {
+                            Description = "descrip3",
+                            Duration = 25
+                            }
+            };
+
+            var reqStaffDto = new List<RequiredStaffDto>
+            {
+                new RequiredStaffDto{
+                    StaffQuantity = 1,
+                    Function = "doctor",
+                    Specialization = "ortho"
+                }
+            };
+
+            var recordID = "record 1";
+
+            var operationType = new Mock<OperationType>("test type 1", 100, true, reqStaffDto,phasesDto);
+            var expectedDto = new OperationTypeDto {Name ="test type 1",EstimatedDuration = 100, Status = true,RequiredStaff = reqStaffDto,Phases = phasesDto };
+            var recordDto = new OperationTypeRecordDto(recordID, 1, "2024-10-27", operationType.Object.Id.Value,
+             operationType.Object.Name.OperationName, operationType.Object.EstimatedDuration.TotalDurationMinutes,
+              operationType.Object.Status.Active, reqStaffDto, phasesDto);
+
+            var editDto = new EditOpTypeDto(operationType.Object.Id.Value, "NEW NAME", 300);
+
+            _repoMock.Setup(r => r.GetByIdAsync(operationType.Object.Id)).ReturnsAsync(operationType.Object);
+            _opRecordService.Setup(r =>r.AddAsync(operationType.Object)).ReturnsAsync(recordDto);
+            _unitOfWorkMock.Setup(u => u.CommitAsync()).ReturnsAsync(1);
+
+            // Act
+            var result = await _controller.EditOperationType(editDto);
+
+            // Assert
+            Assert.IsType<OkObjectResult>(result);
+        }
 
     }
 }

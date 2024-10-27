@@ -1,10 +1,10 @@
-using DDDNetCore.Controllers;
-using DDDNetCore.Domain.OperationTypes;
-using DDDNetCore.Domain.OperationTypes.ValueObjects.Phase;
-using DDDNetCore.Domain.OperationTypes.ValueObjects.RequiredStaff;
-using DDDNetCore.Domain.Patients;
-using DDDNetCore.Domain.Shared;
-using DDDNetCore.Domain.StaffProfiles;
+using MDBackoffice.Controllers;
+using MDBackoffice.Domain.OperationTypes;
+using MDBackoffice.Domain.OperationTypes.ValueObjects.Phase;
+using MDBackoffice.Domain.OperationTypes.ValueObjects.RequiredStaff;
+using MDBackoffice.Domain.Patients;
+using MDBackoffice.Domain.Shared;
+using MDBackoffice.Domain.StaffProfiles;
 using System.Collections.Generic;
 using Xunit;
 

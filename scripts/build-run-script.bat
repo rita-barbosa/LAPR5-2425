@@ -12,4 +12,4 @@ if %ERRORLEVEL% NEQ 0 (
 
 :: Run the project from the specific folder
 echo [Running...]
-dotnet run --project ../DDDNetCore/DDDNetCore.csproj
+dotnet run --project ../MDBackoffice/MDBackoffice.csproj

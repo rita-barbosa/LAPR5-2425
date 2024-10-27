@@ -1,8 +1,8 @@
-using DDDNetCore.Domain.StaffProfiles;
-using DDDNetCore.Domain.Shared;
+using MDBackoffice.Domain.StaffProfiles;
+using MDBackoffice.Domain.Shared;
 using Xunit;
-using DDDNetCore.Domain.Patients;
-using DDDNetCore.Domain.Specializations;
+using MDBackoffice.Domain.Patients;
+using MDBackoffice.Domain.Specializations;
 
 namespace MDBackofficeTests.domaintests.staff;
 

@@ -1,20 +1,20 @@
-using DDDNetCore.Domain.Logs;
-using DDDNetCore.Domain.Emails;
-using DDDNetCore.Domain.Shared;
-using DDDNetCore.Domain.Specializations;
-using DDDNetCore.Domain.Users;
-using DDDNetCore.Domain.Tokens;
-using DDDNetCore.Infrastructure.Emails;
+using MDBackoffice.Domain.Logs;
+using MDBackoffice.Domain.Emails;
+using MDBackoffice.Domain.Shared;
+using MDBackoffice.Domain.Specializations;
+using MDBackoffice.Domain.Users;
+using MDBackoffice.Domain.Tokens;
+using MDBackoffice.Infrastructure.Emails;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moq;
 using Xunit;
 using IConfiguration = Microsoft.Extensions.Configuration.IConfiguration;
-using DDDNetCore.Domain.StaffProfiles;
-using DDDNetCore.Controllers;
+using MDBackoffice.Domain.StaffProfiles;
+using MDBackoffice.Controllers;
 using Microsoft.AspNetCore.Mvc;
-using DDDNetCore.Domain.Patients;
+using MDBackoffice.Domain.Patients;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 
@@ -196,6 +196,31 @@ namespace MDBackofficeTests.controllertests
             //Assert
             var okResult = Assert.IsType<OkObjectResult>(resultController.Result);
             var returnedPatient = Assert.IsType<List<StaffDto>>(okResult.Value);
+        }
+
+
+        [Fact]
+        public async Task DeactivateStaffProfile_ReturnsOkResult()
+        {
+            // Arrange
+            string email = "exampleemail@gmail.com";
+
+            var staffMock = new Mock<Staff>("00001", "Portugal, 4570-860, Rua das Oliveiras", "12345", "Rita", "Barbosa", "Rita Barbosa", email, "+351", "987654321", "Doctor", "Orthopedics");
+            var id = "D202400001";
+            
+
+            var specializationMock = new Mock<Specialization>("Ortopethics");
+
+            _repoMock.Setup(_repoPatMock => _repoPatMock.GetByIdAsync(It.IsAny<StaffId>()))
+                .ReturnsAsync(staffMock.Object);
+            staffMock.Setup(r => r.DeactivateProfile());
+            _unitOfWorkMock.Setup(u => u.CommitAsync()).ReturnsAsync(1);
+
+            // Act
+            var result = await _controller.DeactivateStaffProfile(new IdPassDto(id));
+
+            // Assert
+            Assert.IsType<OkObjectResult>(result);
         }
     }
 }
