@@ -10,7 +10,7 @@ participant "«component»:\nBackoffice" as BACK
 [o-> UI: receives the information to create operation\n request(patientID,operationType,priority,deadline)
 activate UI
 
-UI -> BACK : createOperationRequest(json)
+UI -> BACK : Create(json)
 activate BACK
 
 BACK --> UI : answer

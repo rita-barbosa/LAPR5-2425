@@ -17,10 +17,6 @@
       * [Development View](#development-view)
       * [Physical View](#physical-view)
     * [4.2. Applied Patterns](#42-applied-patterns)
-    * [4.3. Tests](#43-tests)
-  * [5. Implementation](#5-implementation)
-  * [6. Integration/Demonstration](#6-integrationdemonstration)
-  * [7. Observations](#7-observations)
 <!-- TOC -->
 
 
@@ -97,6 +93,17 @@ This user story does not have dependencies.
 > type indicates that an orthopedic doctor and nurse are needed, the scheduling cannot be done for staff that do not
 > have that specialization.
 
+> **Question:** Can a doctor make more than one operation request for the same patient? 
+>If so, is there any limit or rules to follow? For example, doctors can make another
+>operation request for the same patient as long as it's not the same operation type?
+>
+> **Answer:**  it should not be possible to have more than one "open" surgery request (that is, a surgery that is 
+> requested or scheduled but not yet performed) for the same patient and operation type.
+
+> **Question:** Does the system adds automically the operation request to the medical history of the patient?
+>
+> **Answer:** No need. it will be the doctor's responsibility to add it.
+
 
 ## 3. Analysis
 
@@ -163,7 +170,7 @@ The diagrams are available in the [team decision views folder](../../team-decisi
 
 > #### **Repository Pattern**
 >
->* **Components:** StaffRepository, OperationRequestRepository
+>* **Components:** StaffRepository, OperationRequestRepository, PatientRepository, OperationTypeRepository
 >
 > The repositories handle data access and retrieval, isolating the database interaction logic from services and other
 > layers. This approach abstracts the persistence logic, promoting separation of concerns.
@@ -171,7 +178,7 @@ The diagrams are available in the [team decision views folder](../../team-decisi
 
 > #### **DTO (Data Transfer Object) Pattern**
 >
->* **Components:** OperationRequestDTO, StaffDTO
+>* **Components:** OperationRequestDTO, AddOrRemoveFromPatientDto
 >
 > DTOs are utilized to transfer data between layers, particularly from the controller layer to the service layer and
 > vice versa. Their main purpose is to convey data in a structured and decoupled manner without revealing the internal
@@ -180,25 +187,7 @@ The diagrams are available in the [team decision views folder](../../team-decisi
 
 > #### **Facade Pattern**
 >
->* **Components:** StaffService, AuthenticationService, OperationRequestService
+>* **Components:** StaffService
 >
 > These services function as a facade, simplifying the interaction with lower-level components such as repositories.
 > The controller communicates with these service facades, concealing the complexity from the upper layers.
-
-
-### 4.3. Tests
-
-_// To do - layout still in development //_ 
-
-
-## 5. Implementation
-
-_// To do //_
-
-## 6. Integration/Demonstration
-
-_// To do //_
-
-## 7. Observations
-
-_// To do //_
