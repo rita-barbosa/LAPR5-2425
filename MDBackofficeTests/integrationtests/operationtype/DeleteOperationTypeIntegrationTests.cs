@@ -1,10 +1,10 @@
-using DDDNetCore.Controllers;
-using DDDNetCore.Domain.Logs;
-using DDDNetCore.Domain.OperationTypes.ValueObjects.Phase;
-using DDDNetCore.Domain.OperationTypes.ValueObjects.RequiredStaff;
-using DDDNetCore.Domain.OperationTypes;
-using DDDNetCore.Domain.OperationTypesRecords;
-using DDDNetCore.Domain.Shared;
+using MDBackoffice.Controllers;
+using MDBackoffice.Domain.Logs;
+using MDBackoffice.Domain.OperationTypes.ValueObjects.Phase;
+using MDBackoffice.Domain.OperationTypes.ValueObjects.RequiredStaff;
+using MDBackoffice.Domain.OperationTypes;
+using MDBackoffice.Domain.OperationTypesRecords;
+using MDBackoffice.Domain.Shared;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using Xunit;

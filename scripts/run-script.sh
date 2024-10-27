@@ -1,3 +1,3 @@
 :: Run the project
 echo [Running...]
-dotnet run --project ../DDDNetCore/DDDNetCore.csproj
+dotnet run --project ../MDBackoffice/MDBackoffice.csproj

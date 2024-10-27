@@ -1,0 +1,20 @@
+namespace MDBackoffice.Domain.Patients
+{
+    public class EditPatientProfileDto
+    {
+        public string? Name { get; set; }
+        public string? Phone { get; set; }
+        public string? EmergencyContact { get; set; }
+        public string? Email { get; set; }
+        public string? Address { get; set; }
+
+        public EditPatientProfileDto(string name, string phone, string emContact, string email, string address)
+        {
+            Name = name;
+            Phone = phone;
+            EmergencyContact = emContact;
+            Email = email;
+            Address = address;
+        }
+    }
+}

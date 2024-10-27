@@ -1,9 +1,9 @@
 using System;
-using DDDNetCore.Domain.OperationRequest;
-using DDDNetCore.Domain.OperationTypes;
-using DDDNetCore.Domain.Patients;
-using DDDNetCore.Domain.Shared;
-using DDDNetCore.Domain.StaffProfiles;
+using MDBackoffice.Domain.OperationRequest;
+using MDBackoffice.Domain.OperationTypes;
+using MDBackoffice.Domain.Patients;
+using MDBackoffice.Domain.Shared;
+using MDBackoffice.Domain.StaffProfiles;
 using Moq;
 using Xunit;
 

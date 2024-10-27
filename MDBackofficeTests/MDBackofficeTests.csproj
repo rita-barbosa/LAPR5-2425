@@ -28,7 +28,7 @@
   </ItemGroup> -->
 
   <ItemGroup>
-    <ProjectReference Include="..\DDDNetCore\DDDNetCore.csproj" />
+    <ProjectReference Include="..\MDBackoffice\MDBackoffice.csproj" />
     <Content Update="xunit.runner.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

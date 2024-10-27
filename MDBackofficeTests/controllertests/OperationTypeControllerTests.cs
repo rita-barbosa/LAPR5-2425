@@ -1,9 +1,9 @@
-﻿using DDDNetCore.Domain.Logs;
-using DDDNetCore.Domain.OperationTypes.ValueObjects.Phase;
-using DDDNetCore.Domain.OperationTypes.ValueObjects.RequiredStaff;
-using DDDNetCore.Domain.OperationTypes;
-using DDDNetCore.Domain.OperationTypesRecords;
-using DDDNetCore.Domain.Shared;
+﻿using MDBackoffice.Domain.Logs;
+using MDBackoffice.Domain.OperationTypes.ValueObjects.Phase;
+using MDBackoffice.Domain.OperationTypes.ValueObjects.RequiredStaff;
+using MDBackoffice.Domain.OperationTypes;
+using MDBackoffice.Domain.OperationTypesRecords;
+using MDBackoffice.Domain.Shared;
 using Moq;
 using System;
 using System.Collections.Generic;
@@ -11,7 +11,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Xunit;
-using DDDNetCore.Controllers;
+using MDBackoffice.Controllers;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MDBackofficeTests.controllertests

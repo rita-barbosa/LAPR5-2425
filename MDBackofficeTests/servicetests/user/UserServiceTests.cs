@@ -1,9 +1,9 @@
-﻿using DDDNetCore.Domain.Emails;
-using DDDNetCore.Domain.Logs;
-using DDDNetCore.Domain.Shared;
-using DDDNetCore.Domain.Tokens;
-using DDDNetCore.Domain.Users;
-using DDDNetCore.Infrastructure.Emails;
+﻿using MDBackoffice.Domain.Emails;
+using MDBackoffice.Domain.Logs;
+using MDBackoffice.Domain.Shared;
+using MDBackoffice.Domain.Tokens;
+using MDBackoffice.Domain.Users;
+using MDBackoffice.Infrastructure.Emails;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;

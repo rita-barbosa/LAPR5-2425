@@ -1,4 +1,4 @@
 @echo off
 :: Clean the project
 echo [Cleaning...]
-dotnet clean ../DDDNetCore/DDDNetCore.csproj
+dotnet clean ../MDBackoffice/MDBackoffice.csproj

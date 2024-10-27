@@ -1,5 +1,5 @@
-using DDDNetCore.Domain.Patients;
-using DDDNetCore.Domain.Shared;
+using MDBackoffice.Domain.Patients;
+using MDBackoffice.Domain.Shared;
 using System.Xml;
 using Xunit;
 

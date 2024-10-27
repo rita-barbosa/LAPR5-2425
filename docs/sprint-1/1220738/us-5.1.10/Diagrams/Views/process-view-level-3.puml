@@ -112,7 +112,7 @@ deactivate USERServ
 
 alt If it returns true
 
-AUTHServ -> LOGServ : CreateDeletionLog(userRef,\n"DDDNetCore.Domain.Users",\n"Deletion of patient's account.")
+AUTHServ -> LOGServ : CreateDeletionLog(userRef,\n"MDBackoffice.Domain.Users",\n"Deletion of patient's account.")
 activate LOGServ 
 LOGServ -> LOG**
 LOGServ -> LOGRepo : AddAsync(log)

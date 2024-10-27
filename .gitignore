@@ -51,4 +51,8 @@ Thumbs.db
 
 generate-plantuml-diagrams.sh
 *.db
-DDDNetCore/obj/
+MDBackoffice/obj
+MDBackoffice/bin
+MDBackoffice/.vscode
+MDBackofficeTests/obj
+MDBackofficeTests/bin

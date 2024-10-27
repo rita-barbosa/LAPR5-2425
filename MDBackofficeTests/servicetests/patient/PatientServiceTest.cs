@@ -1,10 +1,10 @@
-using DDDNetCore.Domain.Patients;
-using DDDNetCore.Domain.Emails;
-using DDDNetCore.Domain.Shared;
-using DDDNetCore.Domain.Users;
-using DDDNetCore.Domain.Logs;
-using DDDNetCore.Domain.Tokens;
-using DDDNetCore.Infrastructure.Emails;
+using MDBackoffice.Domain.Patients;
+using MDBackoffice.Domain.Emails;
+using MDBackoffice.Domain.Shared;
+using MDBackoffice.Domain.Users;
+using MDBackoffice.Domain.Logs;
+using MDBackoffice.Domain.Tokens;
+using MDBackoffice.Infrastructure.Emails;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -13,7 +13,7 @@ using Xunit;
 using IConfiguration = Microsoft.Extensions.Configuration.IConfiguration;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
-using DDDNetCore.Infrastructure;
+using MDBackoffice.Infrastructure;
 
 namespace MDBackofficeTests.servicetests.patient;
 
@@ -186,7 +186,7 @@ public class PatientServiceTests
         _repoMock.Verify(um => um.ExistsPatientWithId(id), Times.Once);
         _repoMock.Verify(um => um.GetByIdAsync(new MedicalRecordNumber(id)), Times.Once);
         _userServiceMock.Verify(um => um.DeleteByIdAsync(patientMock.Object.UserReference), Times.Once);
-        _logServiceMock.Verify(um => um.CreateDeletionLog(patientMock.Object.UserReference, "DDDNetCore.Domain.Users", "Deletion of patient's account."), Times.Once);
+        _logServiceMock.Verify(um => um.CreateDeletionLog(patientMock.Object.UserReference, "MDBackoffice.Domain.Users", "Deletion of patient's account."), Times.Once);
     }
 
 

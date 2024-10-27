@@ -1,4 +1,4 @@
-using DDDNetCore.Domain.Users;
+using MDBackoffice.Domain.Users;
 using Xunit;
 
 namespace MDBackofficeTests.domaintests.user;
