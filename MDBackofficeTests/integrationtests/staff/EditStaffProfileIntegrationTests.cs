@@ -35,6 +35,7 @@ namespace MDBackofficeTests.integrationtests.staff
         private readonly Mock<UserService> _userServiceMock;
         private readonly Mock<EmailService> _emailServiceMock;
         private readonly StaffService _service;
+        private readonly Mock<TokenService> tokenServiceMock;
 
         public EditStaffProfileIntegrationTests()
         {
@@ -47,7 +48,7 @@ namespace MDBackofficeTests.integrationtests.staff
             _userManagerMock = new Mock<UserManager<User>>(new Mock<IUserStore<User>>().Object, identityOptionsMock.Object, new Mock<IPasswordHasher<User>>().Object, new List<IUserValidator<User>> { new Mock<IUserValidator<User>>().Object }, new List<IPasswordValidator<User>> { new Mock<IPasswordValidator<User>>().Object }, new Mock<ILookupNormalizer>().Object, identityErrorDescriberMock.Object, new Mock<IServiceProvider>().Object, new Mock<ILogger<UserManager<User>>>().Object);
             var roleManagerMock = new Mock<RoleManager<Role>>(new Mock<IRoleStore<Role>>().Object, new List<IRoleValidator<Role>>(), new Mock<ILookupNormalizer>().Object, identityErrorDescriberMock.Object, new Mock<ILogger<RoleManager<Role>>>().Object);
 
-            var tokenServiceMock = new Mock<TokenService>(_unitOfWorkMock.Object, new Mock<ITokenRepository>().Object, _userManagerMock.Object);
+            tokenServiceMock = new Mock<TokenService>(_unitOfWorkMock.Object, new Mock<ITokenRepository>().Object, _userManagerMock.Object);
             var _emailServMock = new Mock<EmailService>(tokenServiceMock.Object, new Mock<IEmailAdapter>().Object);
 
             var signinManagerMock = new Mock<SignInManager<User>>(_userManagerMock.Object,
@@ -163,6 +164,64 @@ namespace MDBackofficeTests.integrationtests.staff
             Assert.Equal(dtoResult.Address, result.Address);
             Assert.Equal(dtoResult.SpecializationId, result.SpecializationId);
         }
-    }
 
+
+        [Fact]
+        public async Task ConfirmEmailStaff_ReturnsOkResult_IntegrationControllerService()
+        {
+            // Arrange
+            var _controller = new StaffController(_service);
+            var email = "ritabarbosa@email.com";
+            var userId = "valid_user_id";
+            var token = "valid_token";
+            var staffId = "D202400001";
+            var userMock = new Mock<User>();
+            userMock.Setup(u => u.Id).Returns(userId);
+            userMock.Setup(u => u.UserName).Returns(email);
+            userMock.Setup(u => u.Email).Returns(email);
+            userMock.Setup(u => u.Status).Returns(true);
+
+            var staffMock = new Mock<Staff>("00001", "Portugal, 4570-860, Rua das Oliveiras", "12345", "Rita", "Barbosa", "Rita Barbosa", email, "+351", "987654321", "Doctor", "Orthopedics");
+            _userManagerMock.Setup(repo => repo.FindByIdAsync(userId)).ReturnsAsync(userMock.Object);
+            _userManagerMock.Setup(repo => repo.UpdateAsync(It.IsAny<User>())).Returns(Task.FromResult(IdentityResult.Success));
+            tokenServiceMock.Setup(t => t.ConfirmEmailToken(userId, token)).ReturnsAsync(true);
+            _repoMock.Setup(_repoPatMock => _repoPatMock.GetByIdAsync(It.IsAny<StaffId>()))
+                    .ReturnsAsync(staffMock.Object);
+
+            // Act
+            var result = await _controller.ConfirmEmailStaff(userId,staffId, token);
+
+            // Assert
+            var okResult = Assert.IsType<OkObjectResult>(result);
+        }
+
+        [Fact]
+        public async Task ConfirmEmailStaff_Sucessful()
+        {
+            // Arrange
+            var email = "ritabarbosa@email.com";
+            var userId = "testUserId";
+            var token = "validToken";
+            var user = new User();
+            user.UserName = email;
+            user.Email = email;
+            user.Status = true;
+
+            var staffId = "D202400001";
+
+            var staff = new Staff("00001", "Portugal, 4570-860, Rua das Oliveiras", "12345", "Rita", "Barbosa", "Rita Barbosa", email, "+351", "987654321", "Doctor", "Orthopedics");
+
+            _userManagerMock.Setup(repo => repo.FindByIdAsync(userId)).ReturnsAsync(user);
+            _userManagerMock.Setup(repo => repo.UpdateAsync(It.IsAny<User>())).Returns(Task.FromResult(IdentityResult.Success));
+            tokenServiceMock.Setup(t => t.ConfirmEmailToken(userId, token)).ReturnsAsync(true);
+            _repoMock.Setup(_repoPatMock => _repoPatMock.GetByIdAsync(It.IsAny<StaffId>()))
+                    .ReturnsAsync(staff);
+
+            // Act
+            await _service.ConfirmEmailStaff(userId, staffId, token);
+
+            // Assert
+            Assert.True(user.Status);
+        }
+    }
 }

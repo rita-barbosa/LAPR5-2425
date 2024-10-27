@@ -201,7 +201,7 @@ namespace MDBackoffice.Domain.StaffProfiles
             return changedInformation;
         }
 
-        public async Task ConfirmEmailStaff(string userId, string staffId, string token)
+        public virtual async Task ConfirmEmailStaff(string userId, string staffId, string token)
         {
             var staff = await this._repo.GetByIdAsync(new StaffId(staffId));
 

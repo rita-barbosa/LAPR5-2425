@@ -30,57 +30,59 @@ public class StaffServiceTest
         private readonly Mock<UserService> _userServiceMock;
         private readonly Mock<EmailService> _emailServiceMock;
         private readonly StaffService _service;
+        private readonly Mock<TokenService> _tokenServiceMock;
+
         public StaffServiceTest()
         {
-            var identityOptionsMock = new Mock<IOptions<IdentityOptions>>();
-                identityOptionsMock.Setup(o => o.Value).Returns(new IdentityOptions());
-            var identityErrorDescriberMock = new Mock<IdentityErrorDescriber>();
+                var identityOptionsMock = new Mock<IOptions<IdentityOptions>>();
+                    identityOptionsMock.Setup(o => o.Value).Returns(new IdentityOptions());
+                var identityErrorDescriberMock = new Mock<IdentityErrorDescriber>();
 
-            _userManagerMock = new Mock<UserManager<User>>(
-                new Mock<IUserStore<User>>().Object,
-                identityOptionsMock.Object,
-                new Mock<IPasswordHasher<User>>().Object,
-                new List<IUserValidator<User>> { new Mock<IUserValidator<User>>().Object },
-                new List<IPasswordValidator<User>> { new Mock<IPasswordValidator<User>>().Object },
-                new Mock<ILookupNormalizer>().Object,
-                identityErrorDescriberMock.Object, 
-                new Mock<IServiceProvider>().Object,
-                new Mock<ILogger<UserManager<User>>>().Object
-            );
+                _userManagerMock = new Mock<UserManager<User>>(
+                    new Mock<IUserStore<User>>().Object,
+                    identityOptionsMock.Object,
+                    new Mock<IPasswordHasher<User>>().Object,
+                    new List<IUserValidator<User>> { new Mock<IUserValidator<User>>().Object },
+                    new List<IPasswordValidator<User>> { new Mock<IPasswordValidator<User>>().Object },
+                    new Mock<ILookupNormalizer>().Object,
+                    identityErrorDescriberMock.Object, 
+                    new Mock<IServiceProvider>().Object,
+                    new Mock<ILogger<UserManager<User>>>().Object
+                );
 
-            var roleManagerMock = new Mock<RoleManager<Role>>(
-                new Mock<IRoleStore<Role>>().Object,
-                new List<IRoleValidator<Role>>(),
-                new Mock<ILookupNormalizer>().Object,
-                identityErrorDescriberMock.Object,
-                new Mock<ILogger<RoleManager<Role>>>().Object
-            );
+                var roleManagerMock = new Mock<RoleManager<Role>>(
+                    new Mock<IRoleStore<Role>>().Object,
+                    new List<IRoleValidator<Role>>(),
+                    new Mock<ILookupNormalizer>().Object,
+                    identityErrorDescriberMock.Object,
+                    new Mock<ILogger<RoleManager<Role>>>().Object
+                );
 
-                var tokenServiceMock = new Mock<TokenService>(_unitOfWorkMock.Object, new Mock<ITokenRepository>().Object, _userManagerMock.Object);
-                var _emailServMock = new Mock<EmailService>(tokenServiceMock.Object, new Mock<IEmailAdapter>().Object);
-        var signinManagerMock = new Mock<SignInManager<User>>(_userManagerMock.Object,
+                _tokenServiceMock = new Mock<TokenService>(_unitOfWorkMock.Object, new Mock<ITokenRepository>().Object, _userManagerMock.Object);
+                var _emailServMock = new Mock<EmailService>(_tokenServiceMock.Object, new Mock<IEmailAdapter>().Object);
+                var signinManagerMock = new Mock<SignInManager<User>>(_userManagerMock.Object,
                                                                 new Mock<IHttpContextAccessor>().Object,
                                                                 new Mock<IUserClaimsPrincipalFactory<User>>().Object,
                                                                 identityOptionsMock.Object,
                                                                 new Mock<ILogger<SignInManager<User>>>().Object,
                                                                 new Mock<IAuthenticationSchemeProvider>().Object,
                                                                 new Mock<IUserConfirmation<User>>().Object);
-        _userServiceMock = new Mock<UserService>(
+                _userServiceMock = new Mock<UserService>(
                     _userManagerMock.Object,
                     roleManagerMock.Object,
                     _logServiceMock.Object,
                     signinManagerMock.Object,
                     _emailServMock.Object,
                     _configurationMock.Object,
-                    tokenServiceMock.Object 
+                    _tokenServiceMock.Object 
                 );
 
-            _emailServiceMock = new Mock<EmailService>(tokenServiceMock.Object, new Mock<IEmailAdapter>().Object);
-            _service = new StaffService(_unitOfWorkMock.Object, _logServiceMock.Object,
-                                         _repoMock.Object, _repoSpecMock.Object,
-                                         _userManagerMock.Object, _configurationMock.Object, _emailServiceMock.Object,
-                                         _userServiceMock.Object);
-    }
+                _emailServiceMock = new Mock<EmailService>(_tokenServiceMock.Object, new Mock<IEmailAdapter>().Object);
+                _service = new StaffService(_unitOfWorkMock.Object, _logServiceMock.Object,
+                                             _repoMock.Object, _repoSpecMock.Object,
+                                             _userManagerMock.Object, _configurationMock.Object, _emailServiceMock.Object,
+                                             _userServiceMock.Object);
+        }
 
 
         [Fact]
@@ -247,5 +249,37 @@ public class StaffServiceTest
 
         // Assert
         Assert.True(result);
+    }
+
+    [Fact]
+    public async Task ConfirmEmailStaff_Sucessful()
+    {
+        // Arrange
+        var email = "ritabarbosa@email.com";
+        var userid = "testid";
+        var userId = "testUserId";
+        var token = "validToken";
+        var userMock = new Mock<User>();
+        userMock.Setup(u => u.Id).Returns(userid);
+        userMock.Setup(u => u.UserName).Returns(email);
+        userMock.Setup(u => u.Email).Returns(email);
+        userMock.Setup(u => u.Status).Returns(true);
+
+        var staffId = "D202400001";
+
+        var staffMock = new Mock<Staff>("00001", "Portugal, 4570-860, Rua das Oliveiras", "12345", "Rita", "Barbosa", "Rita Barbosa", email, "+351", "987654321", "Doctor", "Orthopedics");
+
+        _userManagerMock.Setup(repo => repo.FindByIdAsync(userId)).ReturnsAsync(userMock.Object);
+        _userManagerMock.Setup(repo => repo.UpdateAsync(It.IsAny<User>())).Returns(Task.FromResult(IdentityResult.Success));
+        _tokenServiceMock.Setup(t => t.ConfirmEmailToken(userId, token)).ReturnsAsync(true);
+        _repoMock.Setup(_repoPatMock => _repoPatMock.GetByIdAsync(It.IsAny<StaffId>()))
+                .ReturnsAsync(staffMock.Object);
+
+        // Act
+        await _service.ConfirmEmailStaff(userId, staffId, token);
+
+        // Assert
+        Assert.True(userMock.Object.Status);
+        _userManagerMock.Verify(repo => repo.UpdateAsync(It.Is<User>(u => u == userMock.Object)), Times.Once);
     }
 }
