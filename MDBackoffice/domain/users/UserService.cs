@@ -40,7 +40,7 @@ namespace MDBackoffice.Domain.Users
             _configuration = configuration;
         }
 
-        public async Task ConfirmEmailPatient(string userId, string token)
+        public virtual async Task ConfirmEmailPatient(string userId, string token)
         {
             await ConfirmEmailVerifications(userId, token);
 

@@ -38,6 +38,7 @@ namespace MDBackofficeTests.controllertests
         private readonly Mock<StaffService> _staffServiceMock;
         private readonly Mock<IStaffRepository> _staffRepoMock;
         private readonly Mock<ISpecializationRepository> _specRepoMock;
+        private readonly Mock<IPatientRepository> _patientRepoMock;
 
         public UserControllerTests()
         {
@@ -79,14 +80,15 @@ namespace MDBackofficeTests.controllertests
 
             _userServiceMock = new Mock<UserService>(_userManagerMock.Object, _roleManagerMock.Object, _logServiceMock.Object, _signinManagerMock.Object, _emailServiceMock.Object, _configurationMock.Object, _tokenServiceMock.Object);
 
-            _patientServiceMock = new Mock<PatientService>(_unitOfWorkMock.Object, _logServiceMock.Object, _configurationMock.Object, new Mock<IPatientRepository>().Object,
+            _patientRepoMock = new Mock<IPatientRepository>();
+            _patientServiceMock = new Mock<PatientService>(_unitOfWorkMock.Object, _logServiceMock.Object, _configurationMock.Object, _patientRepoMock.Object,
                     _userServiceMock.Object, _emailServiceMock.Object);
             _staffRepoMock = new Mock<IStaffRepository>();
             _specRepoMock = new Mock<ISpecializationRepository>();
             _staffServiceMock = new Mock<StaffService>(_unitOfWorkMock.Object, _logServiceMock.Object, _staffRepoMock.Object, _specRepoMock.Object,
                     _userManagerMock.Object, _configurationMock.Object, _emailServiceMock.Object, _userServiceMock.Object);
 
-            
+        
             
             _controller = new UserController(_userServiceMock.Object, _patientServiceMock.Object, _staffServiceMock.Object, _tokenServiceMock.Object);
         }
@@ -348,6 +350,91 @@ namespace MDBackofficeTests.controllertests
             _userManagerMock.Verify(um => um.CreateAsync(It.IsAny<User>(), password), Times.Once);
             _userManagerMock.Verify(um => um.AddToRoleAsync(It.IsAny<User>(), role), Times.Once);
            
+        }
+
+        [Fact]
+        public async Task RegisterPatientUser_ReturnsOkResult()
+        {
+            // Arrange
+            var email = "test@email.com";
+            var password = "NewPass00_d";
+            var id = "testid";
+            var phone = "+351 960444772";
+
+            var dtoMock = new RegisterPatientUserDto
+            {
+                Email = email,
+                Password = password,
+                Phone = phone,
+            };
+
+
+            var userMock = new Mock<User>();
+            userMock.Setup(u => u.Id).Returns(id);
+            userMock.Setup(u => u.UserName).Returns(email);
+            userMock.Setup(u => u.Email).Returns(email);
+            userMock.Setup(u => u.Status).Returns(true);
+            userMock.Setup(u => u.PasswordHash).Returns(password);
+
+            var resultMock = IdentityResult.Success;
+
+            var patientMock = new Mock<Patient>("first", "last", "first last", "country, 12345, street test", "female", "+123", "960444772", "98765432", email, "2000-10-10", "000001");
+            var patientDto = new PatientDto(patientMock.Object.Name.ToString(), patientMock.Object.PhoneNumber.ToString(), patientMock.Object.Email.ToString(),
+                patientMock.Object.Id.AsString());
+
+            var creatingPatientProfile = new CreatingPatientDto(
+                "first",
+                "last",
+                "country, 12345, street test",
+                phone,
+                email,
+                "+351 98765432",
+                "female",
+                "2000-10-10"
+            );
+
+            var token = "test-token";
+            _userManagerMock.Setup(um => um.CreateAsync(It.IsAny<User>(), password)).ReturnsAsync(resultMock);
+            _userManagerMock.Setup(um => um.AddToRoleAsync(It.IsAny<User>(), "Patient")).ReturnsAsync(resultMock);
+            _roleManagerMock.Setup(rm => rm.RoleExistsAsync("Patient")).ReturnsAsync(true);
+            _userManagerMock.Setup(um => um.GetRolesAsync(It.IsAny<User>())).ReturnsAsync(["Patient"]);
+            _patientRepoMock.Setup(repo => repo.ExistsPatientWithEmailOrPhone(email, "+351", "960444772")).ReturnsAsync(true);
+            _patientRepoMock.Setup(repo => repo.GetPatientWithEmail(email)).ReturnsAsync(patientMock.Object);
+            _patientRepoMock.Setup(s => s.FindPatientWithEmailOrPhone(email, "+351", "960444772")).ReturnsAsync(patientMock.Object);
+            _userManagerMock.Setup(u => u.GenerateEmailConfirmationTokenAsync(It.IsAny<User>())).ReturnsAsync(token);
+            _configurationMock.Setup(c => c["App:Email"]).Returns("testemail@email.com");
+            _configurationMock.Setup(c => c["App:BaseUrl"]).Returns("https://test/api");
+            _unitOfWorkMock.Setup(u => u.CommitAsync()).ReturnsAsync(1);
+
+            // Act
+            var result = await _controller.RegisterPatientUser(dtoMock);
+
+            // Assert
+            Assert.IsType<OkObjectResult>(result);
+            var okResult = result as OkObjectResult;
+            Assert.Equal("The user has been successfully created. Please verify your email to complete the registration.", okResult.Value);
+
+            // Verify interactions
+            _userManagerMock.Verify(um => um.CreateAsync(It.IsAny<User>(), password), Times.Once);
+            _userManagerMock.Verify(um => um.AddToRoleAsync(It.IsAny<User>(), "Patient"), Times.Once);
+        }
+
+        [Fact]
+        public async Task ConfirmEmailPatient_ReturnsOkResult()
+        {
+            // Arrange
+            var userId = "valid_user_id";
+            var token = "valid_token";
+
+            _userServiceMock.Setup(service => service.ConfirmEmailPatient(userId, token))
+                            .Returns(Task.CompletedTask);
+
+            // Act
+            var result = await _controller.ConfirmEmailPatient(userId, token);
+
+            // Assert
+            var okResult = Assert.IsType<OkObjectResult>(result);
+            Assert.Equal("Email confirmed successfully and account activated.", okResult.Value);
         }
 
     }
