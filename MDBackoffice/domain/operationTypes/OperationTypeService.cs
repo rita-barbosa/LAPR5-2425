@@ -46,7 +46,7 @@ namespace MDBackoffice.Domain.OperationTypes
             return ToDto(operationType);
         }
 
-        public async Task<OperationTypeDto> AddAsync(OperationTypeDto dto)
+        public virtual async Task<OperationTypeDto> AddAsync(OperationTypeDto dto)
         {
             var operationType = new OperationType(
                 dto.Name,

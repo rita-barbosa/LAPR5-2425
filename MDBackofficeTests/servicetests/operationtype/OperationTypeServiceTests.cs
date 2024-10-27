@@ -200,6 +200,45 @@ namespace MDBackofficeTests.servicetests.operationtype
             _opRecordService.Verify(r => r.AddAsync(operationType.Object), Times.Once);
         }
 
+        [Fact]
+        public async Task AddAsync_ReturnsOperationDto()
+        {
+            // Arrange
+            var operationTypeId = "test type 1";
+            var phasesDto = new List<PhaseDto>
+    {
+        new PhaseDto {
+            Description = "descrip",
+            Duration = 25
+        },
+        new PhaseDto {
+            Description = "descrip2",
+            Duration = 50
+        },
+        new PhaseDto {
+            Description = "descrip3",
+            Duration = 25
+        }
+    };
+            var reqStaffDto = new List<RequiredStaffDto>
+    {
+        new RequiredStaffDto{
+            StaffQuantity = 1,
+            Function = "doctor",
+            Specialization = "ortho"
+        }
+    };
+            var dto = new OperationTypeDto { Name = "test type 1", EstimatedDuration = 100, Status = true, RequiredStaff = reqStaffDto, Phases = phasesDto };
+            _unitOfWorkMock.Setup(u => u.CommitAsync()).ReturnsAsync(1);
+
+            // Act
+            var result = await _service.AddAsync(dto); // Await the result
+
+            // Assert
+            Assert.IsType<OperationTypeDto>(result); // Now this checks the correct type
+        }
+
+
     }
 }
 

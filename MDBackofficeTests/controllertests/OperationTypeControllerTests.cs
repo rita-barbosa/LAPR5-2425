@@ -204,5 +204,48 @@ namespace MDBackofficeTests.controllertests
             Assert.IsType<OkObjectResult>(result);
         }
 
+        [Fact]
+        public async Task Create_ReturnsOperationTypeDto()
+        {
+            //Arrange
+            var operationTypeId = "test type 1";
+            var phasesDto = new List<PhaseDto>
+            {
+                new PhaseDto {
+                            Description = "descrip",
+                            Duration = 25
+                            },
+                new PhaseDto {
+                            Description = "descrip2",
+                            Duration = 50
+                            },
+                new PhaseDto {
+                            Description = "descrip3",
+                            Duration = 25
+                            }
+            };
+
+            var reqStaffDto = new List<RequiredStaffDto>
+            {
+                new RequiredStaffDto{
+                    StaffQuantity = 1,
+                    Function = "doctor",
+                    Specialization = "ortho"
+                }
+            };
+
+            var dto = new OperationTypeDto { Name = "test type 1", EstimatedDuration = 100, Status = true, RequiredStaff = reqStaffDto, Phases = phasesDto };
+
+
+            _service.Setup(s => s.AddAsync(dto)).ReturnsAsync(dto);
+
+            //Act
+            var result = await _controller.Create(dto);
+
+            //Assert
+            Assert.IsType<ActionResult<OperationTypeDto>>(result);  
+
+        }
+
     }
 }
