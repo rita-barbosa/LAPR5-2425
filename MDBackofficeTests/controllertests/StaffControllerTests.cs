@@ -197,5 +197,30 @@ namespace MDBackofficeTests.controllertests
             var okResult = Assert.IsType<OkObjectResult>(resultController.Result);
             var returnedPatient = Assert.IsType<List<StaffDto>>(okResult.Value);
         }
+
+
+        [Fact]
+        public async Task DeactivateStaffProfile_ReturnsOkResult()
+        {
+            // Arrange
+            string email = "exampleemail@gmail.com";
+
+            var staffMock = new Mock<Staff>("00001", "Portugal, 4570-860, Rua das Oliveiras", "12345", "Rita", "Barbosa", "Rita Barbosa", email, "+351", "987654321", "Doctor", "Orthopedics");
+            var id = "D202400001";
+            
+
+            var specializationMock = new Mock<Specialization>("Ortopethics");
+
+            _repoMock.Setup(_repoPatMock => _repoPatMock.GetByIdAsync(It.IsAny<StaffId>()))
+                .ReturnsAsync(staffMock.Object);
+            staffMock.Setup(r => r.DeactivateProfile());
+            _unitOfWorkMock.Setup(u => u.CommitAsync()).ReturnsAsync(1);
+
+            // Act
+            var result = await _controller.DeactivateStaffProfile(new IdPassDto(id));
+
+            // Assert
+            Assert.IsType<OkObjectResult>(result);
+        }
     }
 }

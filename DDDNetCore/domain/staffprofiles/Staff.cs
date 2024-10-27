@@ -100,7 +100,7 @@ namespace DDDNetCore.Domain.StaffProfiles
             }
         }
 
-        public void DeactivateProfile()
+        public virtual void DeactivateProfile()
         {
             this.Status = false;
         }
