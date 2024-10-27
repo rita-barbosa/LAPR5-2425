@@ -24,7 +24,7 @@ namespace MDBackoffice.Domain.OperationTypes
             _repo = operationTypeRecordRepository;
         }
 
-        public async Task<OperationTypeRecordDto> AddAsync(OperationType operationType)
+        public virtual async Task<OperationTypeRecordDto> AddAsync(OperationType operationType)
         {
             var operationRecord1 = await _repo.GetLastFromOpType(operationType.Id);
             var todayDate = new Date(DateTime.Now.ToString("yyyy-MM-dd"));

@@ -54,14 +54,14 @@ namespace MDBackoffice.Domain.OperationTypes
             }
         }
 
-        public void ChangeName(string name)
+        public virtual void ChangeName(string name)
         {
             if (!this.Status.Active)
                 throw new BusinessRuleValidationException("It is not possible to change the name to an inactive Operation Type.");
             this.Name = new OperationTypeName(name);
         }
 
-        public void ChangeEstimatedDuration(int duration)
+        public virtual void ChangeEstimatedDuration(int duration)
         {
             if (!this.Status.Active)
                 throw new BusinessRuleValidationException("It is not possible to change the estimated duration to an inactive Operation Type.");
