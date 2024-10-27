@@ -26,6 +26,9 @@ package "<<aggregate>> Patient" {
     class MRN <<(V,#FF8B40)value object>> <<identifier>> {}
     class MedicalCondition <<(V,#FF8B40)value object>> {}
     class AppoitmentHistory <<(V,#FF8B40)value object>> {}
+    class AppoitmentHistoryStatus <<(V,#FF8B40)value object>> {}
+    class AppoitmentHistoryType <<(V,#FF8B40)value object>> {}
+    class CreatedAt <<(V,#FF8B40)value object>> {}
 }
 
 package "<<aggregate Staff>>" {
@@ -186,12 +189,17 @@ Patient --> "1" Gender
 Patient ---> "1" EmergencyContact
 Patient --> "1" MRN
 Patient --> "0..1" MedicalCondition
-Patient --> "1" AppoitmentHistory
+Patient --> "0..*" AppoitmentHistory
 Patient --> "1" Email
 Patient --> "1" Phone
 Patient --> "1" Address
 Patient---> "0..1" User
 EmergencyContact --> "1" Phone
+
+AppoitmentHistory --> "1" AppoitmentHistoryStatus
+AppoitmentHistory --> "1" AppoitmentHistoryType
+AppoitmentHistory --> "1" CreatedAt
+
 
 Staff --> "1" Status
 Staff --> "1" Name
