@@ -159,10 +159,15 @@ namespace MDBackoffice.Domain.Patients
         }
 
         public virtual void RemoveRequestFromHistory(OperationRequestId operationRequestId)
-        {
+        {    
+
+            if(this.AppointmentList.IsNullOrEmpty()){
+                return;
+            }
+
             foreach (AppointmentHistory appointmentHistory in this.AppointmentList)
             {
-                if(appointmentHistory.Id.Equals(operationRequestId.ToString()))
+                if(appointmentHistory.Id.Equals(operationRequestId.Value.ToString()))
                 {
                     this.AppointmentList.Remove(appointmentHistory);
                 }
