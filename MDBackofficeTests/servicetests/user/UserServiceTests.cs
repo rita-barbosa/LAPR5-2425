@@ -4,6 +4,8 @@ using DDDNetCore.Domain.Shared;
 using DDDNetCore.Domain.Tokens;
 using DDDNetCore.Domain.Users;
 using DDDNetCore.Infrastructure.Emails;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -22,6 +24,7 @@ namespace MDBackofficeTests.servicetests.user
         private readonly Mock<LogService> _logServiceMock = new Mock<LogService>(new Mock<IUnitOfWork>().Object, new Mock<ILogRepository>().Object);
         private readonly Mock<UserManager<User>> _userManagerMock;
         private readonly Mock<RoleManager<Role>> _roleManagerMock;
+        private readonly Mock<SignInManager<User>> _signinManagerMock;
         private readonly Mock<IConfiguration> _configurationMock;
         private readonly Mock<TokenService> _tokenServiceMock;
 
@@ -50,7 +53,15 @@ namespace MDBackofficeTests.servicetests.user
                  new Mock<ILogger<RoleManager<Role>>>().Object
             );
 
-             _tokenServiceMock = new Mock<TokenService>(_unitOfWorkMock.Object, new Mock<ITokenRepository>().Object, _userManagerMock.Object);
+            _signinManagerMock = new Mock<SignInManager<User>>(_userManagerMock.Object,
+                                                                      new Mock<IHttpContextAccessor>().Object,
+                                                                      new Mock<IUserClaimsPrincipalFactory<User>>().Object,
+                                                                      identityOptionsMock.Object,
+                                                                      new Mock<ILogger<SignInManager<User>>>().Object,
+                                                                      new Mock<IAuthenticationSchemeProvider>().Object,
+                                                                      new Mock<IUserConfirmation<User>>().Object);
+
+            _tokenServiceMock = new Mock<TokenService>(_unitOfWorkMock.Object, new Mock<ITokenRepository>().Object, _userManagerMock.Object);
             var _emailServiceMock = new Mock<EmailService>(_tokenServiceMock.Object, new Mock<IEmailAdapter>().Object);
             _configurationMock = new Mock<IConfiguration>();
 
@@ -58,6 +69,7 @@ namespace MDBackofficeTests.servicetests.user
                 _userManagerMock.Object,
                 _roleManagerMock.Object,
                 _logServiceMock.Object,
+                _signinManagerMock.Object,
                 _emailServiceMock.Object,
                _configurationMock.Object,
                 _tokenServiceMock.Object
@@ -144,7 +156,7 @@ namespace MDBackofficeTests.servicetests.user
 
             
             _userManagerMock.Setup(_userManagerMock => _userManagerMock.FindByEmailAsync(email)).ReturnsAsync(userMock.Object);
-            _userManagerMock.Setup(_userManagerMock => _userManagerMock.CheckPasswordAsync(userMock.Object, password)).ReturnsAsync(true);
+            _signinManagerMock.Setup(sm => sm.PasswordSignInAsync(userMock.Object, password,false,true)).ReturnsAsync(SignInResult.Success);
             _userManagerMock.Setup(um => um.GetRolesAsync(userMock.Object)).ReturnsAsync(["Doctor"]);
             _configurationMock.Setup(c => c["Jwt:Key"]).Returns("AHSVFOSDYUDASJFNhvOUVu897GB876arbvn568n6CN865Vn5NFFn86f87Cb76cNvnVNYvhgvnu7676");
             _configurationMock.Setup(c => c["Jwt:Issuer"]).Returns("testissuer");
@@ -155,10 +167,10 @@ namespace MDBackofficeTests.servicetests.user
 
             //Assert
             Assert.NotNull(result);
-            _userManagerMock.Verify(um => um.CheckPasswordAsync(userMock.Object,password), Times.Once);
+            _signinManagerMock.Verify(um => um.PasswordSignInAsync(userMock.Object, password, false, true), Times.Once);
         }
         [Fact]
-        public async Task LoginInvalidCredentials_ReturnsTokenSuccessfully()
+        public async Task LoginInvalidCredentials_ThrowsBusinessRuleValidationException()
         {
             //Arrange
             var email = "test@email.com";
@@ -174,15 +186,15 @@ namespace MDBackofficeTests.servicetests.user
             userMock.Setup(u => u.Status).Returns(true);
             userMock.Setup(u => u.PasswordHash).Returns(password);
 
-            
+
             _userManagerMock.Setup(_userManagerMock => _userManagerMock.FindByEmailAsync(email)).ReturnsAsync(userMock.Object);
-            _userManagerMock.Setup(_userManagerMock => _userManagerMock.CheckPasswordAsync(userMock.Object, password)).ReturnsAsync(true);
+            _signinManagerMock.Setup(sm => sm.PasswordSignInAsync(userMock.Object, dtoMock.Password, false, true)).ReturnsAsync(SignInResult.Failed);
             _userManagerMock.Setup(um => um.GetRolesAsync(userMock.Object)).ReturnsAsync(["Doctor"]);
             _configurationMock.Setup(c => c["Jwt:Key"]).Returns("AHSVFOSDYUDASJFNhvOUVu897GB876arbvn568n6CN865Vn5NFFn86f87Cb76cNvnVNYvhgvnu7676");
             _configurationMock.Setup(c => c["Jwt:Issuer"]).Returns("testissuer");
             _configurationMock.Setup(c => c["Jwt:Audiend"]).Returns("testaudience");
 
-            
+
             await Assert.ThrowsAsync<BusinessRuleValidationException>(() => _userService.Login(dtoMock));        
         }
 

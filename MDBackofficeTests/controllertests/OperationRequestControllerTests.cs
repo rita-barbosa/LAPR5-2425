@@ -1,5 +1,4 @@
-﻿using System.Security.Claims;
-using DDDNetCore.Controllers;
+﻿using DDDNetCore.Controllers;
 using DDDNetCore.Domain.Emails;
 using DDDNetCore.Domain.Logs;
 using DDDNetCore.Domain.OperationRequest;
@@ -12,6 +11,7 @@ using DDDNetCore.Domain.StaffProfiles;
 using DDDNetCore.Domain.Tokens;
 using DDDNetCore.Domain.Users;
 using DDDNetCore.Infrastructure.Emails;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -19,6 +19,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moq;
+using System.Security.Claims;
 using Xunit;
 
 
@@ -45,13 +46,24 @@ namespace MDBackofficeTests.controllertests
             var identityErrorDescriberMock = new Mock<IdentityErrorDescriber>();
 
             var userManagerMock = new Mock<UserManager<User>>(new Mock<IUserStore<User>>().Object, identityOptionsMock.Object, new Mock<IPasswordHasher<User>>().Object, new List<IUserValidator<User>> { new Mock<IUserValidator<User>>().Object }, new List<IPasswordValidator<User>> { new Mock<IPasswordValidator<User>>().Object }, new Mock<ILookupNormalizer>().Object, identityErrorDescriberMock.Object, new Mock<IServiceProvider>().Object, new Mock<ILogger<UserManager<User>>>().Object);
+
+            var signinManagerMock = new Mock<SignInManager<User>>(userManagerMock.Object,
+                                                                new Mock<IHttpContextAccessor>().Object,
+                                                                new Mock<IUserClaimsPrincipalFactory<User>>().Object,
+                                                                identityOptionsMock.Object,
+                                                                new Mock<ILogger<SignInManager<User>>>().Object,
+                                                                new Mock<IAuthenticationSchemeProvider>().Object,
+                                                                new Mock<IUserConfirmation<User>>().Object);
+
             var roleManagerMock = new Mock<RoleManager<Role>>(new Mock<IRoleStore<Role>>().Object, new List<IRoleValidator<Role>>(), new Mock<ILookupNormalizer>().Object, identityErrorDescriberMock.Object, new Mock<ILogger<RoleManager<Role>>>().Object);
 
             var tokenServiceMock = new Mock<TokenService>(_unitOfWorkMock.Object, new Mock<ITokenRepository>().Object, userManagerMock.Object);
             var _emailServiceMock = new Mock<EmailService>(tokenServiceMock.Object, new Mock<IEmailAdapter>().Object);
             var _configurationMock = new Mock<IConfiguration>();
 
-            var _userServiceMock = new Mock<UserService>(userManagerMock.Object, roleManagerMock.Object, _logServiceMock.Object, _emailServiceMock.Object, _configurationMock.Object, tokenServiceMock.Object);
+
+
+            var _userServiceMock = new Mock<UserService>(userManagerMock.Object, roleManagerMock.Object, _logServiceMock.Object, signinManagerMock.Object, _emailServiceMock.Object, _configurationMock.Object, tokenServiceMock.Object);
             var _patientServiceMock = new Mock<PatientService>(_unitOfWorkMock.Object, _logServiceMock.Object, _configurationMock.Object, _repoPatMock.Object, _userServiceMock.Object, _emailServiceMock.Object);
 
 
@@ -197,7 +209,7 @@ namespace MDBackofficeTests.controllertests
                 staffId,"descript",patientId,opTyId),
             };
 
-            var expectedDtos = new List<ListOperationRequestDto> 
+            var expectedDtos = new List<ListOperationRequestDto>
             {
                 new ListOperationRequestDto("first last", "tumor removal", "Requested"),
             };

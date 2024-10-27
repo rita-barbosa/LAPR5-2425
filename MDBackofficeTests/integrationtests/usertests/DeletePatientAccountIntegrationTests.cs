@@ -10,6 +10,8 @@ using DDDNetCore.Domain.StaffProfiles;
 using DDDNetCore.Domain.Tokens;
 using DDDNetCore.Domain.Users;
 using DDDNetCore.Infrastructure.Emails;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -66,10 +68,20 @@ namespace MDBackofficeTests.integrationtests.usertests
             _tokenServiceMock = new Mock<TokenService>(_unitOfWorkMock.Object, new Mock<ITokenRepository>().Object, _userManagerMock.Object);
             _emailServiceMock = new Mock<EmailService>(_tokenServiceMock.Object, new Mock<IEmailAdapter>().Object);
             _configurationMock = new Mock<IConfiguration>();
+
+            var _signinManagerMock = new Mock<SignInManager<User>>(_userManagerMock.Object,
+                                                               new Mock<IHttpContextAccessor>().Object,
+                                                               new Mock<IUserClaimsPrincipalFactory<User>>().Object,
+                                                               identityOptionsMock.Object,
+                                                               new Mock<ILogger<SignInManager<User>>>().Object,
+                                                               new Mock<IAuthenticationSchemeProvider>().Object,
+                                                               new Mock<IUserConfirmation<User>>().Object);
+
             _userService = new UserService(
                 _userManagerMock.Object,
                 _roleManagerMock.Object,
                 _logServiceMock.Object,
+                _signinManagerMock.Object,
                 _emailServiceMock.Object,
                 _configurationMock.Object,
                 _tokenServiceMock.Object

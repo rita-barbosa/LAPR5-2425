@@ -31,6 +31,7 @@ using DDDNetCore.Domain.Logs;
 using DDDNetCore.Infrastructure.Logs;
 using DDDNetCore.Domain.OperationTypesRecords;
 using DDDNetCore.Infrastructure.OperationTypeRecords;
+using System;
 
 namespace DDDNetCore
 {
@@ -70,7 +71,7 @@ namespace DDDNetCore
                          options.AddPolicy("AuthenticatedUsers", policy => policy.RequireRole("Admin", "Nurse", "Doctor", "Technician", "Patient"));
                          options.AddPolicy("Staff", policy => policy.RequireRole("Admin", "Nurse", "Doctor", "Technician"));
                      });
-            services.AddIdentityCore<User>(options =>
+            services.AddIdentity<User,Role>(options =>
             {
                 // Password settings
                 options.Password.RequireDigit = true;
@@ -82,6 +83,14 @@ namespace DDDNetCore
                 .AddRoles<Role>()
                 .AddEntityFrameworkStores<DDDNetCoreDbContext>()
                 .AddDefaultTokenProviders();
+
+            services.Configure<IdentityOptions>(options =>
+            {
+                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+                options.Lockout.MaxFailedAccessAttempts = 5;
+                options.Lockout.AllowedForNewUsers = true;
+            });
+
 
             services.AddDbContext<DDDNetCoreDbContext>(opt =>
                 opt.UseSqlite(Configuration.GetConnectionString("DefaultConnection"))
@@ -115,8 +124,8 @@ namespace DDDNetCore
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseSwagger();
-                app.UseSwaggerUI();
+                // app.UseSwagger();
+                // app.UseSwaggerUI();
             }
             else
             {

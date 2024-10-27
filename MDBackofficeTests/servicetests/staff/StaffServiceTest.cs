@@ -14,6 +14,8 @@ using Xunit;
 using IConfiguration = Microsoft.Extensions.Configuration.IConfiguration;
 using DDDNetCore.Domain.StaffProfiles;
 using DDDNetCore.Domain.Patients;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Http;
 
 namespace MDBackofficeTests.servicetests.staff;
 
@@ -56,15 +58,22 @@ public class StaffServiceTest
 
                 var tokenServiceMock = new Mock<TokenService>(_unitOfWorkMock.Object, new Mock<ITokenRepository>().Object, _userManagerMock.Object);
                 var _emailServMock = new Mock<EmailService>(tokenServiceMock.Object, new Mock<IEmailAdapter>().Object);
-
-            _userServiceMock = new Mock<UserService>(
-                _userManagerMock.Object,
-                roleManagerMock.Object,
-                _logServiceMock.Object,
-                _emailServMock.Object,
-                _configurationMock.Object,
-                tokenServiceMock.Object 
-            );
+        var signinManagerMock = new Mock<SignInManager<User>>(_userManagerMock.Object,
+                                                                new Mock<IHttpContextAccessor>().Object,
+                                                                new Mock<IUserClaimsPrincipalFactory<User>>().Object,
+                                                                identityOptionsMock.Object,
+                                                                new Mock<ILogger<SignInManager<User>>>().Object,
+                                                                new Mock<IAuthenticationSchemeProvider>().Object,
+                                                                new Mock<IUserConfirmation<User>>().Object);
+        _userServiceMock = new Mock<UserService>(
+                    _userManagerMock.Object,
+                    roleManagerMock.Object,
+                    _logServiceMock.Object,
+                    signinManagerMock.Object,
+                    _emailServMock.Object,
+                    _configurationMock.Object,
+                    tokenServiceMock.Object 
+                );
 
             _emailServiceMock = new Mock<EmailService>(tokenServiceMock.Object, new Mock<IEmailAdapter>().Object);
             _service = new StaffService(_unitOfWorkMock.Object, _logServiceMock.Object,

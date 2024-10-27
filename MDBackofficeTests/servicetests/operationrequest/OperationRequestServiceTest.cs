@@ -12,6 +12,8 @@ using DDDNetCore.Domain.Tokens;
 using DDDNetCore.Domain.Users;
 using DDDNetCore.Infrastructure;
 using DDDNetCore.Infrastructure.Emails;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.JsonPatch.Internal;
 using Microsoft.Extensions.Configuration;
@@ -63,14 +65,22 @@ public class OperationRequestServiceTests
         var _emailServiceMock = new Mock<EmailService>(tokenServiceMock.Object, new Mock<IEmailAdapter>().Object);
         var _configurationMock = new Mock<IConfiguration>();
 
+        var signinManagerMock = new Mock<SignInManager<User>>(userManagerMock.Object,
+                                                               new Mock<IHttpContextAccessor>().Object,
+                                                               new Mock<IUserClaimsPrincipalFactory<User>>().Object,
+                                                               identityOptionsMock.Object,
+                                                               new Mock<ILogger<SignInManager<User>>>().Object,
+                                                               new Mock<IAuthenticationSchemeProvider>().Object,
+                                                               new Mock<IUserConfirmation<User>>().Object);
         _userServiceMock = new Mock<UserService>(
-            userManagerMock.Object,
-            roleManagerMock.Object,
-            _logServiceMock.Object,
-            _emailServiceMock.Object,
-           _configurationMock.Object,
-            tokenServiceMock.Object 
-        );
+                userManagerMock.Object,
+                roleManagerMock.Object,
+                _logServiceMock.Object,
+                signinManagerMock.Object,
+                _emailServiceMock.Object,
+                _configurationMock.Object,
+                tokenServiceMock.Object
+            );
         _patientServiceMock = new Mock<PatientService>(_unitOfWorkMock.Object, _logServiceMock.Object, _configurationMock.Object, _repoPatMock.Object,
                     _userServiceMock.Object, _emailServiceMock.Object);
 

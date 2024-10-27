@@ -15,6 +15,8 @@ using DDDNetCore.Domain.StaffProfiles;
 using DDDNetCore.Controllers;
 using Microsoft.AspNetCore.Mvc;
 using DDDNetCore.Domain.Patients;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Http;
 
 namespace MDBackofficeTests.controllertests
 {
@@ -42,9 +44,16 @@ namespace MDBackofficeTests.controllertests
 
             var tokenServiceMock = new Mock<TokenService>(_unitOfWorkMock.Object, new Mock<ITokenRepository>().Object, _userManagerMock.Object);
             var _emailServiceMock = new Mock<EmailService>(tokenServiceMock.Object, new Mock<IEmailAdapter>().Object);
-         
-            var _userServiceMock = new Mock<UserService>(_userManagerMock.Object, roleManagerMock.Object, _logServiceMock.Object, _emailServiceMock.Object, _configurationMock.Object, tokenServiceMock.Object);
-            
+            var signinManagerMock = new Mock<SignInManager<User>>(_userManagerMock.Object,
+                                                                           new Mock<IHttpContextAccessor>().Object,
+                                                                           new Mock<IUserClaimsPrincipalFactory<User>>().Object,
+                                                                           identityOptionsMock.Object,
+                                                                           new Mock<ILogger<SignInManager<User>>>().Object,
+                                                                           new Mock<IAuthenticationSchemeProvider>().Object,
+                                                                           new Mock<IUserConfirmation<User>>().Object);
+
+            var _userServiceMock = new Mock<UserService>(_userManagerMock.Object, roleManagerMock.Object, _logServiceMock.Object, signinManagerMock.Object, _emailServiceMock.Object, _configurationMock.Object, tokenServiceMock.Object);
+
             _service = new Mock<StaffService>(_unitOfWorkMock.Object, _logServiceMock.Object,
                                             _repoMock.Object, _repoSpecMock.Object,
                                             _userManagerMock.Object, _configurationMock.Object, _emailServiceMock.Object,

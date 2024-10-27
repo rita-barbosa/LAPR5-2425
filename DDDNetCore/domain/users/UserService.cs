@@ -20,12 +20,13 @@ namespace DDDNetCore.Domain.Users
     {
         private readonly UserManager<User> _userManager;
         private readonly RoleManager<Role> _roleManager;
+        private readonly SignInManager<User> _signinManager;
         private readonly EmailService _emailService;
         private readonly TokenService _tokenService;
         private readonly LogService _logService;
         private readonly IConfiguration _configuration;
         public UserService(UserManager<User> userManager, RoleManager<Role> roleManager,
-                                LogService logService,
+                                LogService logService, SignInManager<User> signInManager,
 
                                 EmailService emailService, IConfiguration configuration,
                                 TokenService tokenService)
@@ -34,6 +35,7 @@ namespace DDDNetCore.Domain.Users
             _roleManager = roleManager;
             _emailService = emailService;
             _logService = logService;
+            _signinManager = signInManager;
             _tokenService = tokenService;
             _configuration = configuration;
         }
@@ -92,8 +94,22 @@ namespace DDDNetCore.Domain.Users
 
             if (!user.Status)
                 throw new BusinessRuleValidationException("Account not yet activated.");
+            
+            if (await _userManager.IsLockedOutAsync(user))
+            throw new BusinessRuleValidationException("Account is locked out. Please try again later.");
 
-            if (!await _userManager.CheckPasswordAsync(user, loginUserDto.Password))
+            // Sign in the user and check for lockout on failure
+            var signInResult = await _signinManager.PasswordSignInAsync(
+                user, 
+                loginUserDto.Password, 
+                isPersistent: false, 
+                lockoutOnFailure: true // Enable lockout on failure
+            );
+
+            if (signInResult.IsLockedOut)
+                throw new BusinessRuleValidationException("Account is locked out due to too many failed login attempts.");
+
+            if (!signInResult.Succeeded)
                 throw new BusinessRuleValidationException("Invalid password.");
 
             return await GenerateJwtToken(user);

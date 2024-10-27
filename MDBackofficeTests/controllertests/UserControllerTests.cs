@@ -17,6 +17,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Newtonsoft.Json.Linq;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Http;
+using SignInResult = Microsoft.AspNetCore.Identity.SignInResult;
 
 namespace MDBackofficeTests.controllertests
 {
@@ -30,6 +33,7 @@ namespace MDBackofficeTests.controllertests
         private readonly Mock<IConfiguration> _configurationMock;
         private readonly Mock<TokenService> _tokenServiceMock;
         private readonly Mock<PatientService> _patientServiceMock;
+        private readonly Mock<SignInManager<User>> _signinManagerMock;
 
 
         public UserControllerTests() {
@@ -60,15 +64,17 @@ namespace MDBackofficeTests.controllertests
             _tokenServiceMock = new Mock<TokenService>(_unitOfWorkMock.Object, new Mock<ITokenRepository>().Object, _userManagerMock.Object);
             var _emailServiceMock = new Mock<EmailService>(_tokenServiceMock.Object, new Mock<IEmailAdapter>().Object);
             _configurationMock = new Mock<IConfiguration>();
-              
-            _userServiceMock = new Mock<UserService>(
-                _userManagerMock.Object,
-                roleManagerMock.Object,
-                _logServiceMock.Object,
-                _emailServiceMock.Object,
-                _configurationMock.Object,
-                _tokenServiceMock.Object
-            );
+
+             _signinManagerMock = new Mock<SignInManager<User>>(_userManagerMock.Object,
+                                                               new Mock<IHttpContextAccessor>().Object,
+                                                               new Mock<IUserClaimsPrincipalFactory<User>>().Object,
+                                                               identityOptionsMock.Object,
+                                                               new Mock<ILogger<SignInManager<User>>>().Object,
+                                                               new Mock<IAuthenticationSchemeProvider>().Object,
+                                                               new Mock<IUserConfirmation<User>>().Object);
+
+            _userServiceMock = new Mock<UserService>(_userManagerMock.Object, roleManagerMock.Object, _logServiceMock.Object, _signinManagerMock.Object, _emailServiceMock.Object, _configurationMock.Object, _tokenServiceMock.Object);
+
             _patientServiceMock = new Mock<PatientService>(_unitOfWorkMock.Object, _logServiceMock.Object, _configurationMock.Object, new Mock<IPatientRepository>().Object,
                     _userServiceMock.Object, _emailServiceMock.Object);
             var _staffServiceMock = new Mock<StaffService>(_unitOfWorkMock.Object, _logServiceMock.Object, new Mock<IStaffRepository>().Object, new Mock<ISpecializationRepository>().Object,
@@ -160,7 +166,7 @@ namespace MDBackofficeTests.controllertests
 
             
             _userManagerMock.Setup(_userManagerMock => _userManagerMock.FindByEmailAsync(email)).ReturnsAsync(userMock.Object);
-            _userManagerMock.Setup(_userManagerMock => _userManagerMock.CheckPasswordAsync(userMock.Object, password)).ReturnsAsync(true);
+            _signinManagerMock.Setup(sm => sm.PasswordSignInAsync(userMock.Object, password, false, true)).ReturnsAsync(SignInResult.Success);
             _userManagerMock.Setup(um => um.GetRolesAsync(userMock.Object)).ReturnsAsync(["Doctor"]);
             _configurationMock.Setup(c => c["Jwt:Key"]).Returns("AHSVFOSDYUDASJFNhvOUVu897GB876arbvn568n6CN865Vn5NFFn86f87Cb76cNvnVNYvhgvnu7676");
             _configurationMock.Setup(c => c["Jwt:Issuer"]).Returns("testissuer");
@@ -171,7 +177,7 @@ namespace MDBackofficeTests.controllertests
 
             //Assert
             Assert.IsType<OkObjectResult>(result);
-            _userManagerMock.Verify(um => um.CheckPasswordAsync(userMock.Object, password), Times.Once);
+            _signinManagerMock.Verify(um => um.PasswordSignInAsync(userMock.Object, password, false, true), Times.Once);
         }
 
 
@@ -194,7 +200,7 @@ namespace MDBackofficeTests.controllertests
 
             
             _userManagerMock.Setup(_userManagerMock => _userManagerMock.FindByEmailAsync(email)).ReturnsAsync(userMock.Object);
-            _userManagerMock.Setup(_userManagerMock => _userManagerMock.CheckPasswordAsync(userMock.Object, password)).ReturnsAsync(true);
+            _signinManagerMock.Setup(sm => sm.PasswordSignInAsync(userMock.Object, dtoMock.Password, false, true)).ReturnsAsync(SignInResult.Failed);
             _userManagerMock.Setup(um => um.GetRolesAsync(userMock.Object)).ReturnsAsync(["Doctor"]);
             _configurationMock.Setup(c => c["Jwt:Key"]).Returns("AHSVFOSDYUDASJFNhvOUVu897GB876arbvn568n6CN865Vn5NFFn86f87Cb76cNvnVNYvhgvnu7676");
             _configurationMock.Setup(c => c["Jwt:Issuer"]).Returns("testissuer");
