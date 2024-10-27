@@ -15,12 +15,8 @@
         * [Level 2](#level-2)
         * [Level 3](#level-3)
       * [Development View](#development-view)
-      * [Physical View](#physical-view)
+      * [Physical View](#physical-view-)
     * [4.3. Applied Patterns](#43-applied-patterns)
-    * [4.4. Tests](#44-tests)
-  * [5. Implementation](#5-implementation)
-  * [6. Integration/Demonstration](#6-integrationdemonstration)
-  * [7. Observations](#7-observations)
 <!-- TOC -->
 
 
@@ -36,7 +32,7 @@ This is the first time this user story is being requested.
 
 - **5.1.13.1.** Admins can search for and select a staff profile to edit.
 
-- **5.1.13.2.** Editable fields include contact information, availability slots, and specialization.
+- **5.1.13.2.** Editable fields include contact information and specialization.
 
 - **5.1.13.3** The system logs all profile changes, and any changes to contact information trigger a confirmation email
 to the staff member.
@@ -58,6 +54,20 @@ to the staff member.
 > **Answer:** The specializations are independent of whether the professional is a doctor or a nurse.
 
 
+> **Question:** What is the intended search criterion to find the employee profile? 
+> 
+>
+> **Answer:** It should be possible to search for employees by their employee ID, license number, name, specialization, or phone number.
+
+
+> **Question:** In user story 5.1.12, it’s mentioned that the admin can only enter the first name, last name,
+> contact information, and specialization. However, in user story 5.1.13, it states that the admin can edit the
+> contact information, availability slots, and specialization. Should the admin only be able to edit the
+> parameters they originally entered, or does it make sense for them to also edit the availability slots? 
+> 
+>
+> **Answer:** Consider editing the availability slots as a separate operation and outside the scope of this requirement.
+
 ## 3. Analysis
 
 This functionality centers in the edit of a staff's profile by the Admin, so he can update the staff information.
@@ -65,7 +75,6 @@ This functionality centers in the edit of a staff's profile by the Admin, so he 
 First the Admin will search for the staff profile he wants to edit and then select it. Then can be selected the follow
 editable fields:
 - contact information (email and phone)
-- availability slots
 - specialization
 
 In the case of choosing to change sensitive data, such as contact information, triggers and email notification to the
@@ -88,14 +97,6 @@ All the edited data that is changed, will be updated in real-time across the sys
 
 The logical, physical, development and scenario views diagrams are generic for all the use cases of the backoffice component.
 
-This user story is very similar to [US 5.1.9.](../us-5.1.9/readme.md), so were made generic diagrams of the process views
-for each level.
-
-In the following diagrams, the listed variables represent the respective concepts:
-
-* **Y** is 13, represents the user story: us-5.1.13.
-* **X** represents Staff.
-
 #### Logical View
 
 The diagrams are available in the [team decision views folder](../../team-decisions/views/general-views.md#1-logical-view).
@@ -104,21 +105,22 @@ The diagrams are available in the [team decision views folder](../../team-decisi
 
 ##### Level 1
 
-![Process View - Level 1](../general-process-view-diagrams/edit-profiles/n1/process-view-nivel1.svg)
+![Process View - Level 1](diagrams/n1/process-view-nivel1.svg)
 
 ##### Level 2
 
-![Process View - Level 2](../general-process-view-diagrams/edit-profiles/n2/process-view-nivel2.svg)
+![Process View - Level 2](diagrams/n2/process-view-nivel2.svg)
 
 ##### Level 3
 
-![Process View - Level 3](../general-process-view-diagrams/edit-profiles/n3/process-view-nivel3.svg)
+![Process View - Level 3](diagrams/n3/process-view-nivel3.svg)
+![Process View Confirm Contact Information - Level 3](diagrams/n3/process-view-nivel3-confirmEmail.svg)
 
 #### Development View
 
 The diagrams are available in the [team decision views folder](../../team-decisions/views/general-views.md#3-development-view).
 
-#### Physical View
+#### Physical View 
 
 The diagrams are available in the [team decision views folder](../../team-decisions/views/general-views.md#4-physical-view).
 
@@ -126,7 +128,7 @@ The diagrams are available in the [team decision views folder](../../team-decisi
 
 > #### **Repository Pattern**
 >
->* **Components:** StaffRepository, TokenRepository
+>* **Components:** StaffRepository
 >
 > The repositories handle data access and retrieval, isolating the database interaction logic from services and other
 > layers. This approach abstracts the persistence logic, promoting separation of concerns.
@@ -134,7 +136,7 @@ The diagrams are available in the [team decision views folder](../../team-decisi
 
 > #### **DTO (Data Transfer Object) Pattern**
 >
->* **Components:** StaffDTO, TokenDTO
+>* **Components:** StaffDTO, EditStaffDTO, EmailMessageDTO
 >
 > DTOs are utilized to transfer data between layers, particularly from the controller layer to the service layer and
 > vice versa. Their main purpose is to convey data in a structured and decoupled manner without revealing the internal
@@ -143,24 +145,7 @@ The diagrams are available in the [team decision views folder](../../team-decisi
 
 > #### **Facade Pattern**
 >
->* **Components:** StaffService, EmailService, TokenService
+>* **Components:** StaffService, EmailService, UserService, TokenService
 >
 > These services function as a facade, simplifying the interaction with lower-level components such as repositories.
 > The controller communicates with these service facades, concealing the complexity from the upper layers.
-
-### 4.4. Tests
-
-_// To do - layout still in development //_ 
-
-
-## 5. Implementation
-
-_// To do //_
-
-## 6. Integration/Demonstration
-
-_// To do //_
-
-## 7. Observations
-
-_// To do //_

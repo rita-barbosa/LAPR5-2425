@@ -21,7 +21,7 @@ SYS --> ADM : shows staff information
 
 loop until the admin wants
 
-ADM -> SYS : changes the editable fields (contact information,\n availability slots, specialization)
+ADM -> SYS : changes the editable fields (contact information,\n specialization)
 
 end loop
 
