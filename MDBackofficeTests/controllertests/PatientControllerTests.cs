@@ -17,13 +17,13 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace MDBackofficeTests.controllertests
 {
-    public class PatientTests{
+    public class PatientControllerTests{
 
         private readonly Mock<PatientService> _service;
         private readonly Mock<IUnitOfWork> _unitOfWorkMock = new Mock<IUnitOfWork>();
         private readonly Mock<IPatientRepository> _repoMock = new Mock<IPatientRepository>();
-
-        public PatientTests()
+        private readonly PatientController _controller;
+        public PatientControllerTests()
         {
             Mock<LogService> _logServiceMock = new Mock<LogService>(new Mock<IUnitOfWork>().Object, new Mock<ILogRepository>().Object);
 
@@ -44,16 +44,14 @@ namespace MDBackofficeTests.controllertests
             _service = new Mock<PatientService>(_unitOfWorkMock.Object, _logServiceMock.Object, 
                                             _configurationMock.Object, _repoMock.Object, 
                                             _userServiceMock.Object, _emailServiceMock.Object);
-
+            _controller = new PatientController(_service.Object);
         }
 
         [Fact]
         public async Task CreatePatientProfile_Returns_CreatedResult()
         {
             //Arrage
-            var controller = new PatientController(_service.Object);
-
-            var dtoMock = new CreatingPatientDto
+                     var dtoMock = new CreatingPatientDto
                 ("Rita",
                 "Barbosa",
                 "Portugal, 4590-850, Rua da Sardinha",
@@ -66,12 +64,46 @@ namespace MDBackofficeTests.controllertests
             _unitOfWorkMock.Setup(u => u.CommitAsync()).ReturnsAsync(1);
 
             //Act
-            var result = await controller.CreatePatientProfile(dtoMock);
+            var result = await _controller.CreatePatientProfile(dtoMock);
 
             //Assert
             var actionResult = Assert.IsType<ActionResult<PatientDto>>(result);
             var createdAtActionResult = Assert.IsType<CreatedAtActionResult>(actionResult.Result);
             Assert.Equal("GetPatientById", createdAtActionResult.ActionName);
+        }
+
+        [Fact]
+        public async Task UpdateAsync_ReturnsOkPatientDto()
+        {
+            //Arrange
+            var dtoMock = new EditPatientDto
+            ("Rita Barbosa",
+              "+351 910000000",
+              "ritabarbosa@email.com",
+              "Test, 1234-234, Test Test",
+              "2004-12-15");
+
+            var patientMock = new Mock<Patient>("first", "last", "first last", "country, 12345, street test", "female", "+123", "12345678", "98765432", "email@email.com", "2000-10-10", "000001");
+            var id = "202410000001";
+
+            var dtoResult = new PatientDto("Rita Barbosa", "+351 910000000", "ritabarbosa@email.com", "Test, 1234-234, Test Test", "2004-12-15", id);
+
+            _repoMock.Setup(_repoPatMock => _repoPatMock.GetByIdAsync(It.IsAny<MedicalRecordNumber>()))
+                .ReturnsAsync(patientMock.Object);
+            _unitOfWorkMock.Setup(u => u.CommitAsync()).ReturnsAsync(1);
+
+            //Act
+            var result = await _controller.EditPatientProfile(id, dtoMock);
+
+            //Assert
+            var okResult = Assert.IsType<OkObjectResult>(result.Result);
+            var returnedPatient = Assert.IsType<PatientDto>(okResult.Value);
+            Assert.Equal(dtoResult.Name, returnedPatient.Name);
+            Assert.Equal(dtoResult.Phone, returnedPatient.Phone);
+            Assert.Equal(dtoResult.Email, returnedPatient.Email);
+            Assert.Equal(dtoResult.Address, returnedPatient.Address);
+            Assert.Equal(dtoResult.DateBirth, returnedPatient.DateBirth);
+            Assert.Equal(dtoResult.PatientId, returnedPatient.PatientId);
         }
     }
 }

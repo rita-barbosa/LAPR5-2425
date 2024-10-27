@@ -23,7 +23,8 @@ public class PatientServiceTests
         private readonly Mock<LogService> _logServiceMock = new Mock<LogService>(new Mock<IUnitOfWork>().Object, new Mock<ILogRepository>().Object);
         private readonly Mock<UserService> _userServiceMock;
         private readonly Mock<EmailService> _emailServiceMock;
-
+        private readonly PatientService _service;
+        
         public PatientServiceTests()
         {
             var identityOptionsMock = new Mock<IOptions<IdentityOptions>>();
@@ -64,7 +65,10 @@ public class PatientServiceTests
             );
 
             _emailServiceMock = new Mock<EmailService>(tokenServiceMock.Object, new Mock<IEmailAdapter>().Object);
-        }
+            _service = new PatientService(_unitOfWorkMock.Object, _logServiceMock.Object,
+                                            _configurationMock.Object, _repoMock.Object,
+                                            _userServiceMock.Object, _emailServiceMock.Object);
+    }
 
 
        [Fact]
@@ -84,12 +88,8 @@ public class PatientServiceTests
 
         _unitOfWorkMock.Setup(u => u.CommitAsync()).ReturnsAsync(1);
 
-        var service = new PatientService(_unitOfWorkMock.Object, _logServiceMock.Object,
-                                            _configurationMock.Object, _repoMock.Object,
-                                            _userServiceMock.Object, _emailServiceMock.Object);     
-
         //Act
-        var result = await service.CreatePatientProfile(dtoMock);
+        var result = await _service.CreatePatientProfile(dtoMock);
 
         //Assert
         Assert.NotNull(result);
@@ -100,11 +100,46 @@ public class PatientServiceTests
         _repoMock.Verify(r => r.AddAsync(It.IsAny<Patient>()), Times.Once);
         _unitOfWorkMock.Verify(u => u.CommitAsync(), Times.Once);
 
-       }
+       } 
 
-       [Fact]
-       public async Task AnonymizeProfile_ReturnsBool()
-       {
+
+
+        [Fact]
+        public async Task UpdateAsync_ReturnsPatientDto()
+        {
+            //Arrange
+                var dtoMock = new EditPatientDto
+                ("Rita Barbosa",
+                  "+351 910000000",
+                  "ritabarbosa@email.com",
+                  "Test, 1234-234, Test Test",
+                  "2004-12-15");
+
+            var patientMock = new Mock<Patient>("first", "last", "first last", "country, 12345, street test", "female", "+123", "12345678", "98765432", "email@email.com", "2000-10-10", "000001");
+            var id = "202410000001";
+            
+            var dtoResult = new PatientDto("Rita Barbosa", "+351 910000000", "ritabarbosa@email.com", "Test, 1234-234, Test Test", "2004-12-15",id);
+  
+            _repoMock.Setup(_repoPatMock => _repoPatMock.GetByIdAsync(It.IsAny<MedicalRecordNumber>()))
+                .ReturnsAsync(patientMock.Object);
+            _unitOfWorkMock.Setup(u => u.CommitAsync()).ReturnsAsync(1);
+
+            //Act
+            var result =  await _service.UpdateAsync(id, dtoMock);
+
+            //Assert
+            Assert.NotNull(result);
+            Assert.Equal(dtoResult.Name, result.Name);
+            Assert.Equal(dtoResult.Phone, result.Phone);
+            Assert.Equal(dtoResult.Email, result.Email);
+            Assert.Equal(dtoResult.Address, result.Address);
+            Assert.Equal(dtoResult.DateBirth, result.DateBirth);
+            Assert.Equal(dtoResult.PatientId, result.PatientId);
+        }
+
+    [Fact]
+    public async Task AnonymizeProfile_ReturnsBool()
+    {
         //Arrange
         var dtoMock = new CreatingPatientDto
             ("Rita",
@@ -129,7 +164,5 @@ public class PatientServiceTests
         //Assert
         Assert.NotNull(result);
         Assert.Equal(false, result);
-       }
-
-
+    }
 }

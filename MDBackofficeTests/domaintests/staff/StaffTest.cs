@@ -1,6 +1,8 @@
 using DDDNetCore.Domain.StaffProfiles;
 using DDDNetCore.Domain.Shared;
 using Xunit;
+using DDDNetCore.Domain.Patients;
+using DDDNetCore.Domain.Specializations;
 
 namespace MDBackofficeTests.domaintests.staff;
 
@@ -194,6 +196,134 @@ public class StaffTests
         );
         Assert.True(exception is BusinessRuleValidationException || exception is NullReferenceException,
             $"Expected exception of type BusinessRuleValidationException or NullReferenceException, but got {exception.GetType()}.");
+    }
+
+
+    [Fact]
+    public void WhenChangingPhoneWithDifferentPhoneNumber_ThenUpdatesPhoneNumber()
+    {
+        // Arrange
+        var countryCode = "+351";
+        var phoneNumber = "987654321";
+        var newPhone = "+351 900001234";
+        var entity = new Staff("00001", "Portugal, 4570-860, Rua das Oliveiras", "12345", "Rita", "Barbosa", "Rita Barbosa", "ritabarbosa@email.com", countryCode, phoneNumber, "Doctor", "Orthopedics");
+
+        // Act
+        entity.ChangePhone(newPhone);
+
+        // Assert
+        Assert.Equal(new Phone(newPhone), entity.Phone);
+    }
+
+    [Fact]
+    public void WhenChangingPhoneWithIdenticalPhoneNumber_ThenThrowBusinessRuleValidationException()
+    {
+        // Arrange
+        var countryCode = "+351";
+        var phoneNumber = "123456789";
+        var entity = new Staff("00001", "Portugal, 4570-860, Rua das Oliveiras", "12345", "Rita", "Barbosa", "Rita Barbosa", "ritabarbosa@email.com", countryCode, phoneNumber, "Doctor", "Orthopedics");
+
+        // Act & Assert
+        Assert.Throws<BusinessRuleValidationException>(() => entity.ChangePhone("${countryCode} {phoneNumber}"));
+    }
+    [Fact]
+    public void WhenChangingEmailWithDifferentEmail_ThenUpdatesEmail()
+    {
+        // Arrange
+        var oldEmail = "ritabarbosa@email.com";
+        var newEmail = "rita.barbosa.new@email.com";
+        var entity = new Staff("00001", "Portugal, 4570-860, Rua das Oliveiras", "12345", "Rita", "Barbosa", "Rita Barbosa", oldEmail, "+351", "987654321", "Doctor", "Orthopedics");
+
+        // Act
+        entity.ChangeEmail(newEmail);
+
+        // Assert
+        Assert.Equal(new Email(newEmail), entity.Email);
+    }
+
+    [Fact]
+    public void WhenChangingEmailWithIdenticalEmail_ThenThrowBusinessRuleValidationException()
+    {
+        // Arrange
+        var email = "ritabarbosa@email.com";
+        var entity = new Staff("00001", "Portugal, 4570-860, Rua das Oliveiras", "12345", "Rita", "Barbosa", "Rita Barbosa", email, "+351", "987654321", "Doctor", "Orthopedics");
+
+        // Act & Assert
+        Assert.Throws<BusinessRuleValidationException>(() => entity.ChangeEmail(email));
+    }
+
+    [Fact]
+    public void WhenChangingAddressWithDifferentAddress_ThenUpdatesAddress()
+    {
+        // Arrange
+        var oldAddress = "Portugal, 4570-860, Rua das Oliveiras";
+        var newAddress = "Portugal, 4000-000, Rua Nova";
+        var entity = new Staff("00001", oldAddress, "12345", "Rita", "Barbosa", "Rita Barbosa", "ritabarbosa@email.com", "+351", "987654321", "Doctor", "Orthopedics");
+
+        // Act
+        entity.ChangeAddress(newAddress);
+
+        // Assert
+        Assert.Equal(new ResidentialAddress(newAddress), entity.Address);
+    }
+
+    [Fact]
+    public void WhenChangingAddressWithIdenticalAddress_ThenThrowBusinessRuleValidationException()
+    {
+        // Arrange
+        var address = "Portugal, 4570-860, Rua das Oliveiras";
+        var entity = new Staff("00001", address, "12345", "Rita", "Barbosa", "Rita Barbosa", "ritabarbosa@email.com", "+351", "987654321", "Doctor", "Orthopedics");
+
+        // Act & Assert
+        Assert.Throws<BusinessRuleValidationException>(() => entity.ChangeAddress(address));
+    }
+    [Fact]
+    public void WhenChangingSpecializationWithDifferentSpecialization_ThenUpdatesSpecialization()
+    {
+        // Arrange
+        var oldSpecialization = "Orthopedics";
+        var newSpecialization = "Cardiology";
+        var entity = new Staff("00001", "Portugal, 4570-860, Rua das Oliveiras", "12345", "Rita", "Barbosa", "Rita Barbosa", "ritabarbosa@email.com", "+351", "987654321", "Doctor", oldSpecialization);
+
+        // Act
+        entity.ChangeSpecialization(newSpecialization);
+
+        // Assert
+        Assert.Equal(new SpecializationDenomination(newSpecialization), entity.SpecializationId);
+    }
+
+    [Fact]
+    public void WhenChangingSpecializationWithIdenticalSpecialization_ThenThrowBusinessRuleValidationException()
+    {
+        // Arrange
+        var specialization = "Orthopedics";
+        var entity = new Staff("00001", "Portugal, 4570-860, Rua das Oliveiras", "12345", "Rita", "Barbosa", "Rita Barbosa", "ritabarbosa@email.com", "+351", "987654321", "Doctor", specialization);
+
+        // Act & Assert
+        Assert.Throws<BusinessRuleValidationException>(() => entity.ChangeSpecialization(specialization));
+    }
+
+    [Fact]
+    public void WhenUpdatingSlotsWithDifferentSlots_ThenUpdatesSlots()
+    {
+        // Arrange
+        var newSlots = new List<SlotsDto> { new SlotsDto("2024-12-20","2024-12-21", "19:00", "21:00") };
+        var entity = new Staff("00001", "Portugal, 4570-860, Rua das Oliveiras", "12345", "Rita", "Barbosa", "Rita Barbosa", "ritabarbosa@email.com", "+351", "987654321", "Doctor", "Orthopedics");
+
+        entity.AddSlot("10:00", "11:00", "2024-11-20");
+        entity.AddSlot("09:00", "11:00", "2024-11-21");
+
+        var expectedSlots = new List<Slot>
+        {
+            new Slot("19:00", "21:00", "2024-12-20", "2024-12-21")
+        };
+
+        // Act
+        entity.ChangeSlots(newSlots);
+
+        // Assert
+        Assert.Equal(expectedSlots.Count, entity.Slots.Count);
+        Assert.Equal(expectedSlots, entity.Slots);
     }
 
 }

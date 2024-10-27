@@ -196,7 +196,7 @@ namespace DDDNetCore.Domain.Patients
             VerificationsToSendEmail(phoneChange, emailChange, adressChange, oldEmail, patient);
 
             return new PatientDto(patient.Name.ToString(), patient.PhoneNumber.ToString(),
-                patient.Email.ToString(), patient.Address.ToString(), patient.DateBirth.ToString("dd-MM-yyyy"), patient.Id.AsString());
+                patient.Email.ToString(), patient.Address.ToString(), patient.DateBirth.ToString("yyyy-MM-dd"), patient.Id.AsString());
         }
 
         private async void VerificationsToSendEmail(bool phoneChange, bool emailChange, bool adressChange, string oldEmail, Patient patient)
@@ -256,7 +256,10 @@ namespace DDDNetCore.Domain.Patients
             }
             if (dto.Email != null)
             {
-                await _userService.EditUserProfile(email, dto.Email);
+                if (patient.UserReference != null)
+                {
+                    await _userService.EditUserProfile(email, dto.Email);
+                }
                 patient.ChangeEmail(dto.Email);
                 logEntries.Add($"email=[{dto.Email}]");
             }
