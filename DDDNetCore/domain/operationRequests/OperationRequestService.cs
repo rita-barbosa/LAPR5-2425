@@ -101,7 +101,7 @@ namespace DDDNetCore.Domain.OperationRequest
         }
 
 
-                public async Task<OperationRequestDto> UpdateAsync(UpdateOperationRequestDto dto)
+        public async Task<OperationRequestDto> UpdateAsync(UpdateOperationRequestDto dto)
         {
             var opRequest = await _repo.GetByIdAsync(new OperationRequestId(dto.Id));
 
@@ -273,7 +273,7 @@ namespace DDDNetCore.Domain.OperationRequest
             return true;
         }
 
-        internal async Task<ActionResult<IEnumerable<OperationRequestDto>>> GetAllFromDoctorAsysnc(string userEmail)
+        public async Task<ActionResult<IEnumerable<OperationRequestDto>>> GetAllFromDoctorAsysnc(string userEmail)
         {
             User user = await _userService.FindByEmailAsync(userEmail);
             if (user == null)

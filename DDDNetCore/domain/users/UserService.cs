@@ -163,7 +163,7 @@ namespace DDDNetCore.Domain.Users
             return await _userManager.FindByIdAsync(userId);
         }
 
-        public async Task<User> FindByEmailAsync(string userEmail)
+        public virtual async Task<User> FindByEmailAsync(string userEmail)
         {
             return await _userManager.FindByEmailAsync(userEmail);
         }

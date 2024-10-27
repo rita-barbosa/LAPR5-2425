@@ -104,7 +104,7 @@ namespace DDDNetCore.Infrastructure.StaffProfiles
                 .FirstOrDefaultAsync(); // Get the first match or return null if none found
         }
 
-        public async Task<Staff> FindStaffWithUserId(string userId)
+        public virtual async Task<Staff> FindStaffWithUserId(string userId)
         {
             return await _context.StaffProfiles
                 .Where(staff =>

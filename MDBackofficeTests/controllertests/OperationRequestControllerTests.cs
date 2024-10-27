@@ -14,12 +14,14 @@ using DDDNetCore.Infrastructure.Emails;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.JsonPatch.Operations;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moq;
 using System.Security.Claims;
+using System.Xml.Linq;
 using Xunit;
 
 
@@ -121,7 +123,7 @@ namespace MDBackofficeTests.controllertests
                 }
             };
 
-            var operationTypeMock = new Mock<OperationType>(opTyId, 100, true, reqStaff, phases);
+            var operationTypeMock = new Mock<DDDNetCore.Domain.OperationTypes.OperationType>(opTyId, 100, true, reqStaff, phases);
 
 
 
@@ -201,7 +203,7 @@ namespace MDBackofficeTests.controllertests
                 }
             };
 
-            var operationTypeMock = new Mock<OperationType>(opTyId, 100, true, reqStaff,phases);
+            var operationTypeMock = new Mock<DDDNetCore.Domain.OperationTypes.OperationType>(opTyId, 100, true, reqStaff,phases);
 
             var operationRequests = new List<Mock<OperationRequest>>
             {
@@ -238,6 +240,153 @@ namespace MDBackofficeTests.controllertests
             }
 
             _repoMock.Verify(repo => repo.FindAllConditioned(new StaffId(staffId), name, priority, operationType, status, dateOfRequest, deadLineDate), Times.Once);
+        }
+
+        [Fact]
+        public async Task GetAllFromDoctor_ReturnsOkOperationRequestDto()
+        {
+            //Arrange
+            var emailClaim = "email@email.com";
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.Email, emailClaim)
+            };
+            var identity = new ClaimsIdentity(claims, "TestAuthType");
+            var claimsPrincipal = new ClaimsPrincipal(identity);
+
+            // Create a mock for the controller context and set the User
+            _controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext { User = claimsPrincipal }
+            };
+
+            var id = Guid.NewGuid();
+            var staffId = "D202400001";
+            var opTyId = "tumor removal";
+            var patientId = "202410000001";
+            var email = "email@email.com";
+            var priority = "Elective";
+            var name = "John Doe";
+            var operationType = "tumor removal";
+            var status = "Requested";
+            var dateOfRequest = "2024-10-25";
+            var deadLineDate = "2024-12-31";
+
+            var staffMock = new Staff("00001", "country, 12345, street test", "12345", "first", "last", "first last", "email@email.com", "+123", "12345678", "doctor", "ortho");
+            var patientMock = new Mock<Patient>("first", "last", "first last", "country, 12345, street test", "female", "+123", "12345678", "98765432", "email@email.com", "2000-10-10", "000001");
+            var phases = new List<PhaseDto>
+            {
+                new PhaseDto {
+                            Description = "descrip",
+                            Duration = 25
+                            },
+                new PhaseDto {
+                            Description = "descrip2",
+                            Duration = 50
+                            },
+                new PhaseDto {
+                            Description = "descrip3",
+                            Duration = 25
+                            }
+            };
+
+            var reqStaff = new List<RequiredStaffDto>
+            {
+                new RequiredStaffDto{
+                    StaffQuantity = 1,
+                    Function = "doctor",
+                    Specialization = "ortho"
+                }
+            };
+
+            List<OperationRequestDto> operations = new List<OperationRequestDto>();
+
+            OperationRequestDto operationRequestDto = new OperationRequestDto(id, deadLineDate, priority, dateOfRequest, status, staffId, name, patientId, opTyId);
+
+            operations.Add(operationRequestDto);
+
+            _service.Setup(s => s.GetAllFromDoctorAsysnc(emailClaim)).ReturnsAsync(operations);
+
+            //Act
+            var result = _controller.GetAllFromDoctor();
+
+            //Assert
+            Assert.NotNull(result);
+            var okResult = Assert.IsType<ActionResult<IEnumerable<OperationRequestDto>>>(result.Result);
+            var returnedPatient = Assert.IsType<List<OperationRequestDto>>(okResult.Value);
+        }
+
+        [Fact]
+        public async Task Update_ReturnsUpdateOperationRequestDto()
+        {
+            //Arrange
+            var emailClaim = "email@email.com";
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.Email, emailClaim)
+            };
+            var identity = new ClaimsIdentity(claims, "TestAuthType");
+            var claimsPrincipal = new ClaimsPrincipal(identity);
+
+            // Create a mock for the controller context and set the User
+            _controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext { User = claimsPrincipal }
+            };
+
+            var id = Guid.NewGuid();
+            var staffId = "D202400001";
+            var opTyId = "tumor removal";
+            var patientId = "202410000001";
+            var email = "email@email.com";
+            var priority = "Elective";
+            var name = "John Doe";
+            var operationType = "tumor removal";
+            var status = "Requested";
+            var dateOfRequest = "2024-10-25";
+            var deadLineDate = "2024-12-31";
+
+            var staffMock = new Staff("00001", "country, 12345, street test", "12345", "first", "last", "first last", "email@email.com", "+123", "12345678", "doctor", "ortho");
+            var patientMock = new Mock<Patient>("first", "last", "first last", "country, 12345, street test", "female", "+123", "12345678", "98765432", "email@email.com", "2000-10-10", "000001");
+            var phases = new List<PhaseDto>
+            {
+                new PhaseDto {
+                            Description = "descrip",
+                            Duration = 25
+                            },
+                new PhaseDto {
+                            Description = "descrip2",
+                            Duration = 50
+                            },
+                new PhaseDto {
+                            Description = "descrip3",
+                            Duration = 25
+                            }
+            };
+
+            var reqStaff = new List<RequiredStaffDto>
+            {
+                new RequiredStaffDto{
+                    StaffQuantity = 1,
+                    Function = "doctor",
+                    Specialization = "ortho"
+                }
+            };
+
+            UpdateOperationRequestDto updateOperationRequestDto = new UpdateOperationRequestDto(id.ToString(), deadLineDate, priority, operationType);
+            OperationRequestDto operationRequestDto = new OperationRequestDto(id, deadLineDate, priority, dateOfRequest, status, staffId, name, patientId, opTyId);
+
+            _service.Setup(s => s.CheckDoctorIsRequestingDoctor(emailClaim, updateOperationRequestDto.Id)).ReturnsAsync(true);
+            _service.Setup(s => s.UpdateAsync(updateOperationRequestDto)).ReturnsAsync(operationRequestDto);
+
+            //Act
+            var result = await _controller.Update(updateOperationRequestDto);
+
+            //Assert
+            Assert.NotNull(result);
+            var okResult = Assert.IsType<OkObjectResult>(result.Result);
+            var returnedInfo = Assert.IsType<OkObjectResult>(okResult);
+
         }
 
     }
