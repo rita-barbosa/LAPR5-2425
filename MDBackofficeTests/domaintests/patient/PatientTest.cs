@@ -259,6 +259,46 @@ public class PatientTests
         );
     }
 
+    [Theory]
+    [InlineData("Rita", "Barbosa", "Rita Barbosa", "Portugal, 4590-850, Rua da Sardinha", "Female", "+351", "910000000", "9100087827", "ritabarbosa@email.com", "2004-12-15", "000001")]
+    [InlineData("Ana", "Guterres", "Ana Guterres", "Portugal, 4580-856, Rua da Faneca", "FEMALE", "+351", "910000001", "9100087845", "anaguterres@example.com", "2004-12-15", "000002")]
+    [InlineData("Ana", "Guterres", "Ana Guterres", "Portugal, 4580-856, Rua da Faneca", "fEMALE", "+351", "910000001", "9100087845", "anaguterres@example.com", "2004-12-15", "000005")]
+    [InlineData("Test", "Second", "Test First Second", "Portugal, 4580-856, Rua do Salmão", "Male", "+351", "910000002", "9104987845", "test@example.com", "2006-04-09", "000003")]
+    [InlineData("João", "Last", "João Last", "Portugal, 4580-856, Rua do Bacalhau", "MALE", "+351", "910000003", "91120871245", "lastTest@example.com", "2000-12-15", "000004")]
+    [InlineData("João", "Last", "João Last", "Portugal, 4580-856, Rua do Bacalhau", "mALE", "+351", "910000003", "91120871245", "lastTest@example.com", "2000-12-15", "000004")]
+    public void Anonymize_ShouldRedactPatientInformation(string firstName, string lastName, string fullName, string address, string gender, string countryCode, string phoneNumber, string emergencyContact, string email, string dateBirth, string seqNumber)
+    {
+        // Arrange
+        var patient = new Patient(
+            firstName,
+            lastName,
+            fullName,
+            address,
+            gender,
+            countryCode,
+            phoneNumber,
+            emergencyContact,
+            email,
+            dateBirth,
+            seqNumber
+        );
 
+        // Act
+        bool result = patient.Anonymize();
 
+        // Assert
+        Assert.True(result);
+        Assert.Equal("[REDACTED]", patient.Name.FirstName);
+        Assert.Equal("[REDACTED]", patient.Name.LastName);
+        Assert.Equal("[REDACTED]", patient.Address.Country);
+        Assert.Equal("[REDACTED]", patient.Address.PostalCode);
+        Assert.Equal("[REDACTED]", patient.Address.Residence);
+        Assert.Equal("[REDACTED]", patient.Email.EmailAddress);
+        Assert.Equal("[REDACTED]", patient.PhoneNumber.PhoneNumber);
+        Assert.Equal("[REDACTED]", patient.PhoneNumber.CountryCode);
+        Assert.Equal("[REDACTED]", patient.EmergencyContact.PhoneNumber);
+        Assert.Equal("[REDACTED]", patient.EmergencyContact.CountryCode);
+        Assert.False(patient.Status);
+    }
 }
+
