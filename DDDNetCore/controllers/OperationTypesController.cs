@@ -40,6 +40,7 @@ namespace DDDNetCore.Controllers
 
         // POST: api/operationTypes
         [HttpPost]
+        [Authorize(Policy = "Admin")]
         public async Task<ActionResult<OperationTypeDto>> Create(OperationTypeDto dto)
         {
             var operationType = await _service.AddAsync(dto);
