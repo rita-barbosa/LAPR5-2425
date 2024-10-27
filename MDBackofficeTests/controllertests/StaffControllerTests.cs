@@ -142,5 +142,60 @@ namespace MDBackofficeTests.controllertests
             Assert.Equal(dtoResult.Address, returnedStaff.Address);
             Assert.Equal(dtoResult.SpecializationId, returnedStaff.SpecializationId);
         }
+
+        [Fact]
+        public async Task GetStaffProfiles_ReturnsStaffDtoList()
+        {
+            //Arrange
+            List<StaffDto> result = new List<StaffDto>();
+            _service.Setup(p => p.GetAllAsync()).ReturnsAsync(result);
+
+            //Act
+            var resultList = _controller.GetStaffProfiles();
+
+            //Assert
+            var okResult = Assert.IsType<ActionResult<IEnumerable<StaffDto>>>(resultList.Result);
+            var returnedStaff = Assert.IsType<List<StaffDto>>(okResult.Value);
+        }
+
+        [Fact]
+        public async Task GetFilteredStaffProfiles_ReturnsStaffDtoList()
+        {
+            // Arrange
+            string firstName = "Duarte";
+            string lastName = "Matos";
+            string email = "exampleemail@gmail.com";
+            string specialization = "Cardiology";
+
+            StaffListingFilterParametersDto listingFilterParametersDto
+                = new StaffListingFilterParametersDto(
+                    firstName,
+                    lastName,
+                    email,
+                    specialization
+                    );
+
+            List<StaffListingFilterParametersDto> listingFilterParametersDtosList = new List<StaffListingFilterParametersDto>
+            {
+                listingFilterParametersDto
+            };
+
+            StaffQueryParametersDto dto = new StaffQueryParametersDto(listingFilterParametersDtosList);
+            var id = "202410000001";
+
+            List<StaffDto> result = new List<StaffDto>();
+            var dtoResult = new StaffDto("Rita Barbosa", "+351 910000000", "ritabarbosa@email.com", "Test, 1234-234, Test Test", "2004-12-15", id);
+
+            result.Add(dtoResult);
+
+            _service.Setup(p => p.FilterStaffProfiles(dto)).ReturnsAsync(result);
+
+            //Act
+            var resultController = await _controller.GetFilteredStaffProfiles(dto);
+
+            //Assert
+            var okResult = Assert.IsType<OkObjectResult>(resultController.Result);
+            var returnedPatient = Assert.IsType<List<StaffDto>>(okResult.Value);
+        }
     }
 }
