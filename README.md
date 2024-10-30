@@ -43,11 +43,11 @@ To run the system, use the following scripts:
 
 ## Development Team
 
-| Name| Contact|
-|---|---|
-|Ana Guterres| <1221933@isep.ipp.pt>|
-|José Santos| <1220738@isep.ipp.pt>|
+| Name         | Contact              |
+|--------------|----------------------|
+|Ana Guterres  | <1221933@isep.ipp.pt>|
+|José Santos   | <1220738@isep.ipp.pt>|
 |Matilde Varela| <1220683@isep.ipp.pt>|
-|Rita Barbosa| <1220841@isep.ipp.pt>|
+|Rita Barbosa  | <1220841@isep.ipp.pt>|
 
 **Repository Owner:** Rita Barbosa
