@@ -1,7 +1,7 @@
-# US 6.2.12
+# US 6.2.10
 
 <!-- TOC -->
-- [US 6.2.12](#us-6212)
+- [US 6.2.10](#us-6210)
   - [1. Context](#1-context)
   - [2. Requirements](#2-requirements)
   - [3. Analysis](#3-analysis)
@@ -23,17 +23,17 @@ This is the first time this user story is worked on.
 
 ## 2. Requirements
 
-**US 6.2.12:**  As an Admin, I want to create a new staff profile, so that I can add them to the hospital’s roster.
+**US 6.2.10:**  As an Admin, I want to create a new staff profile, so that I can add them to the hospital’s roster.
 
 **Acceptance Criteria:**
 
-- 6.2.12.1: Admins can input staff details such as first name, last name, contact information, and specialization.
+- 6.2.10.1: Admins can input staff details such as first name, last name, contact information, and specialization.
 
-- 6.2.12.2: A unique staff ID (License Number) is generated upon profile creation.
+- 6.2.10.2: A unique staff ID (License Number) is generated upon profile creation.
 
-- 6.2.12.3: The system ensures that the staff’s email and phone number are unique.
+- 6.2.10.3: The system ensures that the staff’s email and phone number are unique.
 
-- 6.2.12.4: The profile is stored securely, and access is based on role-based permissions.
+- 6.2.10.4: The profile is stored securely, and access is based on role-based permissions.
 
 **Dependencies/References:**
 

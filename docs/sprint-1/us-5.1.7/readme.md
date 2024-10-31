@@ -119,7 +119,7 @@ _[This diagram is not relevant.]_
 
 ##### Level 3
 
-![Process View - Level 3](diagrams/level-3-process-view-1.svg)
+![Process View - Level 3](diagrams/level-3-process-view.svg)
 
 #### Development View
 

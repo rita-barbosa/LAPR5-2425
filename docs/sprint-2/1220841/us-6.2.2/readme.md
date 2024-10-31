@@ -1,7 +1,7 @@
-# US 6.2.4
+# US 6.2.2
 
 <!-- TOC -->
-- [US 6.2.4](#us-624)
+- [US 6.2.2](#us-622)
   - [1. Context](#1-context)
   - [2. Requirements](#2-requirements)
   - [3. Analysis](#3-analysis)
@@ -22,18 +22,18 @@ This is the first time this user story is worked on.
 
 ## 2. Requirements
 
-**US 6.2.4:** As a Patient, I want to update my user profile, so that I can change my personal
+**US 6.2.2:** As a Patient, I want to update my user profile, so that I can change my personal
 details and preferences.
 
 **Acceptance Criteria:**
 
-- **6.2.4.1:** Patients can log in and update their profile details (e.g., name, contact information, preferences).
+- **6.2.2.1:** Patients can log in and update their profile details (e.g., name, contact information, preferences).
 
-- **6.2.4.2:** Changes to sensitive data, such as email, trigger an additional verification step (e.g., confirmation email).
+- **6.2.2.2:** Changes to sensitive data, such as email, trigger an additional verification step (e.g., confirmation email).
 
-- **6.2.4.3:** All profile updates are securely stored in the system.
+- **6.2.2.3:** All profile updates are securely stored in the system.
 
-- **6.2.4.4:** The system logs all changes made to the patient's profile for audit purposes.
+- **6.2.2.4:** The system logs all changes made to the patient's profile for audit purposes.
 
 **Dependencies/References:**
 

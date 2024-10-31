@@ -1,7 +1,7 @@
-# US 6.2.22
+# US 6.2.20
 
 <!-- TOC -->
-- [US 6.2.22](#us-6222)
+- [US 6.2.20](#us-6220)
   - [1. Context](#1-context)
   - [2. Requirements](#2-requirements)
   - [3. Analysis](#3-analysis)
@@ -23,15 +23,15 @@ This is the first time this user story is worked on.
 
 ## 2. Requirements
 
-**US 6.2.22:** As an Admin, I want to remove obsolete or no longer performed operation types, so that the system stays current with hospital practices.
+**US 6.2.20:** As an Admin, I want to remove obsolete or no longer performed operation types, so that the system stays current with hospital practices.
 
 **Acceptance Criteria:**
 
-- 6.2.22.1: Admins can search for and mark operation types as inactive (rather than deleting them) to preserve historical records.
+- 6.2.20.1: Admins can search for and mark operation types as inactive (rather than deleting them) to preserve historical records.
 
-- 6.2.22.2: Inactive operation types are no longer available for future scheduling but remain in historical data.
+- 6.2.20.2: Inactive operation types are no longer available for future scheduling but remain in historical data.
 
-- 6.2.22.3: A confirmation prompt is shown before deactivating an operation type.
+- 6.2.20.3: A confirmation prompt is shown before deactivating an operation type.
 
 **Dependencies/References:**
 

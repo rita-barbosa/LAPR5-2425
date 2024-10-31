@@ -1,7 +1,7 @@
-# US 6.2.7
+# US 6.2.5
 
 <!-- TOC -->
-- [US 6.2.7](#us-627)
+- [US 6.2.5](#us-625)
   - [1. Context](#1-context)
   - [2. Requirements](#2-requirements)
   - [3. Analysis](#3-analysis)
@@ -31,20 +31,20 @@ to log in a single time to access the resources and services of those applicatio
 
 ## 2. Requirements
 
-**US 6.2.7:**  As a Patient, I want to log in to the healthcare system using my external IAM credentials, so that I can
+**US 6.2.5:**  As a Patient, I want to log in to the healthcare system using my external IAM credentials, so that I can
 access my appointments, medical records, and other features securely.
 
 **Acceptance Criteria:**
 
-- 6.2.7.1. | Patients log in via an external Identity and Access Management (IAM) provider (e.g., Google, Facebook, or hospital SSO).
+- 6.2.5.1. | Patients log in via an external Identity and Access Management (IAM) provider (e.g., Google, Facebook, or hospital SSO).
 
-- 6.2.7.2. | After successful authentication via the IAM, patients are redirected to the healthcare system with a valid session.
+- 6.2.5.2. | After successful authentication via the IAM, patients are redirected to the healthcare system with a valid session.
 
-- 6.2.7.3 | Patients have access to their appointment history, medical records, and other features relevant to their profile.
+- 6.2.5.3 | Patients have access to their appointment history, medical records, and other features relevant to their profile.
 
-- 6.2.7.4 | Sessions expire after a defined period of inactivity, requiring re-authentication.
+- 6.2.5.4 | Sessions expire after a defined period of inactivity, requiring re-authentication.
 
-- 6.2.7.5 | If the credentials used in the IAM correspond to a staff profile, the patient cannot register in the healthcare system.
+- 6.2.5.5 | If the credentials used in the IAM correspond to a staff profile, the patient cannot register in the healthcare system.
 
 
 **Dependencies/References:**

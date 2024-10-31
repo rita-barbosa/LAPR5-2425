@@ -1,7 +1,7 @@
-# US 6.2.19
+# US 6.2.17
 
 <!-- TOC -->
-- [US 6.2.19](#us-6219)
+- [US 6.2.17](#us-6217)
   - [1. Context](#1-context)
   - [2. Requirements](#2-requirements)
   - [3. Analysis](#3-analysis)
@@ -23,18 +23,18 @@ This is the first time this user story is worked on.
 
 ## 2. Requirements
 
-**US 6.2.19:** As a Doctor, I want to list/search operation requisitions, so that I see the details, edit, and remove operation requisitions.
+**US 6.2.17:** As a Doctor, I want to list/search operation requisitions, so that I see the details, edit, and remove operation requisitions.
 
 **Acceptance Criteria:**
 
-- 6.2.19.1: Doctors can search operation requests by patient name, operation type, priority, and status.
+- 6.2.17.1: Doctors can search operation requests by patient name, operation type, priority, and status.
 
-- 6.2.19.2: The system displays a list of operation requests in a searchable and filterable view.
+- 6.2.17.2: The system displays a list of operation requests in a searchable and filterable view.
 
-- 6.2.19.3: Each entry in the list includes operation request details (e.g., patient name, operation type,
+- 6.2.17.3: Each entry in the list includes operation request details (e.g., patient name, operation type,
 status).
 
-- 6.2.19.1: Doctors can select an operation request to view, update, or delete it.
+- 6.2.17.1: Doctors can select an operation request to view, update, or delete it.
 
 **Dependencies/References:**
 

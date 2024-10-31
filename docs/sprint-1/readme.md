@@ -61,4 +61,11 @@ These practices have been put in place to enhance team collaboration, ensure tim
 
 ## Sprint Retrospective
 
-> To be done
+* What Went Well:
+Our team adapted swiftly and effectively to the new work environment and subject matter, tackling challenges with a proactive mindset. We improved communication channels, which streamlined collaboration, and we took a successful approach to integrating new technologies into our workflow.
+
+* Challenges Faced:
+Client clarifications sometimes caused confusion, leading to unnecessary feature implementations. We also faced adaptation issues with the testing model due to limited examples and time constraints. A specific issue within an aggregate grew in complexity, and there was a lack of prioritization management, particularly between the IAM system and aggregate roots.
+
+* Areas for Improvement:
+We could benefit from bringing issues to the team sooner for faster and proactive resolutions. Additionally, adopting a more flexible approach in the engineering process could improve our adaptability and outcomes.

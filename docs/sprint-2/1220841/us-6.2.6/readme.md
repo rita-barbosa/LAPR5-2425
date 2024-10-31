@@ -1,7 +1,7 @@
-# US 6.2.8
+# US 6.2.6
 
 <!-- TOC -->
-- [US 6.2.8](#us-628)
+- [US 6.2.6](#us-626)
   - [1. Context](#1-context)
   - [2. Requirements](#2-requirements)
   - [3. Analysis](#3-analysis)
@@ -23,17 +23,17 @@ This is the first time this user story is worked on.
 
 ## 2. Requirements
 
-**US 6.2.8:** As an Admin, I want to create a new patient profile, so that I can register their personal details and medical history.
+**US 6.2.6:** As an Admin, I want to create a new patient profile, so that I can register their personal details and medical history.
 
 **Acceptance Criteria:**
 
-- 6.2.8.1:  Admins can input patient details such as first name, last name, date of birth, contact information, and medical history.
+- 6.2.6.1:  Admins can input patient details such as first name, last name, date of birth, contact information, and medical history.
 
-- 6.2.8.2: A unique patient ID (Medical Record Number) is generated upon profile creation.
+- 6.2.6.2: A unique patient ID (Medical Record Number) is generated upon profile creation.
 
-- 6.2.8.3: The system validates that the patient’s email and phone number are unique.
+- 6.2.6.3: The system validates that the patient’s email and phone number are unique.
 
-- 6.2.8.4: The profile is stored securely in the system, and access is governed by role-based permissions.
+- 6.2.6.4: The profile is stored securely in the system, and access is governed by role-based permissions.
 
 **Dependencies/References:**
 
