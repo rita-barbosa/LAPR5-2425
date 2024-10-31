@@ -1,7 +1,7 @@
-# US 6.2.6
+# US 6.2.3
 
 <!-- TOC -->
-* [US 6.2.6](#us-626)
+* [US 6.2.3](#us-623)
   * [1. Context](#1-context)
   * [2. Requirements](#2-requirements)
   * [3. Analysis](#3-analysis)
@@ -23,15 +23,15 @@ This is the first time this user story is worked on.
 
 ## 2. Requirements
 
-**US 6.2.6:**
+**US 6.2.3:**
 
 **Acceptance Criteria:**
 
-- 6.2.6.1:
+- 6.2.3.1:
 
-- 6.2.6.2:
+- 6.2.3.2:
 
-- 6.2.6.3:
+- 6.2.3.3:
 
 **Dependencies/References:**
 
