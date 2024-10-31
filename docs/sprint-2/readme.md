@@ -14,7 +14,7 @@
 | US                 | User Stories Assigned         | Testing team member |
 |--------------------|-------------------------------|---------------------|
 | Ana Guterres       |                               |                     |
-| José Santos        |                               |                     |
+| José Santos        | [us-6.1.2](./1220738/us-6.1.2/readme.md); [us-6.2.1](./1220738/us-6.2.1/readme.md); [us-6.2.3](./1220738/us-6.2.3/readme.md); [us-6.2.10](./1220738/us-6.2.10/readme.md); [us-6.2.14](./1220738/us-6.2.14/readme.md); [us-6.2.18](./1220738/us-6.2.18/readme.md); [us-6.2.21](./1220738/us-6.2.21/readme.md); [us-6.3.1](./us-6.3.1/readme.md); [us-6.4.1](./1220738/us-6.4.1/readme.md); [us-6.4.4](./1220738/us-6.4.4/readme.md); [us-6.5.3](./1220738/us-6.5.3/readme.md); [us-6.6.1](./1220738/us-6.6.1/readme.md); [us-6.6.2](./1220738/us-6.6.2/readme.md);                                  |       Ana              |
 | Matilde Varela     |                               |                     |
 | Rita Barbosa       | [us-6.1.5](./1220841/us-6.1.5/readme.md); [us-6.2.4](./1220841/us-6.2.4/readme.md); [us-6.2.7](./1220841/us-6.2.7/readme.md); [us-6.2.8](./1220841/us-6.2.8/readme.md); [us-6.2.12](./1220841/us-6.2.12/readme.md); [us-6.2.19](./1220841/us-6.2.19/readme.md); [us-6.2.22](./1220841/us-6.2.22/readme.md); [us-6.3.3](./us-6.3.3/readme.md); [us-6.4.6](./1220841/us-6.4.6/readme.md); [us-6.4.8](./1220841/us-6.4.8/readme.md); [us-6.5.4](./1220841/us-6.5.4/readme.md);                        | Matilde                   |
 
