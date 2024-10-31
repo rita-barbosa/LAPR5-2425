@@ -1,7 +1,7 @@
-# US 6.2.18
+# US 6.2.8
 
 <!-- TOC -->
-- [US 6.2.18](#us-6218)
+- [US 6.2.8](#us-628)
   - [1. Context](#1-context)
   - [2. Requirements](#2-requirements)
   - [3. Analysis](#3-analysis)
@@ -18,19 +18,24 @@
 
 ## 1. Context
 
-// TODO
+This is the first time this US is being worked on.
+This US pertains to the Admin.
 
 ## 2. Requirements
 
-// TODO
+**US 6.2.8:** As an Admin, I want to delete a patient profile, so that I can remove patients who are no longer under care.
 
 **Acceptance Criteria:**
 
-// TODO
+- **6.2.8.1. -** The UI must be made in Angular. 
+
+- **6.2.8.2. -** The UI's deployment must follow the SPA design procedures.
 
 **Dependencies/References:**
 
-// TODO
+- **US 5.1.10 -** This US references US 5.1.3 because it is the UI for that said functionality.
+
+- **US 6.1.2 -** This US depends on US 6.1.2 because this functionality is part of the menus that are created in the US 6.1.2.
 
 **Client Clarifications:**
 

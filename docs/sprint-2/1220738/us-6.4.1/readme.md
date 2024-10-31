@@ -18,11 +18,12 @@
 
 ## 1. Context
 
-// TODO
+This is the first time this US is being worked on.
+This US pertains to the Admin.
 
 ## 2. Requirements
 
-// TODO
+**US 6.4.1:** As system administrator, I want the deployment of one of the RFP modules in a DEI VM to be systematic, validating it on a scheduled bases with the test plan.
 
 **Acceptance Criteria:**
 

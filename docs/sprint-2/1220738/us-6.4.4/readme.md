@@ -18,11 +18,12 @@
 
 ## 1. Context
 
-// TODO
+This is the first time this US is being worked on.
+This US pertains to the Admin.
 
 ## 2. Requirements
 
-// TODO
+**US 6.4.4:** As an Administrator, I want to identify and quantify the risks involved in the recommended solution.
 
 **Acceptance Criteria:**
 

@@ -18,20 +18,24 @@
 
 ## 1. Context
 
-// TODO
+This is the first time this US is being worked on.
+This US pertains to the Admin.
 
 ## 2. Requirements
 
-
-// TODO
+**US 6.2.1:** As a Patient, I want to register for the healthcare application, so that I can create a user profile and book appointments online.
 
 **Acceptance Criteria:**
 
-// TODO
+- **6.2.1.1. -** The UI must be made in Angular. 
+
+- **6.2.1.2. -** The UI's deployment must follow the SPA design procedures.
 
 **Dependencies/References:**
 
-// TODO
+- **US 5.1.3 -** This US references US 5.1.3 because it is the UI for that said functionality.
+
+- **US 6.1.2 -** This US depends on US 6.1.2 because this functionality is part of the menus that are created in the US 6.1.2.
 
 **Client Clarifications:**
 

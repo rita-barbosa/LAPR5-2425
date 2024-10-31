@@ -1,7 +1,7 @@
-# US 6.2.21
+# US 6.2.19
 
 <!-- TOC -->
-- [US 6.2.21](#us-6221)
+- [US 6.2.19](#us-6219)
   - [1. Context](#1-context)
   - [2. Requirements](#2-requirements)
   - [3. Analysis](#3-analysis)
@@ -18,19 +18,24 @@
 
 ## 1. Context
 
-// TODO
+This is the first time this US is being worked on.
+This US pertains to the Admin.
 
 ## 2. Requirements
 
-// TODO
+**US 6.2.19:** As Admin, I want to edit existing operation types so that I can update or correct information about the procedure.
 
 **Acceptance Criteria:**
 
-// TODO
+- **6.2.19.1. -** The UI must be made in Angular. 
+
+- **6.2.19.2. -** The UI's deployment must follow the SPA design procedures.
 
 **Dependencies/References:**
 
-// TODO
+- **US 5.1.21 -** This US references US 5.1.3 because it is the UI for that said functionality.
+
+- **US 6.1.2 -** This US depends on US 6.1.2 because this functionality is part of the menus that are created in the US 6.1.2.
 
 **Client Clarifications:**
 

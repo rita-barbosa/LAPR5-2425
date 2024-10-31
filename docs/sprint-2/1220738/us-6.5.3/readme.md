@@ -18,11 +18,12 @@
 
 ## 1. Context
 
-// TODO
+This is the first time this US is being worked on.
+This US pertains to the Admin.
 
 ## 2. Requirements
 
-// TODO
+**US 6.5.3:** As a healthcare staff member, I want to see the hospital/clinic floor illuminated with ambient and directional light.
 
 **Acceptance Criteria:**
 

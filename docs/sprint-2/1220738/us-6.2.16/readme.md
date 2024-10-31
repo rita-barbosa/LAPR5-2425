@@ -1,7 +1,7 @@
-# US 6.2.3
+# US 6.2.16
 
 <!-- TOC -->
-- [US 6.2.1](#us-623)
+- [US 6.2.16](#us-6216)
   - [1. Context](#1-context)
   - [2. Requirements](#2-requirements)
   - [3. Analysis](#3-analysis)
@@ -18,19 +18,24 @@
 
 ## 1. Context
 
-// TODO
+This is the first time this US is being worked on.
+This US pertains to the Doctor.
 
 ## 2. Requirements
 
-// TODO
+**US 6.2.16:** As a Doctor, I want to remove an operation requisition so that the healthcare activities are provided as necessary.
 
 **Acceptance Criteria:**
 
-// TODO
+- **6.2.16.1. -** The UI must be made in Angular. 
+
+- **6.2.16.2. -** The UI's deployment must follow the SPA design procedures.
 
 **Dependencies/References:**
 
-// TODO
+- **US 5.1.18 -** This US references US 5.1.3 because it is the UI for that said functionality.
+
+- **US 6.1.2 -** This US depends on US 6.1.2 because this functionality is part of the menus that are created in the US 6.1.2.
 
 **Client Clarifications:**
 

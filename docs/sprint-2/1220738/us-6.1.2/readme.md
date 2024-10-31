@@ -18,11 +18,11 @@
 
 ## 1. Context
 
-// TODO
+This is the first time this US is being worked on. This US refers to the User.
 
 ## 2. Requirements
 
-// TODO
+**US 6.1.2:** As user I want the application menu to adjust according to my role so that it only presents me the options I may access.
 
 **Acceptance Criteria:**
 
@@ -30,7 +30,13 @@
 
 **Dependencies/References:**
 
-// TODO
+- **US 5.1.1 to 5.1.23 -** These USs depend on this US as they will be only accessed if the user is the correct one, therefore, using the correct menu.
+
+- **US 6.2.1 to 6.2.21 -** These USs depend on this US as they will be only accessed if the user is the correct one, therefore, using the correct menu.
+
+- **US 6.3.1 to 6.3.3 -** These USs depend on this US as they will be only accessed if the user is the correct one, therefore, using the correct menu.
+
+- **US 6.5.1 to 6.5.4 -** These USs depend on this US as they will be only accessed if the user is the correct one, therefore, using the correct menu.
 
 **Client Clarifications:**
 
@@ -42,7 +48,13 @@
 
 ## 3. Analysis
 
-// TODO
+After a lot of consideration, this US's order of events appear to be:
+
+- 1. A User logs into the system
+- 2. The system uses the login info to determine which role the user has been assigned
+- 3. The system answers with the correct menu (Admin's menu for the Admin, Techinician's menu for the Technician, etc)
+
+This US will involve then the creation of a menu ( [FOR EACH ROLE] | [FOR PATIENTS AND STAFF ONLY] ) 
 
 ## 4. Design
 
