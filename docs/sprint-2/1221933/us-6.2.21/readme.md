@@ -21,7 +21,7 @@
 
 ## 1. Context
 
-This is the first time this user story is being requested.
+This is to implement the user interface of a previous user story.
 
 ## 2. Requirements
 
@@ -39,9 +39,9 @@ and estimated duration.
 
 **Dependencies/References:**
 
-**5.1.20:** There must exist operation types, so they can be listed and removed.
-**5.1.21:** The functionality to edit operation types.
-**5.1.22:** The functionality to deactivate operation types.
+**6.2.18:** There must exist operation types, so they can be listed and removed.
+**6.2.19:** The functionality to edit operation types.
+**6.2.20:** The functionality to deactivate operation types.
 
 **Client Clarifications:**
 
@@ -63,6 +63,11 @@ and estimated duration.
 >
 > **Answer:** If more than one search/filter parameter is used, the combination of filters should be considered as AND.
 
+> **Question:** We would like to ask if you have any specific set of functionalities or design in mind for the UIs of
+> the previous user stories, or if this is left up to the team responsible for the aesthetic aspects of the application.
+>
+> **Answer:** The aesthetic component is up to the development team’s discretion. Just try to follow web application
+> best practices and usability guidelines.
 
 ## 3. Analysis
 

@@ -22,7 +22,7 @@
 
 ## 1. Context
 
-This is the first time this user story is being requested.
+This is to implement the user interface of a previous user story.
 
 ## 2. Requirements 
 
@@ -40,7 +40,7 @@ This is the first time this user story is being requested.
 
 **Dependencies/References:**
 
-**6.2.8:** The Admin must create first the patient record, so that it can be edited.
+**6.2.6:** The Admin must create first the patient record, so that it can be edited.
 
 **Client Clarifications:**
 
@@ -85,6 +85,11 @@ This is the first time this user story is being requested.
 >
 > **Answer:** If the email is changed, the notification should be sent to the "old" email
 
+> **Question:** We would like to ask if you have any specific set of functionalities or design in mind for the UIs of 
+> the previous user stories, or if this is left up to the team responsible for the aesthetic aspects of the application.
+>
+> **Answer:** The aesthetic component is up to the development team’s discretion. Just try to follow web application 
+> best practices and usability guidelines.
 
 ## 3. Analysis
 
