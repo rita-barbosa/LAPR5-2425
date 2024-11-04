@@ -144,7 +144,7 @@ it's diagram was deemed irrelevant.
 
 #### Level 3
 
-![us5-process-view-level3.svg](diagrams/Process_View/Level-3/us5-process-view-lvl3.svg)
+![us5-process-view-level3.svg](diagrams/Process_View/Level-3/us6.2.3-process-view-lvl3.svg)
 
 
 ### 4.3. Applied Patterns

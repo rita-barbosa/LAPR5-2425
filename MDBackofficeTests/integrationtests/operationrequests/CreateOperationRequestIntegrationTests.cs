@@ -132,7 +132,7 @@ namespace MDBackofficeTests.integrationtests.operationrequests
             // Pass mocked dependencies to OperationRequestService
             var staffId = "D202400001";
             var opTyId = "tumor removal";
-            var patientId = "202410000001";
+            var patientId = "202411000001";
             var dto = new CreatingOperationRequestDto
             ("2024-12-31",
                 "Elective",
