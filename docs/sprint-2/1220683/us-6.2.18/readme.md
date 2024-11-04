@@ -31,14 +31,14 @@ in the system.
 
 **Acceptance Criteria:**
 
-- 6.2.20.1. | Admins can add new operation types with attributes like: Operation Name, Required Staff by Specialization,
+- 6.2.181. | Admins can add new operation types with attributes like: Operation Name, Required Staff by Specialization,
 Estimated Duration.
 
-- 6.2.20.2. | The system validates that the operation name is unique.
+- 6.2.182. | The system validates that the operation name is unique.
 
-- 6.2.20.3. | The system logs the creation of new operation types and makes them available for scheduling immediately.
+- 6.2.183. | The system logs the creation of new operation types and makes them available for scheduling immediately.
 
-- 6.2.20.4. | The patient must have access to the operation type history and past appointments much link with the issued operation type version when they were created.
+- 6.2.184. | The patient must have access to the operation type history and past appointments much link with the issued operation type version when they were created.
 
 
 **Dependencies/References:**
@@ -142,7 +142,7 @@ The patients have access to the operation type logs - creation and editing histo
 
 The following diagram depicts the interaction between the Admin and the system.
 
-![us_6.2.20_system_sequence_diagram.svg](diagrams/SSD/us_6.2.20_system_sequence_diagram.svg)
+![us_6.2.18_system_sequence_diagram.svg](diagrams/SSD/us_6.2.18_system_sequence_diagram.svg)
 
 ## 4. Design
 
