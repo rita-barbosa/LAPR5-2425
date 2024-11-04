@@ -22,7 +22,7 @@
 
 ## 1. Context
 
-This is the first time this user story is being requested.
+This is to implement the user interface of a previous user story.
 
 ## 2. Requirements
 
@@ -41,7 +41,7 @@ to the staff member.
 
 **Dependencies/References:**
 
-**6.2.12:** The Admin must create first the staff profile, so that it can be edited.
+**6.2.10:** The Admin must create first the staff profile, so that it can be edited.
 
 **Client Clarifications:**
 
@@ -67,6 +67,13 @@ to the staff member.
 > 
 >
 > **Answer:** Consider editing the availability slots as a separate operation and outside the scope of this requirement.
+
+> **Question:** We would like to ask if you have any specific set of functionalities or design in mind for the UIs of
+> the previous user stories, or if this is left up to the team responsible for the aesthetic aspects of the application.
+>
+> **Answer:** The aesthetic component is up to the development team’s discretion. Just try to follow web application
+> best practices and usability guidelines.
+
 
 ## 3. Analysis
 
