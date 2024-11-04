@@ -22,7 +22,7 @@
 
 ## 1. Context
 
-This is the first time this user story is being requested.
+This is to implement the user interface of a previous user story.
 
 ## 2. Requirements
 
@@ -43,12 +43,16 @@ suggested deadline.
   - Deadline
   - Priority
 
-- **5.1.14.4** The system confirms successful submission of the operation request and logs the request in the patient's
+- **6.2.14.4** The system confirms successful submission of the operation request and logs the request in the patient's
 medical history.
 
 **Dependencies/References:**
 
-This user story does not have dependencies.
+**6.2.6:** The Admin must create first the patient record, so that can be scheduled an operation request.
+
+**6.2.10:** The Admin must create first the staff profile, so that can be scheduled an operation request.
+
+**6.2.18:** There must exist operation types, so that can be scheduled an operation request.
 
 **Client Clarifications:**
 
@@ -104,6 +108,11 @@ This user story does not have dependencies.
 >
 > **Answer:** No need. it will be the doctor's responsibility to add it.
 
+> **Question:** We would like to ask if you have any specific set of functionalities or design in mind for the UIs of
+> the previous user stories, or if this is left up to the team responsible for the aesthetic aspects of the application.
+>
+> **Answer:** The aesthetic component is up to the development team’s discretion. Just try to follow web application
+> best practices and usability guidelines.
 
 ## 3. Analysis
 
