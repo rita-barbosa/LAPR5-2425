@@ -23,19 +23,15 @@ This is the first time this user story is worked on.
 
 ## 2. Requirements
 
-**US 6.2.5:**
+**US 6.4.2:** As a system administrator, I want only customers from DEI's internal network (wired or via VPN) to access the solution.
 
 **Acceptance Criteria:**
 
-- 6.2.5.1:
-
-- 6.2.5.2:
-
-- 6.2.5.3:
+- 6.4.2.1: Only DEI internal network addresses are allowed.
 
 **Dependencies/References:**
 
-
+This user story has no dependencies.
 
 **Client Clarifications:**
 
@@ -45,6 +41,16 @@ This is the first time this user story is worked on.
 
 ## 3. Analysis
 
+To allow only the customers from DEI's internal network to access the solution provided some limitations must be implemented
+regarding the network packet traffic - a firewall. Taking into account the information retrieved, this filtering mechanism
+must impose the following restrictions:
+
+- Allow packets from DEI's internal network IP addresses range
+- Allow packets from VPN IP addresses range
+- Allow Localhost (Loopback) access
+- Drop all other incoming traffic
+
+By applying these limitations we can guarantee that only the chosen users can access the solution.
 
 ## 4. Design
 
