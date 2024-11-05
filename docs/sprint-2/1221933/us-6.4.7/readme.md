@@ -23,28 +23,26 @@ This is the first time this user story is worked on.
 
 ## 2. Requirements
 
-**US 6.4.7:**
+**US 6.4.7:** As system administrator I want to define a public folder for all users registered on the system, where 
+they can read whatever is placed there.
 
 **Acceptance Criteria:**
 
-- **6.4.7.1:**
+- **6.4.7.1:** A public folder needs to be assigned to used as a public directory.
 
-- **6.4.7.2:**
-
-- **6.4.7.3:**
+- **6.4.7.2:** The public folder needs to have all the users registered on the system, which will needs to give them the
+permission to read all the content on that folder.
 
 **Dependencies/References:**
 
-
-**Client Clarifications:**
-
-> **Question:** 
->
-> **Answer:** 
+This user story does not have dependencies.
 
 ## 3. Analysis
 
+In this user story, a public folder will be created, where all the registered users on the system can read all the
+information placed there.
 
+For this, it will be needed to set up a public folder and then manage the access control to this folder.
 
 ## 4. Design
 
