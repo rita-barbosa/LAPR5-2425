@@ -37,6 +37,8 @@ This is the first time this user story is worked on.
 
 - 6.5.1.5: If a room is being used at any given time, a 3D model of a human body should be lying on the table.
 
+- 6.5.1.6: Must be implemented in an higher-level API such as Three.js, WebGL or Babylon.js.
+
 **Dependencies/References:**
 
 This functionality has no dependencies, however it will be the base for other features, such has the implementation of 
@@ -50,8 +52,9 @@ textures (US 6.5.2), dynamic lighting (US 5.6.3) and camara movements via mouse 
 
 ## 3. Analysis
 
-The hospital floor visualization comprises a set of rooms, each equipped with a door, walls, and a surgical table.
+This component can will be implemented using a higher-level API, three.js.
 
+The hospital floor visualization comprises a set of rooms, each equipped with a door, walls, and a surgical table.
 This representation must be described in a JSON file with the following information:
 
 >- floor dimensions
