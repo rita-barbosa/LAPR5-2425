@@ -27,23 +27,23 @@ This US pertains to the Admin.
 
 **Acceptance Criteria:**
 
-// TODO
+**US 6.4.1.1 -** The deployment of one of the RFP modules in a DEI VM is to be systematic. 
+
+**US 6.4.1.2 -** Validating the module should be doen through regular testing.
 
 **Dependencies/References:**
 
-// TODO
+USs related to the BackOffice are going to depend on this implementation. 
 
 **Client Clarifications:**
 
-> **Question:** 
->
-> **Answer:** 
-
-// TODO
+> None yet.
 
 ## 3. Analysis
 
-// TODO
+After some consideration, it was agreed on the MDBackOffice to be the module that will be implemented in the DEI VM. 
+
+In an effort to make the implementation be systematic, a *script* and *scheduled events* are going to be created to regularly run tests to check on the status of the module.
 
 ## 4. Design
 
