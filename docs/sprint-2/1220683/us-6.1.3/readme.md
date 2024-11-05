@@ -45,7 +45,11 @@ This user story is dependent on the information provided by the Planning module.
 After the planning module providing a file with the schedule of the day for each surgical room, the 3D representation 
 must reflect such schedule.
 
-Each room must know its schedule and when It's available or not. When a surgery is happening, the 3D visualization must
+![operation_requests_scheduling.svg](operation_requests_scheduling.svg)
+
+Each room must know its schedule and when It's available or not.
+
+When a surgery is happening, the 3D visualization must
 adequately represent its occupation by displaying a patient laid down on the surgical table.
 
 ## 4. Design
