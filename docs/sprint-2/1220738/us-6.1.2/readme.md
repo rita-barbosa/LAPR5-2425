@@ -26,7 +26,9 @@ This is the first time this US is being worked on. This US refers to the User.
 
 **Acceptance Criteria:**
 
-// TODO
+- **6.1.2.1:** The menu should be done in Angular.
+
+- **6.1.2.1:** There will be a menu for each staff role and for the patient.
 
 **Dependencies/References:**
 
@@ -41,10 +43,28 @@ This is the first time this US is being worked on. This US refers to the User.
 **Client Clarifications:**
 
 > **Question:** 
+Bom Dia,
+Gostaríamos de saber se a US 6.1.2 possui algum tipo de critério de aceitação ou se fica a cargo do grupo a implementação e características de cada menu.
+Cumprimentos,
+José Afonso.
 >
-> **Answer:** 
+> **Answer:** podem escolher livremente a implementação do menu e a sua estrutura
 
-// TODO
+> **Question:** 
+Bom dia, 
+Para a US 6.1.2, a US de criar menus específicos para um user dependendo do seu role, o cliente aceitaria um menu para staff e outro para pacientes apenas ou considera que prefere um menu para cada role?
+Cumprimentos,
+José Afonso.
+>
+> **Answer:** podem escolher livremente a estrutura de menus
+
+> **Question:** 
+Bom dia,
+Gostaríamos de lhe perguntar se tem algum grupo de funções ou aparência que espera para as UIs das USs passadas ou se fica a cargo da equipa que desenvolve os aspetos estéticos da aplicação.
+Cumprimentos,
+José Santos.
+>
+> **Answer:** A componente estética é de livre escolha da equipa. tentem seguir as boas práticas de aplicações web e usabilidade
 
 ## 3. Analysis
 
@@ -54,7 +74,7 @@ After a lot of consideration, this US's order of events appear to be:
 - 2. The system uses the login info to determine which role the user has been assigned
 - 3. The system answers with the correct menu (Admin's menu for the Admin, Techinician's menu for the Technician, etc)
 
-This US will involve then the creation of a menu ( [FOR EACH ROLE] | [FOR PATIENTS AND STAFF ONLY] ) 
+This US will involve then the creation of a menu for each staff role and for the patient.
 
 ## 4. Design
 
