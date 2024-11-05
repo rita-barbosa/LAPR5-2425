@@ -31,21 +31,16 @@
 
 **Acceptance Criteria:**
 
-- 6.4.5.1:
-
-- 6.4.5.2:
-
-- 6.4.5.3:
+No acceptance criteria yet.
 
 **Dependencies/References:**
 
-
+This user story is related to all user stories/functionalities of the Business Continuity Module, documenting the impacts
+of disruptions in their operations and the recovery strategies taken into account.
 
 **Client Clarifications:**
 
-> **Question:**
->
-> **Answer:**
+No client clarifications yet.
 
 ## 3. Analysis
 
