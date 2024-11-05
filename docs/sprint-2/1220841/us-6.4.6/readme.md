@@ -7,15 +7,7 @@
   - [3. Analysis](#3-analysis)
   - [4. Design](#4-design)
     - [4.1. Realization](#41-realization)
-      - [Logical View](#logical-view)
-      - [Process View](#process-view)
-        - [Level 1](#level-1)
-        - [Level 2](#level-2)
-        - [Level 3](#level-3)
-      - [Development View](#development-view)
-      - [Physical View](#physical-view)
 <!-- TOC -->
-
 
 ## 1. Context
 
@@ -23,58 +15,16 @@ This is the first time this user story is worked on.
 
 ## 2. Requirements
 
-**US 6.4.6:** 
-
-**Acceptance Criteria:**
-
-- 6.4.6.1: 
-
-- 6.4.6.2: 
-
-- 6.4.6.3: 
-
-**Dependencies/References:**
-
-
-
-**Client Clarifications:**
-
-> **Question:** 
->
-> **Answer:** 
+**US 6.4.6:** As system administrator, I want a backup strategy to be proposed, justified and implemented that minimizes RPO (Recovery Point Objective) and WRT (Work Recovery Time).
 
 ## 3. Analysis
 
+The goal of this user story is to create and implement a backup plan that minimizes the Recovery Point Objective (RPO) - the maximum tolerable period of data loss - and the Work Recovery Time (WRT), the time required to restore and verify the data and application.
+
+To achieve this, it will be essential to determine the most effective approach, whether it involves full, partial, or a combination of backup types. Additionally, an optimal backup schedule should be set, with RPO and WRT kept to a minimum at all times.
 
 ## 4. Design
 
 ### 4.1. Realization
 
-The logical, physical, development and scenario views diagrams are generic for all the use cases of the backoffice component.
-
-#### Logical View
-
-The diagrams can be found in the [team decision views folder](../../team-decisions/views/general-views.md#1-logical-view).
-
-#### Process View
-
-##### Level 1
-
-![Process View - Level 1]()
-
-##### Level 2
-
-_[This diagram is not relevant.]_
-
-##### Level 3
-
-![Process View - Level 3]()
-
-
-#### Development View
-
-The diagrams can be found in the [team decision views folder](../../team-decisions/views/general-views.md#3-development-view).
-
-#### Physical View
-
-The diagrams can be found in the [team decision views folder](../../team-decisions/views/general-views.md#4-physical-view).
+//TODO
