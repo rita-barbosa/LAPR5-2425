@@ -27,23 +27,23 @@ This US pertains to the Admin.
 
 **Acceptance Criteria:**
 
-// TODO
+**US 6.4.4.1 -** The assessment of risks should be done with the *Risk Assessment Risk Matrix* given to us in the documentation for ASIST.
 
 **Dependencies/References:**
 
-// TODO
+The entire project is dependent on an evaluation of the risks, especially considering the fact that this system handles a lot of User info.
 
 **Client Clarifications:**
 
-> **Question:** 
->
-> **Answer:** 
-
-// TODO
+>None yet.
 
 ## 3. Analysis
 
-// TODO
+For this US, we'll use the *Risk Assessment Risk Matrix* to identify and quantify the risks:
+
+![alt text](image.png)
+
+It will enable us to accurately find the more problematic areas or errors that should be immediately solved due to their risk to the system's and the user's security.
 
 ## 4. Design
 
