@@ -53,37 +53,37 @@ namespace MDBackoffice.Infrastructure.Patients
                 // if both names are in the filter then create the full name, else search by the provided name
                 if (!string.IsNullOrEmpty(filter.FirstName) && !string.IsNullOrEmpty(filter.LastName))
                 {
-                    query = query.Where(s => s.Name.FullName.Contains($"{filter.FirstName} {filter.LastName}"));
+                    query = query.AsEnumerable().Where(s => s.Name.FullName.Contains($"{filter.FirstName} {filter.LastName}")).AsQueryable();
                 }
                 else
                 {
 
                     if (!string.IsNullOrEmpty(filter.FirstName))
                     {
-                        query = query.Where(s => s.Name.FirstName.Contains(filter.FirstName));
+                        query = query.AsEnumerable().Where(s => s.Name.FirstName.Contains(filter.FirstName)).AsQueryable();
                     }
 
                     if (!string.IsNullOrEmpty(filter.LastName))
                     {
-                        query = query.Where(s => s.Name.LastName.Contains(filter.LastName));
+                        query = query.AsEnumerable().Where(s => s.Name.LastName.Contains(filter.LastName)).AsQueryable();
                     }
 
                 }
 
                 if (!string.IsNullOrEmpty(filter.Email))
                 {
-                    query = query.Where(s => s.Email.EmailAddress.Contains(filter.Email));
+                    query = query.AsEnumerable().Where(s => s.Email.EmailAddress.Contains(filter.Email)).AsQueryable();
                 }
 
 
                 if (!string.IsNullOrEmpty(filter.Gender))
                 {
-                    query = query.Where(s => s.Gender.Denomination.Equals(filter.Gender.ToLower()));
+                    query = query.AsEnumerable().Where(s => s.Gender.Denomination.Equals(filter.Gender.ToLower())).AsQueryable();
                 }
 
                 if (!string.IsNullOrEmpty(filter.DateBirth))
                 {
-                    query = query.Where(s => s.DateBirth.Date.ToString() == $"{filter.DateBirth} {"00:00:00"}");
+                    query = query.AsEnumerable().Where(s => s.DateBirth.Date.ToString() == $"{filter.DateBirth} {"00:00:00"}").AsQueryable();
                 }
 
                 if (!string.IsNullOrEmpty(filter.MedicalRecordNumber))
