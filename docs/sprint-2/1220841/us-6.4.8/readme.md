@@ -7,13 +7,6 @@
   - [3. Analysis](#3-analysis)
   - [4. Design](#4-design)
     - [4.1. Realization](#41-realization)
-      - [Logical View](#logical-view)
-      - [Process View](#process-view)
-        - [Level 1](#level-1)
-        - [Level 2](#level-2)
-        - [Level 3](#level-3)
-      - [Development View](#development-view)
-      - [Physical View](#physical-view)
 <!-- TOC -->
 
 
@@ -23,58 +16,16 @@ This is the first time this user story is worked on.
 
 ## 2. Requirements
 
-**US 6.4.8:**
-
-**Acceptance Criteria:**
-
-- 6.4.8.1:
-
-- 6.4.8.2:
-
-- 6.4.8.3:
-
-**Dependencies/References:**
-
-
-**Client Clarifications:**
-
-> **Question:** 
->
-> **Answer:** 
+**US 6.4.8:** As system administrator, I want to get users with more than 3 incorrect accesses attempts.
 
 ## 3. Analysis
 
+For this user story, a script needs to be developed to count users' incorrect access attempts by analyzing the `/etc/log/auth.log` file. The script should then record information for users with more than three failed attempts in a specific results file. If this file does not exist when the script runs, it should be created automatically.
 
+References: [monitoring-failed-login-attempts-on-linux](https://www.networkworld.com/article/969378/monitoring-failed-login-attempts-on-linux.html)
 
 ## 4. Design
 
 ### 4.1. Realization
 
-The logical, physical, development and scenario views diagrams are generic for all the use cases of the backoffice component.
-
-#### Logical View
-
-The diagrams can be found in the [team decision views folder](../../team-decisions/views/general-views.md#1-logical-view).
-
-#### Process View
-
-##### Level 1
-
-![Process View - Level 1]()
-
-##### Level 2
-
-_[This diagram is not relevant.]_
-
-##### Level 3
-
-![Process View - Level 3]()
-
-
-#### Development View
-
-The diagrams can be found in the [team decision views folder](../../team-decisions/views/general-views.md#3-development-view).
-
-#### Physical View
-
-The diagrams can be found in the [team decision views folder](../../team-decisions/views/general-views.md#4-physical-view).
+//TODO
