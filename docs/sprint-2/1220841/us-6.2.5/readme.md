@@ -18,7 +18,7 @@
 
 ## 1. Context
 
-* This is the first time this user story is presented.
+* This is the second time this user story is being addressed; the focus for this sprint is to implement a user interface for it.
 
 
 * Identity and Access Management (IAM) is a system that manages and controls the access to a company's resources by entities,

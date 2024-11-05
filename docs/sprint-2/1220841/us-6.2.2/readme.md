@@ -18,7 +18,7 @@
 
 ## 1. Context
 
-This is the first time this user story is worked on.
+This is the second time this user story is being addressed; the focus for this sprint is to implement a user interface for it.
 
 ## 2. Requirements
 
