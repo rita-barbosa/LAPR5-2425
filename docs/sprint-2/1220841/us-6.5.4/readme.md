@@ -7,13 +7,6 @@
   - [3. Analysis](#3-analysis)
   - [4. Design](#4-design)
     - [4.1. Realization](#41-realization)
-      - [Logical View](#logical-view)
-      - [Process View](#process-view)
-        - [Level 1](#level-1)
-        - [Level 2](#level-2)
-        - [Level 3](#level-3)
-      - [Development View](#development-view)
-      - [Physical View](#physical-view)
 <!-- TOC -->
 
 
@@ -23,57 +16,22 @@ This is the first time this user story is worked on.
 
 ## 2. Requirements
 
-**US 6.5.4:** 
+  **US 6.5.4:** As a healthcare staff member, I want to control the camera with the mouse.
 
 **Acceptance Criteria:**
 
-- 6.5.4.1:
-- 6.5.4.2: 
-- 6.5.4.3:
-
-**Dependencies/References:**
-
-
-
-**Client Clarifications:**
-
-> **Question:** 
->
-> **Answer:** 
+- 6.5.4.1: The right button must enable orbit.
+- 6.5.4.2: The wheel must enable zoom or dolly.
 
 ## 3. Analysis
 
+The purpose of this functionality is to set up the camera to allow positional adjustments in response to mouse movements. Specifically:
 
+* The right mouse button should enable orbit control around a focal point, allowing the user to rotate around an object or pan across the scene by holding the right button and moving the mouse.
+* The mouse wheel should facilitate zooming (adjusting distance to the focal point) or dollying (moving the camera forward and backward in 3D space). This should provide smooth, intuitive zoom control, allowing the user to move closer to or further from the focal point naturally.
 
 ## 4. Design
 
 ### 4.1. Realization
 
-The logical, physical, development and scenario views diagrams are generic for all the use cases of the backoffice component.
-
-#### Logical View
-
-The diagrams can be found in the [team decision views folder](../../team-decisions/views/general-views.md#1-logical-view).
-
-#### Process View
-
-##### Level 1
-
-![Process View - Level 1]()
-
-##### Level 2
-
-_[This diagram is not relevant.]_
-
-##### Level 3
-
-![Process View - Level 3]()
-
-
-#### Development View
-
-The diagrams can be found in the [team decision views folder](../../team-decisions/views/general-views.md#3-development-view).
-
-#### Physical View
-
-The diagrams can be found in the [team decision views folder](../../team-decisions/views/general-views.md#4-physical-view).
+//TODO
