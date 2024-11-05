@@ -27,23 +27,38 @@ This US pertains to the Admin.
 
 **Acceptance Criteria:**
 
-// TODO
+**US 6.5.3.1 -** The solution should be done in three.js.
+
+**US 6.5.3.2 -** The solution should have ambient light.
+
+**US 6.5.3.3 -** The solution should have directional light.
 
 **Dependencies/References:**
 
-// TODO
+**US 6.5.1:** This US will be dependent on US 6.5.1 as it needs the model for the hospital.
+
+**US 6.5.2:** This US will be dependent on US 6.5.2 as it needs the texture.
+
+**US 6.5.4:** This US will be dependent on US 6.5.4 as it needs the ability to move around to see the effects of light on the model.
 
 **Client Clarifications:**
 
-> **Question:** 
->
-> **Answer:** 
-
-// TODO
+> None yet.
 
 ## 3. Analysis
 
-// TODO
+In User Story 6.5.3, the goal is to create a visual experience of a hospital or clinic floor plan in Three.js with both ambient and directional lighting. This visual feedback should simulate natural and artificial light sources to enhance clarity and depth perception for healthcare staff viewing the space.
+
+### Environmental Setup
+
+The hospital floor will be constructed in a Three.js scene thanks to US 6.5.1, representing the physical layout and essential structures of the space. This includes walls, floors, and possibly furniture or equipment as simplified 3D objects.
+Ensuring the scene scale matches realistic dimensions will allow for accurate light distribution and realistic shadows.
+
+### Lighting Types
+
+>***Ambient Light:*** This light will provide a base level of illumination across the entire scene, reducing harsh contrasts. The ambient light intensity should be set to a low-medium level to prevent the environment from looking overly flat.
+
+>***Directional Light:*** This type of light mimics sunlight or primary artificial light sources. Positioning and angling this light will cast realistic shadows, giving the floor and structures a sense of depth and realism.
 
 ## 4. Design
 
