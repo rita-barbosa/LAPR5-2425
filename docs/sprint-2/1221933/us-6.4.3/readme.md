@@ -23,27 +23,39 @@ This is the first time this user story is worked on.
 
 ## 2. Requirements
 
-**US 6.4.3:** 
+**US 6.4.3:** As system administrator, I want the clients listed in the requirement 6.4.2 to be able to be defined by 
+simply changing a text file.
 
 **Acceptance Criteria:**
 
-- **6.4.3.1:** 
+- **6.4.3.1:** Only the clients on the DEI's internal network should have access to the solution.
 
-- **6.4.3.2:** 
-
-- **6.4.3.3:** 
+- **6.4.3.2:** The list of clients should be defined on a text file, using the list obtained on the user story 6.4.2.
 
 **Dependencies/References:**
 
-
+**6.4.2:** This user story needs to implemented, so the clients can be listed.
 
 **Client Clarifications:**
 
-> **Question:** 
+> **Question:** US 6.4.3 - "As system administrator, I want the clients listed in the requirement 6.3.2 to be able to be defined by simply changing a text file".
+> US 6.3.2 - "As an Admin, I want to know till what dimension in terms of number of surgeries is possible to ask for the better solution".
+> Dear Client,
+> The relation between US 6.4.3 and US 6.3.2 doesn't make sense. Is it possible to provide additional information?
+> Thank you in advance.
 >
-> **Answer:** 
+> **Answer:** Regarding US 6.4.3, please consider the 6.4.2, that is, "As system administrator, I want the clients listed in the requirement 6.4.2 to be able to be defined by simply changing a text file"."
+
 
 ## 3. Analysis
+
+The main goal of this user story is to allow the manage the list of client by simply editing a text file. To implement
+this, it will be needed:
+
+  * text file configuration
+  * DEI Network
+
+It's important to be sure that only the system administrator has the permission to edit the file.
 
 
 ## 4. Design
