@@ -23,28 +23,31 @@ This is the first time this user story is worked on.
 
 ## 2. Requirements
 
-**US 6.1.1:** 
+**US 6.1.1:** As user, I want to have an integrated UI for all modules of the system so that I don’t need to switch 
+between application urls.
 
 **Acceptance Criteria:**
 
-- 6.1.1.1: 
+- **6.1.1.1:** The UI should have every module in a unique page to avoid switching between URLs.
 
-- 6.1.1.2: 
-
-- 6.1.1.3: 
+- **6.1.1.2:** The user permissions should control the visibility of each module in the integrated UI.
 
 **Dependencies/References:**
 
+**US 6.1.2 & 6.1.3 & 6.1.4 & 6.1.5:** The UI for all the modules should be created first so can be integrated on one UI.
 
-
-**Client Clarifications:**
-
-> **Question:** 
->
-> **Answer:** 
+This user story will depend on the Angular to develop the integrated UI.
 
 ## 3. Analysis
 
+To implement this user story, a single-page application (SPA) will be developed using Angular. The integrated UI should
+have the follow elements: 
+
+  * module specific areas
+  * shared layout
+
+It's important to unsure that the modules access respect the user permissions, so it is only access by users with the
+right permissions.
 
 ## 4. Design
 
