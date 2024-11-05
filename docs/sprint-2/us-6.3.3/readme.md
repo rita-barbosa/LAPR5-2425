@@ -62,7 +62,7 @@ A lot of factors must be taken into consideration for the scheduling:
 Only after checking all of those constraints can the scheduling beginning. The following diagram provides clarity regarding
 all the moving parts in an operation request execution and the resources and time allocated:
 
-> ADD DIAGRAM
+![operation_request_resources.svg](operation_request_resources.svg)
 
 The algorithm to find a good scheduling with heuristics is similar with the _**Travelling Salesman Problem**_, without the need
 to return to the original point.
