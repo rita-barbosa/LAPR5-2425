@@ -39,9 +39,7 @@ staff, rooms, appointments, specializations, operation types and operation reque
 
 **Client Clarifications:**
 
-> **Question:**
->
-> **Answer:**
+> No client clarifications.
 
 ## 3. Analysis
 
