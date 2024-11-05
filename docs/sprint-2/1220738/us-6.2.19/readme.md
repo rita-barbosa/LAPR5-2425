@@ -27,27 +27,48 @@ This US pertains to the Admin.
 
 **Acceptance Criteria:**
 
-- **6.2.19.1. -** The UI must be made in Angular. 
+- **6.2.19.1. -** Admins can search for and select an existing operation type to edit. 
 
-- **6.2.19.2. -** The UI's deployment must follow the SPA design procedures.
+- **6.2.19.2. -** Editable fields include operation name, required staff by specialization, and estimated duration, both each phase and total. 
+
+- **6.2.19.3. -** Changes are reflected in the system immediately for future operation requests. 
+
+- **6.2.19.4. -** Historical data is maintained, but new operation requests will use the updated operation type information. 
+
+- **6.2.19.5:** The menu should be done in Angular.
 
 **Dependencies/References:**
 
-- **US 5.1.21 -** This US references US 5.1.3 because it is the UI for that said functionality.
+- **US 5.1.1. -** US 6.2.19. is dependent on this User Story as it depends on an existing account of a staff in the system.
 
-- **US 6.1.2 -** This US depends on US 6.1.2 because this functionality is part of the menus that are created in the US 6.1.2.
+- **US 5.1.20. -** US 6.2.19. is dependent on this User Story as it depends on an existing operation type in the system.
+
+- **US 5.1.23. -** This User Story is dependent on US 6.2.19 as it needs it's functionality to work as intended.
 
 **Client Clarifications:**
 
-> **Question:** 
->
-> **Answer:** 
-
-// TODO
+> None yet.
 
 ## 3. Analysis
 
-// TODO
+This functionality talks about the updating or editting of an existing operation type, and after some analysis of the documentation (most common operation types), acceptance criterias and client clarifications, it is our understanding that this User Story would follow this order of actions:
+
+- The admin would request to see the list of current available operation types.
+- After choosing an operation type, it can choose to edit the operation's **editable data**.
+- After having done so the system will update the operation requirements for future requests.
+- Finally, the system will inform the Admin of a succeful change.
+
+It is important to note that for the sake of this project, **editable data of the operation type is:** 
+- **Operation Type's Name**
+- **Required Staff and their Specialization**
+- **Estimated Total Duration**
+- **Estimated Phases Duration**
+
+As explained by the acceptance criterias, **the changes only affect future requests** and all data relevant to old operations is still kept while the **new requests have updated information.**
+
+### System Sequence Diagram
+
+![SSD](Diagrams/SSD/system-sequence-diagram-admin.svg)
 
 ## 4. Design
 
