@@ -23,25 +23,29 @@ This is the first time this user story is worked on.
 
 ## 2. Requirements
 
-**US 6.6.2:**
+**US 6.6.2:** As a System, I want to notify both users and the responsible authority in case of a data breach, so that I comply with GDPR’s breach notification requirements.
 
 **Acceptance Criteria:**
 
-- 6.6.2.1:
-- 6.6.2.2:
-- 6.6.2.3:
+- **6.6.2.1:** The system automatically detects potential data breaches and immediately notifies both the affected users and the relevant GDPR authority. 
+- **6.6.2.2:** Breach notifications to users includes steps being taken to mitigate the breach.  
+- **6.6.2.3:** Breach notifications to users includes details of the breach (e.g., what data was compromised). 
+- **6.6.2.4:** Breach notifications to users includes recommendations for users (e.g., changing passwords, monitoring for suspicious activity). 
+- **6.6.2.5:** Notifications to the GDPR authority include detailed logs of the breach and actions taken. 
+- **6.6.2.6:** Breach notifications are sent within the legally required timeframe (e.g., 72 hours).  
+- **6.6.2.7:** The system logs all breach notifications and subsequent actions taken for auditing and compliance purposes. 
 
 **Dependencies/References:**
 
+The entire project is dependent on this US for the safety of the system and it's users.
 
 **Client Clarifications:**
 
-> **Question:**
->
-> **Answer:**
+> None yet.
 
 ## 3. Analysis
 
+User Story 6.6.2 outlines the requirements for a data breach notification system to comply with GDPR’s notification guidelines. This functionality should detect breaches, notify relevant parties, and document all actions, ensuring timely and detailed responses to data security incidents.
 
 ## 4. Design
 
