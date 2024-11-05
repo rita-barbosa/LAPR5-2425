@@ -73,7 +73,7 @@ The logical, physical, development and scenario views diagrams are generic for a
 
 #### Logical View
 
-The diagrams can be found in the [team decision views folder](../../team-decisions/views/general-views.md#1-logical-view).
+The diagrams can be found in the [team decision views folder](../team-decisions/views/general-views.md#1-logical-view).
 
 #### Process View
 
@@ -92,8 +92,8 @@ _[This diagram is not relevant.]_
 
 #### Development View
 
-The diagrams can be found in the [team decision views folder](../../team-decisions/views/general-views.md#3-development-view).
+The diagrams can be found in the [team decision views folder](../team-decisions/views/general-views.md#3-development-view).
 
 #### Physical View
 
-The diagrams can be found in the [team decision views folder](../../team-decisions/views/general-views.md#4-physical-view).
+The diagrams can be found in the [team decision views folder](../team-decisions/views/general-views.md#4-physical-view).
