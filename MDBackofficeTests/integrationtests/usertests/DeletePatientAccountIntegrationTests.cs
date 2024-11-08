@@ -10,6 +10,7 @@ using MDBackoffice.Domain.StaffProfiles;
 using MDBackoffice.Domain.Tokens;
 using MDBackoffice.Domain.Users;
 using MDBackoffice.Infrastructure.Emails;
+using MDBackoffice.Infrastructure.Users;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -39,6 +40,7 @@ namespace MDBackofficeTests.integrationtests.usertests
         private readonly Mock<StaffService> _staffServiceMock;
         private readonly Mock<RoleManager<Role>> _roleManagerMock;
         private readonly Mock<EmailService> _emailServiceMock;
+        private readonly Mock<ILoginAdapter> _loginAdapterMock;
         public DeletePatientAccountIntegrationTests()
         {
             var identityOptionsMock = new Mock<IOptions<IdentityOptions>>();
@@ -68,6 +70,7 @@ namespace MDBackofficeTests.integrationtests.usertests
             _tokenServiceMock = new Mock<TokenService>(_unitOfWorkMock.Object, new Mock<ITokenRepository>().Object, _userManagerMock.Object);
             _emailServiceMock = new Mock<EmailService>(_tokenServiceMock.Object, new Mock<IEmailAdapter>().Object);
             _configurationMock = new Mock<IConfiguration>();
+            _loginAdapterMock = new Mock<ILoginAdapter>();
 
             var _signinManagerMock = new Mock<SignInManager<User>>(_userManagerMock.Object,
                                                                new Mock<IHttpContextAccessor>().Object,
@@ -84,7 +87,8 @@ namespace MDBackofficeTests.integrationtests.usertests
                 _signinManagerMock.Object,
                 _emailServiceMock.Object,
                 _configurationMock.Object,
-                _tokenServiceMock.Object
+                _tokenServiceMock.Object,
+                _loginAdapterMock.Object
             );
 
             _patientServiceMock = new Mock<PatientService>(_unitOfWorkMock.Object, _logServiceMock.Object, _configurationMock.Object, new Mock<IPatientRepository>().Object,

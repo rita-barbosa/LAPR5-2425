@@ -8,6 +8,11 @@ using MDBackoffice.Domain.Patients;
 using MDBackoffice.Domain.StaffProfiles;
 using MDBackoffice.Domain.Tokens;
 using MDBackoffice.Domain.Shared;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Google;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using System.Linq;
+using Microsoft.AspNetCore.Identity;
 
 namespace MDBackoffice.Controllers
 {
@@ -28,12 +33,66 @@ namespace MDBackoffice.Controllers
          _tokenService = tokenService;
         }
 
-        [HttpPost("Login")]
+        [HttpPost("Login-Internal")]
         public async Task<IActionResult> Login([FromBody] LoginUserDto loginUserDto)
         {
             try
             {
                 var token = await _userService.Login(loginUserDto);
+                return Ok(new { Token = token });
+            }
+            catch (BusinessRuleValidationException ex)
+            {
+                return BadRequest(new { ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { V = $"An unexpected error occurred: {ex.Message}" });
+            }
+        }
+
+     /* [HttpGet("Login-Google")]
+        public async Task<IActionResult> LoginGoogle()
+        {
+            try
+            {
+                var token = await _userService.LoginGoogle();
+                return Ok(new { Token = token });
+            }
+            catch (BusinessRuleValidationException ex)
+            {
+                return BadRequest(new { ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { V = $"An unexpected error occurred: {ex.Message}" });
+            }
+        } */
+
+        [HttpGet("Login-Google")]
+        public async Task<IActionResult> LoginGoogleStart()
+        {
+            try
+            {
+                var properties = await _userService.LoginGoogleStart();
+                return Challenge(properties, GoogleDefaults.AuthenticationScheme);
+            }
+            catch (BusinessRuleValidationException ex)
+            {
+                return BadRequest(new { ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { V = $"An unexpected error occurred: {ex.Message}" });
+            }
+        }
+
+        [HttpGet("Login-GoogleEnd")]
+        public async Task<IActionResult> LoginGoogleEnd()
+        {   
+            try
+            {
+                var token = await _userService.LoginGoogleEnd();
                 return Ok(new { Token = token });
             }
             catch (BusinessRuleValidationException ex)

@@ -24,7 +24,6 @@ namespace MDBackoffice.Controllers
         }
 
         [HttpGet("{id}")]
-        [Route("Get-PatientWithId")]
         [Authorize(Policy = "Admin")]
         public async Task<ActionResult<PatientDto>> GetPatientById(MedicalRecordNumber id)
         {

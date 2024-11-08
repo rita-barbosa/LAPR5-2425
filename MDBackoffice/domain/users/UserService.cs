@@ -10,6 +10,9 @@ using MDBackoffice.Domain.Logs;
 using MDBackoffice.Domain.Shared;
 using MDBackoffice.Domain.StaffProfiles;
 using MDBackoffice.Domain.Tokens;
+using MDBackoffice.Infrastructure.Users;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -25,12 +28,14 @@ namespace MDBackoffice.Domain.Users
         private readonly TokenService _tokenService;
         private readonly LogService _logService;
         private readonly IConfiguration _configuration;
+        private readonly ILoginAdapter _loginAdapter;
         public UserService(UserManager<User> userManager, RoleManager<Role> roleManager,
                                 LogService logService, SignInManager<User> signInManager,
 
                                 EmailService emailService, IConfiguration configuration,
-                                TokenService tokenService)
+                                TokenService tokenService, ILoginAdapter loginAdapter)
         {
+
             _userManager = userManager;
             _roleManager = roleManager;
             _emailService = emailService;
@@ -38,6 +43,7 @@ namespace MDBackoffice.Domain.Users
             _signinManager = signInManager;
             _tokenService = tokenService;
             _configuration = configuration;
+            _loginAdapter = loginAdapter;
         }
 
         public virtual async Task ConfirmEmailPatient(string userId, string token)
@@ -388,6 +394,66 @@ namespace MDBackoffice.Domain.Users
             //delete account
             return await DeleteAsync(userId);
         }
+
+        public async Task<AuthenticationProperties> LoginGoogleStart()
+        {
+            return await _loginAdapter.GetRedirectionInfo();
+        }
+
+        public async Task<string> LoginGoogleEnd()
+        {
+            // Retrieve the external login information after the user has been redirected back from the external provider (Google)
+            var externalLoginInfo = await _signinManager.GetExternalLoginInfoAsync();
+
+            if (externalLoginInfo == null)
+                throw new BusinessRuleValidationException("External login information is missing. Please try again.");
+
+            // Get the user's email from the external login info
+            var email = externalLoginInfo.Principal.FindFirstValue(ClaimTypes.Email);
+
+            if (string.IsNullOrEmpty(email))
+                throw new BusinessRuleValidationException("Google authentication was unsuccessful. Please try again.");
+
+            // Check if the user exists in your system by email
+            var user = await _userManager.FindByEmailAsync(email);
+            
+            if (user == null)
+                throw new BusinessRuleValidationException("Invalid email.");
+
+            if (!user.Status)
+                throw new BusinessRuleValidationException("Account not yet activated.");
+
+            // Check if the account is locked out
+            if (await _userManager.IsLockedOutAsync(user))
+                throw new BusinessRuleValidationException("Account is locked out. Please try again later.");
+
+            // Check if the user is already logged in with Google
+            var existingLogin = await _userManager.FindByLoginAsync(externalLoginInfo.LoginProvider, externalLoginInfo.ProviderKey);
+            if (existingLogin != null)
+            {
+                // If the login exists, directly return the JWT token
+                return await GenerateJwtToken(existingLogin);
+            }
+
+            // If the user hasn't logged in with Google before, add the external login
+            var result = await _userManager.AddLoginAsync(user, externalLoginInfo);
+            if (!result.Succeeded)
+            {
+                return "Error happened during external login association.";
+            }
+
+            // Attempt to sign the user in using their external login
+            var signInResult = await _signinManager.ExternalLoginSignInAsync(externalLoginInfo.LoginProvider, externalLoginInfo.ProviderKey, isPersistent: false);
+            if (signInResult.Succeeded)
+            {
+                // Sign-in successful, generate JWT token
+                return await GenerateJwtToken(user); 
+            }
+
+            // Handle any issues with sign-in
+            return "Error happened during sign-in.";
+        }
+
 
     }
 }
