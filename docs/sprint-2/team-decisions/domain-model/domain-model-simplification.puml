@@ -6,17 +6,17 @@ skinparam classBackgroundColor beige
 skinparam ArrowColor #222222
 
 
-entity User  <<entity>>{}
-entity Staff <<entity>>{}
-entity Patient  <<entity>>{}
-entity Doctor <<entity>>{}
-entity Appointment <<entity>>{}
-entity OperationRequest <<entity>>{}
-entity OperationType <<entity>> {}
-entity OperationTypeRecord <<entity>> {}
-entity Room <<entity>>{}
-entity Specialization <<entity>> {}
-
+entity User  {}
+entity Staff {}
+entity Patient  {}
+entity Doctor {}
+entity Appointment {}
+entity OperationRequest {}
+entity OperationType  {}
+entity OperationTypeRecord  {}
+entity Room {}
+entity Specialization {}
+entity RequiredStaff {}
 
 
 User <-up-- "1" Staff
@@ -29,7 +29,8 @@ Appointment ---> "1" OperationRequest : scheduling of
 OperationRequest ---> "1" OperationType : defined by
 OperationType "1" <-- OperationTypeRecord : versions
 Appointment ---> "1" Room : associated with
-
+OperationType --> "1..*" RequiredStaff
+RequiredStaff --> "1" Specialization
 
 
 
