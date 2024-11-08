@@ -35,9 +35,15 @@ This user story has no dependencies.
 
 **Client Clarifications:**
 
-> **Question:**
+> **Question:** Regarding the access of the users to the solution through DEI's network, do you have any specifications 
+regarding said access? Like allowing ssh, http, https connections or anything like X amount of accesses in an hour?
 >
-> **Answer:**
+> **Answer:** The permitted accesses must be those necessary to access the solution, as stated in the US.
+
+> **Question:** Can you tell us what network addresses ranges do we have to consider for DEI network and VPN accesses? They're submasks too, please.
+> 
+> **Answer:** That is not important, as network addresses can vary. As long as you can change your configuration to allow the IP address obtained at that time, the proof of concept is evident.
+
 
 ## 3. Analysis
 

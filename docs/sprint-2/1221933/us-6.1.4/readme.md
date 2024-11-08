@@ -23,27 +23,36 @@ This is the first time this user story is worked on.
 
 ## 2. Requirements
 
-**US 6.1.4:** 
+**US 6.1.4:** As Admin I want the information about healthcare staff, operation types, and operation requests used in 
+the planning module is in sync with the information entered in the backoffice module.
 
 **Acceptance Criteria:**
 
-- 6.1.4.1: 
+- **6.1.4.1:** Any change to healthcare staff, operation requests or operation types in the backoffice module must be 
+synchronized with the planning module, to unsure it's used the latest information.
 
-- 6.1.4.2: 
-
-- 6.1.4.3: 
+- **6.1.4.2:** In case of failure, a notification error should be presented.
 
 **Dependencies/References:**
 
+**US 6.3.1 & 6.3.2 & 6.3.3:** The planning module must be working so the information can be in sync with the information
+from the backoffice.
 
+**US 6.2.10:** There needs to exist information about healthcare staff.
 
-**Client Clarifications:**
+**US 6.2.14:** There needs to exist information about operation requests.
 
-> **Question:** 
->
-> **Answer:** 
+**US 6.2.18:** There needs to exist information about operation type.
+
 
 ## 3. Analysis
+
+To achieve the objective of this user story, it is needed to integrate the planning module with the backoffice module.
+Having this in mind, it's necessary to exist the followed information in the backoffice module:
+
+  * healthcare staff
+  * operation types
+  * operation requests
 
 
 ## 4. Design

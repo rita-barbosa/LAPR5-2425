@@ -18,31 +18,51 @@
 
 ## 1. Context
 
-// TODO
+This is the first time this user story is worked on.
 
 ## 2. Requirements
 
-// TODO
+**US 6.3.1:** As an Admin, I want to obtain the better scheduling of a set of operations (surgeries) in a certain 
+operation room in a specific day.
 
 **Acceptance Criteria:**
 
-// TODO
+- **6.3.1.1:** The better scheduling is considered as the sequence of operations that finished early.
+
+- **6.3.1.2:** The scheduling algorithm must take into account any constraints for each surgery, such as the number of 
+doctors or other required staff, specifically concerning their time availability during the day. 
+
+- **6.3.1.3:** The user interface must allow the Admin to enter relevant parameters for the scheduling process, 
+including: room number, date, etc.
+
+- **6.3.1.4:** The system should generate the plan and show it to the user on the screen.
+
+- **6.3.1.5:** The UI can block while waits for the planning module response.
+
 
 **Dependencies/References:**
 
-// TODO
+**US 6.2.15 & 6.2.16:** The changes made to the operation requests should be notified to the Planing module.
 
-**Client Clarifications:**
+**US 6.1.1:** There needs to exist an integrated UI to be able to obtain the better schedule.
 
-> **Question:** 
->
-> **Answer:** 
-
-// TODO
 
 ## 3. Analysis
 
-// TODO
+The primary goal of this user story ist to develop the better scheduling of a set of operations for a specific
+operation room in a specific day. To be able to achieve this is important to have in mind some important constrains:
+
+  * number of doctors
+  * number of other staffs
+  * staff availability
+
+An approach may be implementing an algorithm that generates all the possible surgeries sequences and then select the
+best one. This approach will only work for until a certain number of surgeries, which means that for a larger number,
+other algorithm should be used.
+
+The user interface should allow the Admin to input all necessary parameters to initiate the scheduling process easily.
+It should provide feedback during processing, even if temporarily unresponsive, and display the final schedule
+comprehensively once ready.
 
 ## 4. Design
 

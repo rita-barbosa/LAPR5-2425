@@ -1,0 +1,24 @@
+<main class="app-container">
+  <div style="text-align: center">
+    <h1 class="main-title">HEALTH CARE SYSTEM</h1>
+  </div>
+
+  <!-- Menu com dropdown logo após o título principal -->
+  <app-menu></app-menu>
+  <div class="content">
+    <div class="centered-content">
+      <h1>{{ title }}</h1>
+      <button [style.height.px]="bHeight" [style.width.px]="bWidth" (click)="addProduct()">
+        Add Product
+      </button>
+      <app-curso-angular></app-curso-angular>
+    </div>
+  </div>
+
+  <div class="router-outlet-container">
+    <router-outlet></router-outlet>
+  </div>
+</main>
+
+
+
