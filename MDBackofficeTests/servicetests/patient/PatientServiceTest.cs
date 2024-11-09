@@ -14,6 +14,7 @@ using IConfiguration = Microsoft.Extensions.Configuration.IConfiguration;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 using MDBackoffice.Infrastructure;
+using MDBackoffice.Infrastructure.Users;
 
 namespace MDBackofficeTests.servicetests.patient;
 
@@ -24,6 +25,7 @@ public class PatientServiceTests
         private readonly Mock<IConfiguration> _configurationMock = new Mock<IConfiguration>();
         private readonly Mock<LogService> _logServiceMock = new Mock<LogService>(new Mock<IUnitOfWork>().Object, new Mock<ILogRepository>().Object);
         private readonly Mock<UserService> _userServiceMock;
+        private readonly Mock<ILoginAdapter> _loginAdapterMock;
         private readonly Mock<EmailService> _emailServiceMock;
         private readonly PatientService _service;
         private readonly Mock<UserManager<User>> _userManagerMock;
@@ -57,6 +59,7 @@ public class PatientServiceTests
                 var tokenServiceMock = new Mock<TokenService>(_unitOfWorkMock.Object, new Mock<ITokenRepository>().Object, _userManagerMock.Object);
                 var _emailServMock = new Mock<EmailService>(tokenServiceMock.Object, new Mock<IEmailAdapter>().Object);
                 _configurationMock = new Mock<IConfiguration>();
+                _loginAdapterMock = new Mock<ILoginAdapter>();
 
             var signinManagerMock = new Mock<SignInManager<User>>(_userManagerMock.Object,
                                                                       new Mock<IHttpContextAccessor>().Object,
@@ -72,7 +75,8 @@ public class PatientServiceTests
                     signinManagerMock.Object,
                     _emailServMock.Object,
                     _configurationMock.Object,
-                    tokenServiceMock.Object
+                    tokenServiceMock.Object,
+                    _loginAdapterMock.Object
                 );
 
             _emailServiceMock = new Mock<EmailService>(tokenServiceMock.Object, new Mock<IEmailAdapter>().Object);

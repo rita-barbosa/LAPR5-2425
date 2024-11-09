@@ -21,6 +21,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
+using MDBackoffice.Infrastructure.Users;
 
 namespace MDBackofficeTests.integrationtests.operationrequests
 {
@@ -37,6 +38,7 @@ namespace MDBackofficeTests.integrationtests.operationrequests
         private readonly Mock<PatientService> _patientServiceMock;
         private readonly Mock<UserService> _userServiceMock;
         private readonly Mock<UserManager<User>> _userManagerMock;
+        private readonly Mock<ILoginAdapter> _loginAdapterMock;
 
         public DeleteOperationRequestIntegrationTests()
         {
@@ -52,6 +54,7 @@ namespace MDBackofficeTests.integrationtests.operationrequests
             var tokenServiceMock = new Mock<TokenService>(_unitOfWorkMock.Object, new Mock<ITokenRepository>().Object, _userManagerMock.Object);
             var _emailServiceMock = new Mock<EmailService>(tokenServiceMock.Object, new Mock<IEmailAdapter>().Object);
             var _configurationMock = new Mock<IConfiguration>();
+            _loginAdapterMock = new Mock<ILoginAdapter>();
             var signinManagerMock = new Mock<SignInManager<User>>(_userManagerMock.Object,
                                                                new Mock<IHttpContextAccessor>().Object,
                                                                new Mock<IUserClaimsPrincipalFactory<User>>().Object,
@@ -60,12 +63,11 @@ namespace MDBackofficeTests.integrationtests.operationrequests
                                                                new Mock<IAuthenticationSchemeProvider>().Object,
                                                                new Mock<IUserConfirmation<User>>().Object);
 
-            _userServiceMock = new Mock<UserService>(_userManagerMock.Object, roleManagerMock.Object, _logServiceMock.Object, signinManagerMock.Object, _emailServiceMock.Object, _configurationMock.Object, tokenServiceMock.Object);
+            _userServiceMock = new Mock<UserService>(_userManagerMock.Object, roleManagerMock.Object, _logServiceMock.Object, signinManagerMock.Object, _emailServiceMock.Object, _configurationMock.Object, tokenServiceMock.Object, _loginAdapterMock.Object);
             _patientServiceMock = new Mock<PatientService>(_unitOfWorkMock.Object, _logServiceMock.Object, _configurationMock.Object, _repoPatMock.Object, _userServiceMock.Object, _emailServiceMock.Object);
         }
 
-
-         [Fact]
+        [Fact]
         public async Task DeleteOperationRequest_ReturnsOkResponse_IntegrationControllerService()
         {
             // Arrange

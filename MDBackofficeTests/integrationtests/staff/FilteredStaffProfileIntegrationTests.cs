@@ -8,6 +8,7 @@ using MDBackoffice.Domain.StaffProfiles;
 using MDBackoffice.Domain.Tokens;
 using MDBackoffice.Domain.Users;
 using MDBackoffice.Infrastructure.Emails;
+using MDBackoffice.Infrastructure.Users;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -37,6 +38,7 @@ namespace MDBackofficeTests.integrationtests.patient
         private readonly Mock<UserService> _userServiceMock;
         private readonly Mock<EmailService> _emailServiceMock;
         private readonly StaffService _service;
+        private readonly Mock<ILoginAdapter> _loginAdapterMock;
 
         public FilteredStaffProfilesIntegrationTests()
         {
@@ -48,7 +50,7 @@ namespace MDBackofficeTests.integrationtests.patient
 
             _userManagerMock = new Mock<UserManager<User>>(new Mock<IUserStore<User>>().Object, identityOptionsMock.Object, new Mock<IPasswordHasher<User>>().Object, new List<IUserValidator<User>> { new Mock<IUserValidator<User>>().Object }, new List<IPasswordValidator<User>> { new Mock<IPasswordValidator<User>>().Object }, new Mock<ILookupNormalizer>().Object, identityErrorDescriberMock.Object, new Mock<IServiceProvider>().Object, new Mock<ILogger<UserManager<User>>>().Object);
             var roleManagerMock = new Mock<RoleManager<Role>>(new Mock<IRoleStore<Role>>().Object, new List<IRoleValidator<Role>>(), new Mock<ILookupNormalizer>().Object, identityErrorDescriberMock.Object, new Mock<ILogger<RoleManager<Role>>>().Object);
-
+            _loginAdapterMock = new Mock<ILoginAdapter>();
             var tokenServiceMock = new Mock<TokenService>(_unitOfWorkMock.Object, new Mock<ITokenRepository>().Object, _userManagerMock.Object);
             var _emailServMock = new Mock<EmailService>(tokenServiceMock.Object, new Mock<IEmailAdapter>().Object);
 
@@ -60,7 +62,7 @@ namespace MDBackofficeTests.integrationtests.patient
                                                                new Mock<IAuthenticationSchemeProvider>().Object,
                                                                new Mock<IUserConfirmation<User>>().Object);
 
-            _userServiceMock = new Mock<UserService>(_userManagerMock.Object, roleManagerMock.Object, _logServiceMock.Object, signinManagerMock.Object, _emailServMock.Object, _configurationMock.Object, tokenServiceMock.Object);
+            _userServiceMock = new Mock<UserService>(_userManagerMock.Object, roleManagerMock.Object, _logServiceMock.Object, signinManagerMock.Object, _emailServMock.Object, _configurationMock.Object, tokenServiceMock.Object, _loginAdapterMock.Object);
             _emailServiceMock = new Mock<EmailService>(tokenServiceMock.Object, new Mock<IEmailAdapter>().Object);
 
             _service = new StaffService(_unitOfWorkMock.Object, _logServiceMock.Object,

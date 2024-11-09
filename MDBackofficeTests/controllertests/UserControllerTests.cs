@@ -20,6 +20,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 using SignInResult = Microsoft.AspNetCore.Identity.SignInResult;
+using MDBackoffice.Infrastructure.Users;
 
 namespace MDBackofficeTests.controllertests
 {
@@ -39,6 +40,7 @@ namespace MDBackofficeTests.controllertests
         private readonly Mock<IStaffRepository> _staffRepoMock;
         private readonly Mock<ISpecializationRepository> _specRepoMock;
         private readonly Mock<IPatientRepository> _patientRepoMock;
+        private readonly Mock<ILoginAdapter> _loginAdapterMock;
 
         public UserControllerTests()
         {
@@ -69,6 +71,7 @@ namespace MDBackofficeTests.controllertests
             _tokenServiceMock = new Mock<TokenService>(_unitOfWorkMock.Object, new Mock<ITokenRepository>().Object, _userManagerMock.Object);
             var _emailServiceMock = new Mock<EmailService>(_tokenServiceMock.Object, new Mock<IEmailAdapter>().Object);
             _configurationMock = new Mock<IConfiguration>();
+            _loginAdapterMock = new Mock<ILoginAdapter>();
 
             _signinManagerMock = new Mock<SignInManager<User>>(_userManagerMock.Object,
                                                               new Mock<IHttpContextAccessor>().Object,
@@ -78,7 +81,7 @@ namespace MDBackofficeTests.controllertests
                                                               new Mock<IAuthenticationSchemeProvider>().Object,
                                                               new Mock<IUserConfirmation<User>>().Object);
 
-            _userServiceMock = new Mock<UserService>(_userManagerMock.Object, _roleManagerMock.Object, _logServiceMock.Object, _signinManagerMock.Object, _emailServiceMock.Object, _configurationMock.Object, _tokenServiceMock.Object);
+            _userServiceMock = new Mock<UserService>(_userManagerMock.Object, _roleManagerMock.Object, _logServiceMock.Object, _signinManagerMock.Object, _emailServiceMock.Object, _configurationMock.Object, _tokenServiceMock.Object, _loginAdapterMock.Object);
 
             _patientRepoMock = new Mock<IPatientRepository>();
             _patientServiceMock = new Mock<PatientService>(_unitOfWorkMock.Object, _logServiceMock.Object, _configurationMock.Object, _patientRepoMock.Object,

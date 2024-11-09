@@ -11,6 +11,7 @@ using MDBackoffice.Domain.StaffProfiles;
 using MDBackoffice.Domain.Tokens;
 using MDBackoffice.Domain.Users;
 using MDBackoffice.Infrastructure.Emails;
+using MDBackoffice.Infrastructure.Users;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -40,6 +41,7 @@ namespace MDBackofficeTests.controllertests
         private readonly OperationRequestController _controller;
         private readonly Mock<UserService> _userServiceMock;
         private readonly Mock<UserManager<User>> _userManagerMock;
+        private readonly Mock<ILoginAdapter> _loginAdapterMock;
         public OperationRequestControllerTests()
         {
             Mock<LogService> _logServiceMock = new Mock<LogService>(new Mock<IUnitOfWork>().Object, new Mock<ILogRepository>().Object);
@@ -63,10 +65,9 @@ namespace MDBackofficeTests.controllertests
             var tokenServiceMock = new Mock<TokenService>(_unitOfWorkMock.Object, new Mock<ITokenRepository>().Object, _userManagerMock.Object);
             var _emailServiceMock = new Mock<EmailService>(tokenServiceMock.Object, new Mock<IEmailAdapter>().Object);
             var _configurationMock = new Mock<IConfiguration>();
+            _loginAdapterMock = new Mock<ILoginAdapter>();
 
-
-
-            _userServiceMock = new Mock<UserService>(_userManagerMock.Object, roleManagerMock.Object, _logServiceMock.Object, signinManagerMock.Object, _emailServiceMock.Object, _configurationMock.Object, tokenServiceMock.Object);
+            _userServiceMock = new Mock<UserService>(_userManagerMock.Object, roleManagerMock.Object, _logServiceMock.Object, signinManagerMock.Object, _emailServiceMock.Object, _configurationMock.Object, tokenServiceMock.Object, _loginAdapterMock.Object);
             var _patientServiceMock = new Mock<PatientService>(_unitOfWorkMock.Object, _logServiceMock.Object, _configurationMock.Object, _repoPatMock.Object, _userServiceMock.Object, _emailServiceMock.Object);
 
 
@@ -125,8 +126,6 @@ namespace MDBackofficeTests.controllertests
             };
 
             var operationTypeMock = new Mock<OperationType>(opTyId, 100, true, reqStaff, phases);
-
-
 
             _repoStaMock.Setup(_repoMock => _repoMock.GetByIdAsync(It.IsAny<StaffId>())).ReturnsAsync(staffMock.Object);
             _repoPatMock.Setup(_repoPatMock => _repoPatMock.GetByIdAsync(It.IsAny<MedicalRecordNumber>()))

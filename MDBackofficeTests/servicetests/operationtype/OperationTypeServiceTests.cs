@@ -17,6 +17,7 @@ namespace MDBackofficeTests.servicetests.operationtype
         private readonly Mock<IOperationTypeRepository> _repoMock = new Mock<IOperationTypeRepository>();
         private readonly Mock<OperationTypeRecordService> _opRecordService;
         private readonly OperationTypeService _service;
+        
 
         public OperationTypeServiceTests()
         {

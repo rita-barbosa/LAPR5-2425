@@ -20,6 +20,7 @@ using Xunit;
 using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
+using MDBackoffice.Infrastructure.Users;
 
 namespace MDBackofficeTests.integrationtests.operationrequests
 {
@@ -35,6 +36,7 @@ namespace MDBackofficeTests.integrationtests.operationrequests
         private readonly Mock<LogService> _logServiceMock;
         private readonly Mock<PatientService> _patientServiceMock;
         private readonly Mock<UserService> _userServiceMock;
+        private readonly Mock<ILoginAdapter> _loginAdapterMock;
 
         public OperationRequestIntegrationTests()
         {
@@ -50,6 +52,7 @@ namespace MDBackofficeTests.integrationtests.operationrequests
             var tokenServiceMock = new Mock<TokenService>(_unitOfWorkMock.Object, new Mock<ITokenRepository>().Object, userManagerMock.Object);
             var _emailServiceMock = new Mock<EmailService>(tokenServiceMock.Object, new Mock<IEmailAdapter>().Object);
             var _configurationMock = new Mock<IConfiguration>();
+            _loginAdapterMock = new Mock<ILoginAdapter>();
             var signinManagerMock = new Mock<SignInManager<User>>(userManagerMock.Object,
                                                                new Mock<IHttpContextAccessor>().Object,
                                                                new Mock<IUserClaimsPrincipalFactory<User>>().Object,
@@ -58,7 +61,7 @@ namespace MDBackofficeTests.integrationtests.operationrequests
                                                                new Mock<IAuthenticationSchemeProvider>().Object,
                                                                new Mock<IUserConfirmation<User>>().Object);
 
-            _userServiceMock = new Mock<UserService>(userManagerMock.Object, roleManagerMock.Object, _logServiceMock.Object, signinManagerMock.Object, _emailServiceMock.Object, _configurationMock.Object, tokenServiceMock.Object);
+            _userServiceMock = new Mock<UserService>(userManagerMock.Object, roleManagerMock.Object, _logServiceMock.Object, signinManagerMock.Object, _emailServiceMock.Object, _configurationMock.Object, tokenServiceMock.Object, _loginAdapterMock.Object);
             _patientServiceMock = new Mock<PatientService>(_unitOfWorkMock.Object, _logServiceMock.Object, _configurationMock.Object, _repoPatMock.Object, _userServiceMock.Object, _emailServiceMock.Object);
         }
 
