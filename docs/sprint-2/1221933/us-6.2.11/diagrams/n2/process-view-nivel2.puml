@@ -1,15 +1,16 @@
 @startuml
 'https://plantuml.com/sequence-diagram
 
-title "US 5.1.13. Process View (Level 2)"
+title "US 6.2.11. Process View (Level 2)"
 
 autonumber
 
+actor Admin as ADM
 participant "<<component>>\n Visualization (UI)" as UI
 participant "<<component>>\n Backoffice" as BACK
 
-
-[o-> UI : asks to edit staff profile
+activate ADM
+ADM -> UI : asks to edit staff profile
 activate UI
 
 UI -> BACK : getStaffProfiles()
@@ -19,18 +20,18 @@ BACK --> UI : StaffProfilesList
 deactivate BACK
 
 
-<-- UI : shows list of staff profiles
+ADM <-- UI : shows list of staff profiles
 deactivate UI
 
 
-[o-> UI : selects a staff profile
+ADM -> UI : selects a staff profile
 activate UI
 
-<-- UI : shows selected staff profile
+ADM <-- UI : shows selected staff profile
 deactivate UI
 
 
-[o-> UI : edits staff profile editable fields
+ADM -> UI : edits staff profile editable fields
 activate UI
 
 UI -> BACK : editStaffProfile(json)
@@ -39,10 +40,10 @@ activate BACK
 BACK --> UI : answer
 deactivate BACK
 
-<-- UI : answer
+ADM <-- UI : answer
 deactivate UI
 
-[o-> UI : after contact information change is confirmed
+ADM -> UI : after contact information change is confirmed
 activate UI
 
 UI -> BACK : ConfirmEmailStaff(json)
@@ -51,7 +52,8 @@ activate BACK
 BACK --> UI : answer
 deactivate BACK
 
-<-- UI : answer
+ADM <-- UI : answer
 deactivate UI
+deactivate ADM
 
 @enduml
