@@ -134,9 +134,9 @@ However level 3 is shown below.
 
 #### 4.1.2 Process View - Staff
 
-![Process View | Visualization - Admin](Diagrams\Views\process-view-level-3-confirm-email-Visualization.svg)
+![Process View | Visualization - Staff](Diagrams\Views\process-view-level-3-confirm-email-Visualization.svg)
 
-![Process View | MDBackoffice - Admin](Diagrams\Views\process-view-level-3-confirm-email-MDBackoffice.svg)
+![Process View | MDBackoffice - Staff](Diagrams\Views\process-view-level-3-confirm-email-MDBackoffice.svg)
 
 ### 4.2. Domain Model Excerpt
 

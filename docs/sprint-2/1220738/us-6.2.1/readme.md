@@ -76,7 +76,6 @@ information, such as:
 After this registration, will occur the verification of the email address, by sending a verification email with a 
 confirmation link.
 
-
 ### System Sequence Diagram
 
 ![us-6.2.1-ssd.svg](diagrams/ssd/us-6.2.1-ssd.puml.svg)
@@ -89,32 +88,59 @@ confirmation link.
 
 ### 4.1. Realization
 
-// TODO
+The logical, physical, development and scenario views diagrams are generic for all the use cases of the backoffice component.
+These diagrams can be found in the [generic views diagrams compilation file](../../team-decisions/views/general-views.md).
 
-#### Logical View
-
-// TODO
+The process view levels are here represented as they represent a process specific to each user story.
 
 #### Process View
 
-##### Level 1
+The level 1 and 2 of this view was considered not to add more information in addition to the SSD shown above.
+However level 3 is shown below.
 
-// TODO
+#### 4.1.1 Process View - Admin
 
-##### Level 2
+##### Create Staff Profile
 
-_[This diagram is not relevant.]_
+![Process View | Visualization - Admin](Diagrams\Views\process-view-level-3-staff-profile-Visualization.svg)
 
-##### Level 3
+![Process View | MDBackoffice - Admin](Diagrams\Views\process-view-level-3-staff-profile-MDBackoffice.svg)
 
-// TODO
+##### Create User
 
-#### Development View
+![Process View | Visualization - Admin](Diagrams\Views\process-view-level-3-user-Visualization.svg)
 
-// TODO
+![Process View | MDBackoffice - Admin](Diagrams\Views\process-view-level-3-user-MDBackoffice.svg)
 
-#### Physical View
+#### 4.1.2 Process View - Patient
 
-// TODO
+![Process View | Visualization - Patient](Diagrams\Views\process-view-level-3-confirm-email-Visualization.svg)
 
+![Process View | MDBackoffice - Patient](Diagrams\Views\process-view-level-3-confirm-email-MDBackoffice.svg)
+
+### 4.2. Applied Patterns
+
+> #### **Repository Pattern**
+>
+>* **Components:** UserRepository, PatientRepository
+>
+> The repositories handle data access and retrieval, isolating the database interaction logic from services and other 
+> layers. This approach abstracts the persistence logic, promoting separation of concerns.
+
+
+> #### **DTO (Data Transfer Object) Pattern**
+>
+>* **Components:** CreatingPatientDto, ConfirmEmailUserDto, RegisterUserDto
+>
+> DTOs are utilized to transfer data between layers, particularly from the controller layer to the service layer and 
+> vice versa. Their main purpose is to convey data in a structured and decoupled manner without revealing the internal 
+> representations of entities. Additionally, this pattern is not required to adhere to business rules.
+
+
+> #### **Facade Pattern**
+>
+>* **Components:** UserService, PatientService
+>
+> These services function as a facade, simplifying the interaction with lower-level components such as repositories. 
+> The controller communicates with these service facades, concealing the complexity from the upper layers.
 
