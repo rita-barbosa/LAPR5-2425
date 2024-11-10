@@ -66,32 +66,52 @@ It is important to note that for the sake of this project, **historical data** i
 
 ### 4.1. Realization
 
-// TODO
+The logical, physical, development and scenario views diagrams are generic for all the use cases of the backoffice component.
+These diagrams can be found in the [generic views diagrams compilation file](../../team-decisions/views/general-views.md).
 
-#### Logical View
+The process view levels are here represented as they represent a process specific to each user story.
 
-// TODO
+#### Process View - Level 1
 
-#### Process View
+![Process View Level 1](Diagrams\Views\process-view-level-1.svg)
 
-##### Level 1
+#### Process View - Level 2
 
-// TODO
+![Process View Level 2](Diagrams\Views\process-view-level-2.svg)
 
-##### Level 2
+#### Process View - Level 3
 
-_[This diagram is not relevant.]_
+![Process View Level 3 - Visualization](Diagrams\Views\process-view-level-3-visualization.svg)
 
-##### Level 3
+![Process View Level 3 - MDBackoffice](Diagrams\Views\process-view-level-3.svg)
 
-// TODO
+### 4.2. Domain Model Excerpt
 
-#### Development View
+![Domain Model Excerpt](Diagrams\Domain-Model\domain-model-excerpt.svg)
 
-// TODO
+#### 4.3. Applied Patterns
 
-#### Physical View
+> #### **Repository Pattern**
+>
+>* **Components:** UserRepository, StaffRepository, LogRepository
+>
+> The repositories handle data access and retrieval, isolating the database interaction logic from services and other 
+> layers. This approach abstracts the persistence logic, promoting separation of concerns.
 
-// TODO
 
+> #### **DTO (Data Transfer Object) Pattern**
+>
+>* **Components:** IdPassDto
+>
+> DTOs are utilized to transfer data between layers, particularly from the controller layer to the service layer and 
+> vice versa. Their main purpose is to convey data in a structured and decoupled manner without revealing the internal 
+> representations of entities. Additionally, this pattern is not required to adhere to business rules.
+
+
+> #### **Facade Pattern**
+>
+>* **Components:** UserService, StaffService, LogService
+>
+> These services function as a facade, simplifying the interaction with lower-level components such as repositories. 
+> The controller communicates with these service facades, concealing the complexity from the upper layers.
 
