@@ -16,6 +16,7 @@ using MDBackoffice.Domain.StaffProfiles;
 using MDBackoffice.Domain.Patients;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
+using MDBackoffice.Infrastructure.Users;
 
 namespace MDBackofficeTests.servicetests.staff;
 
@@ -31,6 +32,7 @@ public class StaffServiceTest
         private readonly Mock<EmailService> _emailServiceMock;
         private readonly StaffService _service;
         private readonly Mock<TokenService> _tokenServiceMock;
+        private readonly Mock<ILoginAdapter> _loginAdapterMock;
 
         public StaffServiceTest()
         {
@@ -58,6 +60,7 @@ public class StaffServiceTest
                     new Mock<ILogger<RoleManager<Role>>>().Object
                 );
 
+                _loginAdapterMock = new Mock<ILoginAdapter>();
                 _tokenServiceMock = new Mock<TokenService>(_unitOfWorkMock.Object, new Mock<ITokenRepository>().Object, _userManagerMock.Object);
                 var _emailServMock = new Mock<EmailService>(_tokenServiceMock.Object, new Mock<IEmailAdapter>().Object);
                 var signinManagerMock = new Mock<SignInManager<User>>(_userManagerMock.Object,
@@ -74,7 +77,8 @@ public class StaffServiceTest
                     signinManagerMock.Object,
                     _emailServMock.Object,
                     _configurationMock.Object,
-                    _tokenServiceMock.Object 
+                    _tokenServiceMock.Object,
+                    _loginAdapterMock.Object 
                 );
 
                 _emailServiceMock = new Mock<EmailService>(_tokenServiceMock.Object, new Mock<IEmailAdapter>().Object);

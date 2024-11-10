@@ -32,6 +32,13 @@ using MDBackoffice.Infrastructure.Logs;
 using MDBackoffice.Domain.OperationTypesRecords;
 using MDBackoffice.Infrastructure.OperationTypeRecords;
 using System;
+using Microsoft.AspNetCore.Authentication.Google;
+using Microsoft.Extensions.Options;
+using Microsoft.OpenApi.Models;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using System.Net;
+using Microsoft.AspNetCore.Http;
+using MDBackoffice.Infrastructure.Users;
 
 namespace MDBackoffice
 {
@@ -47,42 +54,52 @@ namespace MDBackoffice
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                .AddJwtBearer(options =>
-                {
-                    options.TokenValidationParameters = new TokenValidationParameters
-                    {
-                        ValidateIssuer = true,
-                        ValidateAudience = true,
-                        ValidateLifetime = true,
-                        ValidateIssuerSigningKey = true,
-                        ValidIssuer = Configuration["Jwt:Issuer"],
-                        ValidAudience = Configuration["Jwt:Audience"],
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:Key"]))
-                    };
-                });
-            services.AddAuthorization(options =>
-                     {
-                         options.AddPolicy("Admin", policy => policy.RequireRole("Admin")); // Require Admin role
-                         options.AddPolicy("Doctor", policy => policy.RequireRole("Doctor")); // Require Doctor role
-                         options.AddPolicy("Technician", policy => policy.RequireRole("Technician")); // Require Technician role
-                         options.AddPolicy("Nurse", policy => policy.RequireRole("Nurse")); // Require Nurse role
-                         options.AddPolicy("Patient", policy => policy.RequireRole("Patient")); // Require Patient role
-                         options.AddPolicy("AuthenticatedUsers", policy => policy.RequireRole("Admin", "Nurse", "Doctor", "Technician", "Patient"));
-                         options.AddPolicy("Staff", policy => policy.RequireRole("Admin", "Nurse", "Doctor", "Technician"));
-                     });
-            services.AddIdentity<User,Role>(options =>
+            services.AddAuthentication(options =>
             {
-                // Password settings
-                options.Password.RequireDigit = true;
-                options.Password.RequiredLength = 10; // Minimum length
-                options.Password.RequireLowercase = true; // At least 1 lowercase letter
-                options.Password.RequireUppercase = true; // At least 1 uppercase letter
-                options.Password.RequireNonAlphanumeric = true; // At least 1 special character
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
             })
-                .AddRoles<Role>()
-                .AddEntityFrameworkStores<MDBackofficeDbContext>()
-                .AddDefaultTokenProviders();
+            .AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = Configuration["Jwt:Issuer"],
+                    ValidAudience = Configuration["Jwt:Audience"],
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:Key"]))
+                };
+            })
+            .AddGoogle(options =>
+            {
+                options.ClientId = Configuration["GoogleKeys:ClientId"];
+                options.ClientSecret = Configuration["GoogleKeys:ClientSecret"];
+            });
+
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("Admin", policy => policy.RequireRole("Admin"));
+                options.AddPolicy("Doctor", policy => policy.RequireRole("Doctor"));
+                options.AddPolicy("Technician", policy => policy.RequireRole("Technician"));
+                options.AddPolicy("Nurse", policy => policy.RequireRole("Nurse"));
+                options.AddPolicy("Patient", policy => policy.RequireRole("Patient"));
+                options.AddPolicy("AuthenticatedUsers", policy => policy.RequireRole("Admin", "Nurse", "Doctor", "Technician", "Patient"));
+                options.AddPolicy("Staff", policy => policy.RequireRole("Admin", "Nurse", "Doctor", "Technician"));
+            });
+
+            services.AddIdentity<User, Role>(options =>
+            {
+                options.Password.RequireDigit = true;
+                options.Password.RequiredLength = 10;
+                options.Password.RequireLowercase = true;
+                options.Password.RequireUppercase = true;
+                options.Password.RequireNonAlphanumeric = true;
+            })
+            .AddRoles<Role>()
+            .AddEntityFrameworkStores<MDBackofficeDbContext>()
+            .AddDefaultTokenProviders();
 
             services.Configure<IdentityOptions>(options =>
             {
@@ -90,7 +107,6 @@ namespace MDBackoffice
                 options.Lockout.MaxFailedAccessAttempts = 5;
                 options.Lockout.AllowedForNewUsers = true;
             });
-
 
             services.AddDbContext<MDBackofficeDbContext>(opt =>
                 opt.UseSqlite(Configuration.GetConnectionString("DefaultConnection"))
@@ -101,6 +117,7 @@ namespace MDBackoffice
             services.AddControllers().AddNewtonsoftJson();
             services.AddSwaggerGen();
         }
+    
         public void SeedData(IApplicationBuilder app)
         {
             using IServiceScope scope = app.ApplicationServices.CreateScope();
@@ -124,8 +141,13 @@ namespace MDBackoffice
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                // app.UseSwagger();
-                // app.UseSwaggerUI();
+                app.UseSwagger();
+                app.UseSwaggerUI(c =>
+                {
+                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "MDBackoffice API V1");
+                    c.RoutePrefix = string.Empty; // Makes Swagger available at root (https://localhost:5001/)
+                });
+
             }
             else
             {
@@ -156,7 +178,7 @@ namespace MDBackoffice
             services.AddTransient<ITokenRepository, TokenRepository>();
             services.AddTransient<TokenService>();
             services.AddTransient<IEmailAdapter, SendEmailGoogleAdapter>();
-
+            services.AddTransient<ILoginAdapter, GoogleLoginAdapter>();
             services.AddTransient<IStaffRepository, StaffRepository>();
             services.AddTransient<StaffService>();
 

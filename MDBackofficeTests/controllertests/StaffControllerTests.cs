@@ -17,6 +17,7 @@ using Microsoft.AspNetCore.Mvc;
 using MDBackoffice.Domain.Patients;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
+using MDBackoffice.Infrastructure.Users;
 
 namespace MDBackofficeTests.controllertests
 {
@@ -28,7 +29,7 @@ namespace MDBackofficeTests.controllertests
         private readonly Mock<ISpecializationRepository> _repoSpecMock = new Mock<ISpecializationRepository>();
         private readonly Mock<IConfiguration> _configurationMock = new Mock<IConfiguration>();
         private readonly Mock<UserManager<User>> _userManagerMock;
-
+        private readonly Mock<ILoginAdapter> _loginAdapterMock;
         private readonly StaffController _controller;
 
         public StaffControllerTests()
@@ -44,6 +45,7 @@ namespace MDBackofficeTests.controllertests
 
             var tokenServiceMock = new Mock<TokenService>(_unitOfWorkMock.Object, new Mock<ITokenRepository>().Object, _userManagerMock.Object);
             var _emailServiceMock = new Mock<EmailService>(tokenServiceMock.Object, new Mock<IEmailAdapter>().Object);
+            _loginAdapterMock = new Mock<ILoginAdapter>();
             var signinManagerMock = new Mock<SignInManager<User>>(_userManagerMock.Object,
                                                                            new Mock<IHttpContextAccessor>().Object,
                                                                            new Mock<IUserClaimsPrincipalFactory<User>>().Object,
@@ -52,7 +54,7 @@ namespace MDBackofficeTests.controllertests
                                                                            new Mock<IAuthenticationSchemeProvider>().Object,
                                                                            new Mock<IUserConfirmation<User>>().Object);
 
-            var _userServiceMock = new Mock<UserService>(_userManagerMock.Object, roleManagerMock.Object, _logServiceMock.Object, signinManagerMock.Object, _emailServiceMock.Object, _configurationMock.Object, tokenServiceMock.Object);
+            var _userServiceMock = new Mock<UserService>(_userManagerMock.Object, roleManagerMock.Object, _logServiceMock.Object, signinManagerMock.Object, _emailServiceMock.Object, _configurationMock.Object, tokenServiceMock.Object, _loginAdapterMock.Object);
 
             _service = new Mock<StaffService>(_unitOfWorkMock.Object, _logServiceMock.Object,
                                             _repoMock.Object, _repoSpecMock.Object,

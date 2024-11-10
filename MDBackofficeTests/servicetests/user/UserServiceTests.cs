@@ -4,6 +4,7 @@ using MDBackoffice.Domain.Shared;
 using MDBackoffice.Domain.Tokens;
 using MDBackoffice.Domain.Users;
 using MDBackoffice.Infrastructure.Emails;
+using MDBackoffice.Infrastructure.Users;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -27,6 +28,7 @@ namespace MDBackofficeTests.servicetests.user
         private readonly Mock<SignInManager<User>> _signinManagerMock;
         private readonly Mock<IConfiguration> _configurationMock;
         private readonly Mock<TokenService> _tokenServiceMock;
+        private readonly Mock<ILoginAdapter> _loginAdapterMock;
 
         public UserServiceTests() {
             var identityOptionsMock = new Mock<IOptions<IdentityOptions>>();
@@ -64,6 +66,7 @@ namespace MDBackofficeTests.servicetests.user
             _tokenServiceMock = new Mock<TokenService>(_unitOfWorkMock.Object, new Mock<ITokenRepository>().Object, _userManagerMock.Object);
             var _emailServiceMock = new Mock<EmailService>(_tokenServiceMock.Object, new Mock<IEmailAdapter>().Object);
             _configurationMock = new Mock<IConfiguration>();
+            _loginAdapterMock = new Mock<ILoginAdapter>();
 
             _userService = new UserService(
                     _userManagerMock.Object,
@@ -72,7 +75,8 @@ namespace MDBackofficeTests.servicetests.user
                     _signinManagerMock.Object,
                     _emailServiceMock.Object,
                     _configurationMock.Object,
-                    _tokenServiceMock.Object
+                    _tokenServiceMock.Object,
+                    _loginAdapterMock.Object
                 );
         }
 

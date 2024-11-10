@@ -3,6 +3,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using MailKit.Security;
+using Microsoft.Extensions.Configuration;
 using MimeKit;
 using Newtonsoft.Json.Linq;
 
@@ -11,13 +12,24 @@ namespace MDBackoffice.Infrastructure.Emails
     public class SendEmailGoogleAdapter : IEmailAdapter
     {
 
-        private static readonly string CLIENT_ID = "643981681426-pdruu3r0crj9nstjg5lgfnrntrog4ahd.apps.googleusercontent.com";
-        private static readonly string CLIENT_SECRET = "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";
-        private static readonly string REFRESH_TOKEN = "1//04HvLVYDBtN-QCgYIARAAGAQSNwF-L9IrMe0njlGh_d5X5ZbIgFIrcqYgSjVx7mVNaN4-DlqvqhP-AXcJ0zc_9B6Nnme0WDnPOu0";
-        private static readonly string TOKEN_END_POINT = "https://oauth2.googleapis.com/token";
-        private static readonly string TEST_USER_EMAIL = "noreply.healthcare.dg38@gmail.com";
+        private readonly IConfiguration _configuration;
+        private readonly string CLIENT_ID;
+        private readonly string CLIENT_SECRET;
+        private readonly string REFRESH_TOKEN;
+        private readonly string TOKEN_END_POINT;
+        private readonly string TEST_USER_EMAIL;
 
         public SendEmailGoogleAdapter(){ }
+
+        public SendEmailGoogleAdapter(IConfiguration configuration)
+        {  
+            _configuration = configuration;
+            CLIENT_ID = _configuration.GetSection("GoogleKeys").GetSection("ClientId").Value;
+            CLIENT_SECRET = _configuration.GetSection("GoogleKeys").GetSection("ClientSecret").Value;
+            REFRESH_TOKEN = _configuration.GetSection("GoogleKeys").GetSection("RefreshToken").Value;
+            TEST_USER_EMAIL = _configuration.GetSection("App").GetSection("Email").Value;
+            TOKEN_END_POINT = _configuration.GetSection("GoogleKeys").GetSection("TokenEndPoint").Value;
+        }
 
         public async Task SendEmail(MimeMessage message)
         {

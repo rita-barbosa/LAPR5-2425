@@ -12,6 +12,7 @@ using MDBackoffice.Domain.Tokens;
 using MDBackoffice.Domain.Users;
 using MDBackoffice.Infrastructure;
 using MDBackoffice.Infrastructure.Emails;
+using MDBackoffice.Infrastructure.Users;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -36,6 +37,7 @@ public class OperationRequestServiceTests
     private readonly Mock<PatientService> _patientServiceMock;
     private readonly OperationRequestService _service;
     private readonly Mock<UserManager<User>> _userManagerMock;
+    private readonly Mock<ILoginAdapter> _loginAdapterMock;
 
     public OperationRequestServiceTests()
     {
@@ -66,7 +68,7 @@ public class OperationRequestServiceTests
         var tokenServiceMock = new Mock<TokenService>(_unitOfWorkMock.Object, new Mock<ITokenRepository>().Object, _userManagerMock.Object);
         var _emailServiceMock = new Mock<EmailService>(tokenServiceMock.Object, new Mock<IEmailAdapter>().Object);
         var _configurationMock = new Mock<IConfiguration>();
-
+        _loginAdapterMock = new Mock<ILoginAdapter>();
         var signinManagerMock = new Mock<SignInManager<User>>(_userManagerMock.Object,
                                                                new Mock<IHttpContextAccessor>().Object,
                                                                new Mock<IUserClaimsPrincipalFactory<User>>().Object,
@@ -81,7 +83,8 @@ public class OperationRequestServiceTests
                 signinManagerMock.Object,
                 _emailServiceMock.Object,
                 _configurationMock.Object,
-                tokenServiceMock.Object
+                tokenServiceMock.Object,
+                _loginAdapterMock.Object
             );
         _patientServiceMock = new Mock<PatientService>(_unitOfWorkMock.Object, _logServiceMock.Object, _configurationMock.Object, _repoPatMock.Object,
                     _userServiceMock.Object, _emailServiceMock.Object);
