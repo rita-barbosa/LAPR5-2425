@@ -74,32 +74,22 @@ As explained by the acceptance criterias, **the changes only affect future reque
 
 ### 4.1. Realization
 
-// TODO
+The logical, physical, development and scenario views diagrams are generic for all the use cases of the backoffice component.
+These diagrams can be found in the [generic views diagrams compilation file](../../team-decisions/views/general-views.md).
 
-#### Logical View
-
-// TODO
+The process view levels are here represented as they represent a process specific to each user story.
 
 #### Process View
 
-##### Level 1
+The level 1 and 2 of this view was considered not to add more information in addition to the SSD shown above.
+However level 3 is shown below.
 
-// TODO
+##### Process View - Level 3
 
-##### Level 2
+![Process View Level 3 - Visualization](Diagrams\Views\process-view-level-3-visualization.svg)
 
-_[This diagram is not relevant.]_
+![Process View Level 3 - MDBackoffice](Diagrams\Views\process-view-level-3.svg)
 
-##### Level 3
+### 4.2. Domain Model Excerpt
 
-// TODO
-
-#### Development View
-
-// TODO
-
-#### Physical View
-
-// TODO
-
-
+![Domain Model Excerpt](Diagrams\Domain-Model\domain-model-excerpt.svg)
