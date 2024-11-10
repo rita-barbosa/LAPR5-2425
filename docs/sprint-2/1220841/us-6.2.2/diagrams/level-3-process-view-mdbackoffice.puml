@@ -1,6 +1,6 @@
 @startuml
 
-title "US 5.1.4. - Process View [Level 3]"
+title "US 6.2.2 - Process View [Level 3 | MDBackoffice]"
 
 autonumber
 participant "PatientRoute" as ROUTE <<route>>
@@ -18,7 +18,7 @@ participant "PatientDto" as PATIENT_DTO <<dto>>
 
 
 
-[o-> ROUTE: PUT(json) /api/patient
+[o-> ROUTE: PUT(json) /api/Patient
 activate ROUTE
 
 ROUTE -> pat_dto **: create(json)
