@@ -122,15 +122,21 @@ However level 3 is shown below.
 
 ##### Create Staff Profile
 
-![Process View - Admin](Diagrams\Views\process-view-level-3-staff-profile.svg)
+![Process View | Visualization - Admin](Diagrams\Views\process-view-level-3-staff-profile-Visualization.svg)
+
+![Process View | MDBackoffice - Admin](Diagrams\Views\process-view-level-3-staff-profile-MDBackoffice.svg)
 
 ##### Create User
 
-![Process View - Admin](Diagrams\Views\process-view-level-3-user.svg)
+![Process View | Visualization - Admin](Diagrams\Views\process-view-level-3-user-Visualization.svg)
+
+![Process View | MDBackoffice - Admin](Diagrams\Views\process-view-level-3-user-MDBackoffice.svg)
 
 #### 4.1.2 Process View - Staff
 
-![Process View - Admin](Diagrams\Views\process-view-level-3-confirm-email.svg)
+![Process View | Visualization - Admin](Diagrams\Views\process-view-level-3-confirm-email-Visualization.svg)
+
+![Process View | MDBackoffice - Admin](Diagrams\Views\process-view-level-3-confirm-email-MDBackoffice.svg)
 
 ### 4.2. Domain Model Excerpt
 
@@ -161,19 +167,3 @@ However level 3 is shown below.
 >
 > These services function as a facade, simplifying the interaction with lower-level components such as repositories. 
 > The controller communicates with these service facades, concealing the complexity from the upper layers.
-
-### 4.4. Tests
-
-_// To do - layout still in development //_ 
-
-## 5. Implementation
-
-_// To do //_
-
-## 6. Integration/Demonstration
-
-_// To do //_
-
-## 7. Observations
-
-_// To do //_
