@@ -7,27 +7,24 @@
   - [3. Analysis](#3-analysis)
   - [4. Design](#4-design)
     - [4.1. Realization](#41-realization)
-      - [Logical View](#logical-view)
-      - [Process View](#process-view)
+      - [4.1.1 Logical View](#411-logical-view)
+      - [4.1.2 Process View](#412-process-view)
         - [Level 1](#level-1)
         - [Level 2](#level-2)
         - [Level 3](#level-3)
-      - [Development View](#development-view)
-      - [Physical View](#physical-view)
+      - [4.1.3 Development View](#413-development-view)
+      - [4.1.4 Physical View](#414-physical-view)
 <!-- TOC -->
 
 ## 1. Context
 
-* This is the second time this user story is being addressed; the focus for this sprint is to implement a user interface for it.
+- This is the second time this user story is being addressed; the focus for this sprint is to implement a user interface for it.
 
-
-* Identity and Access Management (IAM) is a system that manages and controls the access to a company's resources by entities,
+- Identity and Access Management (IAM) is a system that manages and controls the access to a company's resources by entities,
 that have their identities verified and their access permissions are clearly defined and enforced.
 
-
-* Single Sign-on (SSO) is an authentication scheme that combines multiple applications log in screens and allows the user 
+- Single Sign-on (SSO) is an authentication scheme that combines multiple applications log in screens and allows the user
 to log in a single time to access the resources and services of those applications.
-
 
 ## 2. Requirements
 
@@ -45,7 +42,6 @@ access my appointments, medical records, and other features securely.
 - 6.2.5.4 | Sessions expire after a defined period of inactivity, requiring re-authentication.
 
 - 6.2.5.5 | If the credentials used in the IAM correspond to a staff profile, the patient cannot register in the healthcare system.
-
 
 **Dependencies/References:**
 
@@ -76,15 +72,14 @@ This functionality is dependent on the creation of a patient profile by the Admi
 > **Question:** Can you clarify the username and email requirements?
 >
 > **Answer:** The username is the "official" email address of the user.
-> 
+>
 > For backoffice users, this is the mechanographic number of the collaborator, e.g., D240003 or N190345, and the DNS domain
-> of the system. For instance, Doctor Manuela Fernandes has email "D180023@myhospital.com". The system must allow for an
+> of the system. For instance, Doctor Manuela Fernandes has email "<D180023@myhospital.com>". The system must allow for an
 > easy configuration of the DNS domain (e.g., environment variable).
-> 
+>
 > For patients, the username is the email address provided in the patient record and used as identity in the external IAM.
-> for instance patient Carlos Silva has provided his email csilva98@gmail.com the first time he entered the hospital. That
+> for instance patient Carlos Silva has provided his email <csilva98@gmail.com> the first time he entered the hospital. That
 > email address will be his username when he self-registers in the system.
-
 
 ## 3. Analysis
 
@@ -103,11 +98,11 @@ the patient to authenticate again.
 
 The logical, physical, development and scenario views diagrams are generic for all the use cases of the backoffice component.
 
-#### Logical View
+#### 4.1.1 Logical View
 
 The diagrams can be found in the [team decision views folder](../../team-decisions/views/general-views.md#1-logical-view).
 
-#### Process View
+#### 4.1.2 Process View
 
 ##### Level 1
 
@@ -115,16 +110,20 @@ The diagrams can be found in the [team decision views folder](../../team-decisio
 
 ##### Level 2
 
-_[This diagram is not relevant.]_
+![Process View - Level 2](diagrams/level-2-process-view.svg)
 
 ##### Level 3
 
-![Process View - Level 3](diagrams/level-3-process-view-1.svg)
+- _Visualization_<br>
+![Process View - Level 3](diagrams/level-3-process-view-visualization.svg)
 
-#### Development View
+- _MDBackoffice_
+![Process View - Level 3](diagrams/level-3-process-view-mdbackoffice.svg)
+
+#### 4.1.3 Development View
 
 The diagrams can be found in the [team decision views folder](../../team-decisions/views/general-views.md#3-development-view).
 
-#### Physical View
+#### 4.1.4 Physical View
 
 The diagrams can be found in the [team decision views folder](../../team-decisions/views/general-views.md#4-physical-view).

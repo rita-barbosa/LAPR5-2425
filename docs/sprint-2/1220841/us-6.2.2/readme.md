@@ -7,13 +7,13 @@
   - [3. Analysis](#3-analysis)
   - [4. Design](#4-design)
     - [4.1. Realization](#41-realization)
-      - [Logical View](#logical-view)
-      - [Process View](#process-view)
+      - [4.1.1 Logical View](#411-logical-view)
+      - [4.1.2 Process View](#412-process-view)
         - [Level 1](#level-1)
         - [Level 2](#level-2)
         - [Level 3](#level-3)
-      - [Development View](#development-view)
-      - [Physical View](#physical-view)
+      - [4.1.3 Development View](#413-development-view)
+      - [4.1.4 Physical View](#414-physical-view)
 <!-- TOC -->
 
 ## 1. Context
@@ -82,11 +82,11 @@ Lastly, all the made changes must be be logged for traceability.
 
 The logical, physical, development and scenario views diagrams are generic for all the use cases of the backoffice component.
 
-#### Logical View
+#### 4.1.1 Logical View
 
 The diagrams can be found in the [team decision views folder](../../team-decisions/views/general-views.md#1-logical-view).
 
-#### Process View
+#### 4.1.2 Process View
 
 ##### Level 1
 
@@ -94,18 +94,20 @@ The diagrams can be found in the [team decision views folder](../../team-decisio
 
 ##### Level 2
 
-_[This diagram is not relevant.]_
+![Process View - Level 2](diagrams/level-2-process-view.svg)
 
 ##### Level 3
 
-![Process View - Level 3](diagrams/level-3-process-view.svg)
+- _Visualization_<br>
+![Process View - Level 3](diagrams/level-3-process-view-visualization.svg)
 
-#### Development View
+- _MDBackoffice_
+![Process View - Level 3](diagrams/level-3-process-view-mdbackoffice.svg)
+
+#### 4.1.3 Development View
 
 The diagrams can be found in the [team decision views folder](../../team-decisions/views/general-views.md#3-development-view).
 
-#### Physical View
+#### 4.1.4 Physical View
 
 The diagrams can be found in the [team decision views folder](../../team-decisions/views/general-views.md#4-physical-view).
-
-

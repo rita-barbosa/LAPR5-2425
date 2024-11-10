@@ -1,7 +1,7 @@
 @startuml
 'https://plantuml.com/sequence-diagram
 
-title "US 5.1.23. Process View (Level 3)"
+title "US 6.2.21. Process View (Level 3 | MDBackoffice)"
 autonumber
 
 participant "route:\nOperationTypeRoute" as ROUTE
@@ -11,7 +11,7 @@ participant "service:\n OperationTypeService" as SER
 participant "repository:\nOperationTypeRepository" as REPO
 participant "dto:\nOperationTypeDTO" as DTO
 
-[o-> ROUTE : GET() /api/Xs
+[o-> ROUTE : GET() /api/OperationType/OperationTypeList
 activate ROUTE
 
 ROUTE -> CTRL : getAllOperationTypes()

@@ -12,7 +12,7 @@ participant "SpecializationRepository" as REPO_SPEC <<repository>>
 participant "Staff" as pat <<domain>>
 
 
-[o-> ROUTE: POST(json) /api/staffs
+[o-> ROUTE: POST(json) api/Staff/Create-StaffProfile
 activate ROUTE
 
 ROUTE -> pat_dto **: create(json)

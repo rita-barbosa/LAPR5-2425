@@ -11,10 +11,10 @@ activate ADM
 ADM -> SYS : create staff profile
 activate SYS
 
-SYS --> ADM :  input staff data
+SYS --> ADM : select specialization
 deactivate SYS
 
-ADM --> SYS : inputs staff data
+ADM --> SYS : selects specialization
 activate SYS
 
 SYS --> ADM : success/insucess
