@@ -1,5 +1,5 @@
 @startuml
-title "US 5.1.3. Process View (Level 3) - Creating a Patient Profile"
+title "US 5.1.1. Process View (Level 3) | MDBackoffice - Creating a Patient Profile"
 
 participant "<<Route>>\n PatientRoute" as ROUTE
 participant "<<Controller>>\n PatientController" as CONTROL

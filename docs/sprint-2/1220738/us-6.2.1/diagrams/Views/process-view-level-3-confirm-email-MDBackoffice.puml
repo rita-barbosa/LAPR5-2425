@@ -1,5 +1,5 @@
 @startuml
-title "US 5.1.3. Process View (Level 3) - Confirming Email and Activating Staff Account"
+title "US 5.1.1. Process View (Level 3) | MDBackoffice - Confirming Email and Activating Patient Account"
 
 participant "<<Route>>\n UserRoute" as ROUTE
 participant "<<Controller>>\n UserController" as CONTROL
