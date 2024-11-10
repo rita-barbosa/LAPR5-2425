@@ -9,16 +9,16 @@ participant "SpecializationService" as SVC <<service>>
 participant "SpecializationDTO" as SVC <<dto>>
 participant "SpecializationRepository" as REPO <<repository>>
 
-[o-> ROUTE: GET(json)
+[o-> ROUTE: GET(json) api/Specializations
 activate ROUTE
 
-ROUTE -> CTRL: findAll()
+ROUTE -> CTRL: GetAllAvailable()
 activate CTRL
 
-CTRL -> SVC: findAll()
+CTRL -> SVC: GetAllAsync()
 activate SVC
 
-SVC -> REPO : findAll()
+SVC -> REPO : GetAllAsync()
 activate REPO
 REPO --> SVC : specializations
 deactivate REPO
