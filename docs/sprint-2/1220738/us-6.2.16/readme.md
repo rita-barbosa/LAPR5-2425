@@ -82,32 +82,44 @@ As explained by the client and acceptance criteria, after having removed this re
 
 ### 4.1. Realization
 
-// TODO
+The logical, physical, development and scenario views diagrams are generic for all the use cases of the backoffice component.
+These diagrams can be found in the [generic views diagrams compilation file](../../team-decisions/views/general-views.md).
 
-#### Logical View
-
-// TODO
+The process view levels are here represented as they represent a process specific to each user story.
 
 #### Process View
 
-##### Level 1
+The level 1 and 2 of this view was considered not to add more information in addition to the SSD shown above.
+However level 3 is shown below.
 
-// TODO
+##### Process View - Level 3
 
-##### Level 2
+![Process View Level 3 - Visualization](Diagrams\Views\process-view-level-3-visualization.svg)
 
-_[This diagram is not relevant.]_
+![Process View Level 3 - MDBackoffice](Diagrams\Views\process-view-level-3.svg)
 
-##### Level 3
+#### 4.2. Applied Patterns
 
-// TODO
-
-#### Development View
-
-// TODO
-
-#### Physical View
-
-// TODO
+> #### **Repository Pattern**
+>
+>* **Components:** UserRepository, StaffRepository, OperationRequestRepository, PatientRepository
+>
+> The repositories handle data access and retrieval, isolating the database interaction logic from services and other 
+> layers. This approach abstracts the persistence logic, promoting separation of concerns.
 
 
+> #### **DTO (Data Transfer Object) Pattern**
+>
+>* **Components:** IdPassDto, AddOrRemoveFromPatientDto, OperationRequestListDTO
+>
+> DTOs are utilized to transfer data between layers, particularly from the controller layer to the service layer and 
+> vice versa. Their main purpose is to convey data in a structured and decoupled manner without revealing the internal 
+> representations of entities. Additionally, this pattern is not required to adhere to business rules.
+
+
+> #### **Facade Pattern**
+>
+>* **Components:** UserService, OperationRequestService
+>
+> These services function as a facade, simplifying the interaction with lower-level components such as repositories. 
+> The controller communicates with these service facades, concealing the complexity from the upper layers.
