@@ -1,5 +1,5 @@
 @startuml
-title "US 5.1.1. Process View (Level 3) - Creating a Staff Profile"
+title "US 5.1.1. Process View (Level 3) | MDBackoffice - Creating a Staff Profile"
 
 participant "<<Route>>\n StaffRoute" as ROUTE
 participant "<<Controller>>\n StaffController" as CONTROL

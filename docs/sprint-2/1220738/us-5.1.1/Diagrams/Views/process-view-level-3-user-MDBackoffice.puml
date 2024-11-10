@@ -1,5 +1,5 @@
 @startuml
-title "US 5.1.1. Process View (Level 3) - Create Staff User and Associating"
+title "US 5.1.1. Process View (Level 3) | MDBackoffice - Create Staff User and Associating"
 
 participant "<<Route>>\n StaffRoute" as ROUTE
 participant "<<Controller>>\n StaffController" as CONTROL

@@ -395,12 +395,12 @@ namespace MDBackoffice.Domain.Users
             return await DeleteAsync(userId);
         }
 
-        public async Task<AuthenticationProperties> LoginGoogleStart()
+        public async Task<AuthenticationProperties> LoginExternalStart()
         {
             return await _loginAdapter.GetRedirectionInfo();
         }
 
-        public async Task<string> LoginGoogleEnd()
+        public async Task<string> LoginExternalEnd()
         {
             // Retrieve the external login information after the user has been redirected back from the external provider (Google)
             var externalLoginInfo = await _signinManager.GetExternalLoginInfoAsync();

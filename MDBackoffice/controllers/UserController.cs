@@ -33,7 +33,7 @@ namespace MDBackoffice.Controllers
          _tokenService = tokenService;
         }
 
-        [HttpPost("Login-Internal")]
+        [HttpPost("login-internal")]
         public async Task<IActionResult> Login([FromBody] LoginUserDto loginUserDto)
         {
             try
@@ -69,12 +69,12 @@ namespace MDBackoffice.Controllers
             }
         } */
 
-        [HttpGet("Login-Google")]
-        public async Task<IActionResult> LoginGoogleStart()
+        [HttpGet("login-external")]
+        public async Task<IActionResult> LoginExternalStart()
         {
             try
             {
-                var properties = await _userService.LoginGoogleStart();
+                var properties = await _userService.LoginExternalStart();
                 return Challenge(properties, GoogleDefaults.AuthenticationScheme);
             }
             catch (BusinessRuleValidationException ex)
@@ -87,12 +87,12 @@ namespace MDBackoffice.Controllers
             }
         }
 
-        [HttpGet("Login-GoogleEnd")]
-        public async Task<IActionResult> LoginGoogleEnd()
+        [HttpGet("login-externalEnd")]
+        public async Task<IActionResult> LoginExternalEnd()
         {   
             try
             {
-                var token = await _userService.LoginGoogleEnd();
+                var token = await _userService.LoginExternalEnd();
                 return Ok(new { Token = token });
             }
             catch (BusinessRuleValidationException ex)
