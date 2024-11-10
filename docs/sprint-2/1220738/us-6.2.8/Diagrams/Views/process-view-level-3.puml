@@ -1,5 +1,5 @@
 @startuml
-title "US 5.1.10. Process View (Level 3)"
+title "US 6.2.8 Process View (Level 3) - MDBackoffice"
 
 participant "<<Route>>\n PatientRoute" as ROUTE
 participant "<<Controller>>\n PatientController" as CONTROL

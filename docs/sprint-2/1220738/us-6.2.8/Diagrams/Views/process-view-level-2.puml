@@ -5,8 +5,8 @@ title "US 5.1.10. Process View (Level 2)"
 
 autonumber
 
-participant "<<component>>\n UI" as PLAN
-participant "<<component>>\n Backoffice" as BACK
+participant "<<Container C4>>\n Visualization" as PLAN
+participant "<<Container C4>>\n Backoffice" as BACK
 
 [o-> PLAN : Chooses a\npatient profile
 activate PLAN
