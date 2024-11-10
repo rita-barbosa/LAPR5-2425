@@ -80,32 +80,34 @@ This US will involve then the creation of a menu for each staff role and for the
 
 ### 4.1. Realization
 
-// TODO
+The logical, physical, development and scenario views diagrams are generic for all the use cases of the backoffice component.
 
-#### Logical View
+#### 4.1.1 Logical View
 
-// TODO
+The diagrams can be found in the [team decision views folder](../../team-decisions/views/general-views.md#1-logical-view).
 
-#### Process View
+#### 4.1.2 Process View
 
 ##### Level 1
 
-// TODO
+![Process View - Level 1](Diagrams/Views/process-view-level-1.svg)
 
 ##### Level 2
 
-_[This diagram is not relevant.]_
+![Process View - Level 2](Diagrams/Views/process-view-level-2.svg)
 
 ##### Level 3
 
-// TODO
+- _Visualization_<br>
+![Process View - Level 3](Diagrams/Views/process-view-level-3-Visualization.svg)
 
-#### Development View
+- _MDBackoffice_
+![Process View - Level 3](Diagrams/Views/process-view-level-3-MDBackoffice.svg)
 
-// TODO
+#### 4.1.3 Development View
 
-#### Physical View
+The diagrams can be found in the [team decision views folder](../../team-decisions/views/general-views.md#3-development-view).
 
-// TODO
+#### 4.1.4 Physical View
 
-
+The diagrams can be found in the [team decision views folder](../../team-decisions/views/general-views.md#4-physical-view).
