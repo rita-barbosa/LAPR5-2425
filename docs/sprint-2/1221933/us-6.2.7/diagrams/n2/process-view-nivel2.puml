@@ -1,15 +1,15 @@
 @startuml
 'https://plantuml.com/sequence-diagram
 
-title "US 5.1.9. Process View (Level 2)"
+title "US 6.2.7. Process View (Level 2)"
 
 autonumber
-
+actor Admin as ADM
 participant "<<component>>\n Visualization (UI)" as UI
 participant "<<component>>\n Backoffice" as BACK
 
-
-[o-> UI : asks to edit patient profile
+activate ADM
+ADM-> UI : asks to edit patient profile
 activate UI
 
 UI -> BACK : getPatientProfiles()
@@ -19,18 +19,18 @@ BACK --> UI : PatientProfilesList
 deactivate BACK
 
 
-<-- UI : shows list of patient profiles
+ADM <-- UI : shows list of patient profiles
 deactivate UI
 
 
-[o-> UI : selects an patient profile
+ADM-> UI : selects an patient profile
 activate UI
 
-<-- UI : shows selected patient profile
+ADM <-- UI : shows selected patient profile
 deactivate UI
 
 
-[o-> UI : edits patient profile editable fields
+ADM -> UI : edits patient profile editable fields
 activate UI
 
 UI -> BACK : editPatientProfile(json)
@@ -39,7 +39,8 @@ activate BACK
 BACK --> UI : answer
 deactivate BACK
 
-<-- UI : answer
+ADM <-- UI : answer
 deactivate UI
+deactivate ADM
 
 @enduml
