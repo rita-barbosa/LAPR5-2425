@@ -33,17 +33,17 @@ surgery(so2,45,60,45).
 surgery(so3,45,90,45).
 surgery(so4,45,75,45).
 surgery_id(so100001,so2).
-surgery_id(so100002,so3).
-surgery_id(so100003,so4).
-surgery_id(so100004,so2).
-surgery_id(so100005,so4).
+%surgery_id(so100002,so3).
+%surgery_id(so100003,so4).
+%surgery_id(so100004,so2).
+%surgery_id(so100005,so4).
 assignment_surgery(so100001,d001).
-assignment_surgery(so100002,d002).
-assignment_surgery(so100003,d003).
-assignment_surgery(so100004,d001).
-assignment_surgery(so100004,d002).
-assignment_surgery(so100005,d002).
-assignment_surgery(so100005,d003).
+%assignment_surgery(so100002,d002).
+%assignment_surgery(so100003,d003).
+%assignment_surgery(so100004,d001).
+%assignment_surgery(so100004,d002).
+%assignment_surgery(so100005,d002).
+%assignment_surgery(so100005,d003).
 % -------------------------------------------------------------------
 
 agenda_operation_room(or1,20241028,[(520,579,so100000),(1000,1059,so099999)]).
@@ -68,13 +68,25 @@ free_agenda1([(_,Tfin1,_),(Tin2,Tfin2,_)|LT],[(T1,T2)|LT1]):-T1 is Tfin1+1,T2 is
 % ADAPTING A TIMETABLE SO THAT THE FREE TIMES CORRESPOND TO THE TIMES THE PROFESSIONALS WORK FOR.
 % adapt_timetable(doctorId, date, list-free-time, list-free-time-during-working-hours).
 
-adapt_timetable(D,Date,LFA,LFA2):-timetable(D,Date,(InTime,FinTime)),treatin(InTime,LFA,LFA1),treatfin(FinTime,LFA1,LFA2).
-treatin(InTime,[(In,Fin)|LFA],[(In,Fin)|LFA]):-InTime=<In,!.
-treatin(InTime,[(_,Fin)|LFA],LFA1):-InTime>Fin,!,treatin(InTime,LFA,LFA1).
+adapt_timetable(D,Date,LFA,LFA2):- 
+    timetable(D,Date,(InTime,FinTime)),
+    treatin(InTime,LFA,LFA1),
+    treatfin(FinTime,LFA1,LFA2).
+
+treatin(InTime,[(In,Fin)|LFA],[(In,Fin)|LFA]):-
+    InTime=<In,!.
+treatin(InTime,[(_,Fin)|LFA],LFA1):-
+    InTime>Fin,!,
+    treatin(InTime,LFA,LFA1).
 treatin(InTime,[(_,Fin)|LFA],[(InTime,Fin)|LFA]).
 treatin(_,[],[]).
-treatfin(FinTime,[(In,Fin)|LFA],[(In,Fin)|LFA1]):-FinTime>=Fin,!,treatfin(FinTime,LFA,LFA1).
-treatfin(FinTime,[(In,_)|_],[]):-FinTime=<In,!.
+
+treatfin(FinTime,[(In,Fin)|LFA],[(In,Fin)|LFA1]):-
+    FinTime>=Fin,!,
+    treatfin(FinTime,LFA,LFA1).
+treatfin(FinTime,[(In,_)|_],[]):-
+    FinTime=<In,
+    !.
 treatfin(FinTime,[(In,_)|_],[(In,FinTime)]).
 treatfin(_,[],[]).
 % -------------------------------------------------------------------
@@ -125,13 +137,12 @@ min_max(I,I1,I,I1):- I<I1,!.
 min_max(I,I1,I1,I).
 % -------------------------------------------------------------------
 
-
-% SCHEDULES ALL SURGERIES IN A SPECIFIC ROOM FOR A PARTICULAR DAY
+%%% !!! MAYBE IT WILL NOT BE USED --> IMPROVED IN obtain_better_sol
+% SCHEDULES ALL SURGERIES IN A SPECIFIC ROOM FOR A PARTICULAR DAY 
 % schedule_all_surgeries(room-id, date).
 
 % NOTE: For all agenda_staff/3 and agenda_room/3 we create copies of thesefacts to 
 % be able to handle them (scheduling operations one by one in the agendas) without loosing the initial agendas.
-
 schedule_all_surgeries(Room,Day):-
     retractall(agenda_staff1(_,_,_)),
     retractall(agenda_operation_room1(_,_,_)),
@@ -146,21 +157,24 @@ schedule_all_surgeries(Room,Day):-
 
 % AVAILABILITY OF OPERATIONS WILL CREATE A LIST OF POSSIBILITIES IN THE OPERATION ROOM
 % availability_all_surgeries(list-operation-id, room-id, date)
-
 availability_all_surgeries([],_,_).
 availability_all_surgeries([OpCode|LOpCode],Room,Day):-
     surgery_id(OpCode,OpType),
-    surgery(OpType,_,TSurgery,_),
+    surgery(OpType,TPreparation,TSurgery,TCleaning),
+    TotalTime is TPreparation + TSurgery +TCleaning,
     availability_operation(OpCode,Room,Day,LPossibilities,LDoctors),
-    schedule_first_interval(TSurgery,LPossibilities,(TinS,TfinS)), % will need to change this because right now it is only scheduling the first available slot
+    schedule_first_interval(TotalTime,LPossibilities,(TinS,TfinS)), % will need to change this because right now it is only scheduling the first available slot
     retract(agenda_operation_room1(Room,Day,Agenda)),
     insert_agenda((TinS,TfinS,OpCode),Agenda,Agenda1),
     assertz(agenda_operation_room1(Room,Day,Agenda1)),
-    insert_agenda_doctors((TinS,TfinS,OpCode),Day,LDoctors),
+    TinDoc is TinS + TPreparation,
+    TfinDoc is TfinS - TCleaning,
+    insert_agenda_doctors((TinDoc,TfinDoc,OpCode),Day,LDoctors),
     availability_all_surgeries(LOpCode,Room,Day).
 % -------------------------------------------------------------------
 
 % GENERATE A LIST OF POSSIBLE TIMES FOR AN OPERATION TO OCCUR IN A SPECIFIED ROOM ON A GIVEN DAY
+% INTERSECTS THE ROOM AND DOCTOR AGENDAS
 availability_operation(OpCode,Room,Day,LPossibilities,LDoctors):-
     surgery_id(OpCode,OpType),
     surgery(OpType,_,TSurgery,_),
@@ -178,7 +192,8 @@ availability_operation(OpCode,Room,Day,LPossibilities,LDoctors):-
 remove_unf_intervals(_,[],[]).
 remove_unf_intervals(TSurgery,[(Tin,Tfin)|LA],[(Tin,Tfin)|LA1]):-DT is Tfin-Tin+1,TSurgery=<DT,!,
     remove_unf_intervals(TSurgery,LA,LA1).
-remove_unf_intervals(TSurgery,[_|LA],LA1):- remove_unf_intervals(TSurgery,LA,LA1).
+remove_unf_intervals(TSurgery,[_|LA],LA1):- 
+    remove_unf_intervals(TSurgery,LA,LA1).
 % -------------------------------------------------------------------
 
 % SCHEDULES THE FIRST AVAILABLE TIME INTERVAL
@@ -188,8 +203,10 @@ schedule_first_interval(TSurgery,[(Tin,_)|_],(Tin,TfinS)):-
 
 % INSERTS OPERATION INTO THE DOCTORS AND ROOM AGENDA
 insert_agenda((TinS,TfinS,OpCode),[],[(TinS,TfinS,OpCode)]).
-insert_agenda((TinS,TfinS,OpCode),[(Tin,Tfin,OpCode1)|LA],[(TinS,TfinS,OpCode),(Tin,Tfin,OpCode1)|LA]):-TfinS<Tin,!.
-insert_agenda((TinS,TfinS,OpCode),[(Tin,Tfin,OpCode1)|LA],[(Tin,Tfin,OpCode1)|LA1]):-insert_agenda((TinS,TfinS,OpCode),LA,LA1).
+insert_agenda((TinS,TfinS,OpCode),[(Tin,Tfin,OpCode1)|LA],[(TinS,TfinS,OpCode),(Tin,Tfin,OpCode1)|LA]):-
+    TfinS<Tin,!.
+insert_agenda((TinS,TfinS,OpCode),[(Tin,Tfin,OpCode1)|LA],[(Tin,Tfin,OpCode1)|LA1]):-
+    insert_agenda((TinS,TfinS,OpCode),LA,LA1).
 
 insert_agenda_doctors(_,_,[]).
 insert_agenda_doctors((TinS,TfinS,OpCode),Day,[Doctor|LDoctors]):-
@@ -205,12 +222,12 @@ obtain_better_sol(Room,Day,AgOpRoomBetter,LAgDoctorsBetter,TFinOp):-
     get_time(Ti),
     (obtain_better_sol1(Room,Day);true),
     retract(better_sol(Day,Room,AgOpRoomBetter,LAgDoctorsBetter,TFinOp)),
-    write('Final Result: AgOpRoomBetter='),write(AgOpRoomBetter),nl,
-    write('LAgDoctorsBetter='),write(LAgDoctorsBetter),nl,
-    write('TFinOp='),write(TFinOp),nl,
+        write('Final Result: AgOpRoomBetter='),write(AgOpRoomBetter),nl,
+        write('LAgDoctorsBetter='),write(LAgDoctorsBetter),nl,
+        write('TFinOp='),write(TFinOp),nl,
     get_time(Tf),
     T is Tf-Ti,
-    write('Tempo de geracao da solucao:'),write(T),nl.
+        write('Tempo de geracao da solucao:'),write(T),nl.
 
 %-Generations all solutions, one by one, to compare with the better and update better_sol/5
 obtain_better_sol1(Room,Day):-
@@ -234,10 +251,10 @@ update_better_sol(Day,Room,Agenda,LOpCode):-
     better_sol(Day,Room,_,_,FinTime), % Current better solution
     reverse(Agenda,AgendaR),
     evaluate_final_time(AgendaR,LOpCode,FinTime1),
-    write('Analysing for LOpCode='),write(LOpCode),nl,
-    write('now: FinTime1='),write(FinTime1),write(' Agenda='),write(Agenda),nl,
+        write('Analysing for LOpCode='),write(LOpCode),nl,
+        write('now: FinTime1='),write(FinTime1),nl,write(' Agenda='),write(Agenda),nl,
     FinTime1<FinTime,
-    write('best solution updated'),nl,
+        write('best solution updated'),nl,
     % Update the better solution:
     retract(better_sol(_,_,_,_,_)),
     findall(Doctor,assignment_surgery(_,Doctor),LDoctors1),
@@ -250,18 +267,25 @@ update_better_sol(Day,Room,Agenda,LOpCode):-
 % Finds the Tfin (end time) of the first operation that matches one of the operation codes in LOpCode. If no matching operation is found, Tfin defaults to 1441.
 
 evaluate_final_time([],_,1441).
-evaluate_final_time([(_,Tfin,OpCode)|_],LOpCode,Tfin):-member(OpCode,LOpCode),!.
-evaluate_final_time([_|AgR],LOpCode,Tfin):-evaluate_final_time(AgR,LOpCode,Tfin).
+evaluate_final_time([(_,Tfin,OpCode)|_],LOpCode,Tfin):-
+    member(OpCode,LOpCode),!.
+evaluate_final_time([_|AgR],LOpCode,Tfin):-
+    evaluate_final_time(AgR,LOpCode,Tfin).
 % -------------------------------------------------------------------
 
 
 %-OBTAINS DOCTOR AGENDAS---------------------------------------------
 list_doctors_agenda(_,[],[]).
-list_doctors_agenda(Day,[D|LD],[(D,AgD)|LAgD]):-agenda_staff1(D,Day,AgD),list_doctors_agenda(Day,LD,LAgD).
+list_doctors_agenda(Day,[D|LD],[(D,AgD)|LAgD]):-
+    agenda_staff1(D,Day,AgD),
+    list_doctors_agenda(Day,LD,LAgD).
 % -------------------------------------------------------------------
 
 %-REMOVES EQUALS (SAME DOC CAN APPEAR TWICE)-------------------------
 remove_equals([],[]).
-remove_equals([X|L],L1):-member(X,L),!,remove_equals(L,L1).
-remove_equals([X|L],[X|L1]):-remove_equals(L,L1).
+remove_equals([X|L],L1):-
+    member(X,L),!,
+    remove_equals(L,L1).
+remove_equals([X|L],[X|L1]):-
+    remove_equals(L,L1).
 % -------------------------------------------------------------------
