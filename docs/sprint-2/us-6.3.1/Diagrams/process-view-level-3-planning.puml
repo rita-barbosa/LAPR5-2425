@@ -1,0 +1,50 @@
+@startuml
+title "US 6.3.1 Process View (Level 3) | Planning"
+
+participant "US 6.3.1/3" as US
+participant "availability_operation/5" as AvailabilityOp
+participant "surgery_id/2" as SurgeryID
+participant "surgery/4" as Surgery
+participant "findall/3" as FindDoctors
+participant "intersect_all_agendas/3" as IntersectAgendas
+participant "agenda_operation_room1/3" as RoomAgenda
+participant "free_agenda0/2" as FreeAgenda
+participant "intersect_2_agendas/3" as IntersectAgendasRoom
+participant "remove_unf_intervals/3" as RemoveUnf
+participant "insert_agenda/3" as InsertAgenda
+participant "insert_agenda_doctors/3" as I6nsertAgendaDoctors
+
+[o-> US
+US -> AvailabilityOp: availability_operation(OpCode, Room, Day, LPossibilities, LDoctors)
+AvailabilityOp -> SurgeryID: surgery_id(OpCode, OpType)
+AvailabilityOp -> Surgery: surgery(OpType, _, TSurgery, _)
+AvailabilityOp -> FindDoctors: findall(Doctor, assignment_surgery(OpCode, Doctor), LDoctors)
+AvailabilityOp -> IntersectAgendas: intersect_all_agendas(LDoctors, Day, LA)
+AvailabilityOp -> RoomAgenda: agenda_operation_room1(Room, Day, LAgenda)
+AvailabilityOp -> FreeAgenda: free_agenda0(LAgenda, LFAgRoom)
+AvailabilityOp -> IntersectAgendasRoom: intersect_2_agendas(LA, LFAgRoom, LIntAgDoctorsRoom)
+
+AvailabilityOp -> RemoveUnf: remove_unf_intervals(TSurgery, LIntAgDoctorsRoom, LPossibilities)
+
+RemoveUnf -> RemoveUnf: iterate through intervals
+RemoveUnf --> AvailabilityOp: return LPossibilities (filtered intervals)
+AvailabilityOp --> US : return LPossibilities (filtered intervals)
+
+US -> "schedule_first_interval(TSurgery,[(Tin,_)|_],(Tin,TfinS))"
+US <-- "schedule_first_interval(TSurgery,[(Tin,_)|_],(Tin,TfinS))"
+
+US -> InsertAgenda: insert_agenda((TinS, TfinS, OpCode), Agenda, Agenda1)
+
+InsertAgenda -> InsertAgenda: insert operation into room's agenda
+InsertAgenda --> US: return updated room agenda (Agenda1)
+
+US -> InsertAgendaDoctors: insert_agenda_doctors((TinS, TfinS, OpCode), Day, LDoctors)
+
+InsertAgendaDoctors -> InsertAgendaDoctors: update each doctor's agenda
+InsertAgendaDoctors -> InsertAgenda: call insert_agenda for each doctor
+InsertAgenda --> InsertAgendaDoctors: return updated agenda for doctor
+InsertAgendaDoctors --> US: confirm insertion in doctor agendas
+
+[o<-- US:
+
+@enduml
