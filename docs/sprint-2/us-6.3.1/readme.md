@@ -49,7 +49,7 @@ including: room number, date, etc.
 
 ## 3. Analysis
 
-The primary goal of this user story ist to develop the better scheduling of a set of operations for a specific
+The primary goal of this user story is to develop the better scheduling of a set of operations for a specific
 operation room in a specific day. To be able to achieve this is important to have in mind some important constrains:
 
   * number of doctors
@@ -68,32 +68,39 @@ comprehensively once ready.
 
 ### 4.1. Realization
 
-// TODO
+The logical, physical, development and scenario views diagrams are generic for all the use cases of the backoffice component.
+
+The goal of this design is to create an interface and backend structure that allows an Admin to generate an optimal surgery schedule. This schedule will be computed by a planning module in SWI Prolog, leveraging constraints on room availability, doctor/staff requirements, and operation durations to find the sequence that completes the operations earliest.
 
 #### Logical View
 
-// TODO
+The diagrams can be found in the [team decision views folder](../team-decisions/views/general-views.md#1-logical-view).
 
 #### Process View
 
 ##### Level 1
 
-// TODO
+![Process View - Level 1](Diagrams/process-view-level-1.svg)
 
 ##### Level 2
 
-_[This diagram is not relevant.]_
+![Process View - Level 2](Diagrams/process-view-level-2.svg)
 
 ##### Level 3
+###### Level 3 - Visualization
+![Process View - Level 3 | Visualization](Diagrams/process-view-level-3-visualization.svg)
 
-// TODO
+###### Level 3 - MDBackoffice
+![Process View - Level 3 | MDBackoffice](Diagrams/process-view-level-3-mdbackoffice.svg)
+
+###### Level 3 - Planning
+![Process View - Level 3 | Planning](Diagrams/process-view-level-3-planning.svg)
 
 #### Development View
 
-// TODO
+The diagrams can be found in the [team decision views folder](../team-decisions/views/general-views.md#3-development-view).
 
 #### Physical View
 
-// TODO
-
+The diagrams can be found in the [team decision views folder](../team-decisions/views/general-views.md#4-physical-view).
 
