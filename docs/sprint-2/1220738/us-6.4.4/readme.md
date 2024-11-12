@@ -49,32 +49,5 @@ It will enable us to accurately find the more problematic areas or errors that s
 
 ### 4.1. Realization
 
-// TODO
-
-#### Logical View
-
-// TODO
-
-#### Process View
-
-##### Level 1
-
-// TODO
-
-##### Level 2
-
-_[This diagram is not relevant.]_
-
-##### Level 3
-
-// TODO
-
-#### Development View
-
-// TODO
-
-#### Physical View
-
-// TODO
-
+This section will be for the Risk Assessment of the system.
 
