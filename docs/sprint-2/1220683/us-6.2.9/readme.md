@@ -42,8 +42,7 @@ This is the first time this user story is presented.
 
 **Dependencies/References:**
 
-This feature is dependent on the existence of patient profiles previously created by the Admin (**US 5.1.8**), as well as the functionalities
-to edit (**US 5.1.9**) and remove (**US 5.1.10**) them.
+This functionality is dependent on the listing and filtering of patient profiles (5.1.11).
 
 **Client Clarifications:**
 
@@ -109,6 +108,12 @@ In the following diagrams, the listed variables represent the respective concept
 
 #### Level 3
 
+- _Visualization_
+
+![listing-profile-us-visualization-process-view-lvl3.svg](../general-process-view-diagrams/listing-profiles/Level-3/listing-profile-us-visualization-process-view-lvl3.svg)
+
+- _MDBackoffice_
+
 ![listing-profile-us-process-view-lvl3.svg](../general-process-view-diagrams/listing-profiles/Level-3/listing-profile-us-process-view-lvl3.svg)
 
 ### 4.3. Applied Patterns
@@ -119,7 +124,6 @@ In the following diagrams, the listed variables represent the respective concept
 >
 > The repositories are responsible for data access and retrieval, separating the logic for interacting with the database
 > from the services and other layers. This pattern helps in abstracting the persistence logic.
-
 
 > #### **DTO (Data Transfer Object) Pattern**
 >

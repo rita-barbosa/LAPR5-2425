@@ -1,7 +1,7 @@
 @startuml
 'https://plantuml.com/sequence-diagram
 
-title "US 5.1.N. Process View (Level 2)"
+title "US 6.2.N. Process View (Level 2)"
 
 autonumber
 
@@ -54,7 +54,7 @@ activate ADM
         ADM --> UI : edit selected profile
         activate UI
 'updateProfile(updatedStaffProfileData)
-        UI -> BACK : US 5.1.Y
+        UI -> BACK : US 6.2.Y
         activate BACK
 
         BACK --> UI : confirmation
@@ -66,7 +66,7 @@ activate ADM
         ADM --> UI : delete selected profile
         deactivate ADM
 'deactivateAccount(staffProfile)
-        UI -> BACK : US 5.1.Z
+        UI -> BACK : US 6.2.Z
         activate BACK
 
         BACK --> UI : confirmation

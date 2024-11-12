@@ -1,7 +1,7 @@
 @startuml
 'https://plantuml.com/sequence-diagram
 
-title "US 5.1.N. Process View (Level 1)"
+title "US 6.2.N. Process View (Level 1)"
 
 autonumber
 
@@ -37,13 +37,13 @@ deactivate SYS
 activate ADM
 
     alt edit profile
-        ADM --> SYS : US 5.1.Y
+        ADM --> SYS : US 6.2.Y
         activate SYS
         deactivate SYS
 
     else deactivate profile
 
-        ADM --> SYS : US 5.1.Z
+        ADM --> SYS : US 6.2.Z
         deactivate ADM
         activate SYS
 
