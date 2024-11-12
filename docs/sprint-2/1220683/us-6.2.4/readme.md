@@ -84,14 +84,13 @@ it's diagram was deemed irrelevant.
 
 #### Level 3
 
-* Login successful before 5 attempts
+- _Visualization_
+
+![us6.2.4-process-view-visualization-lvl3.svg](Process_View/Level-3/us6.2.4-process-view-visualization-lvl3.svg)
+
+- _MDBackoffice_
 
 ![us6-process-view-lvl3.svg](Process_View/Level-3/us6.2.4-process-view-lvl3.svg)
-
-
-* Login unsuccessful after 5 attempts
-
-![us6-failed-login-process-view-lvl3.svg](Process_View/Level-3/us6.2.4-failed-login-process-view-lvl3.svg)
 
 ### 4.3. Applied Patterns
 

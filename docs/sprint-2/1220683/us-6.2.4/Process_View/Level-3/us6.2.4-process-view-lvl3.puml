@@ -3,7 +3,7 @@
 title "US 6.2.4 - Process View [Level 3]"
 
 autonumber
-participant "UserRoute" as ROUTE <<route>>
+participant "Routing" as ROUTE <<route>>
 participant "LoginUserDto" as DTO <<dto>>
 participant "UserController" as CTRL <<controller>>
 participant "UserService" as SVC <<service>>
