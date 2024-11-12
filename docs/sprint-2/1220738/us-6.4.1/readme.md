@@ -49,32 +49,10 @@ In an effort to make the implementation be systematic, a *script* and *scheduled
 
 ### 4.1. Realization
 
-// TODO
+After questioning teachers and the client, this US will be implemented in the following manner:
 
-#### Logical View
-
-// TODO
-
-#### Process View
-
-##### Level 1
-
-// TODO
-
-##### Level 2
-
-_[This diagram is not relevant.]_
-
-##### Level 3
-
-// TODO
-
-#### Development View
-
-// TODO
-
-#### Physical View
-
-// TODO
-
-
+1. A Linux DEI VM will be created to host the RFP Module.
+2. With the help of the deployment scripts already available by BitBucket, we'll adapt them to the MDBackoffice Module.
+3. A script, similar to a *pipeline*, will be created using Linux Scripts that will use the already existing tests to check on the good work of the module
+4. These tests will be done regurlarly and so the cronstad will be used to check on the module every 2-3 days at 5AM, as to not disrupt the possible operations that could be scheduled.
+5. When a commit is done, the script will check the changes, test them and if something does not pass the tests, it will rollback, again, to not affect the system's well being.
