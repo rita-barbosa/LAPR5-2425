@@ -42,8 +42,7 @@ This is the first time this user story is presented.
 
 **Dependencies/References:**
 
-This functionality is dependent on the creation of an operation requisition (**US 5.1.16**) by a Doctor registered in the healthcare 
-system (**US 5.1.12** and **US 5.1.1**).
+This functionality is dependent on the update of operation requests (5.1.17).
 
 **Client Clarifications:**
 
@@ -141,6 +140,12 @@ The process view levels are here represented as they represent a process specifi
 ![us6.2.15-process-view-lvl2.svg](diagrams/Process_View/Level-2/us6.2.15-process-view-lvl2.svg)
 
 #### Level 3
+
+- _Visualization_
+
+![us6.2.15-process-view-visualization-lvl3.svg](diagrams/Process_View/Level-3/us6.2.15-process-view-visualization-lvl3.svg)
+
+- _MDBackoffice_
 
 ![us6.2.15-process-view-lvl3.png](diagrams/Process_View/Level-3/us6.2.15-process-view-lvl3.svg)
 
