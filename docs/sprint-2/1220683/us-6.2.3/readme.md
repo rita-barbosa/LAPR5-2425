@@ -51,7 +51,8 @@ individuals more control over their personal data and to streamline privacy regu
 
 **Dependencies/References:**
 
-This feature is related to the creation on a patient's account (**US 5.1.3**) and its profile creation (**US 5.1.8**) too.
+This functionality is dependent on the creation of a patient profile by the Admin (5.1.8) and the feature of deleting a
+patient's account (US 5.1.5).
 
 **Client Clarifications:**
 
@@ -82,10 +83,6 @@ This feature is related to the creation on a patient's account (**US 5.1.3**) an
 > For patients, the username is the email address provided in the patient record and used as identity in the external IAM.
 > for instance patient Carlos Silva has provided his email csilva98@gmail.com the first time he entered the hospital. That
 > email address will be his username when he self-registers in the system.
-
-
-
-
 
 ## 3. Analysis
 
@@ -144,9 +141,13 @@ it's diagram was deemed irrelevant.
 
 #### Level 3
 
-![us5-process-view-level3.svg](diagrams/Process_View/Level-3/us6.2.3-process-view-lvl3.svg)
+- _Visualization_<br>
+  ![us6.2.3-process-view-visualization-lvl3.svg](diagrams/Process_View/Level-3/us6.2.3-process-view-visualization-lvl3.svg)
 
+- _MDBackoffice_
+  ![us6.2.3-process-view-level3.svg](diagrams/Process_View/Level-3/us6.2.3-process-view-lvl3.svg)
 
+  
 ### 4.3. Applied Patterns
 
 > #### **Repository Pattern**
@@ -159,7 +160,7 @@ it's diagram was deemed irrelevant.
 
 > #### **DTO (Data Transfer Object) Pattern**
 >
->* **Components:** TokenDTO. EmailMessageDTO
+>* **Components:** TokenDTO, EmailMessageDTO
 >
 > DTOs are used to transfer data between layers, especially from the controller layer to the service layer or vice versa.
 > The purpose is to carry data in a structured and decoupled way without exposing internal entity representations directly.

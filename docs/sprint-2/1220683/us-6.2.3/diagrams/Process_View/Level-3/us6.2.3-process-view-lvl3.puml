@@ -5,10 +5,8 @@ title "US 6.2.3 Process View (Level 3)"
 
 autonumber
 
-participant "<<actor>>\n Patient" as ACTOR
-participant "<<ui>>\n UI" as UI
 participant "<<route>>\n Routing" as ROUTE
-participant "<<controller>>\n PatientController" as CONTROL
+participant "<<controller>>\n UserController" as CONTROL
 
 participant "<<service>>\n UserService" as AUTHServ
 
@@ -31,11 +29,8 @@ participant "<<domain>>\n Log" as Log
 participant "<<repository>>\n LogRepository" as LogRepo
 
 
-ACTOR -> UI : clicks "Delete Profile" button
-activate ACTOR
-activate UI
 
-UI o-> ROUTE : DELETE() /api/patients
+ [o-> ROUTE : DELETE() /api/patients
 activate ROUTE
 
 ROUTE -> CONTROL : DeletePatientAccountRequest()
@@ -81,26 +76,20 @@ deactivate PATIENTServ
 CONTROL --> ROUTE : ok()
 deactivate CONTROL
 
-UI o<-- ROUTE : 200 OK
+[o<-- ROUTE : 200 OK
 deactivate ROUTE
-
-UI --> ACTOR : "Account deletion email sent"
-deactivate UI
 
 |||
 
 'CONFIRMATION
 
-ACTOR -> UI : clicks on confirmation link
-activate UI
-
-UI o-> ROUTE : PUT(userId, token)
+[o-> ROUTE : PUT(userId, token)
+activate ROUTE
 note left
 After clicking on the
 link of the account
 deletion confirmation email
 end note
-activate ROUTE
 
 ROUTE -> CONTROL : ConfirmPatientAccountDeletionNotProfile(userId, token)
 activate CONTROL
@@ -232,23 +221,12 @@ CONTROL --> ROUTE : return
 deactivate CONTROL
 
 alt success
-UI o<-- ROUTE : 200 OK
+[o<-- ROUTE : 200 OK
 
 else failure
 
-UI o<-- ROUTE : 400 Bad Request
+[o<-- ROUTE : 400 Bad Request
 deactivate ROUTE
 end alt
-
-alt success
-ACTOR <-- UI : "Your account was successfully deleted"
-
-else failure
-
-ACTOR <-- UI : "An error occurred while deleting your account"
-deactivate UI
-end alt
-
-deactivate ACTOR
 
 @enduml
