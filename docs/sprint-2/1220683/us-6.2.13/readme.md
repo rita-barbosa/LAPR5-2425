@@ -43,8 +43,7 @@ This is the first time this user story is being presented.
 
 **Dependencies/References:**
 
-This feature is dependent on the existence of staff profiles previously created by the Admin (**US 5.1.12**), as well as the functionalities
-to edit (**US 5.1.13**) and remove/deactivate (**US 5.1.14**) them.
+This functionality is dependent on the listing and filtering of staff profiles (5.1.15).
 
 **Client Clarifications:**
 
@@ -119,7 +118,14 @@ In the following diagrams, the listed variables represent the respective concept
 
 #### Level 3
 
+- _Visualization_
+
+![listing-profile-us-visualization-process-view-lvl3.svg](../general-process-view-diagrams/listing-profiles/Level-3/listing-profile-us-visualization-process-view-lvl3.svg)
+
+- _MDBackoffice_
+
 ![listing-profile-us-process-view-lvl3.svg](../general-process-view-diagrams/listing-profiles/Level-3/listing-profile-us-process-view-lvl3.svg)
+
 
 ### 4.3. Applied Patterns
 
@@ -142,7 +148,7 @@ In the following diagrams, the listed variables represent the respective concept
 
 > #### **Facade Pattern**
 >
->* **Components:** DynamicQueryGenerationService, StaffService
+>* **Components:** StaffService
 >
 > These services act as a Facade to simplify interaction with lower-level components like repositories. The Controller
 > interacts with these service facades, keeping the complexity hidden from the higher layers.
