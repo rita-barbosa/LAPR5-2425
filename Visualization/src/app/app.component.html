@@ -1,24 +1,30 @@
-<main class="app-container">
+<!-- <main class="app-container"> -->
   <div style="text-align: center">
-    <h1 class="main-title">HEALTH CARE SYSTEM</h1>
+    <div class="main-title-container">
+      <img src="/android-chrome-512x512.png" alt="Logo" class="title-logo">
+      <h1 class="main-title">HEALTH CARE SYSTEM</h1>
+      <!-- <div class="button-container"> -->
+        <button class="login-button" routerLink="/login">Login</button>
+        <button class="logout-button" routerLink="">Logout</button>
+      <!-- </div> -->
+      
+    </div>
   </div>
 
   <!-- Menu com dropdown logo após o título principal -->
-  <app-menu></app-menu>
+  <!-- <app-menu></app-menu> -->
   <div class="content">
     <div class="centered-content">
-      <h1>{{ title }}</h1>
-      <button [style.height.px]="bHeight" [style.width.px]="bWidth" (click)="addProduct()">
+      <!-- <h1>{{ title }}</h1> -->
+      <!-- <button [style.height.px]="bHeight" [style.width.px]="bWidth" (click)="addProduct()">
         Add Product
-      </button>
-      <app-curso-angular></app-curso-angular>
+      </button> -->
+      <!-- <app-curso-angular></app-curso-angular> -->
+      <!-- <app-cube></app-cube> -->
     </div>
   </div>
 
   <div class="router-outlet-container">
     <router-outlet></router-outlet>
   </div>
-</main>
-
-
-
+<!-- </main> -->

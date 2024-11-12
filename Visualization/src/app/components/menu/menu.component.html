@@ -1,20 +1,40 @@
-<body>
-    <header>
-      <h1>MENU</h1>
-    </header>
-    <div class="container">
-      <h2>Select a user type</h2>
-  
-      <div class="dropdown">
-        <button class="dropbtn">Utilizador</button>
-  
-        <div class="dropdown-content">
-          <a routerLink="/administrator">Administrator</a>
-          <a routerLink="/staff">Staff</a>
-          <a routerLink="/patient">Patient</a>
-          <a routerLink="/cube">3D Visualization</a>
-        </div>
+<!-- <body>
+  <header>
+    <h1>LOGIN MENU</h1>
+  </header>
+  <div class="container">
+    <h2>Select a user type</h2>
+
+    <div class="dropdown">
+      <button class="dropbtn">Utilizador</button>
+
+      <div class="dropdown-content">
+        <a routerLink="/admin">Admin</a>
+        <a routerLink="/staff">Staff</a>
+        <a routerLink="/patient">Patient</a>
+        <a routerLink="/">Back to Menu</a>
+        <a routerLink="/cube">3D Visualization</a>
       </div>
     </div>
-  </body>
-  
+  </div>
+  <app-admin></app-admin>
+  <router-outlet></router-outlet>
+</body> -->
+
+<body>
+  <header>
+    <h1>LOGIN MENU</h1>
+  </header>
+  <div class="container">
+    <h2>Select a user type</h2>
+
+    <!-- Botões ao invés de dropdown -->
+    <div class="button-container">
+      <button class="user-button" routerLink="/admin">Admin</button>
+      <button class="user-button" routerLink="/staff">Staff</button>
+      <button class="user-button" routerLink="/patient">Patient</button>
+      <!-- <button class="user-button" routerLink="/">Back to Menu</button> -->
+      <!-- <button class="user-button" routerLink="/cube">3D Visualization</button> -->
+    </div>
+  </div>
+</body>

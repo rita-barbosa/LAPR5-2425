@@ -5,6 +5,7 @@ import { AfterViewInit, Component, ElementRef, Input, ViewChild } from
 
 @Component({
   selector: 'app-cube',
+  standalone: true,
   templateUrl: './cube.component.html',
   styleUrls: ['./cube.component.scss']
   })

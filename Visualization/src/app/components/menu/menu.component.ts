@@ -1,14 +1,18 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
-import { Router } from '@angular/router';
+import { RouterLink, Router } from '@angular/router';
+import { AdminComponent } from "../admin/admin.component";
+import { StaffComponent } from '../staff/staff.component';
+import { PatientComponent } from '../patient/patient.component';
 
 @Component({
   selector: 'app-menu',
   standalone: true,
-  imports: [],
+  imports: [RouterLink],
   templateUrl: './menu.component.html',
   styleUrl: './menu.component.css'
 })
+
 export class MenuComponent implements OnInit {
   constructor(private authService: AuthService, private router: Router) {}
 

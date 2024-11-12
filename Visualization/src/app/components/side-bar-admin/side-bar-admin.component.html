@@ -1,0 +1,51 @@
+<body>
+  <div class="sidebar">
+    <a routerLink="/admin">Home</a>
+    <!-- Adicionar a cada dropdown as funcionalidades que faltarem relativamente ao ADMIN -->
+
+    <div class="dropdown">
+      <a>Patient</a>
+      <div class="dropdown-content">
+        <a routerLink="/createPatient">Create Patient Profile</a>
+        <!-- <button class="dropdown-button" routerLink="/createPatient">Create Patient Button</button> -->
+        <a routerLink="/editPatient">Edit Patient Profile</a>
+        <a routerLink="/removePatient">Remove Patient Profile</a>
+        <a routerLink="/listPatients">List Patient Profile</a>
+      </div>
+    </div>
+
+    <div class="dropdown">
+      <a>Staff</a>
+      <div class="dropdown-content">
+        <a routerLink="/createStaff">Create Staff Profile</a>
+        <a routerLink="/editStaff">Edit Staff Profile</a>
+        <a routerLink="/removeStaffs">Remove Staff Profile</a>
+        <a routerLink="/listStaffs">List Staff Profile</a>
+      </div>
+    </div>
+
+    <div class="dropdown">
+      <a>Operation Request</a>
+      <div class="dropdown-content">
+        <a routerLink="/createOperationRequest">Create Operation Request</a>
+        <a routerLink="/editOperationRequest">Edit Operation Request</a>
+        <a routerLink="/removeOperationRequest">Remove Operation Request</a>
+        <a routerLink="/listOperationRequests">List Operation Request</a>
+      </div>
+    </div>
+
+    <div class="dropdown">
+      <a>Operation Type</a>
+      <div class="dropdown-content">
+        <a routerLink="/createOperationType">Create Operation Type</a>
+        <a routerLink="/editOperationType">Edit Operation Type</a>
+        <a routerLink="/removeOperationType">Remove Operation Type</a>
+        <a routerLink="/listOperationTypes">List Operation Type</a>
+      </div>
+    </div>
+
+    <!-- <div class="logout">
+            <a (click)="logout()">Logout</a>
+          </div> -->
+  </div>
+</body>
