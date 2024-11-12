@@ -26,24 +26,24 @@ This is the first time this user story is presented.
 
 ## 2. Requirements
 
-**US 6.2.20:**  As an Admin, I want to add new types of operations, so that I can reflect the available medical procedures 
+**US 6.2.18:**  As an Admin, I want to add new types of operations, so that I can reflect the available medical procedures 
 in the system.
 
 **Acceptance Criteria:**
 
-- 6.2.181. | Admins can add new operation types with attributes like: Operation Name, Required Staff by Specialization,
+- 6.2.18.1. | Admins can add new operation types with attributes like: Operation Name, Required Staff by Specialization,
 Estimated Duration.
 
-- 6.2.182. | The system validates that the operation name is unique.
+- 6.2.18.2. | The system validates that the operation name is unique.
 
-- 6.2.183. | The system logs the creation of new operation types and makes them available for scheduling immediately.
+- 6.2.18.3. | The system logs the creation of new operation types and makes them available for scheduling immediately.
 
-- 6.2.184. | The patient must have access to the operation type history and past appointments much link with the issued operation type version when they were created.
+- 6.2.18.4. | The patient must have access to the operation type history and past appointments much link with the issued operation type version when they were created.
 
 
 **Dependencies/References:**
 
-This functionality does not have dependencies.
+This functionality is dependent on the creation of new operation types (5.1.20).
 
 **Client Clarifications:**
 
@@ -164,6 +164,12 @@ The process view levels are here represented as they represent a process specifi
 ![us6.2.18-process-view-level2.svg](diagrams/Process_View/Level-2/us6.2.18-process-view-level2.svg)
 
 #### Level 3
+
+- _Visualization_
+
+![us6.2.18-process-view-visualization-level3.svg](diagrams/Process_View/Level-3/us6.2.18-process-view-visualization-level3.svg)
+
+- _MDBackoffice_
 
 ![us6.2.18-process-view-level3.svg](diagrams/Process_View/Level-3/us6.2.18-process-view-level3.svg)
 

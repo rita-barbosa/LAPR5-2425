@@ -1,0 +1,26 @@
+@startuml
+
+title "US 6.2.18 - Process View [Level 3 | Visualization]"
+
+autonumber
+actor "Admin" as USER
+participant "AddOperationType" as AOT <<component>>
+participant "OperationTypeService" as OTS <<service>>
+
+USER -> AOT : add a new operation type
+activate AOT
+
+AOT -> OTS : Create(operationTypeDto)
+activate OTS
+
+OTS ->o] : POST: api/OperationTypes
+
+OTS <--o] : Ok()
+
+OTS --> AOT: success
+deactivate OTS
+
+AOT --> USER: success
+deactivate AOT
+
+@enduml
