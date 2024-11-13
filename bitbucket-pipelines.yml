@@ -37,12 +37,12 @@ pipelines:
           deployment: staging
           script:
             - echo "Deploying to staging..."
-            - git clone https://Jose_Afonso_Santos@bitbucket.org/rita_barbosa/sem5pi-2425-dg38.git /tmp/staging-application
-            - cd /tmp/staging-application
+            - git clone https://Jose_Afonso_Santos@bitbucket.org/rita_barbosa/sem5pi-2425-dg38.git /Hospital-Project/staging-application
+            - cd /Hospital-Project/staging-application
             - dotnet restore
             - dotnet build --configuration Release
             - dotnet test --configuration Release  
-            - scp -r /tmp/staging-application root@vs251.dei.isep.ipp.pt:/tmp/staging-application
+            - scp -r /Hospital-Project/staging-application root@vs251.dei.isep.ipp.pt:/Hospital-Project/staging-application
             - ssh root@vs251.dei.isep.ipp.pt '/scripts/deploy_to_staging.sh'
 
       - step:
