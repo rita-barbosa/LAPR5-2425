@@ -71,6 +71,11 @@ adequately represent its occupation by displaying a patient laid down on the sur
 Each room must have a tooltip with the indication of the room ID and, when a surgery is happening, with the operation type
 and request basic information. This tooltip should link to a more complex view of that surgery.
 
+This simulation must also contain a clock which the user can set its time, not making it dependent on a machine's clock.
+The rooms occupation must be represented accordingly.
+
+If the operation schedule is updated, then the 3D representation must be in-sync.
+
 ## 4. Design
 
 ### 4.1. Realization
