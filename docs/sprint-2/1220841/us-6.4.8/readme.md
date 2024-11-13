@@ -28,4 +28,12 @@ References: [monitoring-failed-login-attempts-on-linux](https://www.networkworld
 
 ### 4.1. Realization
 
-//TODO
+The developed script will scan the `/etc/log/auth.log` file to identify and report users with more than 3 failed login attempts.
+Here's a brief breakdown of what the script will do:
+
+- Checks for the Log File: Verify if `/etc/log/auth.log` exists to ensure it can proceed.
+- Parses the Log: Use `grep` to filter out lines that indicate failed password attempts.
+- Extracts Usernames: Use `awk` to pull out the username field from each failed attempt.
+- Counts Occurrences: Sort the usernames and use `uniq -c` to count how many times each user failed to log in.
+- Filters Results: Use `awk` again to only show users with more than 3 failed attempts.
+- Prints the Output: Displays a formatted list showing the usernames and the number of failed attempts.
