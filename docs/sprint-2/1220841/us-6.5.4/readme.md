@@ -9,7 +9,6 @@
     - [4.1. Realization](#41-realization)
 <!-- TOC -->
 
-
 ## 1. Context
 
 This is the first time this user story is worked on.
@@ -34,4 +33,4 @@ The purpose of this functionality is to set up the camera to allow positional ad
 
 ### 4.1. Realization
 
-//TODO
+For more information: [us-6.5.1](../../1220683/us-6.5.1/readme.md)
