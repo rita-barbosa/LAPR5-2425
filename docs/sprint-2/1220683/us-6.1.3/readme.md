@@ -14,6 +14,10 @@
         * [Level 3](#level-3)
       * [Development View](#development-view)
       * [Physical View](#physical-view)
+  * [4. Implementation](#4-implementation)
+  * [5. Testing](#5-testing)
+  * [6. Integration/Demonstration](#6-integrationdemonstration)
+  * [7. Observations](#7-observations)
 <!-- TOC -->
 
 
@@ -36,9 +40,21 @@ This user story is dependent on the information provided by the Planning module.
 
 **Client Clarifications:**
 
-> **Question:**
+> **Question:** As was stated previously, the number of rooms in the 3D representation must be consistent with the number of rooms that can be scheduled in the Planning/Optimization Module. 
+However, let's say that, while we have the 3D representation open, someone creates a new Surgery Room. Must that new room be loaded dynamically?
 >
-> **Answer:**
+> **Answer:** It is not necessary to do it "hot wired". The next time the 3D view is loaded it should pickup the new surgery room. Keep in mind that creating a new surgery room is not something that happens frequently...
+
+
+> **Question:** What information is expected to come from the planning module that is to be visualized in the 3D representation? Do we assume that, at the moment, the only information that is showed is the room ID and a human in the surgical table if the room is currently being occupied?
+>
+> **Answer:** The system must show if the room is occupied or not. The occupancy of a room is a result of the scheduling done by the planning module. If a room is occupied, the system must show a 3D human model and a tooltip with the information about the surgery type and operation request. preferably,
+> the tooltip should act as a link to the operation detail page where the user can see all the details of the operation. The user must have a way to "set" the current time of the visualization. That is, the 3D visualization module must not depend directly on the PC clock.
+
+
+> **Question:** In this sprint there are 2 methods to get the operations schedule of a room: the better one and the good one. The Admin has access to both methods, but both decide the room schedules, therefore affecting the room availability. Is there a way to know which method is used to actually determine the room availability and operation scheduling, so that the data in the 3D visualization module is in sync with the Planning module?
+>
+> **Answer:** The user can select which method to use to generate the schedule of a certain time-period. After the schedule is generated, the data about room availability for those days must be updated. If the user runs the scheduling again for the same time period, using a different algorithm or not, The new/updated schedule must be used to update the room's availability.
 
 ## 3. Analysis
 
@@ -51,6 +67,14 @@ Each room must know its schedule and when It's available or not.
 
 When a surgery is happening, the 3D visualization must
 adequately represent its occupation by displaying a patient laid down on the surgical table.
+
+Each room must have a tooltip with the indication of the room ID and, when a surgery is happening, with the operation type
+and request basic information. This tooltip should link to a more complex view of that surgery.
+
+This simulation must also contain a clock which the user can set its time, not making it dependent on a machine's clock.
+The rooms occupation must be represented accordingly.
+
+If the operation schedule is updated, then the 3D representation must be in-sync.
 
 ## 4. Design
 
@@ -84,3 +108,15 @@ The diagrams can be found in the [team decision views folder](../../team-decisio
 #### Physical View
 
 The diagrams can be found in the [team decision views folder](../../team-decisions/views/general-views.md#4-physical-view).
+
+
+## 4. Implementation
+
+
+## 5. Testing
+
+## 6. Integration/Demonstration
+ 
+## 7. Observations
+
+* https://discourse.threejs.org/t/threejs-tooltip/18256/3

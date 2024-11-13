@@ -44,8 +44,7 @@ No client clarifications yet.
 
 ## 3. Analysis
 
-Certain aspects that need to be taken into consideration when defining the MBCO, such as acceptable operating levels, security,
-integrity and availability (response time). The set of these parameters is called **Service Level Agreement (SLA)**.
+An MBCO refers to the minimum level of operation that must be maintained during a disruption within the infrastructure.
 
 The first step to define the MBCO is to identify which services/modules/functions are essential and must continue working
 regardless of a disruption.
@@ -54,37 +53,18 @@ The proposal must be clear regarding the impact such disruptions bring to the sy
 definition of what each minimum operating level means for each affected component, such as conditioning of user access or
 data availability. Ranking such elements based in need for continuity is advised.
 
-
-Two more criteria must be explicitly defined:
+Two more criteria must be explicitly defined for each critical component:
 * **MTPD** (Maximum Tolerable Period of Disruption) - the maximum amount of performance time below the infrastructure requirements
-* **MTD** (Maximum Tolerable Downtime) - the maximum amount of inoperability in the infrastructure 
-
-In this context, both these values will be static. Additionally, recovery time goals are to be assigned to each affected
-component.
-
-Part of the business continuity objective is to ensure backup and recovery strategies are defined and implemented, so those
-must insert into the proposal that will be presented to the _stakeholders_.
+* **MTD** (Maximum Tolerable Downtime) - the maximum amount of inoperability in the infrastructure
 
 To recapitulate, the proposal must have the following structure:
 
 > ### MBCO Proposal Structure
 >
 > - Introduction to the system context
-> - **Business Impact Analysis (BIA)**
 >   - Identification of critical services and functions
-> - **Risk Assessment (RA)**
->   - Threat scenarios and occurrence probability  
->   - Assessment of the impact from downtime
->     * service/function and impact of downtime/reduced capacity
 > - Definition of minimum levels of operation
->   * service/function and minimum operation goal
-> - **Business Continuity Plan (BCP)**
->   - Definition of recovery time goals
->     * service/function and RTO (Recovery Time Objective)
->   - Backup and Recovery Strategies
-
-
-
+>   * service/function and minimum operation goal, MTD/MTPD metrics
 
 ## 4. Design
 
