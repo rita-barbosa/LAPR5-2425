@@ -44,6 +44,9 @@ regarding said access? Like allowing ssh, http, https connections or anything li
 > 
 > **Answer:** That is not important, as network addresses can vary. As long as you can change your configuration to allow the IP address obtained at that time, the proof of concept is evident.
 
+> **Question:** Can you clarify what it means in US 6.4.3 to define by a file the users in 6.4.2 (access to the solution)?
+>
+> **Answer:** I want that the definition of allowed users to access not to be hardcoded but defined in a file.
 
 ## 3. Analysis
 
