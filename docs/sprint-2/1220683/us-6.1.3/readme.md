@@ -58,15 +58,15 @@ However, let's say that, while we have the 3D representation open, someone creat
 
 ## 3. Analysis
 
-After the planning module providing a file with the schedule of the day for each surgical room, the 3D representation 
+After the planning module updates the database with the new appointments of the day for each surgical room, the 3D representation 
 must reflect such schedule.
 
 ![operation_requests_scheduling.svg](operation_requests_scheduling.svg)
 
 Each room must know its schedule and when It's available or not.
 
-When a surgery is happening, the 3D visualization must
-adequately represent its occupation by displaying a patient laid down on the surgical table.
+When a surgery is happening, the 3D visualization must adequately represent its occupation by displaying a patient laid 
+down on the surgical table.
 
 Each room must have a tooltip with the indication of the room ID and, when a surgery is happening, with the operation type
 and request basic information. This tooltip should link to a more complex view of that surgery.
@@ -87,6 +87,9 @@ The logical, physical, development and scenario views diagrams are generic for a
 The diagrams can be found in the [team decision views folder](../../team-decisions/views/general-views.md#1-logical-view).
 
 #### Process View
+
+The 3D visualization is a component itself
+
 
 ##### Level 1
 
