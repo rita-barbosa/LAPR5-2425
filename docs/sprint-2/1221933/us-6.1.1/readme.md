@@ -7,13 +7,8 @@
   * [3. Analysis](#3-analysis)
   * [4. Design](#4-design)
     * [4.1. Realization](#41-realization)
-      * [Logical View](#logical-view)
-      * [Process View](#process-view)
-        * [Level 1](#level-1)
-        * [Level 2](#level-2)
-        * [Level 3](#level-3)
-      * [Development View](#development-view)
-      * [Physical View](#physical-view)
+      * [4.1.1 UI Layout](#411-ui-layout)
+      * [4.1.2 Route Handling](#412-route-handling)
 <!-- TOC -->
 
 
@@ -53,31 +48,20 @@ right permissions.
 
 ### 4.1. Realization
 
-The logical, physical, development and scenario views diagrams are generic for all the use cases of the backoffice component.
+To be able to have an integrated UI, as said in the analysis, it's needed to use a single-page application (SPA). Following
+this idea, it is necessary to ensure that all the components and modules are presented on a single page.
 
-#### Logical View
+#### 4.1.1 UI Layout
 
-The diagrams can be found in the [team decision views folder](../../team-decisions/views/general-views.md#1-logical-view).
+The UI layout will consist on:
 
-#### Process View
+  * **Header:** This section will have the logo, the application name and two buttons for login and logout.
+  * **Main Content Area:** This area will be dynamically updated to show the content of the selected component, without 
+using other URLs
+  * **Sidebar:** The sidebar will contain the functionalities for each user type and will only appear, after the login was
+made
 
-##### Level 1
+#### 4.1.2 Route Handling
 
-![Process View - Level 1]()
-
-##### Level 2
-
-_[This diagram is not relevant.]_
-
-##### Level 3
-
-![Process View - Level 3]()
-
-
-#### Development View
-
-The diagrams can be found in the [team decision views folder](../../team-decisions/views/general-views.md#3-development-view).
-
-#### Physical View
-
-The diagrams can be found in the [team decision views folder](../../team-decisions/views/general-views.md#4-physical-view).
+The Angular routing mechanism will be used to dynamic loading the components. A single route will be employed to load 
+the relevant information, ensuring seamless navigation without changing URLs.
