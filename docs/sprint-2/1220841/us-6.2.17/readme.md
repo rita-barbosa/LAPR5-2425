@@ -96,11 +96,16 @@ The diagrams can be found in the [team decision views folder](../../team-decisio
 
 ##### Level 2
 
-_[This diagram is not relevant.]_
+![Process View - Level 2](diagrams/level-2-process-view.svg)
 
 ##### Level 3
 
-![Process View - Level 3](diagrams/level-3-process-view.svg)
+- _Visualization_<br>
+![Process View - Level 3](diagrams/level-3-process-view-visualization.svg)
+
+- _MDBackoffice_<br>
+![Process View - Level 3](diagrams/level-3-process-view-mdbackoffice.svg)
+
 
 #### Development View
 

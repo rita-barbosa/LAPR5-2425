@@ -11,7 +11,17 @@ activate ADM
 ADM -> SYS : list operation requisitions
 activate SYS
 
-SYS --> ADM : operation requisitions
+SYS --> ADM: select filters
+deactivate SYS
+
+alt doctors wants to filter operation requests
+
+ADM -> SYS: selects filters
+activate SYS
+
+end alt 
+
+SYS --> ADM : shows operation requisitions
 deactivate SYS
 deactivate ADM
 @enduml

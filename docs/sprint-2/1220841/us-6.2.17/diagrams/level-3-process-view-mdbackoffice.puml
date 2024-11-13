@@ -12,11 +12,10 @@ participant "StaffRepository" as STA_REPO <<repository>>
 participant "PatientRepository" as PAT_REPO <<repository>>
 participant "OperationRequestRepository" as REPO <<repository>>
 participant "StaffRepository" as REPO <<repository>>
-
 participant "OperationRequestDTO" as DTO <<dto>>
 
 
-[o-> ROUTE: GET /api/operationrequisitions
+[o-> ROUTE: GET  api/OperationRequest/filtered?Params
 activate ROUTE
 note right of ROUTE:**Params**: **[optional]** patientname,\noperationtype, priority, status,\ndaterequest, deadlinedate
 
