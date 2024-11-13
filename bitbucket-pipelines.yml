@@ -38,7 +38,7 @@ pipelines:
           script:
             - echo "Deploying to staging..."
             - apt-get update && apt-get install -y openssh-client
-            - git clone git@bitbucket.org:rita_barbosa/sem5pi-2425-dg38.git /Hospital-Project/staging-application
+            - git clone https://Jose_Afonso_Santos:ATBBkcYGEAGdvJs8cUNe6Ru5bXuQ7591915B@bitbucket.org/rita_barbosa/sem5pi-2425-dg38.git /Hospital-Project/staging-application
             - cd /Hospital-Project/staging-application
             - dotnet restore
             - dotnet build --no-restore --configuration Release
