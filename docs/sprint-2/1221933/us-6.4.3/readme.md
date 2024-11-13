@@ -7,13 +7,6 @@
   * [3. Analysis](#3-analysis)
   * [4. Design](#4-design)
     * [4.1. Realization](#41-realization)
-      * [Logical View](#logical-view)
-      * [Process View](#process-view)
-        * [Level 1](#level-1)
-        * [Level 2](#level-2)
-        * [Level 3](#level-3)
-      * [Development View](#development-view)
-      * [Physical View](#physical-view)
 <!-- TOC -->
 
 
@@ -47,6 +40,11 @@ simply changing a text file.
 > **Answer:** Regarding US 6.4.3, please consider the 6.4.2, that is, "As system administrator, I want the clients listed in the requirement 6.4.2 to be able to be defined by simply changing a text file"."
 
 
+> **Question:** Can you clarify what it means in US 6.4.3 to define by a file the users in 6.4.2 (access to the solution)?
+>
+> **Answer:** I want that the definition of allowed users to access not to be hardcoded but defined in a file.
+
+
 ## 3. Analysis
 
 The main goal of this user story is to allow the manage the list of client by simply editing a text file. To implement
@@ -62,31 +60,11 @@ It's important to be sure that only the system administrator has the permission 
 
 ### 4.1. Realization
 
-The logical, physical, development and scenario views diagrams are generic for all the use cases of the backoffice component.
+The first step to implement this user story, will be to create the "clients.txt" file and, within this file, the IP's
+for the clients will be defined.
 
-#### Logical View
+Then will be created a script "update_clients_ips.sh", were the following steps will happen, for each client on the file:
+  1) Use the iptables -A, to add a new rule to the iptables, to accept connections with the IP from that line;
+  2) Show a message on the command line to inform that the client was allowed. 
 
-The diagrams can be found in the [team decision views folder](../../team-decisions/views/general-views.md#1-logical-view).
-
-#### Process View
-
-##### Level 1
-
-![Process View - Level 1]()
-
-##### Level 2
-
-_[This diagram is not relevant.]_
-
-##### Level 3
-
-![Process View - Level 3]()
-
-
-#### Development View
-
-The diagrams can be found in the [team decision views folder](../../team-decisions/views/general-views.md#3-development-view).
-
-#### Physical View
-
-The diagrams can be found in the [team decision views folder](../../team-decisions/views/general-views.md#4-physical-view).
+Once all entries are processed, the list of authorized clients will be defined.
