@@ -20,7 +20,7 @@
 ## 1. Context
 
 This is the second time this user story is being addressed; the focus for this sprint is to implement a user interface for it.
-
+ 
 ## 2. Requirements
 
 **US 6.2.20:** As an Admin, I want to remove obsolete or no longer performed operation types, so that the system stays current with hospital practices.
@@ -67,11 +67,15 @@ The diagrams can be found in the [team decision views folder](../../team-decisio
 
 ##### Level 2
 
-_[This diagram is not relevant.]_
+![Process View - Level 2](diagrams/level-2-process-view.svg)
 
 ##### Level 3
 
-![Process View - Level 3](diagrams/level-3-process-view.svg)
+- _Visualization_<br>
+![Process View - Level 3](diagrams/level-3-process-view-visualization.svg)
+
+- _MDBackoffice_
+![Process View - Level 3](diagrams/level-3-process-view-mdbackoffice.svg)
 
 
 #### Development View

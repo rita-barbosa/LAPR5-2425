@@ -4,11 +4,17 @@ title "US 5.1.22. - Process View [Level 1]"
 
 autonumber
 
-actor Doctor as ADM
+actor Admin as ADM
 participant "<<system (C4)>>\n Healthcare System" as SYS
 
 activate ADM
 ADM -> SYS : remove operation type
+activate SYS
+
+SYS --> ADM : select operation type
+deactivate SYS
+
+ADM -> SYS: selects operastion type
 activate SYS
 
 SYS --> ADM : success/insuccess
