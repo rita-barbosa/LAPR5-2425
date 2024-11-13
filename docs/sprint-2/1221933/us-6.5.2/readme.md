@@ -7,13 +7,7 @@
   * [3. Analysis](#3-analysis)
   * [4. Design](#4-design)
     * [4.1. Realization](#41-realization)
-      * [Logical View](#logical-view)
-      * [Process View](#process-view)
-        * [Level 1](#level-1)
-        * [Level 2](#level-2)
-        * [Level 3](#level-3)
-      * [Development View](#development-view)
-      * [Physical View](#physical-view)
+  * [5. References](#5-references)
 <!-- TOC -->
 
 
@@ -43,38 +37,30 @@ To accomplish this user story, it's necessary to search for textures, suitable f
   * Floor
   * Walls
   * Door
-  * Windows
 
 
 ## 4. Design
 
 ### 4.1. Realization
 
-The logical, physical, development and scenario views diagrams are generic for all the use cases of the backoffice component.
+To apply the textures in the necessary places, it's needed to have the correct texture files, that can be found in the
+text folder (COLOCAR O LINK PARA A PASTA DEPOIS!!!!). To load the texture, we will use TextureLoader to load an object 
+that come from an image that can be supported by the browser, such as:
 
-#### Logical View
+  * PNG
+  * JPG
+  * GIF
+  * BMP
 
-The diagrams can be found in the [team decision views folder](../../team-decisions/views/general-views.md#1-logical-view).
+The floor will use a single texture, applied across the entire hospital 3D model, with an option to adjust the color 
+if needed.
 
-#### Process View
+Similarly, the walls will have a unified texture across all surfaces in the hospital model. This texture can also be 
+color-adjusted if necessary.
 
-##### Level 1
-
-![Process View - Level 1]()
-
-##### Level 2
-
-_[This diagram is not relevant.]_
-
-##### Level 3
-
-![Process View - Level 3]()
+For doors, a specific 3D door model will be used, and the chosen texture will be applied to it accordingly.
 
 
-#### Development View
+## 5. References
 
-The diagrams can be found in the [team decision views folder](../../team-decisions/views/general-views.md#3-development-view).
-
-#### Physical View
-
-The diagrams can be found in the [team decision views folder](../../team-decisions/views/general-views.md#4-physical-view).
+Three.js Texture Page : https://threejs.org/docs/#api/en/textures/Texture
