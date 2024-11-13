@@ -41,6 +41,11 @@ regarding said access? Like allowing ssh, http, https connections or anything li
 >
 > **Answer:** I want that the definition of allowed users to access not to be hardcoded but defined in a file.
 
+> **Question:** Are we supposed to set up a Windows or Linux machine? When it says "access the solution," is it referring to the VM that will run the module for US 6.4.1? Should access be configured to restrict by IPs or by domain users?
+>
+> **Answer:** Again, I’m not specifying the OS to use; it depends on the solution you’ve designed. When it says “access the solution,” it means exactly that: accessing and using the solution you designed to respond to the RFP. The prompt states, “only want clients on DEI's internal network (wired or via VPN) to be able to access the solution,” and it doesn’t specify domain users.
+
+
 ## 3. Analysis
 
 To allow only the customers from DEI's internal network to access the solution provided some limitations must be implemented
