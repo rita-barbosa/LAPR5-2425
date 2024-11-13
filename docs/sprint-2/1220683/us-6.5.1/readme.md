@@ -7,13 +7,6 @@
   * [3. Analysis](#3-analysis)
   * [4. Design](#4-design)
     * [4.1. Realization](#41-realization)
-      * [Logical View](#logical-view)
-      * [Process View](#process-view)
-        * [Level 1](#level-1)
-        * [Level 2](#level-2)
-        * [Level 3](#level-3)
-      * [Development View](#development-view)
-      * [Physical View](#physical-view)
 <!-- TOC -->
 
 
@@ -59,16 +52,13 @@ This representation must be described in a JSON file with the following informat
 
 >- floor dimensions
 >- An array of rooms, each with:
-   >  - room id
->  - room position on the floor map
->  - room dimensions (length, width)
->  - array of walls, each with:
->     - wall dimensions (length, width, height)
->     - wall position
->  - door data
->     - door position
->     - door dimensions (length, width, height)
->  - surgical table position
+>   - room id
+>   - room position on the floor map
+>   - room dimensions (length, width)
+> - wall inner texture
+> - wall outer texture
+> - surgical bed 3D model url
+> - door model 3D url
 
 The file must include any other items the team decides to introduce into the 3D representation.
 No ceiling is used in the floor, ensure a clear view of all the components.
@@ -83,31 +73,25 @@ The following image represents the type of 3D visualization the team is aiming f
 
 ### 4.1. Realization
 
-The logical, physical, development and scenario views diagrams are generic for all the use cases of the backoffice component.
+This functionality will use Three.js, a JavaScript library and API designed for creating and displaying animated 3D graphics
+in a web browser using WebGL, compatible across different browsers.
 
-#### Logical View
+This model will be composed of the following javascript classes:
 
-The diagrams can be found in the [team decision views folder](../../team-decisions/views/general-views.md#1-logical-view).
+* wall template - initializes a box geometry with its textures
+* floor template - initializes a box geometry with its textures
+* hospital floor template - compiles clones of many instances to generate the hospital floor
+* surgical table template - loads a 3D model of a surgical table and its textures
+* door template - loads a 3D model of a door and its textures
+* patient template - loads a 3D model of a human and its textures
+* hospital floor simulation template - initializes the 3D visualization and other components that will be incorporated later
 
-#### Process View
+Lights, textures and mouse based camara movements related classes will be added later by other user stories.
 
-##### Level 1
+The following diagram goes in-depth about each instance attributes/transformations.
 
-![Process View - Level 1]()
-
-##### Level 2
-
-_[This diagram is not relevant.]_
-
-##### Level 3
-
-![Process View - Level 3]()
+![3D_visualization_main_components.svg](3D_visualization_main_components.svg)
 
 
-#### Development View
 
-The diagrams can be found in the [team decision views folder](../../team-decisions/views/general-views.md#3-development-view).
 
-#### Physical View
-
-The diagrams can be found in the [team decision views folder](../../team-decisions/views/general-views.md#4-physical-view).
