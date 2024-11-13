@@ -8,6 +8,7 @@ participant "CreateStaff" as UPP <<component>>
 participant "SpecializationService" as SS <<service>>
 participant "StaffService" as PS <<service>>
 
+activate USER
 USER -> UPP : create patient profile
 activate UPP
 
@@ -19,20 +20,25 @@ SS <--o] : specializations
 
 SS --> UPP: specializations
 deactivate SS
+UPP --> USER : select specialization
+deactivate UPP
+
+USER -> UPP: selects specialization
+activate UPP
 
 UPP -> PS : createStaff(StaffInformation)
 activate PS
 
 PS ->o] : POST: api/Staff/Create-StaffProfile
 
-PS <--o] : Ok(StaffDto)
+PS <--o] : Created(StaffDto)
 
 PS --> UPP: success
 deactivate PS
 
 UPP --> USER: success
 deactivate UPP
-
+deactivate USER
 
 
 

@@ -7,6 +7,7 @@ actor "Patient" as USER
 participant "UpdatePatientProfile" as UPP <<component>> 
 participant "PatientService" as PS <<service>>
 
+activate USER
 USER -> UPP : update patient's user profile
 activate UPP
 
@@ -22,8 +23,7 @@ deactivate PS
 
 UPP --> USER: success
 deactivate UPP
-
-
+deactivate USER
 
 
 @enduml

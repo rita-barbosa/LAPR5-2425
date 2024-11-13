@@ -7,6 +7,7 @@ actor Admin as USER
 participant "CreatePatient" as UPP <<component>> 
 participant "PatientService" as PS <<service>>
 
+activate USER
 USER -> UPP : create patient profile
 activate UPP
 
@@ -22,7 +23,7 @@ deactivate PS
 
 UPP --> USER: success
 deactivate UPP
-
+deactivate USER
 
 
 

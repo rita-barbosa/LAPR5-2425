@@ -7,6 +7,7 @@ actor "Patient" as USER
 participant "Login" as UPP <<component>> 
 participant "UserService" as PS <<service>>
 
+activate USER
 USER -> UPP : login
 activate UPP
 
@@ -15,14 +16,14 @@ activate PS
 
 PS ->o] : GET: api/login-external
 
-PS <--o] : Ok(token)
+PS <--o] : Accepted(token)
 
 PS --> UPP: success
 deactivate PS
 
 UPP --> USER: success
 deactivate UPP
-
+deactivate USER
 
 
 
