@@ -7,13 +7,6 @@
   * [3. Analysis](#3-analysis)
   * [4. Design](#4-design)
     * [4.1. Realization](#41-realization)
-      * [Logical View](#logical-view)
-      * [Process View](#process-view)
-        * [Level 1](#level-1)
-        * [Level 2](#level-2)
-        * [Level 3](#level-3)
-      * [Development View](#development-view)
-      * [Physical View](#physical-view)
 <!-- TOC -->
 
 
@@ -48,31 +41,15 @@ For this, it will be needed to set up a public folder and then manage the access
 
 ### 4.1. Realization
 
-The logical, physical, development and scenario views diagrams are generic for all the use cases of the backoffice component.
+To set up a public folder accessible to all users registered on the system, only with read permissions, the following
+steps will be done, while being registered as root on the virtual machine. This configuration will 
+allow for future addition of important documents to be seen by all the users:
 
-#### Logical View
+1) Create a folder, for example "/public_folder" using `mkdir`
+2) Assign read-only permissions for all the users registered, using `chmod -R a+r`
+3) Create a file inside the folder to be used as test, with `nano`
+4) Check the permissions of the test file with the command `ls -l`
+5) Verify, with a registered user, if it's possible to read the file 
 
-The diagrams can be found in the [team decision views folder](../../team-decisions/views/general-views.md#1-logical-view).
+If the last step was right, try to edit the file with the same user and to create a new file inside the "/public_folder".
 
-#### Process View
-
-##### Level 1
-
-![Process View - Level 1]()
-
-##### Level 2
-
-_[This diagram is not relevant.]_
-
-##### Level 3
-
-![Process View - Level 3]()
-
-
-#### Development View
-
-The diagrams can be found in the [team decision views folder](../../team-decisions/views/general-views.md#3-development-view).
-
-#### Physical View
-
-The diagrams can be found in the [team decision views folder](../../team-decisions/views/general-views.md#4-physical-view).
