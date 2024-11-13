@@ -62,31 +62,24 @@ By applying these limitations we can guarantee that only the chosen users can ac
 
 ### 4.1. Realization
 
-The logical, physical, development and scenario views diagrams are generic for all the use cases of the backoffice component.
+For the definition of the firewall policies and chains, the command `iptables` will be used. The filtering of the access to
+the solution is made on the table `filter`.
 
-#### Logical View
+Taking into consideration the information processed in the [analysis](#3-analysis), we can establish correspondence criteria
+for the accesses we allow.
 
-The diagrams can be found in the [team decision views folder](../../team-decisions/views/general-views.md#1-logical-view).
+Most of them will refer to the built-in chain `INPUT`, which applies ACCEPT/DROP rules on packets incoming to the node.
 
-#### Process View
+* `INPUT -j ACCEPT` on `tcp` connections with DEI's internal network IP range
+* `INPUT -j ACCEPT` on `tcp` connections with VPN IP range
+* `INPUT -j ACCEPT` on `loopback` connection
+* `INPUT -j DROP` on any other incoming traffic to the node
 
-##### Level 1
+The `-j` parameter indicates the existence of a target for said chain.
 
-![Process View - Level 1]()
+* `-j ACCEPT`: allows the packet to pass through, and stops further processing of the chain for that packet.
+* `-j DROP`: blocks the packet, and stops further processing of the chain for that packet.
 
-##### Level 2
+The criteria `-p` refers to the protocol designation defined within the packet. It can be `tcp`, `udp`, `icmp` ou `icmpv6`.
 
-_[This diagram is not relevant.]_
-
-##### Level 3
-
-![Process View - Level 3]()
-
-
-#### Development View
-
-The diagrams can be found in the [team decision views folder](../../team-decisions/views/general-views.md#3-development-view).
-
-#### Physical View
-
-The diagrams can be found in the [team decision views folder](../../team-decisions/views/general-views.md#4-physical-view).
+The criteria `--dport` refers to the packet's destination port.
