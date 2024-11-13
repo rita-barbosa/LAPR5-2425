@@ -37,11 +37,12 @@ pipelines:
           deployment: staging
           script:
             - echo "Deploying to staging..."
-            - git clone https://Jose_Afonso_Santos:ATBBkcYGEAGdvJs8cUNe6Ru5bXuQ7591915B@bitbucket.org/rita_barbosa/sem5pi-2425-dg38.git /Hospital-Project/staging-application
+            - apt-get update && apt-get install -y openssh-client
+            - git clone git@bitbucket.org:rita_barbosa/sem5pi-2425-dg38.git /Hospital-Project/staging-application
             - cd /Hospital-Project/staging-application
             - dotnet restore
-            - dotnet build --configuration Release
-            - dotnet test --configuration Release  
+            - dotnet build --no-restore --configuration Release
+            - dotnet test --no-build --configuration Release --test-adapter-path:. --logger:"junit;LogFilePath=$REPORTS_PATH/junit.xml"
             - scp -r /Hospital-Project/staging-application root@vs251.dei.isep.ipp.pt:/Hospital-Project/staging-application
             - ssh root@vs251.dei.isep.ipp.pt '/scripts/deploy_to_staging.sh'
 
