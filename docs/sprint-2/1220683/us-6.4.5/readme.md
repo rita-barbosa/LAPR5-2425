@@ -6,14 +6,6 @@
   * [2. Requirements](#2-requirements)
   * [3. Analysis](#3-analysis)
   * [4. Design](#4-design)
-    * [4.1. Realization](#41-realization)
-      * [Logical View](#logical-view)
-      * [Process View](#process-view)
-        * [Level 1](#level-1)
-        * [Level 2](#level-2)
-        * [Level 3](#level-3)
-      * [Development View](#development-view)
-      * [Physical View](#physical-view)
 <!-- TOC -->
 
 
@@ -71,33 +63,40 @@ To recapitulate, the proposal must have the following structure:
 In this case, the RFP module must remain active, including any systems that support internal network access, VPN access,
 and any user-specific features critical for continuity.
 
-### 4.1. Realization
-
-The logical, physical, development and scenario views diagrams are generic for all the use cases of the backoffice component.
-
-#### Logical View
-
-The diagrams can be found in the [team decision views folder](../../team-decisions/views/general-views.md#1-logical-view).
-
-#### Process View
-
-##### Level 1
-
-![Process View - Level 1]()
-
-##### Level 2
-
-_[This diagram is not relevant.]_
-
-##### Level 3
-
-![Process View - Level 3]()
+The following features/services are the ones that must remain active in any scenario of disruption.
 
 
-#### Development View
+>* **Login**
+>  * **Why is it critical?** Essential to ensure that only authorized users can access the system, maintain security protocols, and support continuity.
+>  * **Minimum Operation Goal:** Ensure login functionality remains accessible 24/7 with redundancy to prevent unauthorized access attempts during any downtime.
+>  * **MTD:** 1 minute
+>  * **MTPD:** 30 minutes (allowing rapid restoration of login functionality to avoid prolonged outages)
 
-The diagrams can be found in the [team decision views folder](../../team-decisions/views/general-views.md#3-development-view).
 
-#### Physical View
+>* Operation Requests addition (for emergencies)
+>  * **Why is it critical?** Necessary to allow emergency operation requests, especially during unpredictable disruptions.
+>  * **Minimum Operation Goal:** Provide a way to log emergency requests promptly, with a goal of ensuring requests are processed within a maximum of 5 minutes from initiation.
+>  * **MTD:** Immediate (goal of zero delay for emergency additions)
+>  * **MTPD:** 5 minutes (small tolerance to account for technical issues)
 
-The diagrams can be found in the [team decision views folder](../../team-decisions/views/general-views.md#4-physical-view).
+
+>* Operation Scheduling changes (update and deletion of operation requests)
+>  * **Why is it critical?** Essential for updating or canceling operations in response to real-time shifts in personnel, availability, or emergency situations.
+>  * **Minimum Operation Goal:** Ensure scheduling changes can be processed within an acceptable delay to keep information current.
+>  * **MTD:** 2 minutes
+>  * **MTPD:** 10 minutes (allows for minor delays but prioritizes timely updates for real-time accuracy)
+
+
+>* Internal network access
+>  * **Why is it critical?** Essential for accessing the resources necessary for operations, especially in local network settings where external connectivity may be limited.
+>  * **Minimum Operation Goal:** Maintain internal network connectivity at a minimum bandwidth level sufficient to access core system modules.
+>  * **MTD:** 1 minute
+>  * **MTPD:** 30 minutes (limited delay acceptable due to fallback methods for access)
+
+
+>* VPN access
+>  * **Why is it critical?** Ensures remote access for key staff or administrators to access the network and maintain operation continuity from remote locations.
+>  * **Minimum Operation Goal:** Maintain secure VPN access for a minimum of key staff during disruptions, with fallback systems to ensure continuous, secure connections.
+>  * **MTD:** 2 minutes
+>  * **MTPD:** 15 minutes (critical but has redundancy in terms of access tiers)
+

@@ -59,25 +59,23 @@ Having this in mind, it's necessary to exist the followed information in the bac
 
 ### 4.1. Realization
 
+To ensure integration between the information about healthcare staff, operation types and operation requests from the
+backoffice module and the planning module, it is necessary to verify if it was created new instances, updated or deleted
+instances.
+
+In order to have all the information coherent between the modules, any changes made in user stories from the backoffice,
+that imply changes on the Database need to be fetched by the planning module and the data must remain up to date in real
+time, with changes from the backoffice module being reflected in the planning module without the need to refresh the page.
+
+If an error occurs during the synchronization process, such as a failure in API communication, the system will present a
+notification in the planning module to alert the Admin. This notification will describe the issue.
+
+
 The logical, physical, development and scenario views diagrams are generic for all the use cases of the backoffice component.
 
 #### Logical View
 
 The diagrams can be found in the [team decision views folder](../../team-decisions/views/general-views.md#1-logical-view).
-
-#### Process View
-
-##### Level 1
-
-![Process View - Level 1]()
-
-##### Level 2
-
-_[This diagram is not relevant.]_
-
-##### Level 3
-
-![Process View - Level 3]()
 
 
 #### Development View

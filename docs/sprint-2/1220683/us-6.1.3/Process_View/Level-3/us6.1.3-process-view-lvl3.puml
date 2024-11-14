@@ -1,0 +1,43 @@
+@startuml
+
+title "US 6.1.3 - Process View MDBackoffice [Level 3]"
+
+autonumber
+participant "Routing" as ROUTE <<route>>
+participant "AppointmentController" as CTRL <<controller>>
+participant "AppointmentService" as SVC <<service>>
+participant "AppointmentSimulationDTO" as DTO <<dto>>
+participant "AppointmentRepository" as IEL <<repository>>
+
+[o-> ROUTE: GET() api/appointment/GetTodaySchedule
+activate ROUTE
+
+ROUTE -> CTRL: getTodaySchedule()
+activate CTRL
+
+CTRL ->  SVC: getTodaySchedule()
+activate SVC
+
+SVC -> IEL : getScheduleForToday(TimeDate.now)
+activate IEL
+
+IEL --> SVC : appointmentList
+deactivate IEL
+
+loop for all elements in the list
+
+SVC -> DTO : toDto(appointment)
+activate DTO
+deactivate DTO
+end loop
+
+SVC --> CTRL : appointmentListDto
+deactivate SVC
+
+CTRL --> ROUTE: appointmentListDto
+deactivate CTRL
+
+[o<-- ROUTE : ok(appointmentListDto)
+deactivate ROUTE
+
+@enduml
