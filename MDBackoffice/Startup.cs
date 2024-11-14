@@ -109,15 +109,18 @@ namespace MDBackoffice
             });
 
             services.AddDbContext<MDBackofficeDbContext>(opt =>
-                opt.UseSqlite(Configuration.GetConnectionString("DefaultConnection"))
-                .ReplaceService<IValueConverterSelector, StronglyEntityIdValueConverterSelector>());
-
+            opt.UseMySql(
+                Configuration.GetConnectionString("DefaultConnection"),
+                new MySqlServerVersion(new Version(5, 7, 37)) // Adjust version as needed
+            )
+            .ReplaceService<IValueConverterSelector, StronglyEntityIdValueConverterSelector>()
+        );
             ConfigureMyServices(services);
 
             services.AddControllers().AddNewtonsoftJson();
             services.AddSwaggerGen();
         }
-    
+
         public void SeedData(IApplicationBuilder app)
         {
             using IServiceScope scope = app.ApplicationServices.CreateScope();
@@ -193,7 +196,7 @@ namespace MDBackoffice
 
             services.AddTransient<IOperationRequestRepository, OperationRequestRepository>();
             services.AddTransient<OperationRequestService>();
-            
+
             services.AddTransient<UserService>();
 
             services.AddTransient<ILogRepository, LogRepository>();

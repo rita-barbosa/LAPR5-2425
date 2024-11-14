@@ -3,6 +3,7 @@ using System;
 using MDBackoffice.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -15,26 +16,30 @@ namespace MDBackoffice.Migrations
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "8.0.8");
+            modelBuilder
+                .HasAnnotation("ProductVersion", "8.0.8")
+                .HasAnnotation("Relational:MaxIdentifierLength", 64);
+
+            MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
 
             modelBuilder.Entity("AppointmentHistory", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("varchar(255)");
 
                     b.Property<string>("ObjectId")
                         .IsRequired()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("PatientId")
                         .IsRequired()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("varchar(255)");
 
                     b.Property<int>("Status")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
 
                     b.Property<int>("Type")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -46,17 +51,17 @@ namespace MDBackoffice.Migrations
             modelBuilder.Entity("MDBackoffice.Domain.Logs.Log", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("TEXT")
+                        .HasColumnType("varchar(255)")
                         .HasColumnName("LogId");
 
                     b.Property<string>("ObjectClass")
                         .IsRequired()
-                        .HasColumnType("TEXT")
+                        .HasColumnType("longtext")
                         .HasColumnName("ObjectClass");
 
                     b.Property<string>("ObjectReference")
                         .IsRequired()
-                        .HasColumnType("TEXT")
+                        .HasColumnType("longtext")
                         .HasColumnName("ObjectReference");
 
                     b.HasKey("Id");
@@ -67,19 +72,19 @@ namespace MDBackoffice.Migrations
             modelBuilder.Entity("MDBackoffice.Domain.OperationRequest.OperationRequest", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("varchar(255)");
 
                     b.Property<string>("OperationTypeId")
                         .IsRequired()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("varchar(255)");
 
                     b.Property<string>("PatientId")
                         .IsRequired()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("varchar(255)");
 
                     b.Property<string>("StaffId")
                         .IsRequired()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("varchar(255)");
 
                     b.HasKey("Id");
 
@@ -95,7 +100,7 @@ namespace MDBackoffice.Migrations
             modelBuilder.Entity("MDBackoffice.Domain.OperationTypes.OperationType", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("varchar(255)");
 
                     b.HasKey("Id");
 
@@ -105,15 +110,15 @@ namespace MDBackoffice.Migrations
             modelBuilder.Entity("MDBackoffice.Domain.OperationTypes.ValueObjects.RequiredStaff.RequiredStaff", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("varchar(255)");
 
                     b.Property<string>("OperationTypeId")
                         .IsRequired()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("varchar(255)");
 
                     b.Property<string>("SpecializationId")
                         .IsRequired()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("varchar(255)");
 
                     b.HasKey("Id");
 
@@ -127,7 +132,7 @@ namespace MDBackoffice.Migrations
             modelBuilder.Entity("MDBackoffice.Domain.OperationTypesRecords.OperationTypeRecord", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("varchar(255)");
 
                     b.HasKey("Id");
 
@@ -137,11 +142,11 @@ namespace MDBackoffice.Migrations
             modelBuilder.Entity("MDBackoffice.Domain.OperationTypesRecords.RequiredStaffRecord", b =>
                 {
                     b.Property<string>("RequiredStaffRecordId")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("varchar(255)");
 
                     b.Property<string>("OperationTypeRecordId")
                         .IsRequired()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("varchar(255)");
 
                     b.HasKey("RequiredStaffRecordId");
 
@@ -153,17 +158,17 @@ namespace MDBackoffice.Migrations
             modelBuilder.Entity("MDBackoffice.Domain.Patients.Patient", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("varchar(255)");
 
                     b.Property<DateTime>("DateBirth")
-                        .HasColumnType("DateBirth");
+                        .HasColumnType("DATE");
 
                     b.Property<bool>("Status")
-                        .HasColumnType("INTEGER")
+                        .HasColumnType("tinyint(1)")
                         .HasColumnName("Status");
 
                     b.Property<string>("UserReference")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("varchar(255)");
 
                     b.HasKey("Id");
 
@@ -176,7 +181,7 @@ namespace MDBackoffice.Migrations
             modelBuilder.Entity("MDBackoffice.Domain.Specializations.Specialization", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("varchar(255)");
 
                     b.HasKey("Id");
 
@@ -186,18 +191,18 @@ namespace MDBackoffice.Migrations
             modelBuilder.Entity("MDBackoffice.Domain.StaffProfiles.Staff", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("varchar(255)");
 
                     b.Property<string>("SpecializationId")
                         .IsRequired()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("varchar(255)");
 
                     b.Property<bool>("Status")
-                        .HasColumnType("INTEGER")
+                        .HasColumnType("tinyint(1)")
                         .HasColumnName("Status");
 
                     b.Property<string>("UserReference")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("varchar(255)");
 
                     b.HasKey("Id");
 
@@ -212,18 +217,18 @@ namespace MDBackoffice.Migrations
             modelBuilder.Entity("MDBackoffice.Domain.Tokens.Token", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("varchar(255)");
 
                     b.Property<bool>("Active")
-                        .HasColumnType("INTEGER")
+                        .HasColumnType("tinyint(1)")
                         .HasColumnName("HasExpired");
 
                     b.Property<DateTime>("ExpirationTime")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("datetime(6)");
 
                     b.Property<string>("UserId")
                         .IsRequired()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("longtext");
 
                     b.HasKey("Id");
 
@@ -233,19 +238,19 @@ namespace MDBackoffice.Migrations
             modelBuilder.Entity("MDBackoffice.Domain.Users.Role", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("varchar(255)");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("Name")
                         .HasMaxLength(256)
-                        .HasColumnType("TEXT");
+                        .HasColumnType("varchar(256)");
 
                     b.Property<string>("NormalizedName")
                         .HasMaxLength(256)
-                        .HasColumnType("TEXT");
+                        .HasColumnType("varchar(256)");
 
                     b.HasKey("Id");
 
@@ -259,57 +264,57 @@ namespace MDBackoffice.Migrations
             modelBuilder.Entity("MDBackoffice.Domain.Users.User", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("varchar(255)");
 
                     b.Property<int>("AccessFailedCount")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("Email")
                         .HasMaxLength(256)
-                        .HasColumnType("TEXT");
+                        .HasColumnType("varchar(256)");
 
                     b.Property<bool>("EmailConfirmed")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<bool>("LockoutEnabled")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<DateTimeOffset?>("LockoutEnd")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("datetime(6)");
 
                     b.Property<string>("NormalizedEmail")
                         .HasMaxLength(256)
-                        .HasColumnType("TEXT");
+                        .HasColumnType("varchar(256)");
 
                     b.Property<string>("NormalizedUserName")
                         .HasMaxLength(256)
-                        .HasColumnType("TEXT");
+                        .HasColumnType("varchar(256)");
 
                     b.Property<string>("PasswordHash")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("PhoneNumber")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("longtext");
 
                     b.Property<bool>("PhoneNumberConfirmed")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<string>("SecurityStamp")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("longtext");
 
                     b.Property<bool>("Status")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<bool>("TwoFactorEnabled")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<string>("UserName")
                         .HasMaxLength(256)
-                        .HasColumnType("TEXT");
+                        .HasColumnType("varchar(256)");
 
                     b.HasKey("Id");
 
@@ -327,17 +332,19 @@ namespace MDBackoffice.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("ClaimType")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("ClaimValue")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("RoleId")
                         .IsRequired()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("varchar(255)");
 
                     b.HasKey("Id");
 
@@ -350,17 +357,19 @@ namespace MDBackoffice.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("ClaimType")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("ClaimValue")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("UserId")
                         .IsRequired()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("varchar(255)");
 
                     b.HasKey("Id");
 
@@ -372,17 +381,17 @@ namespace MDBackoffice.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
                     b.Property<string>("LoginProvider")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("varchar(255)");
 
                     b.Property<string>("ProviderKey")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("varchar(255)");
 
                     b.Property<string>("ProviderDisplayName")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("UserId")
                         .IsRequired()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("varchar(255)");
 
                     b.HasKey("LoginProvider", "ProviderKey");
 
@@ -394,10 +403,10 @@ namespace MDBackoffice.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
                 {
                     b.Property<string>("UserId")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("varchar(255)");
 
                     b.Property<string>("RoleId")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("varchar(255)");
 
                     b.HasKey("UserId", "RoleId");
 
@@ -409,16 +418,16 @@ namespace MDBackoffice.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
                     b.Property<string>("UserId")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("varchar(255)");
 
                     b.Property<string>("LoginProvider")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("varchar(255)");
 
                     b.Property<string>("Name")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("varchar(255)");
 
                     b.Property<string>("Value")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("longtext");
 
                     b.HasKey("UserId", "LoginProvider", "Name");
 
@@ -436,10 +445,10 @@ namespace MDBackoffice.Migrations
                     b.OwnsOne("MDBackoffice.Domain.Shared.Date", "CreatedAt", b1 =>
                         {
                             b1.Property<string>("AppointmentHistoryId")
-                                .HasColumnType("TEXT");
+                                .HasColumnType("varchar(255)");
 
                             b1.Property<DateTime>("Start")
-                                .HasColumnType("TEXT")
+                                .HasColumnType("datetime(6)")
                                 .HasColumnName("CreatedAt");
 
                             b1.HasKey("AppointmentHistoryId");
@@ -459,15 +468,15 @@ namespace MDBackoffice.Migrations
                     b.OwnsOne("MDBackoffice.Domain.Logs.Change", "Change", b1 =>
                         {
                             b1.Property<string>("LogId")
-                                .HasColumnType("TEXT");
+                                .HasColumnType("varchar(255)");
 
                             b1.Property<string>("ChangeDescription")
                                 .IsRequired()
-                                .HasColumnType("TEXT")
+                                .HasColumnType("longtext")
                                 .HasColumnName("ChangeDescription");
 
                             b1.Property<int>("Type")
-                                .HasColumnType("INTEGER")
+                                .HasColumnType("int")
                                 .HasColumnName("ChangeType");
 
                             b1.HasKey("LogId");
@@ -481,10 +490,10 @@ namespace MDBackoffice.Migrations
                     b.OwnsOne("MDBackoffice.Domain.Shared.Date", "DateOfChange", b1 =>
                         {
                             b1.Property<string>("LogId")
-                                .HasColumnType("TEXT");
+                                .HasColumnType("varchar(255)");
 
                             b1.Property<DateTime>("Start")
-                                .HasColumnType("TEXT")
+                                .HasColumnType("datetime(6)")
                                 .HasColumnName("DateOfChange");
 
                             b1.HasKey("LogId");
@@ -525,10 +534,10 @@ namespace MDBackoffice.Migrations
                     b.OwnsOne("MDBackoffice.Domain.Shared.Date", "DateOfRequest", b1 =>
                         {
                             b1.Property<string>("OperationRequestId")
-                                .HasColumnType("TEXT");
+                                .HasColumnType("varchar(255)");
 
                             b1.Property<DateTime>("Start")
-                                .HasColumnType("TEXT")
+                                .HasColumnType("datetime(6)")
                                 .HasColumnName("DateOfRequest");
 
                             b1.HasKey("OperationRequestId");
@@ -542,10 +551,10 @@ namespace MDBackoffice.Migrations
                     b.OwnsOne("MDBackoffice.Domain.Shared.Date", "DeadLineDate", b1 =>
                         {
                             b1.Property<string>("OperationRequestId")
-                                .HasColumnType("TEXT");
+                                .HasColumnType("varchar(255)");
 
                             b1.Property<DateTime>("Start")
-                                .HasColumnType("TEXT")
+                                .HasColumnType("datetime(6)")
                                 .HasColumnName("DeadLineDate");
 
                             b1.HasKey("OperationRequestId");
@@ -559,11 +568,11 @@ namespace MDBackoffice.Migrations
                     b.OwnsOne("MDBackoffice.Domain.OperationRequest.OperationRequestDescription", "Description", b1 =>
                         {
                             b1.Property<string>("OperationRequestId")
-                                .HasColumnType("TEXT");
+                                .HasColumnType("varchar(255)");
 
                             b1.Property<string>("DescriptionText")
                                 .IsRequired()
-                                .HasColumnType("TEXT")
+                                .HasColumnType("longtext")
                                 .HasColumnName("Description");
 
                             b1.HasKey("OperationRequestId");
@@ -577,11 +586,11 @@ namespace MDBackoffice.Migrations
                     b.OwnsOne("MDBackoffice.Domain.OperationRequest.OperationRequestStatus", "Status", b1 =>
                         {
                             b1.Property<string>("OperationRequestId")
-                                .HasColumnType("TEXT");
+                                .HasColumnType("varchar(255)");
 
                             b1.Property<string>("Description")
                                 .IsRequired()
-                                .HasColumnType("TEXT")
+                                .HasColumnType("longtext")
                                 .HasColumnName("Status");
 
                             b1.HasKey("OperationRequestId");
@@ -595,11 +604,11 @@ namespace MDBackoffice.Migrations
                     b.OwnsOne("MDBackoffice.Domain.OperationRequest.Priority", "Priority", b1 =>
                         {
                             b1.Property<string>("OperationRequestId")
-                                .HasColumnType("TEXT");
+                                .HasColumnType("varchar(255)");
 
                             b1.Property<string>("Name")
                                 .IsRequired()
-                                .HasColumnType("TEXT")
+                                .HasColumnType("longtext")
                                 .HasColumnName("Priority");
 
                             b1.HasKey("OperationRequestId");
@@ -631,10 +640,10 @@ namespace MDBackoffice.Migrations
                     b.OwnsOne("MDBackoffice.Domain.OperationTypes.ValueObjects.EstimatedDuration", "EstimatedDuration", b1 =>
                         {
                             b1.Property<string>("OperationTypeId")
-                                .HasColumnType("TEXT");
+                                .HasColumnType("varchar(255)");
 
                             b1.Property<int>("TotalDurationMinutes")
-                                .HasColumnType("INTEGER")
+                                .HasColumnType("int")
                                 .HasColumnName("EstimatedDuration");
 
                             b1.HasKey("OperationTypeId");
@@ -648,11 +657,11 @@ namespace MDBackoffice.Migrations
                     b.OwnsOne("MDBackoffice.Domain.OperationTypes.ValueObjects.OperationTypeName", "Name", b1 =>
                         {
                             b1.Property<string>("OperationTypeId")
-                                .HasColumnType("TEXT");
+                                .HasColumnType("varchar(255)");
 
                             b1.Property<string>("OperationName")
                                 .IsRequired()
-                                .HasColumnType("TEXT")
+                                .HasColumnType("longtext")
                                 .HasColumnName("OperationTypeName");
 
                             b1.HasKey("OperationTypeId");
@@ -666,10 +675,10 @@ namespace MDBackoffice.Migrations
                     b.OwnsOne("MDBackoffice.Domain.OperationTypes.ValueObjects.OperationTypeStatus", "Status", b1 =>
                         {
                             b1.Property<string>("OperationTypeId")
-                                .HasColumnType("TEXT");
+                                .HasColumnType("varchar(255)");
 
                             b1.Property<bool>("Active")
-                                .HasColumnType("INTEGER")
+                                .HasColumnType("tinyint(1)")
                                 .HasColumnName("OperationTypeStatus");
 
                             b1.HasKey("OperationTypeId");
@@ -683,11 +692,11 @@ namespace MDBackoffice.Migrations
                     b.OwnsMany("MDBackoffice.Domain.OperationTypes.ValueObjects.Phase.Phase", "Phases", b1 =>
                         {
                             b1.Property<string>("PhaseId")
-                                .HasColumnType("TEXT");
+                                .HasColumnType("varchar(255)");
 
                             b1.Property<string>("OperationTypeId")
                                 .IsRequired()
-                                .HasColumnType("TEXT");
+                                .HasColumnType("varchar(255)");
 
                             b1.HasKey("PhaseId");
 
@@ -701,11 +710,11 @@ namespace MDBackoffice.Migrations
                             b1.OwnsOne("MDBackoffice.Domain.OperationTypes.ValueObjects.Phase.PhaseDescription", "Description", b2 =>
                                 {
                                     b2.Property<string>("PhaseId")
-                                        .HasColumnType("TEXT");
+                                        .HasColumnType("varchar(255)");
 
                                     b2.Property<string>("Description")
                                         .IsRequired()
-                                        .HasColumnType("TEXT")
+                                        .HasColumnType("longtext")
                                         .HasColumnName("PhaseDescription");
 
                                     b2.HasKey("PhaseId");
@@ -719,10 +728,10 @@ namespace MDBackoffice.Migrations
                             b1.OwnsOne("MDBackoffice.Domain.OperationTypes.ValueObjects.Phase.PhaseDuration", "Duration", b2 =>
                                 {
                                     b2.Property<string>("PhaseId")
-                                        .HasColumnType("TEXT");
+                                        .HasColumnType("varchar(255)");
 
                                     b2.Property<int>("DurationMinutes")
-                                        .HasColumnType("INTEGER")
+                                        .HasColumnType("int")
                                         .HasColumnName("PhaseDuration");
 
                                     b2.HasKey("PhaseId");
@@ -769,11 +778,11 @@ namespace MDBackoffice.Migrations
                     b.OwnsOne("MDBackoffice.Domain.Shared.Function", "Function", b1 =>
                         {
                             b1.Property<string>("RequiredStaffId")
-                                .HasColumnType("TEXT");
+                                .HasColumnType("varchar(255)");
 
                             b1.Property<string>("Description")
                                 .IsRequired()
-                                .HasColumnType("TEXT")
+                                .HasColumnType("longtext")
                                 .HasColumnName("Function");
 
                             b1.HasKey("RequiredStaffId");
@@ -787,10 +796,10 @@ namespace MDBackoffice.Migrations
                     b.OwnsOne("MDBackoffice.Domain.OperationTypes.ValueObjects.RequiredStaff.NumberStaff", "StaffQuantity", b1 =>
                         {
                             b1.Property<string>("RequiredStaffId")
-                                .HasColumnType("TEXT");
+                                .HasColumnType("varchar(255)");
 
                             b1.Property<int>("NumberRequired")
-                                .HasColumnType("INTEGER");
+                                .HasColumnType("int");
 
                             b1.HasKey("RequiredStaffId");
 
@@ -812,11 +821,11 @@ namespace MDBackoffice.Migrations
                     b.OwnsOne("MDBackoffice.Domain.OperationTypesRecords.OperationTypeParentId", "OperationTypeId", b1 =>
                         {
                             b1.Property<string>("OperationTypeRecordId")
-                                .HasColumnType("TEXT");
+                                .HasColumnType("varchar(255)");
 
                             b1.Property<string>("OpID")
                                 .IsRequired()
-                                .HasColumnType("TEXT")
+                                .HasColumnType("longtext")
                                 .HasColumnName("OperationTypeId");
 
                             b1.HasKey("OperationTypeRecordId");
@@ -830,10 +839,10 @@ namespace MDBackoffice.Migrations
                     b.OwnsOne("MDBackoffice.Domain.Shared.Date", "EffectiveDate", b1 =>
                         {
                             b1.Property<string>("OperationTypeRecordId")
-                                .HasColumnType("TEXT");
+                                .HasColumnType("varchar(255)");
 
                             b1.Property<DateTime>("Start")
-                                .HasColumnType("TEXT")
+                                .HasColumnType("datetime(6)")
                                 .HasColumnName("EffectiveDate");
 
                             b1.HasKey("OperationTypeRecordId");
@@ -847,10 +856,10 @@ namespace MDBackoffice.Migrations
                     b.OwnsOne("MDBackoffice.Domain.OperationTypes.ValueObjects.EstimatedDuration", "EstimatedDuration", b1 =>
                         {
                             b1.Property<string>("OperationTypeRecordId")
-                                .HasColumnType("TEXT");
+                                .HasColumnType("varchar(255)");
 
                             b1.Property<int>("TotalDurationMinutes")
-                                .HasColumnType("INTEGER")
+                                .HasColumnType("int")
                                 .HasColumnName("EstimatedDuration");
 
                             b1.HasKey("OperationTypeRecordId");
@@ -864,11 +873,11 @@ namespace MDBackoffice.Migrations
                     b.OwnsOne("MDBackoffice.Domain.OperationTypes.ValueObjects.OperationTypeName", "Name", b1 =>
                         {
                             b1.Property<string>("OperationTypeRecordId")
-                                .HasColumnType("TEXT");
+                                .HasColumnType("varchar(255)");
 
                             b1.Property<string>("OperationName")
                                 .IsRequired()
-                                .HasColumnType("TEXT")
+                                .HasColumnType("longtext")
                                 .HasColumnName("OperationTypeName");
 
                             b1.HasKey("OperationTypeRecordId");
@@ -882,10 +891,10 @@ namespace MDBackoffice.Migrations
                     b.OwnsOne("MDBackoffice.Domain.OperationTypes.ValueObjects.OperationTypeStatus", "Status", b1 =>
                         {
                             b1.Property<string>("OperationTypeRecordId")
-                                .HasColumnType("TEXT");
+                                .HasColumnType("varchar(255)");
 
                             b1.Property<bool>("Active")
-                                .HasColumnType("INTEGER")
+                                .HasColumnType("tinyint(1)")
                                 .HasColumnName("OperationTypeStatus");
 
                             b1.HasKey("OperationTypeRecordId");
@@ -899,10 +908,10 @@ namespace MDBackoffice.Migrations
                     b.OwnsOne("MDBackoffice.Domain.OperationTypesRecords.OperationTypeRecordVersion", "Version", b1 =>
                         {
                             b1.Property<string>("OperationTypeRecordId")
-                                .HasColumnType("TEXT");
+                                .HasColumnType("varchar(255)");
 
                             b1.Property<int>("Version")
-                                .HasColumnType("INTEGER")
+                                .HasColumnType("int")
                                 .HasColumnName("Version");
 
                             b1.HasKey("OperationTypeRecordId");
@@ -916,11 +925,11 @@ namespace MDBackoffice.Migrations
                     b.OwnsMany("MDBackoffice.Domain.OperationTypesRecords.PhaseRecord", "Phases", b1 =>
                         {
                             b1.Property<string>("PhaseId")
-                                .HasColumnType("TEXT");
+                                .HasColumnType("varchar(255)");
 
                             b1.Property<string>("OperationTypeRecordId")
                                 .IsRequired()
-                                .HasColumnType("TEXT");
+                                .HasColumnType("varchar(255)");
 
                             b1.HasKey("PhaseId");
 
@@ -934,11 +943,11 @@ namespace MDBackoffice.Migrations
                             b1.OwnsOne("MDBackoffice.Domain.OperationTypes.ValueObjects.Phase.PhaseDescription", "Description", b2 =>
                                 {
                                     b2.Property<string>("PhaseRecordPhaseId")
-                                        .HasColumnType("TEXT");
+                                        .HasColumnType("varchar(255)");
 
                                     b2.Property<string>("Description")
                                         .IsRequired()
-                                        .HasColumnType("TEXT")
+                                        .HasColumnType("longtext")
                                         .HasColumnName("PhaseDescription");
 
                                     b2.HasKey("PhaseRecordPhaseId");
@@ -952,10 +961,10 @@ namespace MDBackoffice.Migrations
                             b1.OwnsOne("MDBackoffice.Domain.OperationTypes.ValueObjects.Phase.PhaseDuration", "Duration", b2 =>
                                 {
                                     b2.Property<string>("PhaseRecordPhaseId")
-                                        .HasColumnType("TEXT");
+                                        .HasColumnType("varchar(255)");
 
                                     b2.Property<int>("DurationMinutes")
-                                        .HasColumnType("INTEGER")
+                                        .HasColumnType("int")
                                         .HasColumnName("PhaseDuration");
 
                                     b2.HasKey("PhaseRecordPhaseId");
@@ -1005,11 +1014,11 @@ namespace MDBackoffice.Migrations
                     b.OwnsOne("MDBackoffice.Domain.Shared.Function", "Function", b1 =>
                         {
                             b1.Property<string>("RequiredStaffRecordId")
-                                .HasColumnType("TEXT");
+                                .HasColumnType("varchar(255)");
 
                             b1.Property<string>("Description")
                                 .IsRequired()
-                                .HasColumnType("TEXT")
+                                .HasColumnType("longtext")
                                 .HasColumnName("Function");
 
                             b1.HasKey("RequiredStaffRecordId");
@@ -1023,10 +1032,10 @@ namespace MDBackoffice.Migrations
                     b.OwnsOne("MDBackoffice.Domain.OperationTypes.ValueObjects.RequiredStaff.NumberStaff", "StaffQuantity", b1 =>
                         {
                             b1.Property<string>("RequiredStaffRecordId")
-                                .HasColumnType("TEXT");
+                                .HasColumnType("varchar(255)");
 
                             b1.Property<int>("NumberRequired")
-                                .HasColumnType("INTEGER")
+                                .HasColumnType("int")
                                 .HasColumnName("NumberRequired");
 
                             b1.HasKey("RequiredStaffRecordId");
@@ -1040,11 +1049,11 @@ namespace MDBackoffice.Migrations
                     b.OwnsOne("MDBackoffice.Domain.OperationTypesRecords.StaffSpecialization", "SpecializationId", b1 =>
                         {
                             b1.Property<string>("RequiredStaffRecordId")
-                                .HasColumnType("TEXT");
+                                .HasColumnType("varchar(255)");
 
                             b1.Property<string>("SpeciId")
                                 .IsRequired()
-                                .HasColumnType("TEXT")
+                                .HasColumnType("longtext")
                                 .HasColumnName("Specialization");
 
                             b1.HasKey("RequiredStaffRecordId");
@@ -1075,11 +1084,11 @@ namespace MDBackoffice.Migrations
                     b.OwnsOne("MDBackoffice.Domain.Patients.Gender", "Gender", b1 =>
                         {
                             b1.Property<string>("PatientId")
-                                .HasColumnType("TEXT");
+                                .HasColumnType("varchar(255)");
 
                             b1.Property<string>("Denomination")
                                 .IsRequired()
-                                .HasColumnType("TEXT")
+                                .HasColumnType("longtext")
                                 .HasColumnName("Gender");
 
                             b1.HasKey("PatientId");
@@ -1093,11 +1102,11 @@ namespace MDBackoffice.Migrations
                     b.OwnsOne("MDBackoffice.Domain.Patients.MedicalCondition", "MedicalCondition", b1 =>
                         {
                             b1.Property<string>("PatientId")
-                                .HasColumnType("TEXT");
+                                .HasColumnType("varchar(255)");
 
                             b1.Property<string>("Description")
                                 .IsRequired()
-                                .HasColumnType("TEXT")
+                                .HasColumnType("longtext")
                                 .HasColumnName("MedicalCondition");
 
                             b1.HasKey("PatientId");
@@ -1111,21 +1120,21 @@ namespace MDBackoffice.Migrations
                     b.OwnsOne("MDBackoffice.Domain.Shared.ResidentialAddress", "Address", b1 =>
                         {
                             b1.Property<string>("PatientId")
-                                .HasColumnType("TEXT");
+                                .HasColumnType("varchar(255)");
 
                             b1.Property<string>("Country")
                                 .IsRequired()
-                                .HasColumnType("TEXT")
+                                .HasColumnType("longtext")
                                 .HasColumnName("Country");
 
                             b1.Property<string>("PostalCode")
                                 .IsRequired()
-                                .HasColumnType("TEXT")
+                                .HasColumnType("longtext")
                                 .HasColumnName("PostalCode");
 
                             b1.Property<string>("Residence")
                                 .IsRequired()
-                                .HasColumnType("TEXT")
+                                .HasColumnType("longtext")
                                 .HasColumnName("Residence");
 
                             b1.HasKey("PatientId");
@@ -1139,11 +1148,11 @@ namespace MDBackoffice.Migrations
                     b.OwnsOne("MDBackoffice.Domain.Shared.Email", "Email", b1 =>
                         {
                             b1.Property<string>("PatientId")
-                                .HasColumnType("TEXT");
+                                .HasColumnType("varchar(255)");
 
                             b1.Property<string>("EmailAddress")
                                 .IsRequired()
-                                .HasColumnType("TEXT")
+                                .HasColumnType("longtext")
                                 .HasColumnName("EmailAddress");
 
                             b1.HasKey("PatientId");
@@ -1157,16 +1166,16 @@ namespace MDBackoffice.Migrations
                     b.OwnsOne("MDBackoffice.Domain.Shared.Phone", "EmergencyContact", b1 =>
                         {
                             b1.Property<string>("PatientId")
-                                .HasColumnType("TEXT");
+                                .HasColumnType("varchar(255)");
 
                             b1.Property<string>("CountryCode")
                                 .IsRequired()
-                                .HasColumnType("TEXT")
+                                .HasColumnType("longtext")
                                 .HasColumnName("EmergencyContactCountryCode");
 
                             b1.Property<string>("PhoneNumber")
                                 .IsRequired()
-                                .HasColumnType("TEXT")
+                                .HasColumnType("longtext")
                                 .HasColumnName("EmergencyContact");
 
                             b1.HasKey("PatientId");
@@ -1180,21 +1189,21 @@ namespace MDBackoffice.Migrations
                     b.OwnsOne("MDBackoffice.Domain.Shared.Name", "Name", b1 =>
                         {
                             b1.Property<string>("PatientId")
-                                .HasColumnType("TEXT");
+                                .HasColumnType("varchar(255)");
 
                             b1.Property<string>("FirstName")
                                 .IsRequired()
-                                .HasColumnType("TEXT")
+                                .HasColumnType("longtext")
                                 .HasColumnName("FirstName");
 
                             b1.Property<string>("FullName")
                                 .IsRequired()
-                                .HasColumnType("TEXT")
+                                .HasColumnType("longtext")
                                 .HasColumnName("FullName");
 
                             b1.Property<string>("LastName")
                                 .IsRequired()
-                                .HasColumnType("TEXT")
+                                .HasColumnType("longtext")
                                 .HasColumnName("LastName");
 
                             b1.HasKey("PatientId");
@@ -1208,16 +1217,16 @@ namespace MDBackoffice.Migrations
                     b.OwnsOne("MDBackoffice.Domain.Shared.Phone", "PhoneNumber", b1 =>
                         {
                             b1.Property<string>("PatientId")
-                                .HasColumnType("TEXT");
+                                .HasColumnType("varchar(255)");
 
                             b1.Property<string>("CountryCode")
                                 .IsRequired()
-                                .HasColumnType("TEXT")
+                                .HasColumnType("longtext")
                                 .HasColumnName("CountryCode");
 
                             b1.Property<string>("PhoneNumber")
                                 .IsRequired()
-                                .HasColumnType("TEXT")
+                                .HasColumnType("longtext")
                                 .HasColumnName("PhoneNumber");
 
                             b1.HasKey("PatientId");
@@ -1266,11 +1275,11 @@ namespace MDBackoffice.Migrations
                         {
                             b1.Property<Guid>("Id")
                                 .ValueGeneratedOnAdd()
-                                .HasColumnType("TEXT");
+                                .HasColumnType("char(36)");
 
                             b1.Property<string>("StaffId")
                                 .IsRequired()
-                                .HasColumnType("TEXT");
+                                .HasColumnType("varchar(255)");
 
                             b1.HasKey("Id");
 
@@ -1284,14 +1293,14 @@ namespace MDBackoffice.Migrations
                             b1.OwnsOne("MDBackoffice.Domain.Shared.Date", "Date", b2 =>
                                 {
                                     b2.Property<Guid>("SlotId")
-                                        .HasColumnType("TEXT");
+                                        .HasColumnType("char(36)");
 
                                     b2.Property<DateTime>("End")
-                                        .HasColumnType("TEXT")
+                                        .HasColumnType("datetime(6)")
                                         .HasColumnName("EndDate");
 
                                     b2.Property<DateTime>("Start")
-                                        .HasColumnType("TEXT")
+                                        .HasColumnType("datetime(6)")
                                         .HasColumnName("StartDate");
 
                                     b2.HasKey("SlotId");
@@ -1305,14 +1314,14 @@ namespace MDBackoffice.Migrations
                             b1.OwnsOne("MDBackoffice.Domain.Shared.TimeInterval", "TimeInterval", b2 =>
                                 {
                                     b2.Property<Guid>("SlotId")
-                                        .HasColumnType("TEXT");
+                                        .HasColumnType("char(36)");
 
                                     b2.Property<TimeSpan>("End")
-                                        .HasColumnType("TEXT")
+                                        .HasColumnType("time(6)")
                                         .HasColumnName("EndTime");
 
                                     b2.Property<TimeSpan>("Start")
-                                        .HasColumnType("TEXT")
+                                        .HasColumnType("time(6)")
                                         .HasColumnName("StartTime");
 
                                     b2.HasKey("SlotId");
@@ -1333,11 +1342,11 @@ namespace MDBackoffice.Migrations
                     b.OwnsOne("MDBackoffice.Domain.StaffProfiles.LicenseNumber", "LicenseNumber", b1 =>
                         {
                             b1.Property<string>("StaffId")
-                                .HasColumnType("TEXT");
+                                .HasColumnType("varchar(255)");
 
                             b1.Property<string>("Number")
                                 .IsRequired()
-                                .HasColumnType("TEXT")
+                                .HasColumnType("longtext")
                                 .HasColumnName("LicenseNumber");
 
                             b1.HasKey("StaffId");
@@ -1351,21 +1360,21 @@ namespace MDBackoffice.Migrations
                     b.OwnsOne("MDBackoffice.Domain.Shared.ResidentialAddress", "Address", b1 =>
                         {
                             b1.Property<string>("StaffId")
-                                .HasColumnType("TEXT");
+                                .HasColumnType("varchar(255)");
 
                             b1.Property<string>("Country")
                                 .IsRequired()
-                                .HasColumnType("TEXT")
+                                .HasColumnType("longtext")
                                 .HasColumnName("Country");
 
                             b1.Property<string>("PostalCode")
                                 .IsRequired()
-                                .HasColumnType("TEXT")
+                                .HasColumnType("longtext")
                                 .HasColumnName("PostalCode");
 
                             b1.Property<string>("Residence")
                                 .IsRequired()
-                                .HasColumnType("TEXT")
+                                .HasColumnType("longtext")
                                 .HasColumnName("Residence");
 
                             b1.HasKey("StaffId");
@@ -1379,11 +1388,11 @@ namespace MDBackoffice.Migrations
                     b.OwnsOne("MDBackoffice.Domain.Shared.Email", "Email", b1 =>
                         {
                             b1.Property<string>("StaffId")
-                                .HasColumnType("TEXT");
+                                .HasColumnType("varchar(255)");
 
                             b1.Property<string>("EmailAddress")
                                 .IsRequired()
-                                .HasColumnType("TEXT")
+                                .HasColumnType("longtext")
                                 .HasColumnName("EmailAddress");
 
                             b1.HasKey("StaffId");
@@ -1397,11 +1406,11 @@ namespace MDBackoffice.Migrations
                     b.OwnsOne("MDBackoffice.Domain.Shared.Function", "Function", b1 =>
                         {
                             b1.Property<string>("StaffId")
-                                .HasColumnType("TEXT");
+                                .HasColumnType("varchar(255)");
 
                             b1.Property<string>("Description")
                                 .IsRequired()
-                                .HasColumnType("TEXT")
+                                .HasColumnType("longtext")
                                 .HasColumnName("Function");
 
                             b1.HasKey("StaffId");
@@ -1415,21 +1424,21 @@ namespace MDBackoffice.Migrations
                     b.OwnsOne("MDBackoffice.Domain.Shared.Name", "Name", b1 =>
                         {
                             b1.Property<string>("StaffId")
-                                .HasColumnType("TEXT");
+                                .HasColumnType("varchar(255)");
 
                             b1.Property<string>("FirstName")
                                 .IsRequired()
-                                .HasColumnType("TEXT")
+                                .HasColumnType("longtext")
                                 .HasColumnName("FirstName");
 
                             b1.Property<string>("FullName")
                                 .IsRequired()
-                                .HasColumnType("TEXT")
+                                .HasColumnType("longtext")
                                 .HasColumnName("FullName");
 
                             b1.Property<string>("LastName")
                                 .IsRequired()
-                                .HasColumnType("TEXT")
+                                .HasColumnType("longtext")
                                 .HasColumnName("LastName");
 
                             b1.HasKey("StaffId");
@@ -1443,16 +1452,16 @@ namespace MDBackoffice.Migrations
                     b.OwnsOne("MDBackoffice.Domain.Shared.Phone", "Phone", b1 =>
                         {
                             b1.Property<string>("StaffId")
-                                .HasColumnType("TEXT");
+                                .HasColumnType("varchar(255)");
 
                             b1.Property<string>("CountryCode")
                                 .IsRequired()
-                                .HasColumnType("TEXT")
+                                .HasColumnType("longtext")
                                 .HasColumnName("CountryCode");
 
                             b1.Property<string>("PhoneNumber")
                                 .IsRequired()
-                                .HasColumnType("TEXT")
+                                .HasColumnType("longtext")
                                 .HasColumnName("PhoneNumber");
 
                             b1.HasKey("StaffId");
@@ -1489,7 +1498,7 @@ namespace MDBackoffice.Migrations
                     b.OwnsOne("MDBackoffice.Domain.Tokens.TokenType", "TokenType", b1 =>
                         {
                             b1.Property<string>("TokenId")
-                                .HasColumnType("TEXT");
+                                .HasColumnType("varchar(255)");
 
                             b1.HasKey("TokenId");
 
@@ -1501,11 +1510,11 @@ namespace MDBackoffice.Migrations
                             b1.OwnsOne("MDBackoffice.Domain.Tokens.TokenTypeDenomination", "TypeDenomination", b2 =>
                                 {
                                     b2.Property<string>("TokenTypeTokenId")
-                                        .HasColumnType("TEXT");
+                                        .HasColumnType("varchar(255)");
 
                                     b2.Property<string>("Denomination")
                                         .IsRequired()
-                                        .HasColumnType("TEXT")
+                                        .HasColumnType("longtext")
                                         .HasColumnName("TokenTypeDenomination");
 
                                     b2.HasKey("TokenTypeTokenId");
@@ -1519,10 +1528,10 @@ namespace MDBackoffice.Migrations
                             b1.OwnsOne("MDBackoffice.Domain.Tokens.TokenTypeExpirationDuration", "ExpirationDurationHours", b2 =>
                                 {
                                     b2.Property<string>("TokenTypeTokenId")
-                                        .HasColumnType("TEXT");
+                                        .HasColumnType("varchar(255)");
 
                                     b2.Property<int>("Hours")
-                                        .HasColumnType("INTEGER")
+                                        .HasColumnType("int")
                                         .HasColumnName("ExpirationDurationInHours");
 
                                     b2.HasKey("TokenTypeTokenId");

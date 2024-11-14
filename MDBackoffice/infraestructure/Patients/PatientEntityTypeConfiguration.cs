@@ -94,10 +94,7 @@ namespace MDBackoffice.Infrastructure.Products
 
             builder.Property(e => e.DateBirth)
                 .IsRequired()
-                .HasColumnType("DateBirth");
-
-
-
+                .HasColumnType("DATE");
         }
     }
 }
