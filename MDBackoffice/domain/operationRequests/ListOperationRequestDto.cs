@@ -1,4 +1,4 @@
-namespace MDBackoffice.Domain.OperationRequest
+namespace MDBackoffice.Domain.OperationRequests
 {
     public class ListOperationRequestDto(string name, string operationType, string status)
     {

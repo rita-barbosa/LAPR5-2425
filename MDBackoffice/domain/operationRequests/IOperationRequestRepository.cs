@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using MDBackoffice.Domain.Shared;
 using MDBackoffice.Domain.StaffProfiles;
 
-namespace MDBackoffice.Domain.OperationRequest
+namespace MDBackoffice.Domain.OperationRequests
 {
     public interface IOperationRequestRepository : IRepository<OperationRequest, OperationRequestId>
     {
