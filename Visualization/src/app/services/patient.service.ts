@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { MessageService } from './message.service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Patient } from '../domain/Patient';
-import { add } from 'three/webgpu';
 
 @Injectable({
   providedIn: 'root'
@@ -17,8 +16,6 @@ export class PatientService {
   
   CreatePatientProfile(firstName: string, lastName: string, phone: string, email: string, address: string, emergencyContact: string, gender: string, dateBirth: string) {
     const url = `${this.theServerURL}/Create-PatientProfile`;
-  
-  
     let patient: Patient = {
       firstName: firstName,
       lastName: lastName,
