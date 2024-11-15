@@ -9,29 +9,25 @@ import { CursoDetailComponent } from './components/curso-detail/curso-detail.com
 import { TestModuleComponent } from './modules/test-module/test-module.component';
 import { StaffComponent } from './components/staff/staff.component';
 import { PatientComponent } from './components/patient/patient.component';
+import { CreatePatientProfileComponent } from './components/admin/create-patient-profile/create-patient-profile.component';
+import { HttpClientModule, provideHttpClient } from '@angular/common/http';  // Correct import
 
-
- export const routes: Routes = [
+export const routes: Routes = [
   { path: '', component: MenuComponent, pathMatch: 'full' },
   { path: 'login', component: LoginComponent},
   { path: 'menu', component: MenuComponent },
   { path: 'admin', component: AdminComponent},
+  { path: 'create-patient-profile', component: CreatePatientProfileComponent},
   { path: 'staff', component: StaffComponent},
   { path: 'patient', component: PatientComponent},
- // Redirect to the cube component on app load
-//  { path: '', redirectTo: '/cube', pathMatch: 'full' },
- // Route for the cube component
- { path: 'cube', component: CubeComponent },
- { path: 'curso-angular', component: CursoAngularComponent},
- { path: 'curso-detail', component: CursoDetailComponent},
-//  { path: '', redirectTo: '', pathMatch: 'full' },
+  { path: 'cube', component: CubeComponent },
+  { path: 'curso-angular', component: CursoAngularComponent},
+  { path: 'curso-detail', component: CursoDetailComponent},
   { path: '**', redirectTo: '' }
- ];
+];
 
- @NgModule({
-    imports: [RouterModule.forRoot(routes),
-      TestModuleComponent
-    ],
-    exports: [RouterModule],
-  })
-  export class AppRoutingModule { }
+@NgModule({
+  imports: [RouterModule.forRoot(routes)],  // Use HttpClientModule here
+  exports: [RouterModule],
+})
+export class AppRoutingModule { }

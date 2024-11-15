@@ -54,6 +54,12 @@ namespace MDBackoffice
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+
+             services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAll",
+                    builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+            });
             services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -108,17 +114,18 @@ namespace MDBackoffice
                 options.Lockout.AllowedForNewUsers = true;
             });
 
-            services.AddDbContext<MDBackofficeDbContext>(opt =>
-            opt.UseMySql(
-                Configuration.GetConnectionString("DefaultConnection"),
-                new MySqlServerVersion(new Version(5, 7, 37)) // Adjust version as needed
+            services.AddDbContext<MDBackofficeDbContext>(options =>
+            options.UseMySql(
+            Configuration.GetConnectionString("DefaultConnection"),
+            new MySqlServerVersion(new Version(5, 7, 37)) // Adjust version as needed
             )
             .ReplaceService<IValueConverterSelector, StronglyEntityIdValueConverterSelector>()
-        );
+            );
             ConfigureMyServices(services);
 
             services.AddControllers().AddNewtonsoftJson();
             services.AddSwaggerGen();
+            
         }
 
         public void SeedData(IApplicationBuilder app)
@@ -156,7 +163,7 @@ namespace MDBackoffice
             {
                 app.UseHsts();
             }
-
+            app.UseCors("AllowAll");
             app.UseHttpsRedirection();
             app.UseRouting();
 
