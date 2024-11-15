@@ -13,49 +13,49 @@
       <div class="input-field">
         <input name="firstName" #firstName="ngModel" [(ngModel)]="patient.firstName" placeholder="First Name" [disabled]="isSubmitted" required
           [class.invalid-placeholder]="firstName.invalid && firstName.touched" />
-        <span *ngIf="firstName.invalid && firstName.touched && isSubmitted" class="error">First Name is required</span>
+          <span></span>
       </div>
     
       <div class="input-field">
         <input name="lastName" #lastName="ngModel" [(ngModel)]="patient.lastName" placeholder="Last Name" [disabled]="isSubmitted" required
           [class.invalid-placeholder]="lastName.invalid && lastName.touched" />
-        <span *ngIf="lastName.invalid && lastName.touched && isSubmitted" class="error">Last Name is required</span>
+          <span></span>
       </div>
     
       <div class="input-field">
         <input name="phone" #phone="ngModel" [(ngModel)]="patient.phone" placeholder="Phone Number" [disabled]="isSubmitted" required
           [class.invalid-placeholder]="phone.invalid && phone.touched" />
-        <span *ngIf="phone.invalid && phone.touched && isSubmitted" class="error">Phone Number is required</span>
+          <span></span>
       </div>
     
       <div class="input-field">
         <input name="emergencyContact" #emergencyContact="ngModel" [(ngModel)]="patient.emergencyContact" placeholder="Emergency Contact" [disabled]="isSubmitted" required
           [class.invalid-placeholder]="emergencyContact.invalid && emergencyContact.touched" />
-        <span *ngIf="emergencyContact.invalid && emergencyContact.touched && isSubmitted" class="error">Emergency Contact is required</span>
+        <span></span>
       </div>
     
       <div class="input-field">
         <input name="email" #email="ngModel" [(ngModel)]="patient.email" placeholder="Email" [disabled]="isSubmitted" required
           [class.invalid-placeholder]="email.invalid && email.touched" />
-        <span *ngIf="email.invalid && email.touched && isSubmitted" class="error">Email is required</span>
+          <span></span>
       </div>
     
       <div class="input-field">
         <input name="address" #address="ngModel" [(ngModel)]="patient.address" placeholder="Address" [disabled]="isSubmitted" required
           [class.invalid-placeholder]="address.invalid && address.touched" />
-        <span *ngIf="address.invalid && address.touched && isSubmitted" class="error">Address is required</span>
+          <span></span>
       </div>
     
       <div class="input-field">
         <input name="gender" #gender="ngModel" [(ngModel)]="patient.gender" placeholder="Gender" [disabled]="isSubmitted" required
           [class.invalid-placeholder]="gender.invalid && gender.touched" />
-        <span *ngIf="gender.invalid && gender.touched && isSubmitted" class="error">Gender is required</span>
+          <span></span>
       </div>
     
       <div class="input-field">
         <input name="dateBirth" #dateBirth="ngModel" [(ngModel)]="patient.dateBirth" placeholder="Date of Birth" [disabled]="isSubmitted" required
           [class.invalid-placeholder]="dateBirth.invalid && dateBirth.touched" />
-        <span *ngIf="dateBirth.invalid && dateBirth.touched && isSubmitted" class="error">Date of Birth is required</span>
+          <span></span>
       </div>
     
       <div class="button">
@@ -63,7 +63,6 @@
         <button type="button" class="add-button-clear" (click)="clearForm()">Clear Input</button>
       </div>
     </form>
-    
     
   </div>
   <br>

@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
+import { NgForm } from '@angular/forms';
 import { SideBarAdminComponent } from "../../side-bar-admin/side-bar-admin.component";
 import { PatientService } from '../../../services/patient.service';
 import { MessageComponent } from '../../message/message.component';
@@ -8,11 +9,13 @@ import { CommonModule } from '@angular/common';
 @Component({
   selector: 'app-create-patient-profile',
   standalone: true,
-  imports: [SideBarAdminComponent, MessageComponent,FormsModule,CommonModule],
+  imports: [SideBarAdminComponent, MessageComponent, FormsModule, CommonModule],
   templateUrl: './create-patient-profile.component.html',
   styleUrls: ['./create-patient-profile.component.css']
 })
 export class CreatePatientProfileComponent {
+  @ViewChild('patientForm') patientForm!: NgForm;
+
   isSubmitted = false;
   patient = {
     firstName: '',
@@ -24,10 +27,9 @@ export class CreatePatientProfileComponent {
     gender: '',
     dateBirth: ''
   };
-
   constructor(private service: PatientService) { }
 
-  onSubmit(form: any): void {
+  onSubmit(form: NgForm): void {
     this.isSubmitted = true;
     if (form.valid) {
       this.service.CreatePatientProfile(
@@ -40,15 +42,14 @@ export class CreatePatientProfileComponent {
         this.patient.gender,
         this.patient.dateBirth
       );
-      console.log('Form is invalid');
     } else {
-      console.log('Form is invalid');
       this.isSubmitted = false;
     }
   }
 
-  clearForm() {
+  clearForm(): void {
     this.isSubmitted = false;
+
     this.patient = {
       firstName: '',
       lastName: '',
@@ -59,5 +60,13 @@ export class CreatePatientProfileComponent {
       gender: '',
       dateBirth: ''
     };
+    if (this.patientForm) {
+      this.patientForm.resetForm();
+    }
+    const inputs = document.querySelectorAll('.input-field input');
+    inputs.forEach(input => {
+      input.classList.remove('invalid-placeholder');
+    });
   }
 }
+

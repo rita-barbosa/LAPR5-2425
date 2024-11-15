@@ -142,12 +142,3 @@ background-color: #0056b3; /* Adjust the hover color as needed */
   border: 1px solid #ccc;
   border-radius: 5px;
 }
-
-.error {
-  color: red;
-  font-size: 12px;
-  position: absolute;
-  top: 100%;
-  left: 0;
-  margin-top: 5px;
-}
