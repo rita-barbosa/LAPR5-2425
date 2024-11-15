@@ -23,7 +23,7 @@ using MDBackoffice.Domain.OperationTypes;
 using MDBackoffice.Infrastructure.OperationTypes;
 using MDBackoffice.Domain.Specializations;
 using MDBackoffice.Infrastructure.Specializations;
-using MDBackoffice.Domain.OperationRequest;
+using MDBackoffice.Domain.OperationRequests;
 using MDBackoffice.Infrastructure.OperationRequests;
 using MDBackoffice.Infrastructure.Patients;
 using MDBackoffice.Infrastructure.Emails;
@@ -39,6 +39,10 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using System.Net;
 using Microsoft.AspNetCore.Http;
 using MDBackoffice.Infrastructure.Users;
+using MDBackoffice.Domain.Rooms;
+using MDBackoffice.Infrastructure.Rooms;
+using MDBackoffice.Domain.Appointments;
+using MDBackoffice.Infrastructure.Appointments;
 
 namespace MDBackoffice
 {
@@ -212,6 +216,11 @@ namespace MDBackoffice
             services.AddTransient<IOperationTypeRecordRepository, OperationTypeRecordRepository>();
             services.AddTransient<OperationTypeRecordService>();
 
+            services.AddTransient<IRoomRepository, RoomRepository>();
+            services.AddTransient<RoomService>();
+
+            services.AddTransient<IAppointmentRepository, AppointmentRepository>();
+            services.AddTransient<AppointmentService>();
         }
 
 
