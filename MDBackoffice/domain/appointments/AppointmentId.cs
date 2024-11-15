@@ -2,19 +2,21 @@ using System;
 using MDBackoffice.Domain.Shared;
 using Newtonsoft.Json;
 
-namespace MDBackoffice.Domain.OperationRequests
+namespace MDBackoffice.Domain.Appointments
 {
-    public class OperationRequestId : EntityId
+    public class AppointmentId : EntityId
     {
         [JsonConstructor]
-        public OperationRequestId(Guid value) : base(value)
+        public AppointmentId(Guid value) : base(value)
         {
+
         }
-        public OperationRequestId(string value) : base(value)
+
+        public AppointmentId(string value) : base(value)
         {
-            if (string.IsNullOrEmpty(value))
+            if(string.IsNullOrEmpty(value))
             {
-                throw new ArgumentException("Operation Request Id cannot be null or empty.");
+                throw new ArgumentException("Appointment Id cannot be null or empty.");
             }
         }
 
@@ -33,5 +35,5 @@ namespace MDBackoffice.Domain.OperationRequests
             var ob = base.Value;
             return new Guid((string)ob);
         }
-    }
+     }
 }
