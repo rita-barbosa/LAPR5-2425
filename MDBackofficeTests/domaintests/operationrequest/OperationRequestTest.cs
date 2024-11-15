@@ -1,5 +1,5 @@
 using System;
-using MDBackoffice.Domain.OperationRequest;
+using MDBackoffice.Domain.OperationRequests;
 using MDBackoffice.Domain.OperationTypes;
 using MDBackoffice.Domain.Patients;
 using MDBackoffice.Domain.Shared;

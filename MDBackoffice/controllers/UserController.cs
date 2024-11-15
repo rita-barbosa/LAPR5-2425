@@ -187,7 +187,7 @@ namespace MDBackoffice.Controllers
             try
             {
                 var user = await _userService.CreateStaffUserAsync(registerUserDto);
-                _staffService.AddUser(user, registerUserDto.Email, registerUserDto.Phone);
+                await _staffService.AddUser(user, registerUserDto.Email, registerUserDto.Phone);
                 string email = await _staffService.GetProfileEmail(user.Email.ToString(), registerUserDto.Phone);
                 await _userService.SendConfirmationEmail(user, email);
                 return Ok("The user has been successfully created. Please verify your email to complete the registration.");

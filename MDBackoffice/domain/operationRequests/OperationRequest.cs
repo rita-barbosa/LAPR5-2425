@@ -4,7 +4,7 @@ using MDBackoffice.Domain.StaffProfiles;
 using MDBackoffice.Domain.Patients;
 using MDBackoffice.Domain.OperationTypes;
 
-namespace MDBackoffice.Domain.OperationRequest
+namespace MDBackoffice.Domain.OperationRequests
 {
     public class OperationRequest : Entity<OperationRequestId>, IAggregateRoot
     {

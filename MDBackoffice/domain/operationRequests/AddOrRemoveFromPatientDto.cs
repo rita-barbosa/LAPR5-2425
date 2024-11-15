@@ -1,4 +1,4 @@
-namespace MDBackoffice.Domain.OperationRequest
+namespace MDBackoffice.Domain.OperationRequests
 {
     public class AddOrRemoveFromPatientDto(string patId, string opRequestId)
     {

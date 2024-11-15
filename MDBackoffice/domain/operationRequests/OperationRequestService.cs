@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.Identity;
 using MDBackoffice.Domain.Logs;
 using Microsoft.AspNetCore.Mvc;
 
-namespace MDBackoffice.Domain.OperationRequest
+namespace MDBackoffice.Domain.OperationRequests
 {
     public class OperationRequestService
     {

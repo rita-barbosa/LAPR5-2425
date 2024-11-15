@@ -2,7 +2,7 @@ using System;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using MDBackoffice.Domain.OperationRequest;
+using MDBackoffice.Domain.OperationRequests;
 using MDBackoffice.Domain.Shared;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
