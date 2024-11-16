@@ -32,7 +32,7 @@ export class CreatePatientProfileComponent {
   onSubmit(form: NgForm): void {
     this.isSubmitted = true;
     if (form.valid) {
-      this.service.CreatePatientProfile(
+      this.service.createPatientProfile(
         this.patient.firstName,
         this.patient.lastName,
         this.patient.phone,

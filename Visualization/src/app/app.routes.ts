@@ -11,19 +11,21 @@ import { StaffComponent } from './components/staff/staff.component';
 import { PatientComponent } from './components/patient/patient.component';
 import { CreatePatientProfileComponent } from './components/admin/create-patient-profile/create-patient-profile.component';
 import { CreateStaffProfileComponent } from './components/admin/create-staff-profile/create-staff-profile.component';
+import { UpdateProfileComponent } from './components/patient/update-profile/update-profile.component';
 
 export const routes: Routes = [
   { path: '', component: MenuComponent, pathMatch: 'full' },
-  { path: 'login', component: LoginComponent},
+  { path: 'login', component: LoginComponent },
   { path: 'menu', component: MenuComponent },
-  { path: 'admin', component: AdminComponent},
-  { path: 'create-patient-profile', component: CreatePatientProfileComponent},
-  { path: 'create-staff-profile', component: CreateStaffProfileComponent},
-  { path: 'staff', component: StaffComponent},
-  { path: 'patient', component: PatientComponent},
+  { path: 'admin', component: AdminComponent },
+  { path: 'create-patient-profile', component: CreatePatientProfileComponent },
+  { path: 'create-staff-profile', component: CreateStaffProfileComponent },
+  { path: 'staff', component: StaffComponent },
+  { path: 'patient', component: PatientComponent },
+  { path: 'update-patient-profile', component: UpdateProfileComponent },
   { path: 'cube', component: CubeComponent },
-  { path: 'curso-angular', component: CursoAngularComponent},
-  { path: 'curso-detail', component: CursoDetailComponent},
+  { path: 'curso-angular', component: CursoAngularComponent },
+  { path: 'curso-detail', component: CursoDetailComponent },
   { path: '**', redirectTo: '' }
 ];
 
