@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { SideBarStaffComponent } from "../side-bar-staff/side-bar-staff.component";
+import { SideBarStaffComponent } from "./sidebar-staff/side-bar-staff.component";
 
 @Component({
   selector: 'app-staff',

@@ -12,6 +12,8 @@ import { PatientComponent } from './components/patient/patient.component';
 import { CreatePatientProfileComponent } from './components/admin/create-patient-profile/create-patient-profile.component';
 import { CreateStaffProfileComponent } from './components/admin/create-staff-profile/create-staff-profile.component';
 import { UpdateProfileComponent } from './components/patient/update-profile/update-profile.component';
+import { DoctorComponent } from './components/staff/doctor/doctor.component';
+import { ListOperationRequestComponent } from './components/staff/doctor/list-operation-request/list-operation-request.component';
 
 export const routes: Routes = [
   { path: '', component: MenuComponent, pathMatch: 'full' },
@@ -21,6 +23,8 @@ export const routes: Routes = [
   { path: 'create-patient-profile', component: CreatePatientProfileComponent },
   { path: 'create-staff-profile', component: CreateStaffProfileComponent },
   { path: 'staff', component: StaffComponent },
+  { path: 'doctor', component: DoctorComponent },
+  {path: 'list-operation-request', component: ListOperationRequestComponent},
   { path: 'patient', component: PatientComponent },
   { path: 'update-patient-profile', component: UpdateProfileComponent },
   { path: 'cube', component: CubeComponent },

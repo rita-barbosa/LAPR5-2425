@@ -4,7 +4,7 @@ import { PatientService } from '../../../services/patient.service';
 import { MessageComponent } from '../../message/message.component';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { SideBarPatientComponent } from '../../side-bar-patient/side-bar-patient.component';
+import { SideBarPatientComponent } from '../sidebar-patient/side-bar-patient.component';
 
 @Component({
   selector: 'app-update-profile',

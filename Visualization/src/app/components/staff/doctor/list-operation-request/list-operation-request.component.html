@@ -1,0 +1,56 @@
+<body>
+    <div>
+        <app-side-bar-doctor></app-side-bar-doctor>
+    </div>
+    <header>
+        <h1 class="main-title">Search Operation Request</h1>
+    </header>
+
+    <div class="conteudo">
+        <div *ngIf="operationRequests && operationRequests.length > 0">
+            <p-table 
+                [value]="operationRequests" 
+                [(selection)]="selectedOperationRequest"
+                selectionMode="single" 
+                [tableStyle]="{'border-collapse': 'collapse', 'table-layout': 'fixed', 'width': '100%'}">
+                
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th style="width: 10%;">Select</th>
+                        <th style="width: 15%;">Priority</th>
+                        <th style="width: 15%;">Status</th>
+                        <th style="width: 60%;">Description</th>
+                    </tr>
+                </ng-template>
+                
+                <ng-template pTemplate="body" let-operationRequest>
+                    <tr [pSelectableRow]="operationRequest">
+                        <td>
+                            <p-tableRadioButton [value]="operationRequest"></p-tableRadioButton>
+                        </td>
+                        <td>{{ operationRequest.priority || "-" }}</td>
+                        <td>{{ operationRequest.status || "-" }}</td>
+                        <td>{{ operationRequest.description || "-" }}</td>
+                    </tr>
+                </ng-template>
+            </p-table>
+
+            <div *ngIf="selectedOperationRequest" class="action-buttons">
+                <button (click)="performOperation(selectedOperationRequest)">Edit Operation Request</button>
+                <button (click)="performOperation(selectedOperationRequest)">Delete Operation Request</button>
+                <button (click)="toggleDetails(selectedOperationRequest)">Show Details</button>
+            </div>
+            <br>
+            <!-- Display Operation Request Details Below the Table -->
+            <div *ngIf="detailsVisible" class="operation-details">
+                <h3>Operation Request Details</h3>
+                <p><strong>Deadline Date:</strong> {{ selectedOperationRequest.deadlineDate || '-' }}</p>
+                <p><strong>Date of Request:</strong> {{ selectedOperationRequest.dateOfRequest || '-' }}</p>
+                <p><strong>Priority:</strong> {{ selectedOperationRequest.priority || '-' }}</p>
+                <p><strong>Status:</strong> {{ selectedOperationRequest.status || '-' }}</p>
+                <p><strong>Description:</strong> {{ selectedOperationRequest.description || '-' }}</p>
+                <p><strong>Operation Type ID:</strong> {{ selectedOperationRequest.operationTypeId || '-' }}</p>
+            </div>
+        </div>
+    </div>
+</body>

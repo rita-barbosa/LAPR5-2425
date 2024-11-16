@@ -1,0 +1,130 @@
+.main-title {
+  font-family: 'Poppins', monospace;
+  font-size: 45px;
+  font-weight: bold;
+  background: linear-gradient(90deg, #0066cc, #45a0a0);    
+  color: #ffffff; /* Cor do texto do título */
+  padding: 1rem 2rem; /* Espaçamento ao redor do título */
+  border-radius: 8px; /* Bordas arredondadas */
+  text-align: center;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.192); /* Sombra sutil no texto */
+  margin-left: 0px ;
+  max-width: 50%; /* Limita a largura do título */
+}
+
+/* Layout for the content section */
+.conteudo {
+    margin-left: 220px; /* Adjusted for sidebar width */
+    margin-right: 1rem;
+    padding: 20px;
+    background-color: #ffffff;
+    border-radius: 5px;
+}
+
+/* Styling for the operation request table */
+p-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
+    padding: 12px;
+    text-align: left;
+}
+
+th {
+    font-weight: bold;
+    background-color: #0066cc;
+    color: #fff;
+}
+
+td {
+    background-color: #fff;
+}
+
+/* Button styling inside action buttons */
+.action-buttons {
+    margin-top: 20px;
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+}
+
+button {
+    background-color: #0074d9;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+/* Specific styling for the header */
+header {
+    margin-top: 2%;
+    margin-left: 220px; /* Adjusted for sidebar */
+    text-align: center;
+}
+
+/* Adjusted layout for left-aligned text */
+.titulo {
+    text-align: left;
+}
+
+/* Styling for the content paragraphs */
+.conteudo p {
+    font-size: 18px;
+}
+
+/* Styling for the operation details section */
+.operation-details {
+  margin-left: 17%; 
+  margin-right: 17%;
+  padding: 20px;
+  background-color: #f0f0f0fb;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  max-width: calc(100% - 17%); 
+  box-sizing: content-box; /* Ensures proper padding and width calculation */
+}
+
+.message {
+  margin-left: 17%; 
+  margin-right: 0.5%;
+  max-width: calc(100% - 17%); 
+  padding: 20px;
+  background-color: #f0f0f0;
+  border-radius: 5px;
+}
+
+/* Header for operation details */
+.operation-details h3 {
+  font-family: 'Poppins', monospace;
+  font-size: 24px;
+  color: #0066cc;
+  margin-bottom: 15px;
+}
+
+/* Paragraphs inside operation details */
+.operation-details p {
+  font-size: 16px;
+  line-height: 1.5;
+  margin-bottom: 10px;
+}
+
+/* Strong tags for labels */
+.operation-details strong {
+  color: #333;
+}
+
+/* Consistent styling for the operation details to match the rest of the page */
+.operation-details p,
+.operation-details h3 {
+  text-align: center;
+}

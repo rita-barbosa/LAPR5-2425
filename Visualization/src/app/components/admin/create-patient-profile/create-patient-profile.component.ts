@@ -1,6 +1,6 @@
 import { Component, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
-import { SideBarAdminComponent } from "../../side-bar-admin/side-bar-admin.component";
+import { SideBarAdminComponent } from "../sidebar-admin/side-bar-admin.component";
 import { PatientService } from '../../../services/patient.service';
 import { MessageComponent } from '../../message/message.component';
 import { FormsModule } from '@angular/forms';
