@@ -10,7 +10,7 @@ import { TestModuleComponent } from './modules/test-module/test-module.component
 import { StaffComponent } from './components/staff/staff.component';
 import { PatientComponent } from './components/patient/patient.component';
 import { CreatePatientProfileComponent } from './components/admin/create-patient-profile/create-patient-profile.component';
-import { HttpClientModule, provideHttpClient } from '@angular/common/http';  // Correct import
+import { CreateStaffProfileComponent } from './components/admin/create-staff-profile/create-staff-profile.component';
 
 export const routes: Routes = [
   { path: '', component: MenuComponent, pathMatch: 'full' },
@@ -18,6 +18,7 @@ export const routes: Routes = [
   { path: 'menu', component: MenuComponent },
   { path: 'admin', component: AdminComponent},
   { path: 'create-patient-profile', component: CreatePatientProfileComponent},
+  { path: 'create-staff-profile', component: CreateStaffProfileComponent},
   { path: 'staff', component: StaffComponent},
   { path: 'patient', component: PatientComponent},
   { path: 'cube', component: CubeComponent },

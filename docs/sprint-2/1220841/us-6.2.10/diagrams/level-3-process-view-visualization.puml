@@ -9,10 +9,10 @@ participant "SpecializationService" as SS <<service>>
 participant "StaffService" as PS <<service>>
 
 activate USER
-USER -> UPP : create patient profile
+USER -> UPP : create staff profile
 activate UPP
 
-UPP -> SS: getAllAvailable()
+UPP -> SS: getAllSpecializationsAvailable()
 activate SS
 
 SS ->o] : GET: api/Specializations

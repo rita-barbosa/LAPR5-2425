@@ -46,7 +46,7 @@ namespace MDBackoffice.Domain.Shared
                 throw new BusinessRuleValidationException("Function description cannot be null or empty.");
             }
 
-            if (!_functions.TryGetValue(description, out var matchingFunction))
+            if (!_functions.TryGetValue(description.ToLower(), out var matchingFunction))
             {
                 throw new BusinessRuleValidationException("Function has to be valid.");
             }

@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
 using MDBackoffice.Domain.Specializations;
+using System.Collections.Generic;
 
 namespace MDBackoffice.Controllers
 {
@@ -29,6 +30,21 @@ namespace MDBackoffice.Controllers
 
             return Specialization;
         }
+
+        [HttpGet()]
+        public async Task<ActionResult<List<SpecializationDto>>> GetAllAvailable()
+        {
+            try
+            {
+                var Specialization = await _service.GetAllAsync();
+                return Ok(Specialization);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { V = $"An unexpected error occurred: {ex.Message}" });
+            }
+        }
+
 
         // POST: api/Specializations
         [HttpPost]

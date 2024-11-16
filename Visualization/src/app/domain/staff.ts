@@ -1,4 +1,4 @@
-export interface Patient {
+export interface Staff {
     licenseNumber: string;
     firstName: string;
     lastName: string;
