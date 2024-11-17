@@ -221,7 +221,7 @@ public class OperationRequestServiceTests
 
         var expectedDtos = new List<ListOperationRequestDto> 
         {
-            new ListOperationRequestDto("first last", "tumor removal", "Requested"),
+            new ListOperationRequestDto("TestCode","first last", "tumor removal", "Requested"),
         };
 
         _repoStaMock.Setup(repo => repo.GetStaffWithEmail(email)).ReturnsAsync(staffMock);
