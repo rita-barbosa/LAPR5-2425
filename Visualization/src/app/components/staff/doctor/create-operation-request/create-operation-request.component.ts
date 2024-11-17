@@ -1,9 +1,9 @@
 import { Component, ViewChild } from '@angular/core';
-import { SideBarDoctorComponent } from '../doctor/sidebar-doctor/side-bar-doctor.component';
-import { MessageComponent } from '../../message/message.component';
+import { SideBarDoctorComponent } from '../sidebar-doctor/side-bar-doctor.component';
+import { MessageComponent } from '../../../message/message.component';
 import { FormsModule, NgForm } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { OperationRequestService } from '../../../services/operation-request.service';
+import { OperationRequestService } from '../../../../services/operation-request.service';
 
 @Component({
   selector: 'app-create-operation-request',

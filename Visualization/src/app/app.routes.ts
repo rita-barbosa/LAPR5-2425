@@ -15,7 +15,7 @@ import { UpdateProfileComponent } from './components/patient/update-profile/upda
 import { DoctorComponent } from './components/staff/doctor/doctor.component';
 import { ListOperationRequestComponent } from './components/staff/doctor/list-operation-request/list-operation-request.component';
 // import { EditPatientProfileComponent } from './components/admin/edit-patient-profile/edit-patient-profile.component';
-import { CreateOperationRequestComponent } from './components/staff/create-operation-request/create-operation-request.component';
+import { CreateOperationRequestComponent } from './components/staff/doctor/create-operation-request/create-operation-request.component';
 
 
 export const routes: Routes = [
