@@ -1,67 +1,81 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { SideBarDoctorComponent } from '../sidebar-doctor/side-bar-doctor.component';
 import { CommonModule } from '@angular/common';
 import { TableModule } from 'primeng/table';
-import { OperationRequest } from '../../../../domain/operation-request';
+import { ListOperationRequest } from '../../../../domain/list-operation-request';
+import { OperationRequestService } from '../../../../services/operation-request.service';
+import { FormsModule } from '@angular/forms';
+import { OperationRequest } from '../../../../domain/OperationRequest';
 
 @Component({
   selector: 'app-list-operation-request',
   standalone: true,
-  imports: [SideBarDoctorComponent, CommonModule, TableModule],
+  imports: [SideBarDoctorComponent, CommonModule, TableModule, FormsModule],
   templateUrl: './list-operation-request.component.html',
   styleUrl: './list-operation-request.component.css'
 })
-export class ListOperationRequestComponent {
-  operationRequests: OperationRequest[] = [
-    {
-      deadlineDate: '2024-12-01',
-      priority: 'High',
-      dateOfRequest: '2024-11-16',
-      status: 'Pending',
-      description: 'Appendectomy procedure',
-      operationTypeId: '12345'
-    },
-    {
-      deadlineDate: '2024-11-30',
-      priority: 'Medium',
-      dateOfRequest: '2024-11-15',
-      status: 'Approved',
-      description: 'Knee surgery',
-      operationTypeId: '67890'
-    }
-  ];
-
-  selectedOperationRequest: OperationRequest = {deadlineDate: '2024-12-01',
-    priority: 'High',
-    dateOfRequest: '2024-11-16',
-    status: 'Pending',
-    description: 'Appendectomy procedure',
-    operationTypeId: '12345'};
+export class ListOperationRequestComponent implements OnInit {
+  operationRequests: ListOperationRequest[] = [];
+  selectedOperationRequest!: ListOperationRequest;
+  fullOperationRequest!: OperationRequest;
   detailsVisible: boolean = false;
 
-  // Toggle the visibility of additional details for the selected operation request
-  toggleDetails(operationRequest: OperationRequest): void {
-    if (this.selectedOperationRequest === operationRequest) {
-      this.detailsVisible = !this.detailsVisible;
-    } else {
-      this.selectedOperationRequest = operationRequest;
-      this.detailsVisible = true;
-    }
+  filters = {
+    name: '',
+    priority: '',
+    operationType: '',
+    status: '',
+    dateOfRequest: '',
+    deadlineDate: ''
+  };
+
+  constructor(private service: OperationRequestService) {}
+
+  ngOnInit(): void {
+    this.fetchOperations();
   }
 
-  performOperation(operationRequest: OperationRequest): void {
-    // Implement logic for performing an operation (e.g., Edit, Delete)
+  fetchOperations(): void {
+    this.service.getOperationRequestsByFilters(
+      this.filters.name,
+      this.filters.priority,
+      this.filters.operationType,
+      this.filters.status,
+      this.filters.dateOfRequest,
+      this.filters.deadlineDate
+    ).subscribe({
+      next: data => {
+        console.log('Fetched Operations:', data);  // Log the fetched data to check its structure
+        this.operationRequests = data;
+      }
+    });
+  }
+  
+  applyFilters(): void {
+    this.fetchOperations();
   }
 
+  toggleDetails(operationRequest: ListOperationRequest): void {
+    this.service.getOperationRequestById(operationRequest.id).subscribe({
+      next: (fullRequest: OperationRequest) => {
+        this.fullOperationRequest = fullRequest;
+        this.detailsVisible = true; // Show the details section after fetching the data
+      },
+      error: (error) => {
+        console.error('Error fetching operation request details:', error);
+      }
+    });
+  }
+  closeDetails(): void {
+    // Hide the details section
+    this.detailsVisible = false;
+  }
 
-  // constructor(private service: OperationRequestService);
+  editOperationRequest(operationRequest: ListOperationRequest): void {
+    // Implement edit logic
+  }
 
-  // ngOnInit(): void {
-  //   this.service.getOperationRequestsByFilters().subscribe({
-  //     next: data => {
-  //       this.operationRequests = data;
-  //     }
-  //   });
-  // }
-
+  deleteOperationRequest(operationRequest: ListOperationRequest): void {
+    // Implement delete logic
+  }
 }

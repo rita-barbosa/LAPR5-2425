@@ -161,6 +161,7 @@ namespace MDBackoffice.Domain.OperationRequests
                 var patient = await _repoPat.GetByIdAsync(opRequest.PatientId) ?? throw new BusinessRuleValidationException("Couldn't obtain the patient associated with the operation request.");
 
                 var dto = new ListOperationRequestDto(
+                    opRequest.Id.Value.ToString(),
                     patient.Name.ToString(), 
                     opRequest.OperationTypeId.AsString(),
                     opRequest.Status.ToString()
