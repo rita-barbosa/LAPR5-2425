@@ -1,0 +1,96 @@
+import { Component, ViewChild } from '@angular/core';
+import { SideBarDoctorComponent } from '../sidebar-doctor/side-bar-doctor.component';
+import { MessageComponent } from '../../../message/message.component';
+import { FormsModule, NgForm } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import { OperationRequestService } from '../../../../services/operation-request.service';
+
+@Component({
+  selector: 'app-create-operation-request',
+  standalone: true,
+  imports: [SideBarDoctorComponent, MessageComponent, FormsModule, CommonModule],
+  templateUrl: './create-operation-request.component.html',
+  styleUrl: './create-operation-request.component.css'
+})
+export class CreateOperationRequestComponent {
+  @ViewChild('operationRequestForm') operationRequestForm!: NgForm;
+
+  isSubmitted = false;
+  operationRequest = {
+    deadLineDate: '',
+    priority: '',
+    dateOfRequest: '',
+    status: '',
+    staffId: '',
+    description: '',
+    patientId: '',
+    operationTypeId: ''
+  };
+
+  patients : string[] = [];
+  staffs : string[] = [];
+  operationTypes : string[] = [];
+
+  constructor(private service: OperationRequestService) { }
+
+  ngOnInit(): void {  
+    // this.service.getAllPatients().subscribe({
+    //   next: data => {
+    //     this.patients = data;
+    //   }
+    // });
+
+    // this.service.getAllStaffs().subscribe({
+    //   next: data => {
+    //     this.staffs = data;
+    //   }
+    // });
+
+    this.service.getAllOperationTypes().subscribe({
+      next: data => {
+        this.operationTypes = data;
+      }
+    });
+  }
+
+
+  onSubmit(form: NgForm): void {
+    this.isSubmitted = true;
+    if (form.valid) {
+      this.service.createOperationRequest(
+        this.operationRequest.deadLineDate,
+        this.operationRequest.priority,
+        this.operationRequest.dateOfRequest,
+        this.operationRequest.status,
+        this.operationRequest.staffId,
+        this.operationRequest.description,
+        this.operationRequest.patientId,
+        this.operationRequest.operationTypeId
+      );
+    } else {
+      this.isSubmitted = false;
+    }
+  }
+
+  clearForm(): void {
+    this.isSubmitted = false;
+
+    this.operationRequest = {
+      deadLineDate: '',
+      priority: '',
+      dateOfRequest: '',
+      status: '',
+      staffId: '',
+      description: '',
+      patientId: '',
+      operationTypeId: ''
+    };
+    if (this.operationRequestForm) {
+      this.operationRequestForm.resetForm();
+    }
+    const inputs = document.querySelectorAll('.input-field input');
+    inputs.forEach(input => {
+      input.classList.remove('invalid-placeholder');
+    });
+  }
+}

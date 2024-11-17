@@ -1,6 +1,6 @@
 using MDBackoffice.Domain.Emails;
 using MDBackoffice.Domain.Logs;
-using MDBackoffice.Domain.OperationRequest;
+using MDBackoffice.Domain.OperationRequests;
 using MDBackoffice.Domain.OperationTypes;
 using MDBackoffice.Domain.OperationTypes.ValueObjects.Phase;
 using MDBackoffice.Domain.OperationTypes.ValueObjects.RequiredStaff;
@@ -221,7 +221,7 @@ public class OperationRequestServiceTests
 
         var expectedDtos = new List<ListOperationRequestDto> 
         {
-            new ListOperationRequestDto("first last", "tumor removal", "Requested"),
+            new ListOperationRequestDto("TestCode","first last", "tumor removal", "Requested"),
         };
 
         _repoStaMock.Setup(repo => repo.GetStaffWithEmail(email)).ReturnsAsync(staffMock);

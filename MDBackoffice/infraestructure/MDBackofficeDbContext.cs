@@ -2,7 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using MDBackoffice.Domain.Tokens;
 using MDBackoffice.Domain.Specializations;
 using MDBackoffice.Domain.OperationTypes;
-using MDBackoffice.Domain.OperationRequest;
+using MDBackoffice.Domain.OperationRequests;
 using MDBackoffice.Infrastructure.Tokens;
 using MDBackoffice.Infrastructure.Products;
 using MDBackoffice.Infrastructure.Specializations;
@@ -19,6 +19,10 @@ using MDBackoffice.Infrastructure.EntityConfigurations;
 using MDBackoffice.Domain.OperationTypesRecords;
 using MDBackoffice.Infrastructure.OperationTypeRecords;
 using Microsoft.EntityFrameworkCore.Internal;
+using MDBackoffice.Domain.Appointments;
+using MDBackoffice.Domain.Rooms;
+using MDBackoffice.Infrastructure.Appointments;
+using MDBackoffice.Infrastructure.Rooms;
 
 
 namespace MDBackoffice.Infrastructure
@@ -32,11 +36,13 @@ namespace MDBackoffice.Infrastructure
         public DbSet<Patient> Patients { get; set; }
         public DbSet<RequiredStaff> RequiredStaff { get; set; }
         public DbSet<OperationRequest> OperationRequests { get; set; }
-         public DbSet<OperationTypeRecord> OperationTypeRecords { get; set; }
+        public DbSet<OperationTypeRecord> OperationTypeRecords { get; set; }
         public DbSet<RequiredStaffRecord> RequiredStaffRecords { get; set; }
 
         public DbSet<Log> Logs { get; set; }
         public DbSet<AppointmentHistory> appointmentHistories { get; set; }
+        public DbSet<Appointment> Appointments { get; set; }
+        public DbSet<Room> Rooms { get; set; }
         public MDBackofficeDbContext(DbContextOptions options) : base(options)
         {
 
@@ -56,6 +62,8 @@ namespace MDBackoffice.Infrastructure
             modelBuilder.ApplyConfiguration(new OperationTypeRecordEntityTypeConfiguration());
             modelBuilder.ApplyConfiguration(new RequiredStaffRecordEntityTypeConfiguration());
             modelBuilder.ApplyConfiguration(new AppointmentHistoryConfiguration());
+            modelBuilder.ApplyConfiguration(new AppointmentTypeConfiguration());
+            modelBuilder.ApplyConfiguration(new RoomTypeConfiguration());
         }
     }
 }

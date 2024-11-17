@@ -1,8 +1,6 @@
 import { Component } from '@angular/core';
-import { MenuComponent } from '../menu/menu.component';
-import { AppComponent } from '../../app.component';
-import { RouterLink, Router } from '@angular/router';
-import { SideBarAdminComponent } from "../side-bar-admin/side-bar-admin.component";
+import { RouterLink } from '@angular/router';
+import { SideBarAdminComponent } from "./sidebar-admin/side-bar-admin.component";
 
 @Component({
   selector: 'app-admin',

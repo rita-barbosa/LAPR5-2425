@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using MDBackoffice.Domain.OperationRequest;
+using MDBackoffice.Domain.OperationRequests;
 using MDBackoffice.Domain.OperationTypes;
 using MDBackoffice.Domain.Shared;
 using MDBackoffice.Domain.StaffProfiles;

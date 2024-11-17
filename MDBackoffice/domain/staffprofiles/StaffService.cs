@@ -69,7 +69,7 @@ namespace MDBackoffice.Domain.StaffProfiles
             return new StaffDto(staff.Name.ToString(), staff.Phone.ToString(), staff.Email.ToString(), staff.Address.ToString(), staff.Id.AsString(), staff.SpecializationId.AsString());
         }
 
-        public async void AddUser(User user, string email, string phone)
+        public async Task AddUser(User user, string email, string phone)
         {
             bool result = await _repo.ExistsStaffWithEmailOrPhone(email, phone.Split(' ')[0], phone.Split(' ')[1]);
 

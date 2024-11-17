@@ -2,7 +2,7 @@ using System;
 using MDBackoffice.Domain.Shared;
 using Newtonsoft.Json;
 
-namespace MDBackoffice.Domain.OperationRequest
+namespace MDBackoffice.Domain.OperationRequests
 {
     public class OperationRequestId : EntityId
     {

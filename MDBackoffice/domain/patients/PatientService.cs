@@ -57,7 +57,7 @@ namespace MDBackoffice.Domain.Patients
             return new PatientDto(patient.Name.ToString(), patient.PhoneNumber.ToString(), patient.Email.ToString(), patient.Address.ToString(), patient.DateBirth.ToString("yyyy-MM-dd"), patient.Id.AsString());
         }
 
-        public async void AddUser(User user, string email, string phone)
+        public async Task AddUser(User user, string email, string phone)
         {
             bool result = await _repo.ExistsPatientWithEmailOrPhone(email, phone.Split(' ')[0], phone.Split(' ')[1]);
 

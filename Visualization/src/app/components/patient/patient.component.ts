@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { SideBarPatientComponent } from "../side-bar-patient/side-bar-patient.component";
+import { SideBarPatientComponent } from "./sidebar-patient/side-bar-patient.component";
 
 @Component({
   selector: 'app-patient',

@@ -2,7 +2,7 @@ using System;
 using System.ComponentModel.DataAnnotations.Schema;
 using MDBackoffice.Domain.Shared;
 
-namespace MDBackoffice.Domain.OperationRequest
+namespace MDBackoffice.Domain.OperationRequests
 {
     public class OperationRequestStatus : IValueObject
     {

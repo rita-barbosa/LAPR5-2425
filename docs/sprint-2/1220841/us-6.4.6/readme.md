@@ -7,6 +7,9 @@
   - [3. Analysis](#3-analysis)
   - [4. Design](#4-design)
     - [4.1. Realization](#41-realization)
+  - [5. Implementation](#5-implementation)
+  - [5. Testing](#5-testing)
+  - [6. Observations](#6-observations)
 <!-- TOC -->
 
 ## 1. Context
@@ -37,3 +40,105 @@ To achieve this, it will be essential to determine the most effective approach, 
 
   - **RPO (Recovery Point Objective):** This strategy may result in a maximum data loss of up to 24 hours on weekdays if an incident occurs shortly before the differential backup. In such cases, only data from that day would be lost.
   - **WRT (Work Recovery Time):** The recovery process involves restoring the last full backup followed by the most recent differential. This method generally ensures faster restoration compared to incremental backups.
+
+## 5. Implementation
+
+Here's a complete solution for automating full and differential MySQL backups, including tar compression and cron scheduling.
+
+It's important to notice that it was necessary to install a package:
+
+```
+apt update
+apt install default-mysql-client
+```
+
+1. **Create the Full Backup Script**
+
+- `full_backup.sh`
+
+```
+#!/bin/bash
+# Full backup script
+DATE=$(date +%Y-%m-%d)
+BACKUP_DIR="/backup/full"
+
+# Check if the backup directory exists, and create it only if it does not
+if [ ! -d "$BACKUP_DIR" ]; then
+  mkdir -p "$BACKUP_DIR"
+fi
+
+# Perform the full backup and compress it
+mysqldump -h vsgate-s1.dei.isep.ipp.pt -P 11433  -u root -p'PF+w2gYZ+0Wz' --all-databases > $BACKUP_DIR/full_backup_$DATE.sql
+tar -czf $BACKUP_DIR/full_backup_$DATE.tar.gz -C $BACKUP_DIR full_backup_$DATE.sql
+
+# Remove the uncompressed SQL file to save space
+rm $BACKUP_DIR/full_backup_$DATE.sql
+```
+
+2. **Create the Differential Backup Script**
+
+- `differential_backup.sh`
+
+````
+#!/bin/bash
+# Differential backup script
+DATE=$(date +%Y-%m-%d)
+BACKUP_DIR="/backup/differential"
+
+# Check if the backup directory exists, and create it only if it does not
+if [ ! -d "$BACKUP_DIR" ]; then
+  mkdir -p "$BACKUP_DIR"
+fi
+
+# Perform the differential backup and compress it
+mysqldump -h vsgate-s1.dei.isep.ipp.pt -P 11433  -u root -p'PF+w2gYZ+0Wz' --all-databases --single-transaction --flush-logs --skip-lock-tables > $BACKUP_DIR/diff_backup_$DATE.sql
+tar -czf $BACKUP_DIR/diff_backup_$DATE.tar.gz -C $BACKUP_DIR diff_backup_$DATE.sql
+
+# Remove the uncompressed SQL file to save space
+rm $BACKUP_DIR/diff_backup_$DATE.sql
+
+````
+
+3. **Make Scripts Executable**
+
+The appropriate permissions were set to run the scripts using `chmod +x`.
+
+5. **Schedule Cron Jobs**
+
+To automate the backups I edited the file `/etc/crontab`.
+
+**Note:** This is the format of the file:
+```
+MIN HOUR DOM MON DAY COMMAND
+
+MIN: Minute field (0–59)
+HOUR: Hour field (0–23)
+DOM: Day of Month (1–31)
+MON: Month (1–12, or abbreviated month names like jan, feb, etc.)
+DAY: Day of the Week (0–7, where both 0 and 7 represent Sunday)
+COMMAND: The command or script to be executed
+```
+
+Taking that into account, the following lines were added:
+
+```
+# Full backup at 2 a.m. every Sunday
+0 2 * * 0 /path/to/full_backup.sh
+
+# Differential backup at 2 a.m. on weekdays (Monday to Friday)
+0 2 * * 1-5 /path/to/differential_backup.sh
+```
+
+## 5. Testing
+
+In order to test the solution, the scripts were manually executed once to ensure they work as expected:
+
+## 6. Observations
+
+- Here are some of the websites used as reference to implement this funcionality:
+
+1. [How to set up automatic remote backups for Linux servers using rsync and SSH.](https://www.simplified.guide/linux/automatic-backup)<https://www.simplified.guide/linux/automatic-backup>
+2. [Automated Backup and Rotation in Linux.](https://medium.com/@rohitdoshi9/automated-backup-and-rotation-in-linux-12ea9c545f12)
+3. [Automating MySQL Database Backups with a Bash Script](https://medium.com/@innovativejude.tech/automating-mysql-database-backups-with-a-bash-script-a-step-by-step-guide-a4b5cdbebf77)
+4. [Automate backup from remote mysql](https://unix.stackexchange.com/questions/346355/automate-backup-from-remote-mysql)
+5. [Understanding Crontab in Linux](https://tecadmin.net/crontab-in-linux-with-20-examples-of-cron-schedule/)

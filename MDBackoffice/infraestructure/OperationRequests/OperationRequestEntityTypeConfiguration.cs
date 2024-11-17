@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using MDBackoffice.Domain.OperationRequest;
+using MDBackoffice.Domain.OperationRequests;
 using MDBackoffice.Domain.OperationTypes;
 using MDBackoffice.Domain.Patients;
 using MDBackoffice.Domain.StaffProfiles;

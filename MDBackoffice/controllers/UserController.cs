@@ -165,7 +165,7 @@ namespace MDBackoffice.Controllers
             try
             {
                 var user = await _userService.CreatePatientUserAsync(registerPatientUserDto);
-                _patientService.AddUser(user, registerPatientUserDto.Email, registerPatientUserDto.Phone);
+                await _patientService.AddUser(user, registerPatientUserDto.Email, registerPatientUserDto.Phone);
                 string email = await _patientService.GetProfileEmail(user.Email.ToString(), registerPatientUserDto.Phone);
                 await _userService.SendConfirmationEmail(user, email);
                 return Ok("The user has been successfully created. Please verify your email to complete the registration.");
@@ -187,7 +187,7 @@ namespace MDBackoffice.Controllers
             try
             {
                 var user = await _userService.CreateStaffUserAsync(registerUserDto);
-                _staffService.AddUser(user, registerUserDto.Email, registerUserDto.Phone);
+                await _staffService.AddUser(user, registerUserDto.Email, registerUserDto.Phone);
                 string email = await _staffService.GetProfileEmail(user.Email.ToString(), registerUserDto.Phone);
                 await _userService.SendConfirmationEmail(user, email);
                 return Ok("The user has been successfully created. Please verify your email to complete the registration.");
