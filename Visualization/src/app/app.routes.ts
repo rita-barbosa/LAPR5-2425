@@ -14,6 +14,9 @@ import { CreateStaffProfileComponent } from './components/admin/create-staff-pro
 import { UpdateProfileComponent } from './components/patient/update-profile/update-profile.component';
 import { DoctorComponent } from './components/staff/doctor/doctor.component';
 import { ListOperationRequestComponent } from './components/staff/doctor/list-operation-request/list-operation-request.component';
+// import { EditPatientProfileComponent } from './components/admin/edit-patient-profile/edit-patient-profile.component';
+import { CreateOperationRequestComponent } from './components/staff/create-operation-request/create-operation-request.component';
+
 
 export const routes: Routes = [
   { path: '', component: MenuComponent, pathMatch: 'full' },
@@ -27,6 +30,8 @@ export const routes: Routes = [
   {path: 'list-operation-request', component: ListOperationRequestComponent},
   { path: 'patient', component: PatientComponent },
   { path: 'update-patient-profile', component: UpdateProfileComponent },
+  // { path: 'edit-patient-profile', component: EditPatientProfileComponent},
+  { path: 'create-operation-request', component: CreateOperationRequestComponent},
   { path: 'cube', component: CubeComponent },
   { path: 'curso-angular', component: CursoAngularComponent },
   { path: 'curso-detail', component: CursoDetailComponent },
