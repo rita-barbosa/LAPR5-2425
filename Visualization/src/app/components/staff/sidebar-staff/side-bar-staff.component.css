@@ -2,7 +2,7 @@
 .sidebar {
     overflow: auto;
     height: 100%;
-    width: 12%; /* Adjust this percentage as needed */
+    width: 180px;
     position: fixed;
     top: 80px;
     left: 0;
