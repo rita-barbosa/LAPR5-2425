@@ -8,6 +8,7 @@
   - [4. Design](#4-design)
     - [4.1. Realization](#41-realization)
   - [5. Implementation](#5-implementation)
+  - [6. Testing](#6-testing)
 <!-- TOC -->
 
 
@@ -56,7 +57,17 @@ fi
 echo "Users with more than 3 failed login attempts:"
 
 # Parse the log file and find users with more than 3 failed attempts
-grep "Failed password" "$LOG_FILE" | awk '{print $(NF-3)}' | sort | uniq -c | awk '$1 > 3' | while read -r count user; do
+grep "Failed password" "$LOG_FILE" | awk '{print $(NF-5)}' | sort | uniq -c | awk '$1 >= 3' | while read -r count user; do
     echo "User: $user - Failed Attempts: $count"
 done
 ```
+
+## 6. Testing
+
+I intentionally triggered failed login attempts for the users `asist` and `luser1`, as shown in:
+
+![File /var/log/auth.log](auth-log.png)
+
+I then executed the script, anticipating that the users `asist` and `luser1` would be displayed, and that is exactly what happened, as shown in:
+
+![Result](test.png)

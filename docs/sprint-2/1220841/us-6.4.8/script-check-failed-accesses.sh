@@ -12,6 +12,6 @@ fi
 echo "Users with more than 3 failed login attempts:"
 
 # Parse the log file and find users with more than 3 failed attempts
-grep "Failed password" "$LOG_FILE" | awk '{print $(NF-3)}' | sort | uniq -c | awk '$1 > 3' | while read -r count user; do
+grep "Failed password" "$LOG_FILE" | awk '{print $(NF-5)}' | sort | uniq -c | awk '$1 >= 3' | while read -r count user; do
     echo "User: $user - Failed Attempts: $count"
 done
