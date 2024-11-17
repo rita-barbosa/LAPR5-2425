@@ -85,8 +85,6 @@ export class OperationRequestService {
       params = params.set('deadlinedate', deadlineDate);
     }
     const url = `${this.theServerURL}/OperationRequest/filtered`;
-    this.log(url);
-
     return this.http.get<ListOperationRequest[]>(url, { headers: this.httpOptions.headers, params })
     .pipe(
       catchError((error) => {
@@ -94,7 +92,6 @@ export class OperationRequestService {
         return of([]);
       })
     );
-  
   }
 
   public createOperationRequest(deadLineDate: string, priority: string, dateOfRequest: string, status: string, staffId: string, description: string, patientId: string, operationTypeId: string) {

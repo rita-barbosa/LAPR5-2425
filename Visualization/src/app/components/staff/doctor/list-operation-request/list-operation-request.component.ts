@@ -6,11 +6,12 @@ import { ListOperationRequest } from '../../../../domain/list-operation-request'
 import { OperationRequestService } from '../../../../services/operation-request.service';
 import { FormsModule } from '@angular/forms';
 import { OperationRequest } from '../../../../domain/OperationRequest';
+import { MessageComponent } from '../../../message/message.component';
 
 @Component({
   selector: 'app-list-operation-request',
   standalone: true,
-  imports: [SideBarDoctorComponent, CommonModule, TableModule, FormsModule],
+  imports: [SideBarDoctorComponent, CommonModule, TableModule, FormsModule, MessageComponent],
   templateUrl: './list-operation-request.component.html',
   styleUrl: './list-operation-request.component.css'
 })
