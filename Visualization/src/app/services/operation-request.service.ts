@@ -54,13 +54,13 @@ export class OperationRequestService {
 
   public getOperationRequestById(id: string): Observable<OperationRequest> {
     const url = `${this.theServerURL}/OperationRequest/${id}`;
-  
+
     return this.http.get<OperationRequest>(url, this.httpOptions)
       .pipe(
         catchError(this.handleError<OperationRequest>('Get Operation Request'))
       );
   }
-  
+
 
   public getOperationRequestsByFilters(name: string, priority: string, operationType: string, status: string, dateOfRequest: string, deadlineDate: string): Observable<ListOperationRequest[]> {
     let params = new HttpParams();

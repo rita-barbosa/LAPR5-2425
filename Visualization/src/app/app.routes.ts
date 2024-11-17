@@ -16,7 +16,7 @@ import { DoctorComponent } from './components/staff/doctor/doctor.component';
 import { ListOperationRequestComponent } from './components/staff/doctor/list-operation-request/list-operation-request.component';
 // import { EditPatientProfileComponent } from './components/admin/edit-patient-profile/edit-patient-profile.component';
 import { CreateOperationRequestComponent } from './components/staff/doctor/create-operation-request/create-operation-request.component';
-
+import { HospitalSimulationComponent } from './hospital-simulation/hospital-simulation.component';
 
 export const routes: Routes = [
   { path: '', component: MenuComponent, pathMatch: 'full' },
@@ -35,6 +35,7 @@ export const routes: Routes = [
   { path: 'cube', component: CubeComponent },
   { path: 'curso-angular', component: CursoAngularComponent },
   { path: 'curso-detail', component: CursoDetailComponent },
+  { path: 'hospital-simulation', component: HospitalSimulationComponent },
   { path: '**', redirectTo: '' }
 ];
 
