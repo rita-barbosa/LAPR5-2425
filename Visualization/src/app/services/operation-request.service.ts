@@ -8,6 +8,13 @@ import { OperationType } from '../domain/OperationType';
 import { OperationRequest } from '../domain/OperationRequest';
 import { ListOperationRequest } from '../domain/list-operation-request';
 
+interface UpdateOperationRequest {
+  id : string,
+  priority : string,
+  description : string,
+  deadlineDate : string
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -61,6 +68,16 @@ export class OperationRequestService {
       );
   }
 
+  public updateOperationRequest(updatedInfo : UpdateOperationRequest) {
+    const url = `${this.theServerURL}/OperationRequest/Update`;
+
+    this.http.put<OperationRequest>(url, updatedInfo, this.httpOptions)
+      .pipe(catchError(this.handleError<OperationRequest>('Update Operation Request')))
+      .subscribe(data => {
+        this.log(`Operation Request: ${data.id} was successfully edited.`);
+      });
+
+  }
 
   public getOperationRequestsByFilters(name: string, priority: string, operationType: string, status: string, dateOfRequest: string, deadlineDate: string): Observable<ListOperationRequest[]> {
     let params = new HttpParams();
