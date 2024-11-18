@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { MessageService } from './message.service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Patient } from '../domain/patient';
 import { catchError, Observable, of } from 'rxjs';
 import { EditPatient } from '../domain/edit-patient';
+import { Patient } from '../domain/patient';
 
 @Injectable({
   providedIn: 'root'

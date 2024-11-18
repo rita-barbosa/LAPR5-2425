@@ -148,7 +148,7 @@ namespace MDBackoffice.Controllers
             try
             {
                 await _userService.ConfirmEmailPatient(userId, token);
-                return Ok("Email confirmed successfully and account activated.");
+                return Ok(new { message = $"Email confirmed successfully and account activated."});
             }
             catch (BusinessRuleValidationException ex)
             {
@@ -187,15 +187,15 @@ namespace MDBackoffice.Controllers
                 await _patientService.AddUser(user, registerPatientUserDto.Email, registerPatientUserDto.Phone);
                 string email = await _patientService.GetProfileEmail(user.Email.ToString(), registerPatientUserDto.Phone);
                 await _userService.SendConfirmationEmail(user, email);
-                return Ok("The user has been successfully created. Please verify your email to complete the registration.");
+                return Ok(new { message = "The user has been successfully created. Please verify your email to complete the registration." });
             }
             catch (BusinessRuleValidationException ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { error = ex.Message });
             }
             catch (Exception ex)
             {
-                return BadRequest(new { V = $"An unexpected error occurred: {ex.Message}" });
+                return BadRequest(new { error = $"An unexpected error occurred: {ex.Message}" });
             }
         }
 

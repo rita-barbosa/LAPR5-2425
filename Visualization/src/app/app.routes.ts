@@ -18,6 +18,8 @@ import { ListOperationRequestComponent } from './components/staff/doctor/list-op
 import { CreateOperationRequestComponent } from './components/staff/doctor/create-operation-request/create-operation-request.component';
 import { HospitalSimulationComponent } from './hospital-simulation/hospital-simulation.component';
 import { CreateOperationTypeComponent } from './components/admin/create-operation-type/create-operation-type.component';
+import { RegistrationComponent } from './user/registration/registration.component';
+import { ActivationComponent } from './user/verify/verify.component';
 
 
 export const routes: Routes = [
@@ -28,6 +30,8 @@ export const routes: Routes = [
   { path: 'create-patient-profile', component: CreatePatientProfileComponent },
   { path: 'create-staff-profile', component: CreateStaffProfileComponent },
   { path: 'staff', component: StaffComponent },
+  { path: 'user/registration', component: RegistrationComponent},
+  { path: 'user/verify', component: ActivationComponent},
   { path: 'doctor', component: DoctorComponent },
   {path: 'list-operation-request', component: ListOperationRequestComponent},
   { path: 'patient', component: PatientComponent },
