@@ -8,6 +8,14 @@ import { FormsModule } from '@angular/forms';
 import { OperationRequest } from '../../../../domain/OperationRequest';
 import { MessageComponent } from '../../../message/message.component';
 
+interface UpdateOperationRequest {
+  id : string,
+  priority : string,
+  description : string,
+  deadlineDate : string
+}
+
+
 @Component({
   selector: 'app-list-operation-request',
   standalone: true,
@@ -15,11 +23,13 @@ import { MessageComponent } from '../../../message/message.component';
   templateUrl: './list-operation-request.component.html',
   styleUrl: './list-operation-request.component.css'
 })
+
 export class ListOperationRequestComponent implements OnInit {
   operationRequests: ListOperationRequest[] = [];
   selectedOperationRequest!: ListOperationRequest;
   fullOperationRequest!: OperationRequest;
   detailsVisible: boolean = false;
+  updateVisible: boolean = false;
 
   filters = {
     name: '',
@@ -27,6 +37,13 @@ export class ListOperationRequestComponent implements OnInit {
     operationType: '',
     status: '',
     dateOfRequest: '',
+    deadlineDate: ''
+  };
+
+  update : UpdateOperationRequest = {
+    id : '',
+    priority: '',
+    description: '',
     deadlineDate: ''
   };
 
@@ -67,13 +84,32 @@ export class ListOperationRequestComponent implements OnInit {
       }
     });
   }
+  
   closeDetails(): void {
     // Hide the details section
     this.detailsVisible = false;
   }
 
+  closeUpdate(): void {
+    this.updateVisible = false;
+  }
+
   editOperationRequest(operationRequest: ListOperationRequest): void {
-    // Implement edit logic
+    this.service.getOperationRequestById(operationRequest.id).subscribe({
+      next: (fullRequest: OperationRequest) => {
+        this.fullOperationRequest = fullRequest;
+        this.updateVisible = true;
+      },
+      error: (error) => {
+        console.error('Error fetching operation request details:', error);
+      }
+    });
+  }
+
+  saveUpdateDetails(){
+    this.update.id = this.fullOperationRequest.id || '';
+    console.log("update ID:" + this.update.id);
+    this.service.updateOperationRequest(this.update);
   }
 
   deleteOperationRequest(operationRequest: ListOperationRequest): void {

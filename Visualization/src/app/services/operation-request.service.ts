@@ -74,6 +74,7 @@ export class OperationRequestService {
     this.http.put<OperationRequest>(url, updatedInfo, this.httpOptions)
       .pipe(catchError(this.handleError<OperationRequest>('Update Operation Request')))
       .subscribe(data => {
+        console.log(data);
         this.log(`Operation Request: ${data.id} was successfully edited.`);
       });
 
