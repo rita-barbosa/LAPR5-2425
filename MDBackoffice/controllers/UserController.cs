@@ -51,6 +51,25 @@ namespace MDBackoffice.Controllers
             }
         }
 
+        [HttpGet("decode-token")]
+        public IActionResult DecodeToken(string token)
+        {
+            try
+            {
+               var (email, roles) = _userService.DecodeJwtToken(token);
+                return Ok(new { Email = email, Roles = roles });
+            }
+            catch (BusinessRuleValidationException ex)
+            {
+                return BadRequest(new { ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { V = $"An unexpected error occurred: {ex.Message}" });
+            }
+        }
+
+
      /* [HttpGet("Login-Google")]
         public async Task<IActionResult> LoginGoogle()
         {
