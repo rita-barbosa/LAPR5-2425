@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { AuthService } from '../../services/auth.service';
+import { UserService } from '../../services/user.service';
 import { RouterLink, Router } from '@angular/router';
 import { AdminComponent } from "../admin/admin.component";
 import { StaffComponent } from '../staff/staff.component';
@@ -14,7 +14,7 @@ import { PatientComponent } from '../patient/patient.component';
 })
 
 export class MenuComponent implements OnInit {
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(private userService: UserService, private router: Router) {}
 
   ngOnInit(): void {}
 }
