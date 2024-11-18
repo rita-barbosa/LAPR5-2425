@@ -192,7 +192,7 @@ availability_all_surgeries([],_,_).
 availability_all_surgeries([OpCode|LOpCode],Room,Day):-
     surgery_id(OpCode,OpType),
     surgery(OpType,TAnesthesia,TSurgery,TCleaning),
-    availability_operation(OpCode,Room,Day,LPossibilities,LStaff),
+    availability_operation_changed2(OpCode,Room,Day,LPossibilities,LStaff),!,
     schedule_first_interval(TAnesthesia,TSurgery,TCleaning,LPossibilities,(TinS,TfinS)), % will need to change this because right now it is only scheduling the first available slot
     retract(agenda_operation_room1(Room,Day,Agenda)),
     insert_agenda((TinS,TfinS,OpCode),Agenda,Agenda1),
