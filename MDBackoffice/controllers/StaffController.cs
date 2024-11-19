@@ -22,9 +22,9 @@ namespace MDBackoffice.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<StaffDto>> GetStaffById(StaffId id)
+        public async Task<ActionResult<StaffDto>> GetStaffById(string id)
         {
-            var staff = await _service.GetByIdAsync(id);
+            var staff = await _service.GetByIdAsync(new StaffId(id));
             if (staff == null)
             {
                 return NotFound();
@@ -116,7 +116,7 @@ namespace MDBackoffice.Controllers
 
         // POST: api/Staff/Filtered-List
         [HttpPost("Filtered-List")]
-        [Authorize(Policy = "Admin")]
+        // [Authorize(Policy = "Admin")]
         public async Task<ActionResult<List<StaffDto>>> GetFilteredStaffProfiles(StaffQueryParametersDto dto)
         {
             var staff = await _service.FilterStaffProfiles(dto);

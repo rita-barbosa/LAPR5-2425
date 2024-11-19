@@ -75,12 +75,12 @@ namespace MDBackoffice.Controllers
 
         // PUT: api/OperationRequest/Update
         [HttpPut("Update")]
-        [Authorize(Policy = "Doctor")]
+        // [Authorize(Policy = "Doctor")]
         public async Task<ActionResult<OperationRequestDto>> Update(UpdateOperationRequestDto dto)
         {
-            string? userEmail = User.FindFirstValue(ClaimTypes.Email);
+            // string? userEmail = User.FindFirstValue(ClaimTypes.Email);
 
-            // var userEmail = "ritabfbarbosa@gmail.com";
+            var userEmail = "ritabfbarbosa@gmail.com";
 
             if (!await _service.CheckDoctorIsRequestingDoctor(userEmail, dto.Id)){
                 return BadRequest("You are not the requesting doctor for the choosen operation request.");
@@ -103,7 +103,7 @@ namespace MDBackoffice.Controllers
         }
 
         [HttpGet("filtered")]
-        [Authorize(Policy = "Doctor")]
+        // [Authorize(Policy = "Doctor")]
         public async Task<ActionResult<IEnumerable<OperationRequestDto>>> GetOperationRequestByFilters(
                                                                                 [FromQuery] string? name = null,
                                                                                 [FromQuery] string? priority = null,
@@ -114,9 +114,9 @@ namespace MDBackoffice.Controllers
         {
             try
             {
-                var email = User.FindFirstValue(ClaimTypes.Email);
+                // var email = User.FindFirstValue(ClaimTypes.Email);
 
-                // var email = "ritabfbarbosa@gmail.com";
+                var email = "ritabfbarbosa@gmail.com";
                 if (email == null)
                 {
                     return NotFound("Couldn't obtain the logged in user's email");

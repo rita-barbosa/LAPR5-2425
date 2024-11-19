@@ -1,5 +1,3 @@
-using MDBackoffice.Domain.Shared;
-
 namespace MDBackoffice.Domain.Shared
 {
     public class IdPassDto
