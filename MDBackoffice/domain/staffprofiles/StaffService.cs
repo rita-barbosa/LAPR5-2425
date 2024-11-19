@@ -218,8 +218,16 @@ namespace MDBackoffice.Domain.StaffProfiles
 
             foreach (Staff Staff in filteredStaffs)
             {
-                //string name, string phone, string email, string address, string specializationDenomination
-                StaffDtoListFiltered.Add(new StaffDto(Staff.Name.ToString(), Staff.Phone.ToString(), Staff.Email.ToString(), Staff.Address.ToString(), Staff.Id.AsString(), Staff.SpecializationId.AsString()));
+                if(Staff.Status){
+                    //string name, string phone, string email, string address, string specializationDenomination
+                    StaffDtoListFiltered.Add(new StaffDto(Staff.Name.ToString(), Staff.Phone.ToString(), Staff.Email.ToString(), Staff.Address.ToString(), Staff.Id.AsString(), Staff.SpecializationId.AsString(), "Active"));
+                }
+                else
+                {
+                    //string name, string phone, string email, string address, string specializationDenomination
+                    StaffDtoListFiltered.Add(new StaffDto(Staff.Name.ToString(), Staff.Phone.ToString(), Staff.Email.ToString(), Staff.Address.ToString(), Staff.Id.AsString(), Staff.SpecializationId.AsString(), "Deactivated"));
+                }
+            
             }
 
             return StaffDtoListFiltered;

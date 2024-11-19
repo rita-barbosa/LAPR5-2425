@@ -140,7 +140,7 @@ namespace MDBackoffice.Controllers
                 bool result = await _service.DeactivateStaffProfile(idPassDto.Id); 
                 if (result)
                 {
-                    return Ok("Staff deactivated successfully.");
+                    return Ok(new {message ="Staff deactivated successfully." });
                 }
                 else
                 {

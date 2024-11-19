@@ -6,6 +6,7 @@ import { Specialization } from '../domain/specialization';
 import { StaffWithId } from '../domain/staff-with-id';
 import { Staff } from '../domain/staff';
 import { StaffQueryParameters } from '../domain/staff-query-parameters';
+import { IdPasser } from '../domain/IdPasser';
 
 @Injectable({
   providedIn: 'root'
@@ -46,6 +47,19 @@ export class StaffService {
       .pipe(catchError(this.handleError<Staff>('Create staff profile')))
       .subscribe(data => {
         this.log(`Staff profile: ${data.email} was successfully created.`);
+      });
+  }
+
+  deactivateStaffProfile(idStaff: string) {
+    const url = `${this.theServerURL}/Staff/Deactivate-StaffProfile`;
+    let idPasser: IdPasser = {
+      id: idStaff
+    };
+
+    this.http.put<{ message : string }>(url, idPasser, this.httpOptions)
+      .pipe(catchError(this.handleError<{ message : string }>('Deactivate staff profile')))
+      .subscribe(data => {
+        this.log(`${data.message}`);
       });
   }
 

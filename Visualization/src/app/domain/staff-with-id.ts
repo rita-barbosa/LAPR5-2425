@@ -8,4 +8,5 @@ export interface StaffWithId {
     address : string;
     specializationId : string;
     slots : Slots[];
+    status : string;
 }

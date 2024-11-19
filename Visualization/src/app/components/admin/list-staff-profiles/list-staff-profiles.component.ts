@@ -94,7 +94,7 @@ export class ListStaffProfiles implements OnInit {
     // Implement edit logic
   }
 
-  deleteStaffProfile(staff: StaffWithId): void {
-    // Implement delete logic
+  deactivateStaffProfile(staff: StaffWithId): void {
+    this.service.deactivateStaffProfile(staff.id);
   }
 }
