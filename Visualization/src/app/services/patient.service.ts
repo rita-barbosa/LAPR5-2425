@@ -3,7 +3,9 @@ import { MessageService } from './message.service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { catchError, Observable, of } from 'rxjs';
 import { EditPatient } from '../domain/edit-patient';
-import { Patient } from '../domain/patient';
+import { Patient } from '../domain/Patient';
+import { PatientQueryParameters } from '../domain/patient-query-parameters';
+import { PatientWithId } from '../domain/patient-with-id';
 
 @Injectable({
   providedIn: 'root'
@@ -68,6 +70,50 @@ export class PatientService {
       .subscribe(data => {
         this.log(`Patient profile: ${data.email} was successfully created.`);
       });
+  }
+
+
+  getPatientsByFilters(patientQueryParameters: PatientQueryParameters): Observable<PatientWithId[]> {
+    const url = `${this.theServerURL}/Filtered-List`;
+
+    return this.http.post<PatientWithId[]>(url, patientQueryParameters, this.httpOptions).pipe(
+        catchError((error) => {
+          if (error.status = 404) {
+
+            const queryParameters: PatientQueryParameters = {
+              queryfilters: []
+            };
+
+            queryParameters.queryfilters.push(
+              {
+                firstName : '',
+                lastName : '',
+                email : '',
+                gender : '',
+                dateBirth : '',
+                medicalRecordNumber : ''
+              }
+            )
+
+            this.log('No patient profiles were found with the chosen criteria.')
+            return this.http.post<PatientWithId[]>(url, queryParameters, this.httpOptions)
+          }else {
+            this.handleError<PatientWithId[]>('Get patient profile filtered list', error);
+            return of([]); 
+          }
+        })
+    );
+  }
+
+  getPatientById(id: string): Observable<PatientWithId> {
+    const url = `${this.theServerURL}/SimpleId/${id}`;
+
+    return this.http.get<PatientWithId>(url, this.httpOptions).pipe(
+        catchError((error) => {
+            this.handleError<PatientWithId>('Get patient profile', error);
+            return of({} as PatientWithId);
+        })
+    );
   }
 
  

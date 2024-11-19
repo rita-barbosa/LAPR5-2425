@@ -23,17 +23,30 @@ namespace MDBackoffice.Controllers
             _service = service;
         }
 
+        [HttpGet("SimpleId/{id}")]
+        public async Task<ActionResult<PatientDto>> GetPatientById(string id)
+        {
+            var medicalRecordNumber = new MedicalRecordNumber(id);
+            var patient = await _service.GetByIdAsync(medicalRecordNumber);
+            if (patient == null)
+            {
+                return NotFound();
+            }
+            return Ok(patient);
+        }
+    
+
         [HttpGet("{id}")]
         [Route("Get-PatientWithId")]
         [Authorize(Policy = "Admin")]
         public async Task<ActionResult<PatientDto>> GetPatientById(MedicalRecordNumber id)
         {
-            var staff = await _service.GetByIdAsync(id);
-            if (staff == null)
+            var patient = await _service.GetByIdAsync(id);
+            if (patient == null)
             {
                 return NotFound();
             }
-            return Ok(staff);
+            return Ok(patient);
         }
     
         [HttpPost]
@@ -138,7 +151,7 @@ namespace MDBackoffice.Controllers
             }
         }
 
-        // GET: api/Patients/Filtered-List
+        // GET: api/Patient/Filtered-List
         [HttpPost("Filtered-List")]
         [Authorize(Policy = "Admin")]
         public async Task<ActionResult<List<PatientDto>>> GetFilteredPatientProfiles(PatientQueryParametersDto dto)

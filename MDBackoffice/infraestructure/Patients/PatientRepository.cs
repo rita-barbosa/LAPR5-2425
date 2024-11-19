@@ -83,7 +83,8 @@ namespace MDBackoffice.Infrastructure.Patients
 
                 if (!string.IsNullOrEmpty(filter.DateBirth))
                 {
-                    query = query.AsEnumerable().Where(s => s.DateBirth.Date.ToString() == $"{filter.DateBirth} {"00:00:00"}").AsQueryable();
+                    var parsedDate = DateTime.Parse(filter.DateBirth);
+                    query = query.AsEnumerable().Where(s => s.DateBirth.Date == parsedDate.Date).AsQueryable();
                 }
 
                 if (!string.IsNullOrEmpty(filter.MedicalRecordNumber))

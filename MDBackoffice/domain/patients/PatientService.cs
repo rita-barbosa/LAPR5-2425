@@ -35,8 +35,9 @@ namespace MDBackoffice.Domain.Patients
             if (patient == null)
                 return null;
 
-            return new PatientDto(patient.Name.ToString(), patient.PhoneNumber.ToString(), patient.Email.ToString(), patient.Id.AsString());
+            return new PatientDto(patient.Name.ToString(), patient.PhoneNumber.ToString(), patient.Email.ToString(), patient.Address.ToString(), patient.DateBirth.ToString(), patient.Id.AsString());
         }
+
         public async Task<PatientDto> CreatePatientProfile([FromBody] CreatingPatientDto dto)
         {
             if (await _repo.ExistsPatientWithEmailOrPhone(dto.Email, dto.Phone.Split(' ')[0], dto.Phone.Split(' ')[1]))
@@ -128,7 +129,7 @@ namespace MDBackoffice.Domain.Patients
 
             foreach (Patient patient in filteredPatients)
             {
-                patientDtoListFiltered.Add(new PatientDto(patient.Name.ToString(), patient.PhoneNumber.ToString(), patient.Email.ToString(), patient.Id.AsString()));
+                patientDtoListFiltered.Add(new PatientDto(patient.Name.ToString(), patient.PhoneNumber.ToString(), patient.Email.ToString(), patient.Address.ToString(), patient.DateBirth.ToString(), patient.Id.AsString()));
             }
 
             return patientDtoListFiltered;
