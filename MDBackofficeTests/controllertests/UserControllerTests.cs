@@ -415,7 +415,8 @@ namespace MDBackofficeTests.controllertests
             // Assert
             Assert.IsType<OkObjectResult>(result);
             var okResult = result as OkObjectResult;
-            Assert.Equal("The user has been successfully created. Please verify your email to complete the registration.", okResult.Value);
+            Assert.Equal("{ message = The user has been successfully created. Please verify your email to complete the registration. }", okResult.Value.ToString());
+
 
             // Verify interactions
             _userManagerMock.Verify(um => um.CreateAsync(It.IsAny<User>(), password), Times.Once);
@@ -437,7 +438,7 @@ namespace MDBackofficeTests.controllertests
 
             // Assert
             var okResult = Assert.IsType<OkObjectResult>(result);
-            Assert.Equal("Email confirmed successfully and account activated.", okResult.Value);
+            Assert.Equal("{ message = Email confirmed successfully and account activated. }", okResult.Value.ToString());
         }
 
     }
