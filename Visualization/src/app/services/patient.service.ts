@@ -6,6 +6,7 @@ import { EditPatient } from '../domain/edit-patient';
 import { Patient } from '../domain/Patient';
 import { PatientQueryParameters } from '../domain/patient-query-parameters';
 import { PatientWithId } from '../domain/patient-with-id';
+import { IdPasser } from '../domain/IdPasser';
 
 @Injectable({
   providedIn: 'root'
@@ -114,6 +115,19 @@ export class PatientService {
             return of({} as PatientWithId);
         })
     );
+  }
+
+  deactivatePatientProfile(patientId: string) {
+    const url = `${this.theServerURL}/Delete-PatientProfile`;
+    let idPasser: IdPasser = {
+      id: patientId
+    };
+
+    this.http.put<{ message : string }>(url, idPasser, this.httpOptions)
+      .pipe(catchError(this.handleError<{ message : string }>('Deactivate patient profile')))
+      .subscribe(data => {
+        this.log(`${data.message}`);
+      });
   }
 
  

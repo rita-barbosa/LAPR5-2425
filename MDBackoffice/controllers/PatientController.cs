@@ -70,16 +70,15 @@ namespace MDBackoffice.Controllers
             }
         }
 
-    	[HttpDelete]
+    	[HttpPut]
         [Route("Delete-PatientProfile")]
-        [Authorize(Policy = "Admin")]
         public async Task<IActionResult> DeletePatientProfile([FromBody] IdPassDto idPassDto)
         {
             try
             {
                 await _service.DeletePatientProfile(idPassDto.Id);
 
-                return Ok("Patient profile and account succefully deleted");
+                return Ok(new { message = "Patient profile and account succefully deleted." });
             }
             catch (BusinessRuleValidationException ex)
             {
@@ -153,7 +152,6 @@ namespace MDBackoffice.Controllers
 
         // GET: api/Patient/Filtered-List
         [HttpPost("Filtered-List")]
-        [Authorize(Policy = "Admin")]
         public async Task<ActionResult<List<PatientDto>>> GetFilteredPatientProfiles(PatientQueryParametersDto dto)
         {
             var patients = await _service.FilterPatientProfiles(dto);

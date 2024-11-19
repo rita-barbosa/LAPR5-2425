@@ -91,7 +91,7 @@ export class ListPatientProfiles implements OnInit {
   }
 
   deletePatientProfile(patient : PatientWithId): void {
-    // Implement delete logic
+    this.service.deactivatePatientProfile(patient.patientId);
   }
 
 }

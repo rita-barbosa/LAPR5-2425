@@ -98,7 +98,7 @@ namespace MDBackofficeTests.integrationtests.patient
 
         // Assert
         var okResult = Assert.IsType<OkObjectResult>(result);
-        Assert.Equal("Patient profile and account succefully deleted", okResult.Value);
+        Assert.Equal("{ message = Patient profile and account succefully deleted. }", okResult.Value.ToString());
     }
 
     [Fact]
