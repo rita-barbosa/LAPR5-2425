@@ -5,7 +5,10 @@
 :- dynamic agenda_operation_room/3.
 :- dynamic agenda_operation_room1/3.
 :- dynamic better_sol/5. %dynamic and auxiliary fact to storethe better solution in a certain moment
+:- dynamic final_time_heuristics/1.
+:- dynamic earliest_surgery/3.
 
+% DATA
 % DATA - AGENDA STAFF
 agenda_staff(d001,20241028,[(720,790,m01),(1080,1140,c01)]).
 agenda_staff(d002,20241028,[(850,900,m02),(901,960,m02),(1380,1440,c02)]).
@@ -101,7 +104,7 @@ intersect_all_agendas([Name|LNames],Date,LI):-
     intersect_2_agendas(LA,LI1,LI).
 
 intersect_2_agendas([],_,[]).
-intersect_2_agendas([D|LD],LA,LIT):-
+intersect_2_agendas([D|LD],LA,LIT):-	
     intersect_availability(D,LA,LI,LA1),
 	intersect_2_agendas(LD,LA1,LID),
 	append(LI,LID,LIT).
@@ -129,7 +132,7 @@ min_max(I,I1,I1,I).
 % SCHEDULES ALL SURGERIES IN A SPECIFIC ROOM FOR A PARTICULAR DAY
 % schedule_all_surgeries(room-id, date).
 
-% NOTE: For all agenda_staff/3 and agenda_room/3 we create copies of thesefacts to
+% NOTE: For all agenda_staff/3 and agenda_room/3 we create copies of thesefacts to 
 % be able to handle them (scheduling operations one by one in the agendas) without loosing the initial agendas.
 
 schedule_all_surgeries(Room,Day):-
@@ -166,7 +169,6 @@ availability_operation(OpCode,Room,Day,LPossibilities,LDoctors):-
     surgery(OpType,_,TSurgery,_),
     findall(Doctor,assignment_surgery(OpCode,Doctor),LDoctors),
     intersect_all_agendas(LDoctors,Day,LA),
-    nl,write('TESTE:'),write(LA),nl,
     agenda_operation_room1(Room,Day,LAgenda),
     free_agenda0(LAgenda,LFAgRoom),
     intersect_2_agendas(LA,LFAgRoom,LIntAgDoctorsRoom),
@@ -266,3 +268,182 @@ remove_equals([],[]).
 remove_equals([X|L],L1):-member(X,L),!,remove_equals(L,L1).
 remove_equals([X|L],[X|L1]):-remove_equals(L,L1).
 % -------------------------------------------------------------------
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Heuristic algorithm to schedule surgeries considering collective doctor availability
+obtain_heuristic_solution(Room, Day, AgOpRoomHeuristic, LAgDoctorsHeuristic, TFinOp) :-
+    get_time(Ti),
+
+    findall(OpCode, surgery_id(OpCode, _), LOC),!,
+
+    retractall(agenda_staff1(_,_,_)),
+    retractall(agenda_operation_room1(_,_,_)),
+    retractall(availability(_,_,_)),
+    retractall(final_time_heuristics(_)),
+
+    findall(_,(agenda_staff(D,Day,Agenda),assertz(agenda_staff1(D,Day,Agenda))),_),
+    agenda_operation_room(Room,Day,Agenda),assert(agenda_operation_room1(Room,Day,Agenda)),
+    findall(_,(agenda_staff1(D,Day,L),free_agenda0(L,LFA),adapt_timetable(D,Day,LFA,LFA2),assertz(availability(D,Day,LFA2))),_),
+    availability_early_surgeries(LOC, Room, Day),
+    agenda_operation_room1(Room,Day,AgOpRoomHeuristic),
+    findall(Doctor,assignment_surgery(_,Doctor),LDoctors1),
+    remove_equals(LDoctors1,LDoctors),
+    list_doctors_agenda(Day,LDoctors,LAgDoctorsHeuristic),
+    
+    retract(final_time_heuristics(TFinOp)),
+
+    write('Final Result: AgOpRoomHeuristic='), write(AgOpRoomHeuristic), nl,
+    write('LAgDoctorsHeuristic='), write(LAgDoctorsHeuristic), nl,
+    write('TFinOp='), write(TFinOp), nl,
+
+    get_time(Tf),
+    T is Tf - Ti,
+    write('Time taken for solution generation:'), write(T), nl.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+availability_early_surgeries([], _, _) :-!.  % Added message for termination
+availability_early_surgeries(LOpCode, Room, Day):-
+    retractall(earliest_surgery(_, _, _)),  
+    asserta(earliest_surgery(_, 1441, _)),
+
+    find_earliest_surgery(LOpCode, Room, Day), !,
+    earliest_surgery(OpCode, TinS, LDoctors),
+    (
+        TinS == 1441,
+        select(OpCode, LOpCode, LRestOpCode),
+            nl, write('Info: could not schedule operation='), write(OpCode), nl,
+        availability_early_surgeries(LRestOpCode, Room, Day)
+    ;
+        surgery_id(OpCode, OpType),
+        surgery(OpType, _, TSurgery, _),
+
+        TfinS is TinS + TSurgery - 1,
+        retractall(final_time_heuristics(_)), 
+        asserta(final_time_heuristics(TfinS)),
+
+        retract(agenda_operation_room1(Room, Day, Agenda)),
+        insert_agenda((TinS, TfinS, OpCode), Agenda, Agenda1),
+        assertz(agenda_operation_room1(Room, Day, Agenda1)), 
+        insert_agenda_doctors((TinS, TfinS, OpCode), Day, LDoctors),
+        select(OpCode, LOpCode, LRestOpCode),
+        availability_early_surgeries(LRestOpCode, Room, Day)
+    ). 
+
+% -------------------------------------------------------------------
+
+% GENERATE A LIST OF POSSIBLE TIMES FOR AN OPERATION TO OCCUR IN A SPECIFIED ROOM ON A GIVEN DAY
+find_earliest_surgery([], _, _).
+find_earliest_surgery([OpCode|LOpCode], Room, Day) :- 
+    availability_operation(OpCode, Room, Day, LPossibilities, LDoctors),
+    (LPossibilities == [],
+        find_earliest_surgery(LOpCode, Room, Day)
+    ;
+        surgery_id(OpCode, OpType),
+        surgery(OpType, _, TSurgery, _),
+        schedule_first_interval(TSurgery, LPossibilities, (TinS, _)),
+        earliest_surgery(_, EarliestSurgeryTime, _),
+        ((TinS < EarliestSurgeryTime,
+            retractall(earliest_surgery(_, _, _)),
+            asserta(earliest_surgery(OpCode, TinS, LDoctors)),!
+        ); true),
+        find_earliest_surgery(LOpCode, Room, Day)
+    ).
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% Heuristic 2 %%%
+
+obtain_heuristic_highest_occupancy_solution(Room,Day,AgOpRoomBetter,LAgDoctorsBetter,TFinOp):-
+    get_time(Ti),
+    (obtain_heuristic_highest_occupancy_solution1(Room,Day),!),
+    retract(better_sol(Day,Room,AgOpRoomBetter,LAgDoctorsBetter,TFinOp)),
+    write('Final Result: AgOpRoomBetter='),write(AgOpRoomBetter),nl,
+    write('LAgDoctorsBetter='),write(LAgDoctorsBetter),nl,
+    write('TFinOp='),write(TFinOp),nl,
+    get_time(Tf),
+    T is Tf-Ti,
+    write('Tempo de geracao da solucao:'),write(T),nl.
+
+obtain_heuristic_highest_occupancy_solution1(Room,Day):-
+    findall(OpCode,surgery_id(OpCode,_),LOC),!,
+    retractall(agenda_staff1(_,_,_)),
+    retractall(agenda_operation_room1(_,_,_)),
+    retractall(availability(_,_,_)),
+    findall(_,(agenda_staff(D,Day,Agenda),assertz(agenda_staff1(D,Day,Agenda))),_),
+    agenda_operation_room(Room,Day,Agenda),assert(agenda_operation_room1(Room,Day,Agenda)),
+    findall(_,(agenda_staff1(D,Day,L),free_agenda0(L,LFA),adapt_timetable(D,Day,LFA,LFA2),assertz(availability(D,Day,LFA2))),_),
+    find_surgery_by_highest_occupancy(LOC, Room, Day),
+    retract(better_sol(_,_,_,_,FinTime)),
+    agenda_operation_room1(Room,Day,AgendaR),
+    findall(Doctor,assignment_surgery(_,Doctor),LDoctors1),
+    remove_equals(LDoctors1,LDoctors),
+    list_doctors_agenda(Day,LDoctors,LAgDoctorsHeuristic),
+    asserta(better_sol(Day,Room,AgendaR,LAgDoctorsHeuristic,FinTime)).
+
+find_surgery_by_highest_occupancy([], _, _):-!.
+find_surgery_by_highest_occupancy(LOpCodes, Room, Day) :- 
+    obtain_assignment_surgeries(LOpCodes,LDoctorsInvolved),
+    calculate_doctor_highest_occupancy_percentage(Day,LDoctorsInvolved,DocHighestPerc),
+    obtain_assignment_surgeries(LOpCodesHighOccp,[DocHighestPerc]),
+    find_first_opcode_in_list(LOpCodesHighOccp, LOpCodes, OpCode),
+    availability_operation(OpCode, Room, Day, LPossibilities, LDoctors),
+    (LPossibilities == [],
+        select(OpCode, LOpCodes, LRestOpCode),
+        write('>> INFO: could not schedule surgery='), write(OpCode), nl,
+        find_surgery_by_highest_occupancy(LRestOpCode, Room, Day)
+    ;
+        surgery_id(OpCode, OpType),     
+        surgery(OpType, _, TSurgery, _),
+        schedule_first_interval(TSurgery,LPossibilities,(TinS,TfinS)),
+        retractall(better_sol(_,_,_,_,_)),
+        asserta(better_sol(Day,Room,_,_,TfinS)),
+        retract(agenda_operation_room1(Room,Day,Agenda)),
+        insert_agenda((TinS,TfinS,OpCode),Agenda,Agenda1),
+        assertz(agenda_operation_room1(Room,Day,Agenda1)),
+        insert_agenda_doctors((TinS,TfinS,OpCode),Day,LDoctors),      
+        select(OpCode, LOpCodes, LRestOpCode),
+        find_surgery_by_highest_occupancy(LRestOpCode, Room, Day)
+    ).
+
+
+find_first_opcode_in_list([OpCode|Rest], LOpCodes, Result) :-
+    (
+        member(OpCode, LOpCodes), 
+        Result = OpCode
+    ;  
+        find_first_opcode_in_list(Rest, LOpCodes, Result)
+    ).
+
+% Get all doctors for a list of specific OpCodes or all OpCodes for a list of doctors
+obtain_assignment_surgeries(OpCodes, DoctorsInvolved) :-
+    (   is_list(OpCodes), 
+        findall(Doctor, (member(OpCode, OpCodes), assignment_surgery(OpCode, Doctor)), Doctors),!,
+        list_to_set(Doctors, DoctorsInvolved)
+    ;   is_list(DoctorsInvolved),
+        findall(OpCode, (member(Doctor, DoctorsInvolved), assignment_surgery(OpCode, Doctor)), OpCodesList),
+        list_to_set(OpCodesList, OpCodes)
+    ).
+
+calculate_doctor_highest_occupancy_percentage(Day, Doctors, DocHighest):-
+        findall((Doctor, Percentage), (member(Doctor, Doctors), calculate_occupancy_percentage(Day, Doctor, Percentage)), DoctorPercentages),
+        max_member((DocHighest, _), DoctorPercentages).
+
+calculate_occupancy_percentage(Day, Doctor, Percentage):-
+    calculate_remaining_surgery_time(Doctor, TotalTime),
+    calculate_free_time(Day, Doctor, FreeTime),
+    ((FreeTime > 0, Percentage is (TotalTime / FreeTime) * 100 ); Percentage is 100).
+
+calculate_free_time(Day, Doctor, FreeTime) :-
+    availability(Doctor, Day, AvailableSlots),
+    sum_free_time(AvailableSlots, FreeTime). 
+
+calculate_remaining_surgery_time(Doctor, TotalTime) :-
+    findall(Duration, (assignment_surgery(OpCode, Doctor), surgery_id(OpCode, OpType), surgery(OpType, _, Duration, _)), SurgeryDurations), % Obtains list with the surgeries duration for the specified doctor 
+    sumlist(SurgeryDurations, TotalTime). % sums all the elements of the list
+
+sum_free_time([], 0).
+sum_free_time([(TimeInicial, TimeFinal)|Rest], TotalFreeTime) :-
+    FreeTime is TimeFinal - TimeInicial, % Calculates the free time of the current slot
+    sum_free_time(Rest, RemainingFreeTime), % Recursively call to calculate the free time of the remaining slots
+    TotalFreeTime is FreeTime + RemainingFreeTime.  % Adds the current free time to the total free time
+
