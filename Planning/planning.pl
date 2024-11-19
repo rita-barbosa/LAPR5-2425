@@ -166,7 +166,6 @@ availability_operation(OpCode,Room,Day,LPossibilities,LDoctors):-
     surgery(OpType,_,TSurgery,_),
     findall(Doctor,assignment_surgery(OpCode,Doctor),LDoctors),
     intersect_all_agendas(LDoctors,Day,LA),
-    nl,write('TESTE:'),write(LA),nl,
     agenda_operation_room1(Room,Day,LAgenda),
     free_agenda0(LAgenda,LFAgRoom),
     intersect_2_agendas(LA,LFAgRoom,LIntAgDoctorsRoom),
