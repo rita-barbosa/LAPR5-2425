@@ -26,7 +26,6 @@ agenda_staff(d001,20241028,[(720,790,m01),(1080,1140,c01)]).
 agenda_staff(d002,20241028,[(850,900,m02),(901,960,m03),(1380,1440,c02)]).
 agenda_staff(d003,20241028,[(720,790,m01),(910,980,m02)]).
 agenda_staff(d004,20241028,[(940,980,c04)]).
-
 agenda_staff(n001,20241028,[(720,790,m01),(1380,1440,c02)]).
 agenda_staff(n002,20241028,[(850,900,m02),(940,980,c04)]).
 agenda_staff(n003,20241028,[(1010,1070,m01),(1080,1140,c01)]).
@@ -36,7 +35,6 @@ timetable(d001,20241028,(480,1200)).
 timetable(d002,20241028,(500,1440)).
 timetable(d003,20241028,(530,1320)).
 timetable(d004,20241028,(300,1400)).
-
 timetable(n001,20241028,(480,1200)).
 timetable(n002,20241028,(500,1140)).
 timetable(n003,20241028,(400,1320)).
@@ -322,8 +320,10 @@ obtain_better_sol1(Room,Day):-
     retractall(agenda_staff1(_,_,_)),
     retractall(agenda_operation_room1(_,_,_)),
     retractall(availability(_,_,_)),
-    findall(_,(agenda_staff(D,Day,Agenda),assertz(agenda_staff1(D,Day,Agenda))),_),
-    agenda_operation_room(Room,Day,Agenda),assert(agenda_operation_room1(Room,Day,Agenda)),
+    findall(_,(agenda_staff(D,Day,Agenda),
+    assertz(agenda_staff1(D,Day,Agenda))),_),
+    agenda_operation_room(Room,Day,Agenda),
+    assert(agenda_operation_room1(Room,Day,Agenda)),
     findall(_,(agenda_staff1(D,Day,L),free_agenda0(L,LFA),adapt_timetable(D,Day,LFA,LFA2),assertz(availability(D,Day,LFA2))),_),
     availability_all_surgeries(LOpCode,Room,Day),
     agenda_operation_room1(Room,Day,AgendaR),
