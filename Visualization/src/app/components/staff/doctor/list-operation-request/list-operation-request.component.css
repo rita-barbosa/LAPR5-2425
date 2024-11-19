@@ -94,6 +94,46 @@ header {
   box-sizing: content-box;
 }
 
+
+.operation-update {
+  margin-left: 17%;
+  margin-right: 17%;
+  padding: 20px;
+  background-color: #f0f0f0fb;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  max-width: calc(100% - 34%);
+  box-sizing: content-box;
+  text-align: left;
+}
+
+.operation-update h3 {
+  font-family: 'Poppins', monospace;
+  font-size: 24px;
+  color: #0066cc;
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+.operation-update p {
+  font-size: 16px;
+  line-height: 1.5;
+  margin-bottom: 10px;
+  text-align: left; /* Aligns text centrally */
+}
+
+.operation-update strong {
+  color: #333;
+}
+
+.operation-update .action-buttons {
+  display: flex;
+  justify-content: center; /* Centers buttons */
+  gap: 1rem;
+  margin-top: 20px;
+}
+
+
 /* Header for operation details */
 .operation-details h3 {
   font-family: 'Poppins', monospace;

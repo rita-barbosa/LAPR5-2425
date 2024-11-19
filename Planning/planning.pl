@@ -101,7 +101,7 @@ intersect_all_agendas([Name|LNames],Date,LI):-
     intersect_2_agendas(LA,LI1,LI).
 
 intersect_2_agendas([],_,[]).
-intersect_2_agendas([D|LD],LA,LIT):-	
+intersect_2_agendas([D|LD],LA,LIT):-
     intersect_availability(D,LA,LI,LA1),
 	intersect_2_agendas(LD,LA1,LID),
 	append(LI,LID,LIT).
@@ -129,7 +129,7 @@ min_max(I,I1,I1,I).
 % SCHEDULES ALL SURGERIES IN A SPECIFIC ROOM FOR A PARTICULAR DAY
 % schedule_all_surgeries(room-id, date).
 
-% NOTE: For all agenda_staff/3 and agenda_room/3 we create copies of thesefacts to 
+% NOTE: For all agenda_staff/3 and agenda_room/3 we create copies of thesefacts to
 % be able to handle them (scheduling operations one by one in the agendas) without loosing the initial agendas.
 
 schedule_all_surgeries(Room,Day):-

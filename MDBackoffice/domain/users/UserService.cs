@@ -148,6 +148,30 @@ namespace MDBackoffice.Domain.Users
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
+        public (string? Email, IList<string> Roles) DecodeJwtToken(string token){
+
+            var handler = new JwtSecurityTokenHandler();
+
+            if (handler.CanReadToken(token))
+            {
+                // Read the token without validating it
+                var jwtToken = handler.ReadJwtToken(token);
+
+                var email = jwtToken.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
+
+                var roles = jwtToken.Claims
+                    .Where(c => c.Type == ClaimTypes.Role)
+                    .Select(c => c.Value)
+                    .ToList();
+
+                return (email, roles);
+            }
+            else
+            {
+                throw new ArgumentException("Invalid JWT token.");
+            }
+        }
+
         public virtual async Task<bool> UserExistsById(string userId)
         {
             var user = await _userManager.FindByIdAsync(userId) ?? throw new BusinessRuleValidationException("Unable to find the specified user.");

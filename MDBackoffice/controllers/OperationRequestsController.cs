@@ -76,9 +76,11 @@ namespace MDBackoffice.Controllers
         // PUT: api/OperationRequest/Update
         [HttpPut("Update")]
         [Authorize(Policy = "Doctor")]
-        public async Task<ActionResult<UpdateOperationRequestDto>> Update(UpdateOperationRequestDto dto)
+        public async Task<ActionResult<OperationRequestDto>> Update(UpdateOperationRequestDto dto)
         {
             string? userEmail = User.FindFirstValue(ClaimTypes.Email);
+
+            // var userEmail = "ritabfbarbosa@gmail.com";
 
             if (!await _service.CheckDoctorIsRequestingDoctor(userEmail, dto.Id)){
                 return BadRequest("You are not the requesting doctor for the choosen operation request.");
@@ -113,6 +115,8 @@ namespace MDBackoffice.Controllers
             try
             {
                 var email = User.FindFirstValue(ClaimTypes.Email);
+
+                // var email = "ritabfbarbosa@gmail.com";
                 if (email == null)
                 {
                     return NotFound("Couldn't obtain the logged in user's email");
