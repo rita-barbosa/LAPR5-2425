@@ -2,8 +2,6 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { MessageService } from './message.service';
 import { catchError, map, Observable, of } from 'rxjs';
-import { Patient } from '../domain/patient';
-import { Staff } from '../domain/staff';
 import { OperationType } from '../domain/OperationType';
 import { OperationRequest } from '../domain/OperationRequest';
 import { ListOperationRequest } from '../domain/list-operation-request';

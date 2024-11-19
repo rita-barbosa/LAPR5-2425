@@ -84,7 +84,8 @@ header {
 }
 
 /* Styling for the operation details section */
-.operation-details {
+.staff-details {
+  margin-top: 1%;
   margin-left: 17%;
   margin-right: 17%;
   padding: 20px;
@@ -95,7 +96,7 @@ header {
   box-sizing: content-box;
 }
 
-.operation-update {
+.staff-update {
   margin-left: 17%;
   margin-right: 17%;
   padding: 20px;
@@ -107,7 +108,7 @@ header {
   text-align: left;
 }
 
-.operation-update h3 {
+.staff-update h3 {
   font-family: 'Poppins', monospace;
   font-size: 24px;
   color: #0066cc;
@@ -115,18 +116,18 @@ header {
   text-align: center;
 }
 
-.operation-update p {
+.staff-update p {
   font-size: 16px;
   line-height: 1.5;
   margin-bottom: 10px;
   text-align: left; /* Aligns text centrally */
 }
 
-.operation-update strong {
+.staff-update strong {
   color: #333;
 }
 
-.operation-update .action-buttons {
+.staff-update .action-buttons {
   display: flex;
   justify-content: center; /* Centers buttons */
   gap: 1rem;
@@ -134,7 +135,7 @@ header {
 }
 
 /* Header for operation details */
-.operation-details h3 {
+.staff-details h3 {
   font-family: 'Poppins', monospace;
   font-size: 24px;
   color: #0066cc;
@@ -142,19 +143,19 @@ header {
 }
 
 /* Paragraphs inside operation details */
-.operation-details p {
+.staff-details p {
   font-size: 16px;
   line-height: 1.5;
   margin-bottom: 10px;
 }
 
-.operation-details strong {
+.staff-details strong {
   color: #333;
 }
 
 /* Consistent styling for the operation details to match the rest of the page */
-.operation-details p,
-.operation-details h3 {
+.staff-details p,
+.staff-details h3 {
   text-align: center;
 }
 

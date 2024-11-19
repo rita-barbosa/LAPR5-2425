@@ -18,13 +18,13 @@
       >
         <input
           type="text"
-          placeholder="Staff First Name"
+          placeholder="Patient First Name"
           [(ngModel)]="filter.firstName"
           class="filter-input"
         />
         <input
           type="text"
-          placeholder="Staff Last Name"
+          placeholder="Patient Last Name"
           [(ngModel)]="filter.lastName"
           class="filter-input"
         />
@@ -34,18 +34,15 @@
           [(ngModel)]="filter.email"
           class="filter-input"
         />
-        <select
-          [(ngModel)]="filter.specialization"
-          class="filter-select"
-        >
-          <option value="" disabled>Select Specialization</option>
-          <option
-            *ngFor="let specialization of specializations"
-            [value]="specialization"
-          >
-            {{ specialization }}
-          </option>
-        </select>
+        <input
+        type="text"
+        placeholder="Medical Record Number"
+        [(ngModel)]="filter.medicalRecordNumber"
+        class="filter-input"
+        />
+        <label for="dateBirth">Date of Birth:</label>
+        <input id="dateBirth" type="date" placeholder="Date Of Birth" [(ngModel)]="filter.dateBirth"
+        />
         <!-- Remove Button: Disabled for the First (Default) Filter -->
         <button
           *ngIf="i > 0"
@@ -65,58 +62,65 @@
   
     <!-- Results Section -->
     <div class="conteudo">
-      <!-- Table for Staff List -->
-      <div *ngIf="staffList && staffList.length > 0">
+      <!-- Table for Patient List -->
+      <div *ngIf="patientList && patientList.length > 0">
         <p-table
-          [value]="staffList"
-          [(selection)]="selectedStaff"
+          [value]="patientList"
+          [(selection)]="selectedPatient"
           selectionMode="single"
           [tableStyle]="{ 'border-collapse': 'collapse', 'table-layout': 'fixed', width: '100%' }"
         >
           <ng-template pTemplate="header">
             <tr>
               <th style="width: 10%;">Select</th>
-              <th style="width: 15%;">Staff Name</th>
+              <th style="width: 15%;">Patient Name</th>
+              <th style="width: 15%;">Medical Record Number</th>
               <th style="width: 30%;">Email</th>
-              <th style="width: 30%;">Specialization</th>
+              <th style="width: 30%;">Phone</th>
+              <th style="width: 30%;">Date of Birth</th>
+              <th style="width: 30%;">Address</th>
             </tr>
           </ng-template>
   
-          <ng-template pTemplate="body" let-staff>
-            <tr [pSelectableRow]="staff">
+          <ng-template pTemplate="body" let-patient>
+            <tr [pSelectableRow]="patient">
               <td>
                 <p-tableRadioButton
-                  [value]="staff"
-                  [name]="'staffRadio'"
+                  [value]="patient"
+                  [name]="'patientRadio'"
                 ></p-tableRadioButton>
               </td>
-              <td>{{ staff.name || '-' }}</td>
-              <td>{{ staff.email || '-' }}</td>
-              <td>{{ staff.specializationId || '-' }}</td>
+              <td>{{ patient.name || '-' }}</td>
+              <td>{{ patient.patientId || '-' }}</td>
+              <td>{{ patient.email || '-' }}</td>
+              <td>{{ patient.phone || '-' }}</td>
+              <td>{{ patient.dateBirth || '-' }}</td>
+              <td>{{ patient.address || '-' }}</td>
             </tr>
           </ng-template>
         </p-table>
   
         <!-- Action Buttons -->
-        <div *ngIf="selectedStaff" class="action-buttons">
-          <button (click)="editStaffProfile(selectedStaff)">
-            Edit Staff Profile
+        <div *ngIf="selectedPatient" class="action-buttons">
+          <button (click)="editPatientProfile(selectedPatient)">
+            Edit Patient Profile
           </button>
-          <button (click)="deleteStaffProfile(selectedStaff)">
-            Delete Staff Profile
+          <button (click)="deletePatientProfile(selectedPatient)">
+            Delete Patient Profile
           </button>
-          <button (click)="toggleDetails(selectedStaff)">Show Details</button>
+          <button (click)="toggleDetails(selectedPatient)">Show Details</button>
         </div>
       </div>
   
-      <!-- Staff Details -->
-      <div *ngIf="detailsVisible" class="staff-details">
-        <h3>Staff Profile Details</h3>
-        <p><strong>Name:</strong> {{ fullStaff.name || '-' }}</p>
-        <p><strong>Phone Number:</strong> {{ fullStaff.phone || '-' }}</p>
-        <p><strong>Email:</strong> {{ fullStaff.email || '-' }}</p>
-        <p><strong>Address:</strong> {{ fullStaff.address || '-' }}</p>
-        <p><strong>Specialization:</strong> {{ fullStaff.specializationId || '-' }}</p>
+      <!-- Patient Details -->
+      <div *ngIf="detailsVisible" class="patient-details">
+        <h3>Patient Profile Details</h3>
+        <p><strong>Name:</strong> {{ fullPatient.name || '-' }}</p>
+        <p><strong>Medical Record Number:</strong> {{ fullPatient.patientId || '-' }}</p>
+        <p><strong>Phone Number:</strong> {{ fullPatient.phone || '-' }}</p>
+        <p><strong>Email:</strong> {{ fullPatient.email || '-' }}</p>
+        <p><strong>Address:</strong> {{ fullPatient.address || '-' }}</p>
+        <p><strong>Date of Birth:</strong> {{ fullPatient.dateBirth || '-' }}</p>
   
         <div class="action-buttons">
           <button (click)="closeDetails()">Close</button>

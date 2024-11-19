@@ -48,7 +48,6 @@ export class ListStaffProfiles implements OnInit {
 
     this.service.getStaffByFilters(queryParameters).subscribe({
       next: (data) => {
-        console.log('Fetched staff profiles:', data);
         this.staffList = data;
       },
       error: (error) => {

@@ -5,10 +5,11 @@ import { TableModule } from 'primeng/table';
 import { MessageComponent } from '../../message/message.component';
 
 import { SideBarAdminComponent } from '../sidebar-admin/side-bar-admin.component';
-import { StaffService } from '../../../services/staff.service';
-import { StaffListingFilterParameters } from '../../../domain/staff-listing-filter-parameters';
-import { StaffWithId } from '../../../domain/staff-with-id';
-import { StaffQueryParameters } from '../../../domain/staff-query-parameters';
+import { PatientService } from '../../../services/patient.service';
+import { PatientWithId } from '../../../domain/patient-with-id';
+import { PatientQueryParameters } from '../../../domain/patient-query-parameters';
+import { PatientListingFilterParameters } from '../../../domain/patient-listing-filter-parameters';
+
 
 @Component({
   selector: 'app-list-patient-profiles',
@@ -18,55 +19,49 @@ import { StaffQueryParameters } from '../../../domain/staff-query-parameters';
   styleUrls: ['./list-patient-profiles.component.css']
 })
 export class ListPatientProfiles implements OnInit {
-  staffList: StaffWithId[] = [];
-  selectedStaff!: StaffWithId;
-  fullStaff!: StaffWithId;
+  patientList: PatientWithId[] = [];
+  selectedPatient!: PatientWithId;
+  fullPatient!: PatientWithId;
   detailsVisible: boolean = false;
 
   specializations: string[] = [];
   functions: string[] = ['Doctor', 'Intern', 'Nurse', 'Assistant'];
+  queryFiltersList: PatientListingFilterParameters[] = [];
 
-  // Dynamic query filters
-  queryFiltersList: StaffListingFilterParameters[] = [];
-
-  constructor(private service: StaffService) {}
+  constructor(private service: PatientService) {}
 
   ngOnInit(): void {
-    this.service.getAllSpecializationsAvailable().subscribe({
-      next: (data) => {
-        this.specializations = data;
-      }
-    });
     this.addFilter();
-    this.fetchStaff();
+    this.fetchPatients();
   }
 
-  fetchStaff(): void {
-    const queryParameters: StaffQueryParameters = {
+  fetchPatients(): void {
+    const queryParameters: PatientQueryParameters = {
       queryfilters: this.queryFiltersList
     };
 
-    this.service.getStaffByFilters(queryParameters).subscribe({
+    this.service.getPatientsByFilters(queryParameters).subscribe({
       next: (data) => {
-        console.log('Fetched staff profiles:', data);
-        this.staffList = data;
+        this.patientList = data;
       },
       error: (error) => {
-        console.error('Error fetching staff profiles:', error);
+        console.error('Error fetching patient profiles:', error);
       }
     });
   }
 
   applyFilters(): void {
-    this.fetchStaff();
+    this.fetchPatients();
   }
 
   addFilter(): void {
     this.queryFiltersList.push({
-      firstName: '',
-      lastName: '',
-      email: '',
-      specialization: ''
+      firstName : '',
+      lastName : '',
+      email : '',
+      gender : '',
+      dateBirth : '',
+      medicalRecordNumber : ''
     });
   }
 
@@ -74,14 +69,15 @@ export class ListPatientProfiles implements OnInit {
     this.queryFiltersList.splice(index, 1);
   }
 
-  toggleDetails(staff: StaffWithId): void {
-    this.service.getStaffById(staff.id).subscribe({
-      next: (fullStaffInfo: StaffWithId) => {
-        this.fullStaff = fullStaffInfo;
+  toggleDetails(patient : PatientWithId): void {
+    console.log(patient);
+    this.service.getPatientById(patient.patientId).subscribe({
+      next: (fullPatientInfo: PatientWithId) => {
+        this.fullPatient = fullPatientInfo;
         this.detailsVisible = true;
       },
       error: (error: any) => {
-        console.error('Error fetching staff profile details:', error);
+        console.error('Error fetching patient profile details:', error);
       }
     });
   }
@@ -90,11 +86,12 @@ export class ListPatientProfiles implements OnInit {
     this.detailsVisible = false;
   }
 
-  editStaffProfile(staff: StaffWithId): void {
+  editPatientProfile(patient : PatientWithId): void {
     // Implement edit logic
   }
 
-  deleteStaffProfile(staff: StaffWithId): void {
+  deletePatientProfile(patient : PatientWithId): void {
     // Implement delete logic
   }
+
 }
