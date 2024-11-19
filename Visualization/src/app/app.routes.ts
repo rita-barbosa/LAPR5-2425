@@ -22,7 +22,7 @@ import { RegistrationComponent } from './user/registration/registration.componen
 import { ActivationComponent } from './user/verify/verify.component';
 import { ListOperationTypeComponent } from './components/admin/list-operation-type/list-operation-type.component';
 import { ListStaffProfiles } from './components/admin/list-staff-profiles/list-staff-profiles.component';
-
+import { ListPatientProfiles } from './components/admin/list-patient-profiles/list-patient-profiles.component';
 
 export const routes: Routes = [
   { path: '', component: MenuComponent, pathMatch: 'full' },
@@ -47,6 +47,7 @@ export const routes: Routes = [
   { path: 'hospital-simulation', component: HospitalSimulationComponent },
   { path: 'create-operation-type', component: CreateOperationTypeComponent },
   { path: 'list-staff-profiles', component: ListStaffProfiles },
+  { path: 'list-patient-profiles', component: ListPatientProfiles },
   { path: '**', redirectTo: '' }
 ];
 
