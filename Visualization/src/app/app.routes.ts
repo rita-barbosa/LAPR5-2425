@@ -20,6 +20,8 @@ import { HospitalSimulationComponent } from './hospital-simulation/hospital-simu
 import { CreateOperationTypeComponent } from './components/admin/create-operation-type/create-operation-type.component';
 import { RegistrationComponent } from './user/registration/registration.component';
 import { ActivationComponent } from './user/verify/verify.component';
+import { ListOperationTypeComponent } from './components/admin/list-operation-type/list-operation-type.component';
+
 
 
 export const routes: Routes = [
@@ -33,11 +35,12 @@ export const routes: Routes = [
   { path: 'user/registration', component: RegistrationComponent},
   { path: 'user/verify', component: ActivationComponent},
   { path: 'doctor', component: DoctorComponent },
-  {path: 'list-operation-request', component: ListOperationRequestComponent},
+  { path: 'list-operation-request', component: ListOperationRequestComponent },
   { path: 'patient', component: PatientComponent },
   { path: 'update-patient-profile', component: UpdateProfileComponent },
-  // { path: 'edit-patient-profile', component: EditPatientProfileComponent},
-  { path: 'create-operation-request', component: CreateOperationRequestComponent},
+  // { path: 'edit-patient-profile', component: EditPatientProfileComponent },
+  { path: 'create-operation-request', component: CreateOperationRequestComponent },
+  { path: 'list-operation-type', component: ListOperationTypeComponent},
   { path: 'cube', component: CubeComponent },
   { path: 'curso-angular', component: CursoAngularComponent },
   { path: 'curso-detail', component: CursoDetailComponent },
