@@ -72,6 +72,7 @@ namespace MDBackoffice.Controllers
 
     	[HttpPut]
         [Route("Delete-PatientProfile")]
+        [Authorize(Policy = "Admin")]
         public async Task<IActionResult> DeletePatientProfile([FromBody] IdPassDto idPassDto)
         {
             try
@@ -121,6 +122,7 @@ namespace MDBackoffice.Controllers
         //GET: api/Patient
         [HttpGet]
         [Route("Get-PatientProfiles")]
+        [Authorize(Policy = "Admin")]
         public async Task<ActionResult<IEnumerable<PatientDto>>> GetPatientProfiles()
         {
             return await _service.GetAllAsysnc();
