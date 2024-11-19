@@ -96,4 +96,6 @@ export class ListStaffProfiles implements OnInit {
   deactivateStaffProfile(staff: StaffWithId): void {
     this.service.deactivateStaffProfile(staff.id);
   }
+
+
 }

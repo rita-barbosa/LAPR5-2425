@@ -102,7 +102,12 @@ namespace MDBackoffice.Domain.StaffProfiles
 
         public virtual void DeactivateProfile()
         {
-            this.Status = (!this.Status);
+            this.Status = false;
+        }
+
+        public virtual void ToggleProfile()
+        {
+            this.Status = !this.Status;
         }
 
         public void ActivateProfile()
