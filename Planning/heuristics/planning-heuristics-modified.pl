@@ -37,13 +37,13 @@ timetable(d003,20241028,(530,1320)).
 timetable(d004,20241028,(300,1400)).
 
 timetable(n001,20241028,(480,1200)).
-timetable(n002,20241028,(500,1140)). %timetable(n002,20241028,(500,1400)). %
+timetable(n002,20241028,(500,1400)). %timetable(n002,20241028,(500,1400)). 
 timetable(n003,20241028,(400,1320)).
 timetable(a001,20241028,(500,1440)).
 
 surgery_id(so100001,so2).
 surgery_id(so100002,so3).
-surgery_id(so100003,so2).
+%surgery_id(so100003,so2).
 
 assignment_surgery(so100001,d001).
 assignment_surgery(so100001,d004).
@@ -56,10 +56,10 @@ assignment_surgery(so100002,d004).
 assignment_surgery(so100002,n002).
 assignment_surgery(so100002,a001).
 
-assignment_surgery(so100003,d003).
-assignment_surgery(so100003,d004).
-assignment_surgery(so100003,n003).
-assignment_surgery(so100003,a001).
+%assignment_surgery(so100003,d003).
+%assignment_surgery(so100003,d004).
+%assignment_surgery(so100003,n003).
+%assignment_surgery(so100003,a001).
 
 
 %assignment_surgery(so100004,d001).
@@ -87,7 +87,9 @@ agenda_operation_room(or1,20241028,[(520,579,so100000),(1000,1059,so099999)]).
 % free_agenda0(list-occupied-time-intervals,list-free-time-intervals).
 
 free_agenda0([],[(0,1440)]).
-free_agenda0([(0,Tfin,_)|LT],LT1):-!,free_agenda1([(0,Tfin,_)|LT],LT1).
+free_agenda0([(0,Tfin,_)|LT],LT1):-
+    !,
+    free_agenda1([(0,Tfin,_)|LT],LT1).
 free_agenda0([(Tin,Tfin,_)|LT],[(0,T1)|LT1]):- T1 is Tin-1,
     free_agenda1([(Tin,Tfin,_)|LT],LT1).
 free_agenda1([(_,Tfin,_)],[(T1,1440)]):-Tfin\==1440,!,T1 is Tfin+1.
@@ -159,25 +161,6 @@ min_max(I,I1,I,I1):- I<I1,!.
 min_max(I,I1,I1,I).
 % -------------------------------------------------------------------
 
-
-% SCHEDULES ALL SURGERIES IN A SPECIFIC ROOM FOR A PARTICULAR DAY
-% schedule_all_surgeries(room-id, date).
-
-% NOTE: For all agenda_staff/3 and agenda_room/3 we create copies of thesefacts to 
-% be able to handle them (scheduling operations one by one in the agendas) without loosing the initial agendas.
-
-schedule_all_surgeries(Room,Day):-
-    retractall(agenda_staff1(_,_,_)),
-    retractall(agenda_operation_room1(_,_,_)),
-    retractall(availability(_,_,_)),
-    findall(_,(agenda_staff(D,Day,Agenda),assertz(agenda_staff1(D,Day,Agenda))),_),
-    agenda_operation_room(Or,Date,Agenda),
-    assert(agenda_operation_room1(Or,Date,Agenda)),
-    findall(_,(agenda_staff1(D,Date,L),free_agenda0(L,LFA),adapt_timetable(D,Date,LFA,LFA2),assertz(availability(D,Date,LFA2))),_),
-    findall(OpCode,surgery_id(OpCode,_),LOpCode),
-    availability_all_surgeries(LOpCode,Room,Day),!.
-% -------------------------------------------------------------------
-
 % AVAILABILITY OF OPERATIONS WILL CREATE A LIST OF POSSIBILITIES IN THE OPERATION ROOM
 % availability_all_surgeries(list-operation-id, room-id, date)
 
@@ -208,29 +191,8 @@ availability_all_surgeries([OpCode|LOpCode],Room,Day):-
 % -------------------------------------------------------------------
 
 % GENERATE A LIST OF POSSIBLE TIMES FOR AN OPERATION TO OCCUR IN A SPECIFIED ROOM ON A GIVEN DAY
-availability_operation(OpCode,Room,Day,LPossibilities,LDoctors):-
-    surgery_id(OpCode,OpType),
-    surgery(OpType,_,TSurgery,_),
-    findall(Doctor,assignment_surgery(OpCode,Doctor),LDoctors),
-    intersect_all_agendas(LDoctors,Day,LA),
-    agenda_operation_room1(Room,Day,LAgenda),
-    free_agenda0(LAgenda,LFAgRoom),
-    intersect_2_agendas(LA,LFAgRoom,LIntAgDoctorsRoom),
-    remove_unf_intervals(TSurgery,LIntAgDoctorsRoom,LPossibilities).
-
-% REMOVES UNFEASIBLE TIME INTERVALS FROM THE RESULTING AGENDA
-% remove_unf_intervals(surgery-time, list-intersected-agendas-doctor, list-availability).
-remove_unf_intervals(_,[],[]).
-remove_unf_intervals(TSurgery,[(Tin,Tfin)|LA],[(Tin,Tfin)|LA1]):-
-    DT is Tfin-Tin+1,
-    TSurgery=<DT,!,
-    remove_unf_intervals(TSurgery,LA,LA1).
-remove_unf_intervals(TSurgery,[_|LA],LA1):- 
-    remove_unf_intervals(TSurgery,LA,LA1).
-
-% ----------
 availability_operation_changed2(OpCode, Room, Day, LPossibilities, LParticipants) :-
-    surgery_id(OpCode,OpType),
+    surgery_id(OpCode, OpType),
     surgery(OpType, TAnesthesia, TSurgery, TCleaning),
     findall(Staff,assignment_surgery(OpCode, Staff),LAllStaff),
     include(is_doctor, LAllStaff, LSurgeons),
@@ -241,24 +203,15 @@ availability_operation_changed2(OpCode, Room, Day, LPossibilities, LParticipants
     intersect_all_agendas(LSurgeons, Day, LFreeSurgeons),
     intersect_all_agendas(LAnesth, Day, LFreeAnesth),
     intersect_all_agendas(LCleaners, Day, LFreeCleaners),
+
     agenda_operation_room1(Room, Day, LRoomAgenda),
     free_agenda0(LRoomAgenda, LFreeRoom),
-
-    % Step 1: Get intervals where the entire surgery can fit in the room
     TotalTime is TAnesthesia + TSurgery + TCleaning,
     filter_full_intervals1(LFreeRoom, TotalTime, FullIntervals),
-
-    % Step 2: Filter intervals where anesthesiologists are available (anesthesia + surgery)
     TimeAnesthSurgery is TAnesthesia + TSurgery,
     filter_by_availability(FullIntervals, LFreeAnesth, TimeAnesthSurgery, IntervalsAnesth),
-
-    % Step 3: Filter intervals where surgeons are available (during surgery only)ç
     filter_by_surgery_availability(IntervalsAnesth, LFreeSurgeons, TAnesthesia, TSurgery, IntervalsSurgeons),
-
-    % Step 4: Filter intervals for cleaning team availability (after surgery)
     filter_by_cleaning_availability(IntervalsSurgeons, LFreeCleaners, TAnesthesia, TSurgery, TCleaning, LPossibilities),
-
-    % Collect participants
     append(LAnesth, LSurgeons, TempParticipants),
     append(TempParticipants, LCleaners, LParticipants).
 
@@ -276,15 +229,15 @@ is_doctor(Staff) :-
  is_assistant(Staff) :-
      staff(Staff, assistant, medical, _).
 
-     filter_full_intervals1([], _, []).
-    filter_full_intervals1([(Start,End)|Rest], TotalTime, AllSubIntervals) :-
-        findall((SubStart,SubEnd), (
-            between(Start, End, SubStart),
-            SubEnd is SubStart + TotalTime - 1,
-            SubEnd =< End
-        ), SubIntervals),
-        filter_full_intervals1(Rest, TotalTime, FilteredRest),
-        append(SubIntervals, FilteredRest, AllSubIntervals).
+filter_full_intervals1([], _, []).
+filter_full_intervals1([(Start,End)|Rest], TotalTime, AllSubIntervals) :-
+    findall((SubStart,SubEnd), (
+        between(Start, End, SubStart),
+        SubEnd is SubStart + TotalTime - 1,
+        SubEnd =< End
+    ), SubIntervals),
+    filter_full_intervals1(Rest, TotalTime, FilteredRest),
+    append(SubIntervals, FilteredRest, AllSubIntervals).
 
 
 filter_by_availability([], _, _, []).

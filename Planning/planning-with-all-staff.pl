@@ -44,6 +44,8 @@ timetable(a001,20241028,(500,1440)).
 
 surgery_id(so100001,so2).
 surgery_id(so100002,so3).
+%surgery_id(so100003,so3).
+%surgery_id(so100004,so3).
 
 assignment_surgery(so100001,d001).
 assignment_surgery(so100001,d004).
@@ -56,10 +58,10 @@ assignment_surgery(so100002,d004).
 assignment_surgery(so100002,n002).
 assignment_surgery(so100002,a001).
 
-% assignment_surgery(so100003,d003).
-% assignment_surgery(so100003,d004).
-% assignment_surgery(so100003,n003).
-% assignment_surgery(so100003,a003).
+%assignment_surgery(so100003,d003).
+%assignment_surgery(so100003,d004).
+%assignment_surgery(so100003,n003).
+%assignment_surgery(so100003,a001).
 
 
 %assignment_surgery(so100004,d001).
@@ -82,7 +84,6 @@ agenda_operation_room(or1,20241028,[(520,579,so100000),(1000,1059,so099999)]).
 
 %-GETS THE FREE TIME FROM OCCUPIED TIME INTERVALS--------------------
 % free_agenda0(list-occupied-time-intervals,list-free-time-intervals).
-
 free_agenda0([],[(0,1440)]).
 free_agenda0([(0,Tfin,_)|LT],LT1):-!,free_agenda1([(0,Tfin,_)|LT],LT1).
 free_agenda0([(Tin,Tfin,_)|LT],[(0,T1)|LT1]):- T1 is Tin-1,
@@ -124,7 +125,6 @@ find_free_agendas(Date):-
 
 % INTERSECTION OF AGENDAS OF FREE TIME INTERVALS OF ALL DOCTORS
 % intersect_all_agendas(list-staff-id, date, list-time-intervals-available-for-surgery)
-
 intersect_all_agendas([Name],Date,LA):-!,availability(Name,Date,LA).
 intersect_all_agendas([Name|LNames],Date,LI):-
     availability(Name,Date,LA),
@@ -156,25 +156,6 @@ min_max(I,I1,I,I1):- I<I1,!.
 min_max(I,I1,I1,I).
 % -------------------------------------------------------------------
 
-
-% SCHEDULES ALL SURGERIES IN A SPECIFIC ROOM FOR A PARTICULAR DAY
-% schedule_all_surgeries(room-id, date).
-
-% NOTE: For all agenda_staff/3 and agenda_room/3 we create copies of thesefacts to
-% be able to handle them (scheduling operations one by one in the agendas) without loosing the initial agendas.
-
-schedule_all_surgeries(Room,Day):-
-    retractall(agenda_staff1(_,_,_)),
-    retractall(agenda_operation_room1(_,_,_)),
-    retractall(availability(_,_,_)),
-    findall(_,(agenda_staff(D,Day,Agenda),assertz(agenda_staff1(D,Day,Agenda))),_),
-    agenda_operation_room(Or,Date,Agenda),
-    assert(agenda_operation_room1(Or,Date,Agenda)),
-    findall(_,(agenda_staff1(D,Date,L),free_agenda0(L,LFA),adapt_timetable(D,Date,LFA,LFA2),assertz(availability(D,Date,LFA2))),_),
-    findall(OpCode,surgery_id(OpCode,_),LOpCode),
-    availability_all_surgeries(LOpCode,Room,Day),!.
-% -------------------------------------------------------------------
-
 % AVAILABILITY OF OPERATIONS WILL CREATE A LIST OF POSSIBILITIES IN THE OPERATION ROOM
 % availability_all_surgeries(list-operation-id, room-id, date)
 
@@ -184,15 +165,12 @@ availability_all_surgeries([OpCode|LOpCode],Room,Day):-
     surgery(OpType,TAnesthesia,TSurgery,TCleaning),
     availability_operation_changed2(OpCode,Room,Day,LPossibilities,LStaff),!,
     schedule_first_interval(TAnesthesia,TSurgery,TCleaning,LPossibilities,(TinS,TfinS)), % will need to change this because right now it is only scheduling the first available slot
-        
     retract(agenda_operation_room1(Room,Day,Agenda)),
     insert_agenda((TinS,TfinS,OpCode),Agenda,Agenda1),
     assertz(agenda_operation_room1(Room,Day,Agenda1)),
-
     surgery_id(OpCode, OpType),
     surgery(OpType, TAnesthesia, TSurgery, TCleaning),
     findall(Anesth, (staff(Anesth, _, anaesthetist, OpTypes), member(Anesth, LStaff)), LAnesth),
-    % Find Assigned cleaning staff
     findall(Cleaner, (staff(Cleaner,assistant,medical,OpTypes), member(Cleaner, LStaff)), LCleaners),
     subtract(LStaff, LAnesth, LStaffWOAnesth),
     subtract(LStaffWOAnesth, LCleaners, LSurgeons),
@@ -203,52 +181,39 @@ availability_all_surgeries([OpCode|LOpCode],Room,Day):-
 % -------------------------------------------------------------------
 
 % GENERATE A LIST OF POSSIBLE TIMES FOR AN OPERATION TO OCCUR IN A SPECIFIED ROOM ON A GIVEN DAY
-availability_operation(OpCode,Room,Day,LPossibilities,LDoctors):-
-    surgery_id(OpCode,OpType),
-    surgery(OpType,_,TSurgery,_),
-    findall(Doctor,assignment_surgery(OpCode,Doctor),LDoctors),
-    intersect_all_agendas(LDoctors,Day,LA),
-    agenda_operation_room1(Room,Day,LAgenda),
-    free_agenda0(LAgenda,LFAgRoom),
-    intersect_2_agendas(LA,LFAgRoom,LIntAgDoctorsRoom),
-    remove_unf_intervals(TSurgery,LIntAgDoctorsRoom,LPossibilities).
-
 availability_operation_changed2(OpCode, Room, Day, LPossibilities, LParticipants) :-
     surgery_id(OpCode, OpType),
     surgery(OpType, TAnesthesia, TSurgery, TCleaning),
-    findall(Staff,assignment_surgery(OpCode,Staff),LStaff),
-    findall(Anesth, (staff(Anesth, _, anaesthetist, OpTypes), member(OpType, OpTypes)), LAnesth),
-    % Find Assigned cleaning staff
-    findall(Cleaner, (staff(Cleaner,assistant,medical,OpTypes), member(OpType, OpTypes)), LCleaners),
-    subtract(LStaff, LAnesth, LStaffWOAnesth),
-    subtract(LStaffWOAnesth, LCleaners, LSurgeons),
-
+    findall(Staff,assignment_surgery(OpCode, Staff),LAllStaff),
+    include(is_doctor, LAllStaff, LSurgeons),
+    include(is_anaesthetist, LAllStaff, LAnesth),
+    include(is_assistant, LAllStaff, LCleaners),
     % Compute availability for each staff group
     intersect_all_agendas(LSurgeons, Day, LFreeSurgeons),
     intersect_all_agendas(LAnesth, Day, LFreeAnesth),
     intersect_all_agendas(LCleaners, Day, LFreeCleaners),
     agenda_operation_room1(Room, Day, LRoomAgenda),
     free_agenda0(LRoomAgenda, LFreeRoom),
-
-    % Step 1: Get intervals where the entire surgery can fit in the room
     TotalTime is TAnesthesia + TSurgery + TCleaning,
     filter_full_intervals1(LFreeRoom, TotalTime, FullIntervals),
-
-    % Step 2: Filter intervals where anesthesiologists are available (anesthesia + surgery)
     TimeAnesthSurgery is TAnesthesia + TSurgery,
     filter_by_availability(FullIntervals, LFreeAnesth, TimeAnesthSurgery, IntervalsAnesth),
-
-    % Step 3: Filter intervals where surgeons are available (during surgery only)
     filter_by_surgery_availability(IntervalsAnesth, LFreeSurgeons, TAnesthesia, TSurgery, IntervalsSurgeons),
-
-    % Step 4: Filter intervals for cleaning team availability (after surgery)
     filter_by_cleaning_availability(IntervalsSurgeons, LFreeCleaners, TAnesthesia, TSurgery, TCleaning, LPossibilities),
-
-    % Collect participants
     append(LAnesth, LSurgeons, TempParticipants),
     append(TempParticipants, LCleaners, LParticipants).
 
 % --- Helper predicates --- %
+% Define predicates to categorize the roles
+is_doctor(Staff) :-
+    ( staff(Staff, doctor, _, _);
+     staff(Staff, nurse, _, _)),
+     \+ staff(Staff, _, anaesthetist, _),  % Exclude anaesthetists
+     \+ staff(Staff, assistant, medical, _).  % Exclude assistants
+is_anaesthetist(Staff) :-
+    staff(Staff, _, anaesthetist, _).
+is_assistant(Staff) :-
+    staff(Staff, assistant, medical, _).
 
 filter_full_intervals1([], _, []).
 filter_full_intervals1([(Start,End)|Rest], TotalTime, AllSubIntervals) :-
@@ -282,7 +247,7 @@ filter_by_surgery_availability([_|Rest], LFreeSurgeons, TAnesthesia, TSurgery, F
     filter_by_surgery_availability(Rest, LFreeSurgeons, TAnesthesia, TSurgery, FilteredRest).
 
 filter_by_cleaning_availability([], _, _, _, _, []).
-filter_by_cleaning_availability([(Start,End)|Rest], LFreeCleaners, TAnesthesia, TSurgery, TCleaning, [(NewStart,End)|FilteredRest]) :-
+filter_by_cleaning_availability([(Start,End)|Rest], LFreeCleaners, TAnesthesia, TSurgery, TCleaning, [(NewStart,End)|FilteredRest]) :-  
     StartCleaning is Start + TAnesthesia + TSurgery - 1,
     EndCleaning is StartCleaning + TCleaning - 1,
     EndCleaning =< End,
@@ -296,17 +261,6 @@ check_availability(Start, End, FreeIntervals) :-
     member((StartFree,EndFree), FreeIntervals),
     Start >= StartFree,
     End =< EndFree.
-
-
-% -------------------------------------------------------------------
-
-% REMOVES UNFEASIBLE TIME INTERVALS FROM THE RESULTING AGENDA
-% remove_unf_intervals(surgery-time, list-intersected-agendas-doctor, list-availability).
-
-remove_unf_intervals(_,[],[]).
-remove_unf_intervals(TSurgery,[(Tin,Tfin)|LA],[(Tin,Tfin)|LA1]):-DT is Tfin-Tin+1,TSurgery=<DT,!,
-    remove_unf_intervals(TSurgery,LA,LA1).
-remove_unf_intervals(TSurgery,[_|LA],LA1):- remove_unf_intervals(TSurgery,LA,LA1).
 % -------------------------------------------------------------------
 
 % SCHEDULES THE FIRST AVAILABLE TIME INTERVAL
@@ -397,7 +351,6 @@ update_better_sol(Day,Room,Agenda,LOpCode):-
 
 %-EVALUATES LIST OF OP CODES-----------------------------------------
 % Finds the Tfin (end time) of the first operation that matches one of the operation codes in LOpCode. If no matching operation is found, Tfin defaults to 1441.
-
 evaluate_final_time([],_,1441).
 evaluate_final_time([(_,Tfin,OpCode)|_],LOpCode,Tfin):-member(OpCode,LOpCode),!.
 evaluate_final_time([_|AgR],LOpCode,Tfin):-evaluate_final_time(AgR,LOpCode,Tfin).
