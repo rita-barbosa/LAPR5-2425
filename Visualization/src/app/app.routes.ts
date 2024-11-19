@@ -18,8 +18,10 @@ import { ListOperationRequestComponent } from './components/staff/doctor/list-op
 import { CreateOperationRequestComponent } from './components/staff/doctor/create-operation-request/create-operation-request.component';
 import { HospitalSimulationComponent } from './hospital-simulation/hospital-simulation.component';
 import { CreateOperationTypeComponent } from './components/admin/create-operation-type/create-operation-type.component';
-import { RegistrationComponent } from './user/registration/registration.component';
-import { ActivationComponent } from './user/verify/verify.component';
+import { RegistrationComponent } from './components/patient/registration/registration.component';
+import { ActivationComponent } from './components/patient/verify/verify.component';
+import { CreateStaffUserComponent } from './components/admin/create-staff-user/create-staff-user.component';
+import { VerifyStaffComponent } from './components/staff/verify-staff/verify-staff.component';
 
 
 export const routes: Routes = [
@@ -30,10 +32,11 @@ export const routes: Routes = [
   { path: 'create-patient-profile', component: CreatePatientProfileComponent },
   { path: 'create-staff-profile', component: CreateStaffProfileComponent },
   { path: 'staff', component: StaffComponent },
-  { path: 'user/registration', component: RegistrationComponent},
-  { path: 'user/verify', component: ActivationComponent},
+  { path: 'patient/registration', component: RegistrationComponent},
+  { path: 'patient/verify', component: ActivationComponent},
+  { path: 'staff/verify-staff', component: VerifyStaffComponent},
   { path: 'doctor', component: DoctorComponent },
-  {path: 'list-operation-request', component: ListOperationRequestComponent},
+  { path: 'list-operation-request', component: ListOperationRequestComponent},
   { path: 'patient', component: PatientComponent },
   { path: 'update-patient-profile', component: UpdateProfileComponent },
   // { path: 'edit-patient-profile', component: EditPatientProfileComponent},
@@ -43,6 +46,7 @@ export const routes: Routes = [
   { path: 'curso-detail', component: CursoDetailComponent },
   { path: 'hospital-simulation', component: HospitalSimulationComponent },
   { path: 'create-operation-type', component: CreateOperationTypeComponent },
+  { path: 'create-staff-user', component: CreateStaffUserComponent },
   { path: '**', redirectTo: '' }
 ];
 

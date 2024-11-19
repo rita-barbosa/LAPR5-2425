@@ -130,7 +130,7 @@ namespace MDBackoffice.Controllers
             try
             {
                 await _userService.ConfirmEmailStaff(userId, token, confirmEmailUserDto.NewPassword);
-                return Ok("Email confirmed successfully and account activated.");
+                return Ok(new { message = $"Email confirmed successfully and account activated."});
             }
             catch (BusinessRuleValidationException ex)
             {
@@ -200,7 +200,7 @@ namespace MDBackoffice.Controllers
         }
 
         [HttpPost("create-staff")]
-        [Authorize(Policy = "Admin")]
+        [Authorize(Policy = "Admin")] 
         public async Task<IActionResult> RegisterStaffUser([FromBody] RegisterUserDto registerUserDto)
         {
             try
@@ -209,7 +209,7 @@ namespace MDBackoffice.Controllers
                 await _staffService.AddUser(user, registerUserDto.Email, registerUserDto.Phone);
                 string email = await _staffService.GetProfileEmail(user.Email.ToString(), registerUserDto.Phone);
                 await _userService.SendConfirmationEmail(user, email);
-                return Ok("The user has been successfully created. Please verify your email to complete the registration.");
+                return Ok(new { message = "The user has been successfully created. Please verify your email to complete the registration." });
             }
             catch (InvalidOperationException ex1)
             {

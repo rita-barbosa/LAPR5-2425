@@ -1,8 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { Component, ViewChild } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';  // Importing NgForm only
-import { AuthService } from '../../shared/services/auth.service';
-import { MessageComponent } from '../../components/message/message.component';
+import { AuthService } from '../../../shared/services/auth.service';
+import { MessageComponent } from '../../message/message.component';
 
 
 @Component({

@@ -18,6 +18,16 @@ interface DecodeResponse {
   roles: string[];
 }
 
+interface UserStaff {
+  email: string;
+  password: string;
+  phone: string;
+  role: string;
+}
+
+interface CreateStaffUserResponse {
+  message: string;
+}
 
 interface UserInfo {
   email: string;
@@ -53,6 +63,28 @@ export class UserService {
         this.log(`User was successfully logged in.`);
       } else {
         this.log(`Login failed: No token received.`);
+      }
+    });
+
+  }
+
+  public createStaffUser(userEmail : string, userPassword : string, userPhone : string, userRole : string) {
+    const url = `${this.theServerURL}/create-staff`;
+    let user: UserStaff = {
+      email : userEmail,
+      password : userPassword,
+      phone : userPhone,
+      role : userRole
+    };
+
+    this.http.post<CreateStaffUserResponse>(url, user, this.httpOptions) 
+    .pipe(catchError(this.handleError<CreateStaffUserResponse>('Create staff user'))) 
+    .subscribe(data => {
+      if (data.message) { 
+        console.log(data.message);
+        this.log(data.message);
+      } else {
+        this.log(`Creation of user failed.`);
       }
     });
 

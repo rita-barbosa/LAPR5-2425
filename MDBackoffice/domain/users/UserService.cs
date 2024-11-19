@@ -318,10 +318,10 @@ namespace MDBackoffice.Domain.Users
             if (role == null) throw new NullReferenceException("Can't obtain the user role.");
 
             var encodedToken = Uri.EscapeDataString(token);
-            var baseUrl = _configuration["App:BaseUrl"];
+            var baseUrl = "http://localhost:4200";
             return role.Equals("Patient")
-            ? $"{baseUrl}/activate-patient?userId={user.Id}&token={encodedToken}"
-            : $"{baseUrl}/activate-staff?userId={user.Id}&token={encodedToken}";
+            ? $"{baseUrl}/patient/verify?userId={user.Id}&token={encodedToken}"
+            : $"{baseUrl}/staff/verify-staff?userId={user.Id}&token={encodedToken}";
         }
 
         private async Task<string> ConfigureUrlConfirmationStaffProfile(string token, User user, string staffId)
