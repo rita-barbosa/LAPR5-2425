@@ -1,14 +1,17 @@
 import { Injectable } from '@angular/core';
 import { MessageService } from './message.service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Staff } from '../domain/staff';
 import { catchError, map, Observable, of } from 'rxjs';
 import { Specialization } from '../domain/specialization';
+import { StaffWithId } from '../domain/staff-with-id';
+import { Staff } from '../domain/staff';
+import { StaffQueryParameters } from '../domain/staff-query-parameters';
 
 @Injectable({
   providedIn: 'root'
 })
 export class StaffService {
+
   theServerURL = 'https://localhost:5001/api';
   httpOptions = {
     headers: new HttpHeaders({'Content-Type': 'application/json' })
@@ -25,6 +28,7 @@ export class StaffService {
                       catchError(this.handleError<string[]>('Get Specializations', []))
                     );
   }
+
   public createStaffProfile(firstName: string, lastName: string, phone: string, email: string, address: string, licenseNumber: string, specialization: string,functionDescrip:string) {
     const url = `${this.theServerURL}/Staff/Create-StaffProfile`;
     let staff: Staff = {
@@ -44,6 +48,44 @@ export class StaffService {
         this.log(`Staff profile: ${data.email} was successfully created.`);
       });
   }
+
+  getStaffByFilters(staffQueryParameters: StaffQueryParameters): Observable<StaffWithId[]> {
+    const url = `${this.theServerURL}/Staff/Filtered-List`;
+
+    return this.http.post<StaffWithId[]>(url, staffQueryParameters, this.httpOptions).pipe(
+        catchError((error) => {
+          if (error.status = 404) {
+            const queryParameters: StaffQueryParameters = {
+              queryfilters: []
+            };
+
+            queryParameters.queryfilters.push({
+              firstName: '',
+              lastName: '',
+              email: '',
+              specialization: ''
+            })
+
+            this.log('No staff profiles were found with the chosen criteria.')
+            return this.http.post<StaffWithId[]>(url, queryParameters, this.httpOptions)
+          }else {
+            this.handleError<StaffWithId[]>('Get staff profile filtered list', error);
+            return of([]); 
+          }
+        })
+    );
+}
+
+getStaffById(id: string): Observable<StaffWithId> {
+  const url = `${this.theServerURL}/Staff/${id}`;
+
+  return this.http.get<StaffWithId>(url, this.httpOptions).pipe(
+      catchError((error) => {
+          this.handleError<StaffWithId>('Get staff profile', error);
+          return of({} as StaffWithId);
+      })
+  );
+}
 
   //------------------------/------------------------/------------------------
   private handleError<T>(operation = 'operation', result?: T) {

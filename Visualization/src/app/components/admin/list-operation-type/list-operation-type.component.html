@@ -1,0 +1,99 @@
+<body>
+    <div>
+        <app-side-bar-admin></app-side-bar-admin>
+    </div>
+    <header>
+        <h1 class="main-title">Search Operation Request</h1>
+    </header>
+
+    <!-- Filters Section -->
+    <div class="filters">
+        <input type="text" placeholder="Name" [(ngModel)]="filters.name" />
+        <input type="text" placeholder="specialization" [(ngModel)]="filters.specialization" />
+
+        <select [(ngModel)]="filters.status">
+            <option value="">Select Status</option>
+            <option value="true">true</option>
+            <option value="false">false</option>
+        </select>
+
+        <!-- Add a button to trigger the filter function -->
+        <button (click)="applyFilters()">Search</button>
+    </div>
+
+    <div class="conteudo">
+        <div *ngIf="operationTypes && operationTypes.length > 0">
+            <p-table [value]="operationTypes" [(selection)]="selectedOperationType" selectionMode="single"
+                [tableStyle]="{'border-collapse': 'collapse', 'table-layout': 'fixed', 'width': '100%'}">
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th style="width: 10%;">Select</th>
+                        <th style="width: 20%;">Name</th>
+                        <th style="width: 50%;">Required Staff</th>
+                        <th style="width: 20%;">Status</th>
+                    </tr>
+                </ng-template>
+
+                <ng-template pTemplate="body" let-operationType>
+                    <tr [pSelectableRow]="operationType">
+                        <td>
+                            <p-tableRadioButton [value]="operationType"
+                                [name]="'operationTypeRadio'"></p-tableRadioButton>
+                        </td>
+                        <td>{{ operationType.name || "-" }}</td>
+                        <td>
+                            <ul>
+                                <li *ngFor="let staff of operationType.requiredStaff">
+                                    {{ staff.staffQuantity }} {{ staff.function }} ({{ staff.specialization }})
+                                </li>
+                            </ul>
+                        </td>
+                        <td>{{ operationType.status }}</td>
+                    </tr>
+                </ng-template>
+            </p-table>
+
+
+            <div *ngIf="selectedOperationType" class="action-buttons">
+                <button (click)="editOperationType(selectedOperationType)">Edit Operation Type</button>
+                <button (click)="deleteOperationType(selectedOperationType)">Delete Operation Type</button>
+                <button (click)="toggleDetails(selectedOperationType)">Show Details</button>
+            </div>
+            <br>
+            <div *ngIf="detailsVisible" class="operation-details">
+                <h3>Operation Request Details</h3>
+                <p><strong>Name:</strong> {{ fullOperationType.name || '-' }}</p>
+                <p><strong>Estimated Duration:</strong> {{ fullOperationType.estimatedDuration || '-' }}</p>
+                <p><strong>Status:</strong> {{ fullOperationType.status }}</p>
+            
+                <p><strong>Required Staff:</strong></p>
+                <ul *ngIf="fullOperationType.requiredStaff && fullOperationType.requiredStaff.length > 0; else noRequiredStaff">
+                    <li *ngFor="let staff of fullOperationType.requiredStaff">
+                        {{ staff.staffQuantity }} {{ staff.function }} ({{ staff.specialization }})
+                    </li>
+                </ul>
+                <ng-template #noRequiredStaff>
+                    <p>-</p>
+                </ng-template>
+            
+                <p><strong>Phases:</strong></p>
+                <ul *ngIf="fullOperationType.phases && fullOperationType.phases.length > 0; else noPhases">
+                    <li *ngFor="let phase of fullOperationType.phases">
+                        {{ phase.description }} - Duration: {{ phase.duration }} minutes
+                    </li>
+                </ul>
+                <ng-template #noPhases>
+                    <p>-</p>
+                </ng-template>
+            
+                <div class="action-buttons">
+                    <button (click)="closeDetails()">Close</button>
+                    <button (click)="toggleDetails(selectedOperationType)">Update</button>
+                </div>
+            </div>
+            
+
+        </div>
+    </div>
+    <app-message></app-message>
+</body>

@@ -22,7 +22,9 @@ import { RegistrationComponent } from './components/patient/registration/registr
 import { ActivationComponent } from './components/patient/verify/verify.component';
 import { CreateStaffUserComponent } from './components/admin/create-staff-user/create-staff-user.component';
 import { VerifyStaffComponent } from './components/staff/verify-staff/verify-staff.component';
-
+import { ListOperationTypeComponent } from './components/admin/list-operation-type/list-operation-type.component';
+import { ListStaffProfiles } from './components/admin/list-staff-profiles/list-staff-profiles.component';
+import { ListPatientProfiles } from './components/admin/list-patient-profiles/list-patient-profiles.component';
 
 export const routes: Routes = [
   { path: '', component: MenuComponent, pathMatch: 'full' },
@@ -36,16 +38,19 @@ export const routes: Routes = [
   { path: 'patient/verify', component: ActivationComponent},
   { path: 'staff/verify-staff', component: VerifyStaffComponent},
   { path: 'doctor', component: DoctorComponent },
-  { path: 'list-operation-request', component: ListOperationRequestComponent},
+  {  path: 'list-operation-request', component: ListOperationRequestComponent },
   { path: 'patient', component: PatientComponent },
   { path: 'update-patient-profile', component: UpdateProfileComponent },
-  // { path: 'edit-patient-profile', component: EditPatientProfileComponent},
-  { path: 'create-operation-request', component: CreateOperationRequestComponent},
+  // { path: 'edit-patient-profile', component: EditPatientProfileComponent },
+  { path: 'create-operation-request', component: CreateOperationRequestComponent },
+  { path: 'list-operation-type', component: ListOperationTypeComponent},
   { path: 'cube', component: CubeComponent },
   { path: 'curso-angular', component: CursoAngularComponent },
   { path: 'curso-detail', component: CursoDetailComponent },
   { path: 'hospital-simulation', component: HospitalSimulationComponent },
   { path: 'create-operation-type', component: CreateOperationTypeComponent },
+  { path: 'list-staff-profiles', component: ListStaffProfiles },
+  { path: 'list-patient-profiles', component: ListPatientProfiles },
   { path: 'create-staff-user', component: CreateStaffUserComponent },
   { path: '**', redirectTo: '' }
 ];

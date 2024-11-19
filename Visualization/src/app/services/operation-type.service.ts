@@ -24,7 +24,7 @@ export class OperationTypeService {
     const url = `${this.theServerURL}/Specializations`;
 
     console.log(url)
-  
+
     return this.http.get<Specialization[]>(url, this.httpOptions)
           .pipe(
             map(data => data.map(spec => spec.denomination)),
@@ -42,8 +42,31 @@ export class OperationTypeService {
     this.http.post<OperationType>(url, operationType, this.httpOptions)
       .pipe(catchError(this.handleError<OperationType>('Operation type creation')))
       .subscribe(data => {
-        this.log(`Operation type: ${data.name} was successfully created.`);  
+        this.log(`Operation type: ${data.name} was successfully created.`);
       });
+  }
+
+   //------------------------/------------------------/------------------------
+  public getOperationTypeById(name: string): Observable<OperationType> {
+    const url = `${this.theServerURL}/OperationTypes/${name}`;
+
+    return this.http.get<OperationType>(url, this.httpOptions)
+      .pipe(
+        catchError(this.handleError<OperationType>('Get Operation Type'))
+      );
+
+  }
+
+
+  getOperationTypesByFilters(filters: any): Observable<any> {
+    const url = `${this.theServerURL}/OperationTypes/Filtered-List`
+    // return this.http.post<any>(url, filters);
+    return this.http.post<any>(url, filters).pipe(
+      catchError((error) => {
+          this.handleError<any>('Get operation types list', error);
+          return of([]);
+      })
+  );
   }
 
   //------------------------/------------------------/------------------------

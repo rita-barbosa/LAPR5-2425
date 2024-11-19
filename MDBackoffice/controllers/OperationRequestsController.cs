@@ -103,7 +103,7 @@ namespace MDBackoffice.Controllers
         }
 
         [HttpGet("filtered")]
-        [Authorize(Policy = "Doctor")]
+        // [Authorize(Policy = "Doctor")]
         public async Task<ActionResult<IEnumerable<OperationRequestDto>>> GetOperationRequestByFilters(
                                                                                 [FromQuery] string? name = null,
                                                                                 [FromQuery] string? priority = null,

@@ -1,0 +1,129 @@
+<body>
+    <!-- Sidebar -->
+    <div>
+      <app-side-bar-admin></app-side-bar-admin>
+    </div>
+  
+    <!-- Header -->
+    <header>
+      <h1 class="main-title">Search Patient Profiles</h1>
+    </header>
+  
+    <!-- Filters Section -->
+    <div class="filters">
+      <!-- Filters Loop -->
+      <div
+        class="filter-row"
+        *ngFor="let filter of queryFiltersList; let i = index"
+      >
+        <input
+          type="text"
+          placeholder="Staff First Name"
+          [(ngModel)]="filter.firstName"
+          class="filter-input"
+        />
+        <input
+          type="text"
+          placeholder="Staff Last Name"
+          [(ngModel)]="filter.lastName"
+          class="filter-input"
+        />
+        <input
+          type="email"
+          placeholder="Email"
+          [(ngModel)]="filter.email"
+          class="filter-input"
+        />
+        <select
+          [(ngModel)]="filter.specialization"
+          class="filter-select"
+        >
+          <option value="" disabled>Select Specialization</option>
+          <option
+            *ngFor="let specialization of specializations"
+            [value]="specialization"
+          >
+            {{ specialization }}
+          </option>
+        </select>
+        <!-- Remove Button: Disabled for the First (Default) Filter -->
+        <button
+          *ngIf="i > 0"
+          (click)="removeFilter(i)"
+          class="remove-filter"
+        >
+          Remove
+        </button>
+      </div>
+  
+      <!-- Add Filter Button -->
+      <button (click)="addFilter()" class="add-filter-button">Add Filter</button>
+  
+      <!-- Apply Filters -->
+      <button (click)="applyFilters()" class="search-button">Search</button>
+    </div>
+  
+    <!-- Results Section -->
+    <div class="conteudo">
+      <!-- Table for Staff List -->
+      <div *ngIf="staffList && staffList.length > 0">
+        <p-table
+          [value]="staffList"
+          [(selection)]="selectedStaff"
+          selectionMode="single"
+          [tableStyle]="{ 'border-collapse': 'collapse', 'table-layout': 'fixed', width: '100%' }"
+        >
+          <ng-template pTemplate="header">
+            <tr>
+              <th style="width: 10%;">Select</th>
+              <th style="width: 15%;">Staff Name</th>
+              <th style="width: 30%;">Email</th>
+              <th style="width: 30%;">Specialization</th>
+            </tr>
+          </ng-template>
+  
+          <ng-template pTemplate="body" let-staff>
+            <tr [pSelectableRow]="staff">
+              <td>
+                <p-tableRadioButton
+                  [value]="staff"
+                  [name]="'staffRadio'"
+                ></p-tableRadioButton>
+              </td>
+              <td>{{ staff.name || '-' }}</td>
+              <td>{{ staff.email || '-' }}</td>
+              <td>{{ staff.specializationId || '-' }}</td>
+            </tr>
+          </ng-template>
+        </p-table>
+  
+        <!-- Action Buttons -->
+        <div *ngIf="selectedStaff" class="action-buttons">
+          <button (click)="editStaffProfile(selectedStaff)">
+            Edit Staff Profile
+          </button>
+          <button (click)="deleteStaffProfile(selectedStaff)">
+            Delete Staff Profile
+          </button>
+          <button (click)="toggleDetails(selectedStaff)">Show Details</button>
+        </div>
+      </div>
+  
+      <!-- Staff Details -->
+      <div *ngIf="detailsVisible" class="staff-details">
+        <h3>Staff Profile Details</h3>
+        <p><strong>Name:</strong> {{ fullStaff.name || '-' }}</p>
+        <p><strong>Phone Number:</strong> {{ fullStaff.phone || '-' }}</p>
+        <p><strong>Email:</strong> {{ fullStaff.email || '-' }}</p>
+        <p><strong>Address:</strong> {{ fullStaff.address || '-' }}</p>
+        <p><strong>Specialization:</strong> {{ fullStaff.specializationId || '-' }}</p>
+  
+        <div class="action-buttons">
+          <button (click)="closeDetails()">Close</button>
+        </div>
+      </div>
+    </div>
+  
+    <app-message></app-message>
+  </body>
+  
