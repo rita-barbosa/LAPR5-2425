@@ -70,7 +70,7 @@ namespace MDBackofficeTests.integrationtests.staff
                                             _userManagerMock.Object, _configurationMock.Object, _emailServiceMock.Object,
                                             _userServiceMock.Object);
 
-            var controller = new StaffController(_service);
+            var controller = new StaffController(_service,_userServiceMock.Object);
             var specializationId = "Ortopethics";
 
             var dtoMock = new CreatingStaffDto
@@ -85,6 +85,14 @@ namespace MDBackofficeTests.integrationtests.staff
                 );
 
             var specializationMock = new Mock<Specialization>("Ortopethics");
+            var context = new DefaultHttpContext();
+            context.Request.Headers["Authorization"] = "Bearer valid-token";
+            controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = context
+            };
+            _userServiceMock.Setup(_userService => _userService.CheckUserRole("valid-token", "Admin")).Returns(false);
+
 
             _repoSpecMock.Setup(_repoSpecMock => _repoSpecMock.GetByIdAsync(It.IsAny<SpecializationDenomination>()))
                 .ReturnsAsync(specializationMock.Object);

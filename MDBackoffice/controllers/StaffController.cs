@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using MDBackoffice.Domain.Shared;
 using MDBackoffice.Domain.StaffProfiles;
+using MDBackoffice.Domain.Users;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
@@ -15,15 +16,17 @@ namespace MDBackoffice.Controllers
     public class StaffController : ControllerBase
     {
         private readonly StaffService _service;
-
-        public StaffController(StaffService service)
+        private readonly UserService _userSvc;
+        public StaffController(StaffService service, UserService svc)
         {
             _service = service;
+            _userSvc = svc;
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<StaffDto>> GetStaffById(string id)
         {
+
             var staff = await _service.GetByIdAsync(new StaffId(id));
             if (staff == null)
             {
@@ -35,11 +38,18 @@ namespace MDBackoffice.Controllers
         // POST: api/Staff/Create-StaffProfile
         [HttpPost]
         [Route("Create-StaffProfile")]
-        [Authorize(Policy = "Admin")]
+        //    [Authorize(Policy = "Admin")]
         public async Task<ActionResult<StaffDto>> CreateStaffProfile(CreatingStaffDto dto)
         {
             try
             {
+                var token = HttpContext.Request.Headers.Authorization.ToString()?.Split(' ')[1];
+
+                if (string.IsNullOrWhiteSpace(token) || _userSvc.CheckUserRole(token, "Admin")) 
+                {
+                    return BadRequest("Invalid authorization or user role.");
+                }
+
                 var staff = await _service.CreateStaffProfile(dto);
 
                 return Ok(staff);
@@ -71,13 +81,19 @@ namespace MDBackoffice.Controllers
 
         // PUT: api/Staff/5
         [HttpPut("{id}")]
-        [Authorize(Policy = "Admin")]
+        //  [Authorize(Policy = "Admin")]
         public async Task<ActionResult<StaffDto>> EditStaffProfile(string id, EditStaffDto dto)
         {
             try
             {
-                var staff = await _service.UpdateAsync(id, dto);
+                var token = HttpContext.Request.Headers.Authorization.ToString()?.Split(' ')[1];
 
+                if (string.IsNullOrWhiteSpace(token) || _userSvc.CheckUserRole(token, "Admin"))
+                {
+                    return BadRequest("Invalid authorization or user role.");
+                }
+
+                var staff = await _service.UpdateAsync(id, dto);
                 if (staff == null)
                 {
                     return NotFound();
@@ -119,8 +135,14 @@ namespace MDBackoffice.Controllers
         // [Authorize(Policy = "Admin")]
         public async Task<ActionResult<List<StaffDto>>> GetFilteredStaffProfiles(StaffQueryParametersDto dto)
         {
-            var staff = await _service.FilterStaffProfiles(dto);
+            var token = HttpContext.Request.Headers.Authorization.ToString()?.Split(' ')[1];
 
+            if (string.IsNullOrWhiteSpace(token) || _userSvc.CheckUserRole(token, "Admin"))
+            {
+                return BadRequest("Invalid authorization or user role.");
+            }
+
+            var staff = await _service.FilterStaffProfiles(dto);
             if (staff.IsNullOrEmpty())
             {
                 return NotFound(new { Message = "No staff matching the filtering criteria." });
@@ -132,28 +154,35 @@ namespace MDBackoffice.Controllers
         // POST: api/Staff/Deactivate-StaffProfile
         [HttpPut]
         [Route("Deactivate-StaffProfile")]
-        [Authorize(Policy = "Admin")]
-        public async Task<ActionResult> DeactivateStaffProfile([FromBody] IdPassDto idPassDto) 
+        // [Authorize(Policy = "Admin")]
+        public async Task<ActionResult> DeactivateStaffProfile([FromBody] IdPassDto idPassDto)
         {
             try
             {
-                bool result = await _service.DeactivateStaffProfile(idPassDto.Id); 
+                var token = HttpContext.Request.Headers.Authorization.ToString()?.Split(' ')[1];
+
+                if (string.IsNullOrWhiteSpace(token) || _userSvc.CheckUserRole(token, "Admin"))
+                {
+                    return BadRequest("Invalid authorization or user role.");
+                }
+
+                bool result = await _service.DeactivateStaffProfile(idPassDto.Id);
                 if (result)
                 {
-                    return Ok(new {message ="Staff deactivated successfully." });
+                    return Ok(new { message = "Staff deactivated successfully." });
                 }
                 else
                 {
-                    return NotFound($"Staff with ID {idPassDto.Id} not found."); 
+                    return NotFound($"Staff with ID {idPassDto.Id} not found.");
                 }
             }
             catch (BusinessRuleValidationException ex)
             {
-                return BadRequest(new { ex.Message }); 
+                return BadRequest(new { ex.Message });
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { ex.Message }); 
+                return StatusCode(500, new { ex.Message });
             }
         }
 

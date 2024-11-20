@@ -3,7 +3,7 @@ import { MessageService } from './message.service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { catchError, Observable, of } from 'rxjs';
 import { EditPatient } from '../domain/edit-patient';
-import { Patient } from '../domain/Patient';
+import { Patient } from '../domain/patient';
 import { PatientQueryParameters } from '../domain/patient-query-parameters';
 import { PatientWithId } from '../domain/patient-with-id';
 import { EditPatientProfile } from '../domain/edit-patient-profile';
@@ -44,12 +44,11 @@ export class PatientService {
     if (emergencyContact && emergencyContact.trim() !== "") {
       patient.emergencyContact = emergencyContact;
     }
-    this.log(`${url}`)
-    // Make the PUT request
+
     this.http.put<Patient>(url, patient, this.httpOptions)
       .pipe(catchError(this.handleError<Patient>('Update patient profile')))
       .subscribe(data => {
-        this.log(`Patient profile: was successfully updated.`);
+        this.log(`Patient profile was successfully updated.`);
       });
   }
 

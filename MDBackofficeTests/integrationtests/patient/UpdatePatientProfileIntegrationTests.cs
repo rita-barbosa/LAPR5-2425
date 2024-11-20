@@ -66,7 +66,7 @@ namespace MDBackofficeTests.integrationtests.patient
         public async Task EditPatientProfile_ReturnsOkPatientDto_IntegrationControllerService()
         {
             //Arrange
-            var _controller = new PatientController(_service);
+            var _controller = new PatientController(_service, _userServiceMock.Object);
 
 
             var dtoMock = new EditPatientDto
@@ -80,6 +80,13 @@ namespace MDBackofficeTests.integrationtests.patient
             var id = "202411000001";
 
             var dtoResult = new PatientDto("Rita Barbosa", "+351 910000000", "ritabarbosa@email.com", "Test, 1234-234, Test Test", "2004-12-15", id);
+            var context = new DefaultHttpContext();
+            context.Request.Headers["Authorization"] = "Bearer valid-token";
+            _controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = context
+            };
+            _userServiceMock.Setup(_userService => _userService.CheckUserRole("valid-token", "Admin")).Returns(false);
 
             _repoMock.Setup(_repoPatMock => _repoPatMock.GetByIdAsync(It.IsAny<MedicalRecordNumber>()))
                 .ReturnsAsync(patientMock.Object);

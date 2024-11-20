@@ -80,8 +80,6 @@ namespace MDBackoffice.Controllers
         {
             string? userEmail = User.FindFirstValue(ClaimTypes.Email);
 
-            // var userEmail = "ritabfbarbosa@gmail.com";
-
             if (!await _service.CheckDoctorIsRequestingDoctor(userEmail, dto.Id)){
                 return BadRequest("You are not the requesting doctor for the choosen operation request.");
             }

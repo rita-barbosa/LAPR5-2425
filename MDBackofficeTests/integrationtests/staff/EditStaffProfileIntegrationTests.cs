@@ -74,7 +74,7 @@ namespace MDBackofficeTests.integrationtests.staff
         public async Task EditStaffProfile_ReturnsAcceptedStaffDto_IntegrationControllerService()
         {
             //Arrange
-            var _controller = new StaffController(_service);
+            var _controller = new StaffController(_service,_userServiceMock.Object);
 
             var dtoMock = new EditStaffDto
             ("+351 910000011",
@@ -95,6 +95,15 @@ namespace MDBackofficeTests.integrationtests.staff
             var id = "D202400001";
 
             var dtoResult = new StaffDto("Rita Barbosa", "+351 910000011", "test@email.com", "New, 1234-234, Updated", id, "cardiology");
+
+            var context = new DefaultHttpContext();
+            context.Request.Headers["Authorization"] = "Bearer valid-token";
+            _controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = context
+            };
+            _userServiceMock.Setup(_userService => _userService.CheckUserRole("valid-token", "Admin")).Returns(false);
+
 
             _repoMock.Setup(_repoPatMock => _repoPatMock.GetByIdAsync(It.IsAny<StaffId>()))
                 .ReturnsAsync(staffMock.Object);
@@ -172,7 +181,7 @@ namespace MDBackofficeTests.integrationtests.staff
         public async Task ConfirmEmailStaff_ReturnsOkResult_IntegrationControllerService()
         {
             // Arrange
-            var _controller = new StaffController(_service);
+            var _controller = new StaffController(_service,_userServiceMock.Object);
             var email = "ritabarbosa@email.com";
             var userId = "valid_user_id";
             var token = "valid_token";
