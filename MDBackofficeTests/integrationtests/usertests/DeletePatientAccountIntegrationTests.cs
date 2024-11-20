@@ -123,8 +123,10 @@ namespace MDBackofficeTests.integrationtests.usertests
             // Assert
             _patientServiceMock.Verify(p => p.AnonymizeProfile(userEmail), Times.Once);
             Assert.IsType<OkObjectResult>(result);
-            Assert.Equal("Patient account successfully deleted!\nSome of your non-identifiable data will be retained, as per our GDPR policies.", ((OkObjectResult)result).Value);
-        }
+            Assert.NotNull(((OkObjectResult)result).Value);
+            var okResult = result as OkObjectResult;
+            Assert.Equal("{ message = Patient account successfully deleted!\nSome of your non-identifiable data will be retained, as per our GDPR policies. }", okResult.Value.ToString());
+      }
 
         [Fact]
         public async Task DeletePatientAccount_Success_IntegrationServiceDomain()
