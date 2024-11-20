@@ -6,6 +6,7 @@ import { EditPatient } from '../domain/edit-patient';
 import { Patient } from '../domain/Patient';
 import { PatientQueryParameters } from '../domain/patient-query-parameters';
 import { PatientWithId } from '../domain/patient-with-id';
+import { EditPatientProfile } from '../domain/edit-patient-profile';
 import { IdPasser } from '../domain/IdPasser';
 
 @Injectable({
@@ -16,7 +17,7 @@ export class PatientService {
   theServerURL = 'https://localhost:5001/api/Patient';
   token = `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjAyOWUxYWEzLTRjZTUtNDA0ZS1iMTBkLTZiZTUwZDhhMmZjYSIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL2VtYWlsYWRkcmVzcyI6InJpdGFiYXJib3NhMjYucmJAZ21haWwuY29tIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiUGF0aWVudCIsImV4cCI6MTczMTc4NzEzNiwiaXNzIjoiSGVhbHRoY2FyZVN5c3RlbSIsImF1ZCI6IkhlYWx0aGNhcmVTeXN0ZW1Vc2VyIn0.HfKFbJnkSpY-pAx9SOxXpYPg_xVeRi_fPLD-Jrc-TfA`;
   httpOptions = {
-    headers: new HttpHeaders({ 
+    headers: new HttpHeaders({
       'Content-Type': 'application/json'
        })
   };
@@ -24,10 +25,10 @@ export class PatientService {
   constructor(private messageService: MessageService, private http: HttpClient) { }
   public updateProfile(name: string, phone: string, email: string, address: string, emergencyContact: string) {
     const url = `${this.theServerURL}`;
-  
+
     // Construct the patient object, including only fields that have values
     let patient: EditPatient = {};
-  
+
     if (name && name.trim() !== "") {
       patient.name = name;
     }
@@ -51,7 +52,7 @@ export class PatientService {
         this.log(`Patient profile: was successfully updated.`);
       });
   }
-  
+
 
   public createPatientProfile(firstName: string, lastName: string, phone: string, email: string, address: string, emergencyContact: string, gender: string, dateBirth: string) {
     const url = `${this.theServerURL}/Create-PatientProfile`;
@@ -65,11 +66,44 @@ export class PatientService {
       emergencyContact: emergencyContact,
       gender: gender,
     };
-    
+
     this.http.post<Patient>(url, patient, this.httpOptions)
       .pipe(catchError(this.handleError<Patient>('Create patient profile')))
       .subscribe(data => {
         this.log(`Patient profile: ${data.email} was successfully created.`);
+      });
+  }
+
+  EditPatientProfile(id: string, name: string, phone: string, email: string, address: string, dateBirth: string) {
+    const url = `${this.theServerURL}/${id}`;
+    let editPatient: EditPatientProfile = {
+      id: id
+    };
+
+    if (name && name.trim() !== "") {
+      editPatient.name = name;
+    }
+
+    if (phone && phone.trim() !== "") {
+      editPatient.phone = phone;
+    }
+
+    if (email && email.trim() !== "") {
+      editPatient.email = email;
+    }
+
+    if (address && address.trim() !== "") {
+      editPatient.address = address;
+    }
+
+    if (dateBirth && dateBirth.trim() !== "") {
+      editPatient.dateBirth = dateBirth;
+    }
+
+    this.http.put<Patient>(url, editPatient, this.httpOptions)
+      .pipe(catchError(this.handleError<EditPatientProfile>('Edited patient profile')))
+      .subscribe(data => {
+        this.log(`Patient profile: was successfully updated.`);
       });
   }
 
@@ -100,7 +134,7 @@ export class PatientService {
             return this.http.post<PatientWithId[]>(url, queryParameters, this.httpOptions)
           }else {
             this.handleError<PatientWithId[]>('Get patient profile filtered list', error);
-            return of([]); 
+            return of([]);
           }
         })
     );
@@ -130,7 +164,7 @@ export class PatientService {
       });
   }
 
- 
+
 
   //------------------------/------------------------/------------------------
   private handleError<T>(operation = 'operation', result?: T) {
