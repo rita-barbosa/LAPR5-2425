@@ -14,7 +14,7 @@ import { CreateStaffProfileComponent } from './components/admin/create-staff-pro
 import { UpdateProfileComponent } from './components/patient/update-profile/update-profile.component';
 import { DoctorComponent } from './components/staff/doctor/doctor.component';
 import { ListOperationRequestComponent } from './components/staff/doctor/list-operation-request/list-operation-request.component';
-// import { EditPatientProfileComponent } from './components/admin/edit-patient-profile/edit-patient-profile.component';
+import { EditPatientProfileComponent } from './components/admin/edit-patient-profile/edit-patient-profile.component';
 import { CreateOperationRequestComponent } from './components/staff/doctor/create-operation-request/create-operation-request.component';
 import { HospitalSimulationComponent } from './hospital-simulation/hospital-simulation.component';
 import { CreateOperationTypeComponent } from './components/admin/create-operation-type/create-operation-type.component';
@@ -25,6 +25,8 @@ import { VerifyStaffComponent } from './components/staff/verify-staff/verify-sta
 import { ListOperationTypeComponent } from './components/admin/list-operation-type/list-operation-type.component';
 import { ListStaffProfiles } from './components/admin/list-staff-profiles/list-staff-profiles.component';
 import { ListPatientProfiles } from './components/admin/list-patient-profiles/list-patient-profiles.component';
+import { EditStaffProfileComponent } from './components/admin/edit-staff-profile/edit-staff-profile.component';
+import { VerifyProfileEditComponent } from './components/staff/verify-profile-edit/verify-profile-edit.component';
 
 export const routes: Routes = [
   { path: '', component: MenuComponent, pathMatch: 'full' },
@@ -32,16 +34,18 @@ export const routes: Routes = [
   { path: 'menu', component: MenuComponent },
   { path: 'admin', component: AdminComponent },
   { path: 'create-patient-profile', component: CreatePatientProfileComponent },
+  { path: 'edit-patient-profile', component: EditPatientProfileComponent },
   { path: 'create-staff-profile', component: CreateStaffProfileComponent },
+  { path: 'edit-staff-profile', component: EditStaffProfileComponent },
+  { path: 'verify-profile-edit', component: VerifyProfileEditComponent },
   { path: 'staff', component: StaffComponent },
   { path: 'patient/registration', component: RegistrationComponent},
   { path: 'patient/verify', component: ActivationComponent},
   { path: 'staff/verify-staff', component: VerifyStaffComponent},
   { path: 'doctor', component: DoctorComponent },
-  {  path: 'list-operation-request', component: ListOperationRequestComponent },
+  { path: 'list-operation-request', component: ListOperationRequestComponent },
   { path: 'patient', component: PatientComponent },
   { path: 'update-patient-profile', component: UpdateProfileComponent },
-  // { path: 'edit-patient-profile', component: EditPatientProfileComponent },
   { path: 'create-operation-request', component: CreateOperationRequestComponent },
   { path: 'list-operation-type', component: ListOperationTypeComponent},
   { path: 'cube', component: CubeComponent },
