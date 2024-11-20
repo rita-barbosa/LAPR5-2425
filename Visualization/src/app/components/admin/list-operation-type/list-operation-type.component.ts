@@ -17,7 +17,7 @@ import { OperationTypeEdit } from '../../../domain/OperationTypeEdit';
   styleUrl: './list-operation-type.component.css'
 })
 export class ListOperationTypeComponent implements OnInit {
-  operationTypes : ListOperationType[] = [];
+  operationTypes: ListOperationType[] = [];
   selectedOperationType!: ListOperationType;
   fullOperationType!: OperationType;
   detailsVisible: boolean = false;
@@ -29,7 +29,7 @@ export class ListOperationTypeComponent implements OnInit {
     status: ''
   };
 
-  constructor(private service: OperationTypeService) {}
+  constructor(private service: OperationTypeService) { }
 
   ngOnInit(): void {
     this.fetchOperations();
@@ -44,7 +44,7 @@ export class ListOperationTypeComponent implements OnInit {
         status: this.filters.status || ''
       }
     ];
-  
+
     // Fazer a requisição para o endpoint do backend
     this.service.getOperationTypesByFilters({ queryFilters }).subscribe({
       next: data => {
@@ -90,7 +90,8 @@ export class ListOperationTypeComponent implements OnInit {
   }
 
   deleteOperationType(operationType: ListOperationType): void {
-    // Implement delete logic
+    this.service.removeOperationType(operationType.name);
+    this.fetchOperations(); // to update the list of operation types
   }
 
 }
