@@ -55,7 +55,7 @@
 
 
             <div *ngIf="selectedOperationType" class="action-buttons">
-                <button (click)="editOperationType(selectedOperationType)">Edit Operation Type</button>
+                <button (click)="toggleEdition(selectedOperationType)">Edit Operation Type</button>
                 <button (click)="deleteOperationType(selectedOperationType)">Delete Operation Type</button>
                 <button (click)="toggleDetails(selectedOperationType)">Show Details</button>
             </div>
@@ -91,7 +91,6 @@
                     <button (click)="toggleDetails(selectedOperationType)">Update</button>
                 </div>
             </div>
-            
 
         </div>
     </div>

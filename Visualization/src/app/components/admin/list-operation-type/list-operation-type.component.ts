@@ -7,6 +7,7 @@ import { MessageComponent } from '../../message/message.component';
 import { ListOperationType } from '../../../domain/list-operation-type';
 import { OperationType } from '../../../domain/OperationType';
 import { OperationTypeService } from '../../../services/operation-type.service';
+import { OperationTypeEdit } from '../../../domain/OperationTypeEdit';
 
 @Component({
   selector: 'app-list-operation-type',
@@ -20,6 +21,7 @@ export class ListOperationTypeComponent implements OnInit {
   selectedOperationType!: ListOperationType;
   fullOperationType!: OperationType;
   detailsVisible: boolean = false;
+  editDetails: boolean = false;
 
   filters = {
     name: '',
@@ -72,12 +74,19 @@ export class ListOperationTypeComponent implements OnInit {
     });
   }
   closeDetails(): void {
-    // Hide the details section
     this.detailsVisible = false;
   }
 
-  editOperationType(operationType: ListOperationType): void {
-    // Implement edit logic
+  editOperationType(operationTypeEdit: OperationTypeEdit): void {
+    operationTypeEdit.id = this.selectedOperationType.name;
+  }
+
+  toggleEdition(operationType: ListOperationType): void {
+    this.editDetails = true;
+  }
+
+  closeEdition(): void {
+    this.editDetails = false;
   }
 
   deleteOperationType(operationType: ListOperationType): void {

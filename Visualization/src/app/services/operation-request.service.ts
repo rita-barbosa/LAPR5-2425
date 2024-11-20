@@ -20,9 +20,13 @@ export class OperationRequestService {
 
 
   theServerURL = 'https://localhost:5001/api';
+  token = localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')!).token : null;
   httpOptions = {
-    headers: new HttpHeaders({ 'Content-Type': 'application/json' })
-  };
+    headers: new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${this.token}`
+    })
+   };
 
   constructor(private messageService: MessageService, private http: HttpClient) { }
 

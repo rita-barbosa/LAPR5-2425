@@ -7,6 +7,7 @@ import { StaffWithId } from '../domain/staff-with-id';
 import { Staff } from '../domain/staff';
 import { StaffQueryParameters } from '../domain/staff-query-parameters';
 import { IdPasser } from '../domain/IdPasser';
+import { JwtHelperService } from '@auth0/angular-jwt';
 
 @Injectable({
   providedIn: 'root'
@@ -14,16 +15,12 @@ import { IdPasser } from '../domain/IdPasser';
 export class StaffService {
 
   theServerURL = 'https://localhost:5001/api';
-  httpOptions = {
-    headers: new HttpHeaders({'Content-Type': 'application/json' })
-  };
-  
   constructor(private messageService: MessageService, private http: HttpClient) { }
 
   public getAllSpecializationsAvailable(): Observable<string[]> {
     const url = `${this.theServerURL}/Specializations`;
   
-    return this.http.get<Specialization[]>(url, this.httpOptions)
+    return this.http.get<Specialization[]>(url)
                     .pipe(
                       map(data => data.map(spec => spec.denomination)),
                       catchError(this.handleError<string[]>('Get Specializations', []))
@@ -43,57 +40,69 @@ export class StaffService {
       specializationId: specialization
     };
 
-    this.http.post<Staff>(url, staff, this.httpOptions)
+    this.http.post<Staff>(url, staff)
       .pipe(catchError(this.handleError<Staff>('Create staff profile')))
       .subscribe(data => {
         this.log(`Staff profile: ${data.email} was successfully created.`);
       });
   }
 
-  deactivateStaffProfile(idStaff: string) {
+  deactivateStaffProfile(idStaff: string, token: string) {
     const url = `${this.theServerURL}/Staff/Deactivate-StaffProfile`;
     let idPasser: IdPasser = {
       id: idStaff
     };
 
-    this.http.put<{ message : string }>(url, idPasser, this.httpOptions)
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+
+    this.http.put<{ message : string }>(url, idPasser, { headers})
       .pipe(catchError(this.handleError<{ message : string }>('Deactivate staff profile')))
       .subscribe(data => {
         this.log(`${data.message}`);
       });
   }
 
-  getStaffByFilters(staffQueryParameters: StaffQueryParameters): Observable<StaffWithId[]> {
+  getStaffByFilters(staffQueryParameters: StaffQueryParameters, token: string): Observable<StaffWithId[]> {
     const url = `${this.theServerURL}/Staff/Filtered-List`;
-
-    return this.http.post<StaffWithId[]>(url, staffQueryParameters, this.httpOptions).pipe(
-        catchError((error) => {
-          if (error.status = 404) {
-            const queryParameters: StaffQueryParameters = {
-              queryfilters: []
-            };
-
-            queryParameters.queryfilters.push({
-              firstName: '',
-              lastName: '',
-              email: '',
-              specialization: ''
-            })
-
-            this.log('No staff profiles were found with the chosen criteria.')
-            return this.http.post<StaffWithId[]>(url, queryParameters, this.httpOptions)
-          }else {
-            this.handleError<StaffWithId[]>('Get staff profile filtered list', error);
-            return of([]); 
-          }
-        })
+  
+    // Setting up the headers
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+  
+    return this.http.post<StaffWithId[]>(url, staffQueryParameters, { headers}).pipe(
+      catchError((error) => {
+        // Handle 404 - No staff profiles found
+        if (error.status === 404) {
+          // Define fallback query parameters
+          const queryParameters: StaffQueryParameters = {
+            queryfilters: [
+              {
+                firstName: '',
+                lastName: '',
+                email: '',
+                specialization: ''
+              }
+            ]
+          };
+  
+          // Log the situation
+          this.log('No staff profiles were found with the chosen criteria.');
+  
+          // Return the fallback request with the same headers and `withCredentials`
+          return this.http.post<StaffWithId[]>(url, queryParameters, { headers, withCredentials: true });
+        } else {
+          // Handle other errors
+          this.handleError<StaffWithId[]>('Get staff profile filtered list', error);
+          return of([]); // Return an empty array to keep the app functional
+        }
+      })
     );
-}
+  }
+  
 
 getStaffById(id: string): Observable<StaffWithId> {
   const url = `${this.theServerURL}/Staff/${id}`;
 
-  return this.http.get<StaffWithId>(url, this.httpOptions).pipe(
+  return this.http.get<StaffWithId>(url).pipe(
       catchError((error) => {
           this.handleError<StaffWithId>('Get staff profile', error);
           return of({} as StaffWithId);

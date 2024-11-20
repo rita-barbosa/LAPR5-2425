@@ -3,6 +3,7 @@ import { MessageService } from './message.service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { catchError, Observable, of } from 'rxjs';
 import { Router } from '@angular/router';
+import { JwtHelperService } from '@auth0/angular-jwt';
 
 interface UserLogin {
   email: string;
@@ -35,6 +36,8 @@ interface UserInfo {
   token: string;
 }
 
+var token : string;
+
 @Injectable({
   providedIn: 'root'
 })
@@ -42,7 +45,7 @@ interface UserInfo {
 export class UserService {
   theServerURL = 'https://localhost:5001/api';
   httpOptions = {
-    headers: new HttpHeaders({'Content-Type': 'application/json' })
+    headers: new HttpHeaders({'Content-Type': 'application/json', 'Authorization': `Bearer ${token}`})
   };
   
   constructor(private messageService: MessageService, private http: HttpClient, private router : Router) { }
@@ -53,22 +56,22 @@ export class UserService {
       email : userEmail,
       password : userPassword
     };
-
+  
     this.http.post<LoginResponse>(url, user, this.httpOptions) 
-    .pipe(catchError(this.handleError<LoginResponse>('User login'))) 
-    .subscribe(data => {
-      if (data && data.token) { 
+      .pipe(catchError(this.handleError<LoginResponse>('User login')))
+      .subscribe(data => {
+        if (data && data.token) {
         console.log(data.token);
-        this.decodeTokenandRedirect(data.token); 
+          this.decodeTokenandRedirect(data.token);
         this.log(`User was successfully logged in.`);
-      } else {
+        } else {
         this.log(`Login failed: No token received.`);
-      }
-    });
+        }
+      });
 
   }
 
-  public createStaffUser(userEmail : string, userPassword : string, userPhone : string, userRole : string) {
+  public createStaffUser(userEmail : string, userPassword : string, userPhone : string, userRole : string, tokenAuth : string) {
     const url = `${this.theServerURL}/create-staff`;
     let user: UserStaff = {
       email : userEmail,
@@ -76,6 +79,8 @@ export class UserService {
       phone : userPhone,
       role : userRole
     };
+
+    token = tokenAuth;
 
     this.http.post<CreateStaffUserResponse>(url, user, this.httpOptions) 
     .pipe(catchError(this.handleError<CreateStaffUserResponse>('Create staff user'))) 

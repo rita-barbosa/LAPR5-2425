@@ -4,6 +4,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { catchError, map, Observable, of } from 'rxjs';
 import { Specialization } from '../domain/specialization';
 import { OperationType } from '../domain/OperationType';
+import { ListOperationType } from '../domain/list-operation-type';
 
 @Injectable({
   providedIn: 'root'
@@ -15,6 +16,7 @@ export class OperationTypeService {
   httpOptions = {
     headers: new HttpHeaders({
       'Content-Type': 'application/json',
+      'Authorization': `Bearer ${this.token}`
     })
    };
 
@@ -57,6 +59,9 @@ export class OperationTypeService {
 
   }
 
+  editOperationType(operationType: ListOperationType) {
+    throw new Error('Method not implemented.');
+  }
 
   getOperationTypesByFilters(filters: any): Observable<any> {
     const url = `${this.theServerURL}/OperationTypes/Filtered-List`
