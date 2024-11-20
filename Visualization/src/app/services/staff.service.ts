@@ -8,6 +8,7 @@ import { Staff } from '../domain/staff';
 import { StaffQueryParameters } from '../domain/staff-query-parameters';
 import { IdPasser } from '../domain/IdPasser';
 import { EditStaffProfile } from '../domain/edit-staff';
+import { JwtHelperService } from '@auth0/angular-jwt';
 
 @Injectable({
   providedIn: 'root'
@@ -48,13 +49,12 @@ export class StaffService {
       specializationId: specialization
     };
 
-    this.http.post<Staff>(url, staff, this.httpOptions)
+    this.http.post<Staff>(url, staff)
       .pipe(catchError(this.handleError<Staff>('Create staff profile')))
       .subscribe(data => {
         this.log(`Staff profile: ${data.email} was successfully created.`);
       });
   }
-
 
   EditStaffProfile(id: string, phone: string, email: string, address: string, specialization: string) {
     const url = `${this.theServerURL}/Staff/${id}`;
@@ -95,20 +95,22 @@ export class StaffService {
   }
 
 
-  deactivateStaffProfile(idStaff: string) {
+  deactivateStaffProfile(idStaff: string, token: string) {
     const url = `${this.theServerURL}/Staff/Deactivate-StaffProfile`;
     let idPasser: IdPasser = {
       id: idStaff
     };
 
-    this.http.put<{ message : string }>(url, idPasser, this.httpOptions)
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+
+    this.http.put<{ message : string }>(url, idPasser, { headers})
       .pipe(catchError(this.handleError<{ message : string }>('Deactivate staff profile')))
       .subscribe(data => {
         this.log(`${data.message}`);
       });
   }
 
-  getStaffByFilters(staffQueryParameters: StaffQueryParameters): Observable<StaffWithId[]> {
+  getStaffByFilters(staffQueryParameters: StaffQueryParameters, token: string): Observable<StaffWithId[]> {
     const url = `${this.theServerURL}/Staff/Filtered-List`;
 
     return this.http.post<StaffWithId[]>(url, staffQueryParameters, this.httpOptions).pipe(
@@ -133,12 +135,13 @@ export class StaffService {
           }
         })
     );
-}
+  }
+  
 
 getStaffById(id: string): Observable<StaffWithId> {
   const url = `${this.theServerURL}/Staff/${id}`;
 
-  return this.http.get<StaffWithId>(url, this.httpOptions).pipe(
+  return this.http.get<StaffWithId>(url).pipe(
       catchError((error) => {
           this.handleError<StaffWithId>('Get staff profile', error);
           return of({} as StaffWithId);

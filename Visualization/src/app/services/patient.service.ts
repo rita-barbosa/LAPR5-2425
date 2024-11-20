@@ -15,12 +15,13 @@ import { IdPasser } from '../domain/IdPasser';
 export class PatientService {
 
   theServerURL = 'https://localhost:5001/api/Patient';
-  token = `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjAyOWUxYWEzLTRjZTUtNDA0ZS1iMTBkLTZiZTUwZDhhMmZjYSIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL2VtYWlsYWRkcmVzcyI6InJpdGFiYXJib3NhMjYucmJAZ21haWwuY29tIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiUGF0aWVudCIsImV4cCI6MTczMTc4NzEzNiwiaXNzIjoiSGVhbHRoY2FyZVN5c3RlbSIsImF1ZCI6IkhlYWx0aGNhcmVTeXN0ZW1Vc2VyIn0.HfKFbJnkSpY-pAx9SOxXpYPg_xVeRi_fPLD-Jrc-TfA`;
+  token = localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')!).token : null;
   httpOptions = {
     headers: new HttpHeaders({
-      'Content-Type': 'application/json'
-       })
-  };
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${this.token}`
+    })
+   };
 
   constructor(private messageService: MessageService, private http: HttpClient) { }
   public updateProfile(name: string, phone: string, email: string, address: string, emergencyContact: string) {

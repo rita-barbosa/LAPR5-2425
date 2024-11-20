@@ -1,19 +1,24 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, catchError, map, Observable, of } from 'rxjs';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
-import { MessageService } from './info.service'
+
 import { Router } from '@angular/router';
 import { environment } from '../../../environments/environment';
 import { UserPatient } from '../../domain/UserPatient';
+import { MessageService } from '../../services/message.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
     
-    httpOptions = {
-        headers: new HttpHeaders({ 'Content-Type': 'application/json' })
-    };
+  token = localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')!).token : null;
+  httpOptions = {
+    headers: new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${this.token}`
+    })
+   };
 
     constructor(private http: HttpClient,
                 private messageService: MessageService, 
@@ -53,6 +58,7 @@ export class AuthService {
           this.log(message.toString()); // Log the message from the server
       });
   }
+  
 
   private log(message: string) {
     this.messageService.add(`${message}`);
