@@ -75,7 +75,7 @@ To visually model the system, the **Unified Modeling Language (UML)** is used.
 
 ### 1.2. Level 2
 
-![healthcare_system_vl2.drawio.svg](logical-view/healthcare_system_vl2-version2.svg)
+![healthcare_system_vl2.drawio.svg](logical-view/healthcare_system_vl2.svg)
 
 In the system there is only one **Backoffice API**, however it is consumed both internally and externally. The team decided
 to represent it twice to make its use clearer.
