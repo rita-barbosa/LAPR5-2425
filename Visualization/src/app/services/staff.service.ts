@@ -1,12 +1,13 @@
 import { Injectable } from '@angular/core';
 import { MessageService } from './message.service';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { catchError, map, Observable, of } from 'rxjs';
 import { Specialization } from '../domain/specialization';
 import { StaffWithId } from '../domain/staff-with-id';
 import { Staff } from '../domain/staff';
 import { StaffQueryParameters } from '../domain/staff-query-parameters';
 import { IdPasser } from '../domain/IdPasser';
+import { EditStaffProfile } from '../domain/edit-staff';
 
 @Injectable({
   providedIn: 'root'
@@ -17,12 +18,12 @@ export class StaffService {
   httpOptions = {
     headers: new HttpHeaders({'Content-Type': 'application/json' })
   };
-  
+
   constructor(private messageService: MessageService, private http: HttpClient) { }
 
   public getAllSpecializationsAvailable(): Observable<string[]> {
     const url = `${this.theServerURL}/Specializations`;
-  
+
     return this.http.get<Specialization[]>(url, this.httpOptions)
                     .pipe(
                       map(data => data.map(spec => spec.denomination)),
@@ -49,6 +50,46 @@ export class StaffService {
         this.log(`Staff profile: ${data.email} was successfully created.`);
       });
   }
+
+
+  EditStaffProfile(id: string, phone: string, email: string, address: string, specialization: string) {
+    const url = `${this.theServerURL}/Staff/${id}`;
+    let editStaff: EditStaffProfile = {
+      id: id
+    };
+
+    if (phone && phone.trim() !== "") {
+      editStaff.phone = phone;
+    }
+
+    if (email && email.trim() !== "") {
+      editStaff.email = email;
+    }
+
+    if (address && address.trim() !== "") {
+      editStaff.address = address;
+    }
+
+    if (specialization && specialization.trim() !== "") {
+      editStaff.specializationId = specialization;
+    }
+
+    this.http.put<Staff>(url, editStaff, this.httpOptions)
+      .pipe(catchError(this.handleError<EditStaffProfile>('Edited staff profile')))
+      .subscribe(data => {
+        this.log(`Staff profile: was successfully updated.`);
+      });
+  }
+
+  confirmEmailStaff(userId: string, staffId: string, token: string): Observable<any> {
+    const params = new HttpParams()
+      .set('userId', userId)
+      .set('staffId', staffId)
+      .set('token', token);
+
+    return this.http.put(`${this.theServerURL}/staff/activate-staffProfile`, null, { params });
+  }
+
 
   deactivateStaffProfile(idStaff: string) {
     const url = `${this.theServerURL}/Staff/Deactivate-StaffProfile`;
@@ -84,7 +125,7 @@ export class StaffService {
             return this.http.post<StaffWithId[]>(url, queryParameters, this.httpOptions)
           }else {
             this.handleError<StaffWithId[]>('Get staff profile filtered list', error);
-            return of([]); 
+            return of([]);
           }
         })
     );
