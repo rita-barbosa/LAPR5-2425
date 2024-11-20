@@ -102,7 +102,7 @@ namespace MDBackoffice.Controllers
             try
             {
                 await _service.ConfirmEmailStaff(userId, staffId, token);
-                return Ok("Email confirmed successfully and contact information changed.");
+                return Ok(new { message ="Email confirmed successfully and contact information changed."});
             }
             catch (BusinessRuleValidationException ex)
             {
