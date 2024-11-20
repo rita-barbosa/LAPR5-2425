@@ -17,10 +17,12 @@ namespace MDBackoffice.Controllers
     public class PatientController : ControllerBase
     {
         private readonly PatientService _service;
+        private readonly UserService _userSvc;
 
-        public PatientController(PatientService service)
+        public PatientController(PatientService service, UserService svc)
         {
             _service = service;
+            _userSvc = svc;
         }
 
         [HttpGet("SimpleId/{id}")]
@@ -34,13 +36,20 @@ namespace MDBackoffice.Controllers
             }
             return Ok(patient);
         }
-    
+
 
         [HttpGet("{id}")]
         [Route("Get-PatientWithId")]
-        [Authorize(Policy = "Admin")]
+        //  [Authorize(Policy = "Admin")]
         public async Task<ActionResult<PatientDto>> GetPatientById(MedicalRecordNumber id)
         {
+            var token = HttpContext.Request.Headers.Authorization.ToString()?.Split(' ')[1];
+
+            if (string.IsNullOrWhiteSpace(token) || _userSvc.CheckUserRole(token, "Admin"))
+            {
+                return BadRequest("Invalid authorization or user role.");
+            }
+
             var patient = await _service.GetByIdAsync(id);
             if (patient == null)
             {
@@ -48,14 +57,20 @@ namespace MDBackoffice.Controllers
             }
             return Ok(patient);
         }
-    
+
         [HttpPost]
         [Route("Create-PatientProfile")]
-        [Authorize(Policy = "Admin")]
+        //[Authorize(Policy = "Admin")]
         public async Task<ActionResult<PatientDto>> CreatePatientProfile(CreatingPatientDto dto)
         {
             try
             {
+                var token = HttpContext.Request.Headers.Authorization.ToString()?.Split(' ')[1];
+
+                if (string.IsNullOrWhiteSpace(token) || _userSvc.CheckUserRole(token, "Admin"))
+                {
+                    return BadRequest("Invalid authorization or user role.");
+                }
                 var patient = await _service.CreatePatientProfile(dto);
 
                 return CreatedAtAction(nameof(GetPatientById), new { id = patient.PatientId }, patient);
@@ -66,17 +81,23 @@ namespace MDBackoffice.Controllers
             }
             catch (Exception ex)
             {
-                  return BadRequest(new { V = $"An unexpected error occurred: {ex.Message}" });
+                return BadRequest(new { V = $"An unexpected error occurred: {ex.Message}" });
             }
         }
 
-    	[HttpPut]
+        [HttpPut]
         [Route("Delete-PatientProfile")]
-        [Authorize(Policy = "Admin")]
+        //[Authorize(Policy = "Admin")]
         public async Task<IActionResult> DeletePatientProfile([FromBody] IdPassDto idPassDto)
         {
             try
             {
+                var token = HttpContext.Request.Headers.Authorization.ToString()?.Split(' ')[1];
+
+                if (string.IsNullOrWhiteSpace(token) || _userSvc.CheckUserRole(token, "Admin"))
+                {
+                    return BadRequest("Invalid authorization or user role.");
+                }
                 await _service.DeletePatientProfile(idPassDto.Id);
 
                 return Ok(new { message = "Patient profile and account succefully deleted." });
@@ -90,20 +111,22 @@ namespace MDBackoffice.Controllers
                 return BadRequest(new { V = ex1.Message });
             }
         }
-    
+
 
         [HttpPut]
-        [Authorize(Policy = "Patient")]
+        //[Authorize(Policy = "Patient")]
         public async Task<ActionResult<PatientDto>> EditPatientProfile(EditPatientProfileDto dto)
         {
             try
             {
-                var email = User.FindFirstValue(ClaimTypes.Email);
-                if (email == null)
+                var token = HttpContext.Request.Headers.Authorization.ToString()?.Split(' ')[1];
+
+                if (string.IsNullOrWhiteSpace(token) || _userSvc.CheckUserRole(token, "Patient"))
                 {
-                    return BadRequest(new { Message = "Email claim not found." });
+                    return BadRequest("Invalid authorization or user role.");
                 }
 
+                var email = _userSvc.GetLoggedInEmail(token);
                 var patientDto = await _service.EditProfile(email, dto);
 
                 return Accepted(patientDto);
@@ -122,21 +145,34 @@ namespace MDBackoffice.Controllers
         //GET: api/Patient
         [HttpGet]
         [Route("Get-PatientProfiles")]
-        [Authorize(Policy = "Admin")]
+        //[Authorize(Policy = "Admin")]
         public async Task<ActionResult<IEnumerable<PatientDto>>> GetPatientProfiles()
         {
+            var token = HttpContext.Request.Headers.Authorization.ToString()?.Split(' ')[1];
+
+            if (string.IsNullOrWhiteSpace(token) || _userSvc.CheckUserRole(token, "Admin"))
+            {
+                return BadRequest("Invalid authorization or user role.");
+            }
             return await _service.GetAllAsysnc();
         }
 
 
         //PUT: api/Patient/5
         [HttpPut("{id}")]
-        [Authorize(Policy = "Admin")]
+        //[Authorize(Policy = "Admin")]
         public async Task<ActionResult<PatientDto>> EditPatientProfile(string id, EditPatientDto dto)
         {
 
             try
             {
+                var token = HttpContext.Request.Headers.Authorization.ToString()?.Split(' ')[1];
+
+                if (string.IsNullOrWhiteSpace(token) || _userSvc.CheckUserRole(token, "Admin"))
+                {
+                    return BadRequest("Invalid authorization or user role.");
+                }
+
                 var patient = await _service.UpdateAsync(id, dto);
 
                 if (patient == null)
@@ -156,6 +192,13 @@ namespace MDBackoffice.Controllers
         [HttpPost("Filtered-List")]
         public async Task<ActionResult<List<PatientDto>>> GetFilteredPatientProfiles(PatientQueryParametersDto dto)
         {
+            var token = HttpContext.Request.Headers.Authorization.ToString()?.Split(' ')[1];
+
+            if (string.IsNullOrWhiteSpace(token) || _userSvc.CheckUserRole(token, "Admin"))
+            {
+                return BadRequest("Invalid authorization or user role.");
+            }
+
             var patients = await _service.FilterPatientProfiles(dto);
 
             if (patients.IsNullOrEmpty())

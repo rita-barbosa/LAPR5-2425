@@ -100,15 +100,15 @@ namespace MDBackoffice.Domain.Users
 
             if (!user.Status)
                 throw new BusinessRuleValidationException("Account not yet activated.");
-            
+
             if (await _userManager.IsLockedOutAsync(user))
-            throw new BusinessRuleValidationException("Account is locked out. Please try again later.");
+                throw new BusinessRuleValidationException("Account is locked out. Please try again later.");
 
             // Sign in the user and check for lockout on failure
             var signInResult = await _signinManager.PasswordSignInAsync(
-                user, 
-                loginUserDto.Password, 
-                isPersistent: false, 
+                user,
+                loginUserDto.Password,
+                isPersistent: false,
                 lockoutOnFailure: true // Enable lockout on failure
             );
 
@@ -148,7 +148,8 @@ namespace MDBackoffice.Domain.Users
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
-        public (string? Email, IList<string> Roles) DecodeJwtToken(string token){
+        public (string? Email, IList<string> Roles) DecodeJwtToken(string token)
+        {
 
             var handler = new JwtSecurityTokenHandler();
 
@@ -257,7 +258,8 @@ namespace MDBackoffice.Domain.Users
         public async Task EditStaffUserProfile(string oldEmail, string newEmail, string staffId, bool emailChange, string changedInformation)
         {
             User user = await _userManager.FindByEmailAsync(oldEmail) ?? throw new BusinessRuleValidationException("Can't find the user with that email.");
-            if(emailChange){
+            if (emailChange)
+            {
                 string token = await _userManager.GenerateChangeEmailTokenAsync(user, newEmail);
                 var result = await _userManager.ChangeEmailAsync(user, newEmail, token);
 
@@ -283,14 +285,14 @@ namespace MDBackoffice.Domain.Users
         private async Task SendContactInformationConfirmationChange(User user, string email, string token, string staffId, string changedInformation)
         {
             string confirmationLink = await ConfigureUrlConfirmationStaffProfile(token, user, staffId);
-            
-            
+
+
             string body = "<p>Hello,</p>" +
                         "<p>This email was sent to notify you that your contact information has been updated in the HealthCare Clinic System.</p>" +
                         changedInformation +
                         "<p><a href='" + confirmationLink + "'>Click here to confirm the change of your contact information.</a></p>" +
                         "<p>Thank you for choosing us,<br>HealthCare Clinic</p></body></html>";
-            
+
             await SendEmail(email, "Update Contact Information Confirmation", body);
         }
 
@@ -332,7 +334,7 @@ namespace MDBackoffice.Domain.Users
 
             var encodedToken = Uri.EscapeDataString(token);
             var baseUrl = _configuration["App:BaseUrl"];
-            return  $"{baseUrl}/staff/activate-staffProfile?userId={user.Id}&staffId={staffId}&token={encodedToken}";
+            return $"{baseUrl}/staff/activate-staffProfile?userId={user.Id}&staffId={staffId}&token={encodedToken}";
         }
 
         private async Task<string> ConfigureUrlPasswordConfirmation(string token, User user)
@@ -440,7 +442,7 @@ namespace MDBackoffice.Domain.Users
 
             // Check if the user exists in your system by email
             var user = await _userManager.FindByEmailAsync(email);
-            
+
             if (user == null)
                 throw new BusinessRuleValidationException("Invalid email.");
 
@@ -471,13 +473,24 @@ namespace MDBackoffice.Domain.Users
             if (signInResult.Succeeded)
             {
                 // Sign-in successful, generate JWT token
-                return await GenerateJwtToken(user); 
+                return await GenerateJwtToken(user);
             }
 
             // Handle any issues with sign-in
             return "Error happened during sign-in.";
         }
 
+        public virtual bool CheckUserRole(string token, string role)
+        {
+            var userInfo = DecodeJwtToken(token);
+            return !userInfo.Roles[0].Equals(role);
+        }
 
+        public virtual string GetLoggedInEmail(string token)
+        {
+           var userInfo = DecodeJwtToken(token);
+
+           return userInfo.Email ?? throw new BusinessRuleValidationException("No logged in user.");
+        }
     }
 }

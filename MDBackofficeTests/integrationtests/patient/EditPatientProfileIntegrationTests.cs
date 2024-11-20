@@ -34,6 +34,8 @@ namespace MDBackofficeTests.integrationtests.patient
         private readonly Mock<UserManager<User>> _userManagerMock;
         private readonly Mock<IConfiguration> _configurationMock = new Mock<IConfiguration>();
         private readonly Mock<ILoginAdapter> _loginAdapterMock;
+        private readonly Mock<UserService> _userServiceMock;
+
         public EditPatientProfileIntegrationTests()
         {
             Mock<LogService> _logServiceMock = new Mock<LogService>(new Mock<IUnitOfWork>().Object, new Mock<ILogRepository>().Object);
@@ -56,7 +58,7 @@ namespace MDBackofficeTests.integrationtests.patient
                                                                new Mock<ILogger<SignInManager<User>>>().Object,
                                                                new Mock<IAuthenticationSchemeProvider>().Object,
                                                                new Mock<IUserConfirmation<User>>().Object);
-            var _userServiceMock = new Mock<UserService>(_userManagerMock.Object, roleManagerMock.Object, _logServiceMock.Object, signinManagerMock.Object, _emailServiceMock.Object, _configurationMock.Object, tokenServiceMock.Object, _loginAdapterMock.Object);
+            _userServiceMock = new Mock<UserService>(_userManagerMock.Object, roleManagerMock.Object, _logServiceMock.Object, signinManagerMock.Object, _emailServiceMock.Object, _configurationMock.Object, tokenServiceMock.Object, _loginAdapterMock.Object);
 
             _service = new PatientService(_unitOfWorkMock.Object, _logServiceMock.Object,
                                             _configurationMock.Object, _repoMock.Object,
@@ -68,7 +70,7 @@ namespace MDBackofficeTests.integrationtests.patient
         public async Task EditProfile_ReturnsAcceptedPatientDto_IntegrationControllerService()
         {
             //Arrange
-            var _controller = new PatientController(_service);
+            var _controller = new PatientController(_service,_userServiceMock.Object);
 
             var oldEmail = "tes@email.com";
             var newEmail = "tesNew@email.com";
@@ -97,16 +99,14 @@ namespace MDBackofficeTests.integrationtests.patient
 
             var dtoResult = new PatientDto("Rita Barbosa", "+351 910000000", newEmail, "Test, 1234-234, Test Test", "2000-10-10", idPatient);
 
-            var mockClaimsPrincipal = new Mock<ClaimsPrincipal>();
-            mockClaimsPrincipal
-                .Setup(x => x.FindFirst(ClaimTypes.Email))
-                .Returns(new Claim(ClaimTypes.Email, oldEmail));
-
+            var context = new DefaultHttpContext();
+            context.Request.Headers["Authorization"] = "Bearer valid-token";
             _controller.ControllerContext = new ControllerContext
             {
-                HttpContext = new DefaultHttpContext { User = mockClaimsPrincipal.Object }
+                HttpContext = context
             };
-
+            _userServiceMock.Setup(_userService => _userService.CheckUserRole("valid-token", "Admin")).Returns(false);
+            _userServiceMock.Setup(_userService => _userService.GetLoggedInEmail("valid-token")).Returns(oldEmail);
 
             _repoMock.Setup(_repoPatMock => _repoPatMock.FindPatientWithUserEmail(oldEmail))
                         .ReturnsAsync(patientMock.Object);

@@ -1,12 +1,13 @@
 import { Injectable } from '@angular/core';
 import { MessageService } from './message.service';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { catchError, map, Observable, of } from 'rxjs';
 import { Specialization } from '../domain/specialization';
 import { StaffWithId } from '../domain/staff-with-id';
 import { Staff } from '../domain/staff';
 import { StaffQueryParameters } from '../domain/staff-query-parameters';
 import { IdPasser } from '../domain/IdPasser';
+import { EditStaffProfile } from '../domain/edit-staff';
 import { JwtHelperService } from '@auth0/angular-jwt';
 
 @Injectable({
@@ -15,12 +16,20 @@ import { JwtHelperService } from '@auth0/angular-jwt';
 export class StaffService {
 
   theServerURL = 'https://localhost:5001/api';
+  token = localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')!).token : null;
+  httpOptions = {
+    headers: new HttpHeaders({
+      'Content-Type': 'application/json',
+       Authorization: `Bearer ${this.token}`
+    })
+   };
+
   constructor(private messageService: MessageService, private http: HttpClient) { }
 
   public getAllSpecializationsAvailable(): Observable<string[]> {
     const url = `${this.theServerURL}/Specializations`;
-  
-    return this.http.get<Specialization[]>(url)
+
+    return this.http.get<Specialization[]>(url, this.httpOptions)
                     .pipe(
                       map(data => data.map(spec => spec.denomination)),
                       catchError(this.handleError<string[]>('Get Specializations', []))
@@ -47,6 +56,45 @@ export class StaffService {
       });
   }
 
+  EditStaffProfile(id: string, phone: string, email: string, address: string, specialization: string) {
+    const url = `${this.theServerURL}/Staff/${id}`;
+    let editStaff: EditStaffProfile = {
+      id: id
+    };
+
+    if (phone && phone.trim() !== "") {
+      editStaff.phone = phone;
+    }
+
+    if (email && email.trim() !== "") {
+      editStaff.email = email;
+    }
+
+    if (address && address.trim() !== "") {
+      editStaff.address = address;
+    }
+
+    if (specialization && specialization.trim() !== "") {
+      editStaff.specializationId = specialization;
+    }
+
+    this.http.put<Staff>(url, editStaff, this.httpOptions)
+      .pipe(catchError(this.handleError<EditStaffProfile>('Edited staff profile')))
+      .subscribe(data => {
+        this.log(`Staff profile: was successfully updated.`);
+      });
+  }
+
+  confirmEmailStaff(userId: string, staffId: string, token: string): Observable<any> {
+    const params = new HttpParams()
+      .set('userId', userId)
+      .set('staffId', staffId)
+      .set('token', token);
+
+    return this.http.put(`${this.theServerURL}/staff/activate-staffProfile`, null, { params });
+  }
+
+
   deactivateStaffProfile(idStaff: string, token: string) {
     const url = `${this.theServerURL}/Staff/Deactivate-StaffProfile`;
     let idPasser: IdPasser = {
@@ -64,37 +112,28 @@ export class StaffService {
 
   getStaffByFilters(staffQueryParameters: StaffQueryParameters, token: string): Observable<StaffWithId[]> {
     const url = `${this.theServerURL}/Staff/Filtered-List`;
-  
-    // Setting up the headers
-    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-  
-    return this.http.post<StaffWithId[]>(url, staffQueryParameters, { headers}).pipe(
-      catchError((error) => {
-        // Handle 404 - No staff profiles found
-        if (error.status === 404) {
-          // Define fallback query parameters
-          const queryParameters: StaffQueryParameters = {
-            queryfilters: [
-              {
-                firstName: '',
-                lastName: '',
-                email: '',
-                specialization: ''
-              }
-            ]
-          };
-  
-          // Log the situation
-          this.log('No staff profiles were found with the chosen criteria.');
-  
-          // Return the fallback request with the same headers and `withCredentials`
-          return this.http.post<StaffWithId[]>(url, queryParameters, { headers, withCredentials: true });
-        } else {
-          // Handle other errors
-          this.handleError<StaffWithId[]>('Get staff profile filtered list', error);
-          return of([]); // Return an empty array to keep the app functional
-        }
-      })
+
+    return this.http.post<StaffWithId[]>(url, staffQueryParameters, this.httpOptions).pipe(
+        catchError((error) => {
+          if (error.status = 404) {
+            const queryParameters: StaffQueryParameters = {
+              queryfilters: []
+            };
+
+            queryParameters.queryfilters.push({
+              firstName: '',
+              lastName: '',
+              email: '',
+              specialization: ''
+            })
+
+            this.log('No staff profiles were found with the chosen criteria.')
+            return this.http.post<StaffWithId[]>(url, queryParameters, this.httpOptions)
+          }else {
+            this.handleError<StaffWithId[]>('Get staff profile filtered list', error);
+            return of([]);
+          }
+        })
     );
   }
   

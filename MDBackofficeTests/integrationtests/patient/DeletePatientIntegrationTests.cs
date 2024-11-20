@@ -71,7 +71,7 @@ namespace MDBackofficeTests.integrationtests.patient
     public async Task DeletePatientProfile_ReturnsOkResponse_IntegrationControllerService()
     {
         // Arrange
-       var _controller = new PatientController(_service);
+       var _controller = new PatientController(_service,_userServiceMock.Object);
 
         var dtoMock = new EditPatientDto
         ("Rita Barbosa",
@@ -85,8 +85,14 @@ namespace MDBackofficeTests.integrationtests.patient
         var idDto = new IdPassDto(id);
 
         var dtoResult = new PatientDto("Rita Barbosa", "+351 910000000", "ritabarbosa@email.com", "Test, 1234-234, Test Test", "2004-12-15", id);
-
-        _repoMock.Setup(r => r.ExistsPatientWithId(id)).ReturnsAsync(true);
+            var context = new DefaultHttpContext();
+            context.Request.Headers["Authorization"] = "Bearer valid-token";
+            _controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = context
+            };
+            _userServiceMock.Setup(_userService => _userService.CheckUserRole("valid-token", "Admin")).Returns(false);
+            _repoMock.Setup(r => r.ExistsPatientWithId(id)).ReturnsAsync(true);
         _repoMock.Setup(_repoPatMock => _repoPatMock.GetByIdAsync(It.IsAny<MedicalRecordNumber>()))
             .ReturnsAsync(patientMock.Object);
         _unitOfWorkMock.Setup(u => u.CommitAsync()).ReturnsAsync(1);
@@ -105,7 +111,7 @@ namespace MDBackofficeTests.integrationtests.patient
     public async Task DeletePatientProfile_ReturnsBadRequest_IntegrationControllerService()
     {
         // Arrange
-        var _controller = new PatientController(_service);
+        var _controller = new PatientController(_service, _userServiceMock.Object);
 
         var idPassDto = new IdPassDto( "202410000001" );
         _repoMock.Setup(s => s.ExistsPatientWithId(idPassDto.Id))

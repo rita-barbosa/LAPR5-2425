@@ -80,7 +80,7 @@ namespace MDBackofficeTests.integrationtests.patient
                                             _repoSpecMock.Object, _userManagerMock.Object, _configurationMock.Object, _emailServiceMock.Object,
                                             _userServiceMock.Object);
 
-            var _controller = new StaffController(_service);
+            var _controller = new StaffController(_service, _userServiceMock.Object);
 
             string firstName = "Duarte";
             string lastName = "Matos";
@@ -110,6 +110,15 @@ namespace MDBackofficeTests.integrationtests.patient
             var staffMock = new Mock<Staff>("00001", "Portugal, 4570-860, Rua das Oliveiras", "12345", "Rita", "Barbosa", "Rita Barbosa", email, "+351", "987654321", "Doctor", "Orthopedics");
 
             List<Staff> resultList = new List<Staff> { staffMock.Object };
+
+            var context = new DefaultHttpContext();
+            context.Request.Headers["Authorization"] = "Bearer valid-token";
+            _controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = context
+            };
+            _userServiceMock.Setup(_userService => _userService.CheckUserRole("valid-token", "Admin")).Returns(false);
+
 
             _repoMock.Setup(_repo => _repo.FilterStaffProfiles(dto)).ReturnsAsync(resultList);
 

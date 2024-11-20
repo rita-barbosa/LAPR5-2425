@@ -229,6 +229,13 @@ namespace MDBackoffice.Controllers
         {
             IActionResult result = await GetUserInfo();
 
+            // string email2 = "mangoboy.xv@gmail.com";
+            // string id2 = "9edc6a2d-bb8b-4466-83e2-c96b4bd94eec";
+            // string password2 = "Abcde12345!";
+
+            // var userInfo2 = new { Id = id2, Email = email2, Password = password2 };
+            // var result = new OkObjectResult(userInfo2);
+
             if (result is OkObjectResult okResult)
             {
                 var userInfo = okResult.Value;
@@ -238,11 +245,12 @@ namespace MDBackoffice.Controllers
 
                 var token = await _tokenService.CreateAccountDeletionToken(email);
 
-                var confirmationLink = Url.Action("ConfirmPatientAccountDeletionNotProfile", "User", new { userId, token = token.TokenId }, Request.Scheme);
+                var baseUrl = "http://localhost:4200";
+                var link = $"{baseUrl}/confirm-patient-account-deletion?userId={userId}&token={token.TokenId}";
 
-                _patientService.ConfirmPatientAccountDeletionEmail(confirmationLink, email);
+                _patientService.ConfirmPatientAccountDeletionEmail(link, email);
 
-                return Ok("An email asking for your account's deletion confirmation was sent.");
+                return Ok(new { message = "An email asking for your account's deletion confirmation was sent." });
             }
             else
             {
@@ -289,7 +297,7 @@ namespace MDBackoffice.Controllers
                 return NotFound("User not found.");
             }
 
-            if (_tokenService.TokenExistsById(token) == null)
+            if (await _tokenService.TokenExistsById(token) == null)
             {
                 return NotFound("Token not found.");
             }
@@ -306,9 +314,9 @@ namespace MDBackoffice.Controllers
 
             var userEmail = await _userService.DeletePatientAccount(userId, token);
             // anonymize the patient's profile according to GDPR policies -> readme info for now
-            _patientService.AnonymizeProfile(userEmail);
+            await _patientService.AnonymizeProfile(userEmail);
 
-            return Ok("Patient account successfully deleted!\nSome of your non-identifiable data will be retained, as per our GDPR policies.");
+            return Ok( new { message = "Patient account successfully deleted!\nSome of your non-identifiable data will be retained, as per our GDPR policies."});
         }
 
 

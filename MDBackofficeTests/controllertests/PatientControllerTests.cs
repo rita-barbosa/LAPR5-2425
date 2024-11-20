@@ -61,7 +61,7 @@ namespace MDBackofficeTests.controllertests
             _service = new Mock<PatientService>(_unitOfWorkMock.Object, _logServiceMock.Object, 
                                             _configurationMock.Object, _repoMock.Object, 
                                             _userServiceMock.Object, _emailServiceMock.Object);
-            _controller = new PatientController(_service.Object);
+            _controller = new PatientController(_service.Object,_userServiceMock.Object);
         }
 
         [Fact]
@@ -77,7 +77,13 @@ namespace MDBackofficeTests.controllertests
                 "+351 912345678",
                 "Female",
                 "2004-12-15");
-
+            var context = new DefaultHttpContext();
+            context.Request.Headers["Authorization"] = "Bearer valid-token";
+            _controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = context
+            };
+            _userServiceMock.Setup(_userService => _userService.CheckUserRole("valid-token", "Admin")).Returns(false);
             _unitOfWorkMock.Setup(u => u.CommitAsync()).ReturnsAsync(1);
 
             //Act
@@ -106,7 +112,13 @@ namespace MDBackofficeTests.controllertests
 
             var patientMock = new Mock<Patient>("first", "last", "first last", "country, 12345, street test", "female", "+123", "12345678", "98765432", "email@email.com", "2000-10-10", "000001");
             var dtoResult = new PatientDto("Rita Barbosa", "+351 910000000", "ritabarbosa@email.com", "Test, 1234-234, Test Test", "2004-12-15", id);
-
+            var context = new DefaultHttpContext();
+            context.Request.Headers["Authorization"] = "Bearer valid-token";
+            _controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = context
+            };
+            _userServiceMock.Setup(_userService => _userService.CheckUserRole("valid-token", "Admin")).Returns(false);
             _repoMock.Setup(r => r.ExistsPatientWithId(id)).ReturnsAsync(true);
             _repoMock.Setup(_repoPatMock => _repoPatMock.GetByIdAsync(It.IsAny<MedicalRecordNumber>()))
             .ReturnsAsync(patientMock.Object);
@@ -142,7 +154,13 @@ namespace MDBackofficeTests.controllertests
             var id = "202411000001";
 
             var dtoResult = new PatientDto("Rita Barbosa", "+351 910000000", "ritabarbosa@email.com", "Test, 1234-234, Test Test", "2004-12-15", id);
-
+            var context = new DefaultHttpContext();
+            context.Request.Headers["Authorization"] = "Bearer valid-token";
+            _controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = context
+            };
+            _userServiceMock.Setup(_userService => _userService.CheckUserRole("valid-token", "Admin")).Returns(false);
             _repoMock.Setup(_repoPatMock => _repoPatMock.GetByIdAsync(It.IsAny<MedicalRecordNumber>()))
                 .ReturnsAsync(patientMock.Object);
             _unitOfWorkMock.Setup(u => u.CommitAsync()).ReturnsAsync(1);
@@ -166,6 +184,13 @@ namespace MDBackofficeTests.controllertests
         {
             //Arrange
             List<PatientDto> result = new List<PatientDto>();
+            var context = new DefaultHttpContext();
+            context.Request.Headers["Authorization"] = "Bearer valid-token";
+            _controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = context
+            };
+            _userServiceMock.Setup(_userService => _userService.CheckUserRole("valid-token", "Admin")).Returns(false);
             _service.Setup(p => p.GetAllAsysnc()).ReturnsAsync(result);
 
             //Act
@@ -208,7 +233,13 @@ namespace MDBackofficeTests.controllertests
             var dtoResult = new PatientDto("Rita Barbosa", "+351 910000000", "ritabarbosa@email.com", "Test, 1234-234, Test Test", "2004-12-15", id);
 
             result.Add(dtoResult);
-
+            var context = new DefaultHttpContext();
+            context.Request.Headers["Authorization"] = "Bearer valid-token";
+            _controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = context
+            };
+            _userServiceMock.Setup(_userService => _userService.CheckUserRole("valid-token", "Admin")).Returns(false);
             _service.Setup(p => p.FilterPatientProfiles(dto)).ReturnsAsync(result);
 
             //Act
@@ -250,16 +281,14 @@ namespace MDBackofficeTests.controllertests
 
             var dtoResult = new PatientDto("Rita Barbosa", "+351 910000000", newEmail, "Test, 1234-234, Test Test", "2000-10-10", idPatient);
 
-            var mockClaimsPrincipal = new Mock<ClaimsPrincipal>();
-            mockClaimsPrincipal
-                .Setup(x => x.FindFirst(ClaimTypes.Email))
-                .Returns(new Claim(ClaimTypes.Email, oldEmail));
-
+            var context = new DefaultHttpContext();
+            context.Request.Headers["Authorization"] = "Bearer valid-token";
             _controller.ControllerContext = new ControllerContext
             {
-                HttpContext = new DefaultHttpContext { User = mockClaimsPrincipal.Object }
+                HttpContext = context
             };
-
+            _userServiceMock.Setup(_userService => _userService.CheckUserRole("valid-token", "Admin")).Returns(false);
+            _userServiceMock.Setup(_userService => _userService.GetLoggedInEmail("valid-token")).Returns(oldEmail);
 
             _repoMock.Setup(_repoPatMock => _repoPatMock.FindPatientWithUserEmail(oldEmail))
                         .ReturnsAsync(patientMock.Object);

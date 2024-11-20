@@ -3,9 +3,10 @@ import { MessageService } from './message.service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { catchError, Observable, of } from 'rxjs';
 import { EditPatient } from '../domain/edit-patient';
-import { Patient } from '../domain/Patient';
+import { Patient } from '../domain/patient';
 import { PatientQueryParameters } from '../domain/patient-query-parameters';
 import { PatientWithId } from '../domain/patient-with-id';
+import { EditPatientProfile } from '../domain/edit-patient-profile';
 import { IdPasser } from '../domain/IdPasser';
 
 @Injectable({
@@ -25,10 +26,10 @@ export class PatientService {
   constructor(private messageService: MessageService, private http: HttpClient) { }
   public updateProfile(name: string, phone: string, email: string, address: string, emergencyContact: string) {
     const url = `${this.theServerURL}`;
-  
+
     // Construct the patient object, including only fields that have values
     let patient: EditPatient = {};
-  
+
     if (name && name.trim() !== "") {
       patient.name = name;
     }
@@ -44,15 +45,14 @@ export class PatientService {
     if (emergencyContact && emergencyContact.trim() !== "") {
       patient.emergencyContact = emergencyContact;
     }
-    this.log(`${url}`)
-    // Make the PUT request
+
     this.http.put<Patient>(url, patient, this.httpOptions)
       .pipe(catchError(this.handleError<Patient>('Update patient profile')))
       .subscribe(data => {
-        this.log(`Patient profile: was successfully updated.`);
+        this.log(`Patient profile was successfully updated.`);
       });
   }
-  
+
 
   public createPatientProfile(firstName: string, lastName: string, phone: string, email: string, address: string, emergencyContact: string, gender: string, dateBirth: string) {
     const url = `${this.theServerURL}/Create-PatientProfile`;
@@ -66,11 +66,44 @@ export class PatientService {
       emergencyContact: emergencyContact,
       gender: gender,
     };
-    
+
     this.http.post<Patient>(url, patient, this.httpOptions)
       .pipe(catchError(this.handleError<Patient>('Create patient profile')))
       .subscribe(data => {
         this.log(`Patient profile: ${data.email} was successfully created.`);
+      });
+  }
+
+  EditPatientProfile(id: string, name: string, phone: string, email: string, address: string, dateBirth: string) {
+    const url = `${this.theServerURL}/${id}`;
+    let editPatient: EditPatientProfile = {
+      id: id
+    };
+
+    if (name && name.trim() !== "") {
+      editPatient.name = name;
+    }
+
+    if (phone && phone.trim() !== "") {
+      editPatient.phone = phone;
+    }
+
+    if (email && email.trim() !== "") {
+      editPatient.email = email;
+    }
+
+    if (address && address.trim() !== "") {
+      editPatient.address = address;
+    }
+
+    if (dateBirth && dateBirth.trim() !== "") {
+      editPatient.dateBirth = dateBirth;
+    }
+
+    this.http.put<Patient>(url, editPatient, this.httpOptions)
+      .pipe(catchError(this.handleError<EditPatientProfile>('Edited patient profile')))
+      .subscribe(data => {
+        this.log(`Patient profile: was successfully updated.`);
       });
   }
 
@@ -101,7 +134,7 @@ export class PatientService {
             return this.http.post<PatientWithId[]>(url, queryParameters, this.httpOptions)
           }else {
             this.handleError<PatientWithId[]>('Get patient profile filtered list', error);
-            return of([]); 
+            return of([]);
           }
         })
     );
@@ -131,7 +164,7 @@ export class PatientService {
       });
   }
 
- 
+
 
   //------------------------/------------------------/------------------------
   private handleError<T>(operation = 'operation', result?: T) {

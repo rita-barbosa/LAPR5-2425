@@ -30,6 +30,7 @@ namespace MDBackofficeTests.controllertests
         private readonly Mock<IConfiguration> _configurationMock = new Mock<IConfiguration>();
         private readonly Mock<UserManager<User>> _userManagerMock;
         private readonly Mock<ILoginAdapter> _loginAdapterMock;
+        private readonly Mock<UserService> _userServiceMock;
         private readonly StaffController _controller;
 
         public StaffControllerTests()
@@ -54,13 +55,13 @@ namespace MDBackofficeTests.controllertests
                                                                            new Mock<IAuthenticationSchemeProvider>().Object,
                                                                            new Mock<IUserConfirmation<User>>().Object);
 
-            var _userServiceMock = new Mock<UserService>(_userManagerMock.Object, roleManagerMock.Object, _logServiceMock.Object, signinManagerMock.Object, _emailServiceMock.Object, _configurationMock.Object, tokenServiceMock.Object, _loginAdapterMock.Object);
+            _userServiceMock = new Mock<UserService>(_userManagerMock.Object, roleManagerMock.Object, _logServiceMock.Object, signinManagerMock.Object, _emailServiceMock.Object, _configurationMock.Object, tokenServiceMock.Object, _loginAdapterMock.Object);
 
             _service = new Mock<StaffService>(_unitOfWorkMock.Object, _logServiceMock.Object,
                                             _repoMock.Object, _repoSpecMock.Object,
                                             _userManagerMock.Object, _configurationMock.Object, _emailServiceMock.Object,
                                             _userServiceMock.Object);
-            _controller = new StaffController(_service.Object);
+            _controller = new StaffController(_service.Object,_userServiceMock.Object);
         }
 
         [Fact]
@@ -85,6 +86,14 @@ namespace MDBackofficeTests.controllertests
 
             _repoSpecMock.Setup(_repoSpecMock => _repoSpecMock.GetByIdAsync(It.IsAny<SpecializationDenomination>()))
                 .ReturnsAsync(specializationMock.Object);
+            var context = new DefaultHttpContext();
+            context.Request.Headers["Authorization"] = "Bearer valid-token";
+            _controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = context
+            };
+            _userServiceMock.Setup(_userService => _userService.CheckUserRole("valid-token", "Admin")).Returns(false);
+
 
             _unitOfWorkMock.Setup(u => u.CommitAsync()).ReturnsAsync(1);
 
@@ -130,6 +139,13 @@ namespace MDBackofficeTests.controllertests
             _userManagerMock.Setup(um => um.ChangeEmailAsync(userMock.Object, "test@email.com", token)).ReturnsAsync(IdentityResult.Success);
             _configurationMock.Setup(c => c["App:Email"]).Returns("testemail@email.com");
             _configurationMock.Setup(c => c["App:BaseUrl"]).Returns("https://test/api");
+            var context = new DefaultHttpContext();
+            context.Request.Headers["Authorization"] = "Bearer valid-token";
+            _controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = context
+            };
+            _userServiceMock.Setup(_userService => _userService.CheckUserRole("valid-token", "Admin")).Returns(false);
             _unitOfWorkMock.Setup(u => u.CommitAsync()).ReturnsAsync(1);
 
             //Act
@@ -192,7 +208,13 @@ namespace MDBackofficeTests.controllertests
             var dtoResult = new StaffDto("Rita Barbosa", "+351 910000000", "ritabarbosa@email.com", "Test, 1234-234, Test Test", "2004-12-15", id);
 
             result.Add(dtoResult);
-
+            var context = new DefaultHttpContext();
+            context.Request.Headers["Authorization"] = "Bearer valid-token";
+            _controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = context
+            };
+            _userServiceMock.Setup(_userService => _userService.CheckUserRole("valid-token", "Admin")).Returns(false);
             _service.Setup(p => p.FilterStaffProfiles(dto)).ReturnsAsync(result);
 
             //Act
@@ -215,7 +237,13 @@ namespace MDBackofficeTests.controllertests
             
 
             var specializationMock = new Mock<Specialization>("Ortopethics");
-
+            var context = new DefaultHttpContext();
+            context.Request.Headers["Authorization"] = "Bearer valid-token";
+            _controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = context
+            };
+            _userServiceMock.Setup(_userService => _userService.CheckUserRole("valid-token", "Admin")).Returns(false);
             _repoMock.Setup(_repoPatMock => _repoPatMock.GetByIdAsync(It.IsAny<StaffId>()))
                 .ReturnsAsync(staffMock.Object);
             staffMock.Setup(r => r.DeactivateProfile());
