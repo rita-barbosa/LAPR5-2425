@@ -27,6 +27,8 @@ import { ListStaffProfiles } from './components/admin/list-staff-profiles/list-s
 import { ListPatientProfiles } from './components/admin/list-patient-profiles/list-patient-profiles.component';
 import { EditStaffProfileComponent } from './components/admin/edit-staff-profile/edit-staff-profile.component';
 import { VerifyProfileEditComponent } from './components/staff/verify-profile-edit/verify-profile-edit.component';
+import { PatientPreferences } from './components/patient/patient-preferences/patient-preferences.component';
+import { PatientAccountDeletionConfirm } from './components/patient/confirm-patient-account-deletion/confirm-patient-account-deletion.component';
 
 export const routes: Routes = [
   { path: '', component: MenuComponent, pathMatch: 'full' },
@@ -56,6 +58,8 @@ export const routes: Routes = [
   { path: 'list-staff-profiles', component: ListStaffProfiles },
   { path: 'list-patient-profiles', component: ListPatientProfiles },
   { path: 'create-staff-user', component: CreateStaffUserComponent },
+  { path: 'patient-preferences', component: PatientPreferences },
+  { path: 'confirm-patient-account-deletion', component: PatientAccountDeletionConfirm },
   { path: '**', redirectTo: '' }
 ];
 

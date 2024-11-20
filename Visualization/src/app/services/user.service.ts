@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { MessageService } from './message.service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { catchError, Observable, of } from 'rxjs';
+import { catchError, Observable, of, tap } from 'rxjs';
 import { Router } from '@angular/router';
 
 interface UserLogin {
@@ -60,7 +60,6 @@ export class UserService {
       if (data && data.token) { 
         console.log(data.token);
         this.decodeTokenandRedirect(data.token); 
-        this.log(`User was successfully logged in.`);
       } else {
         this.log(`Login failed: No token received.`);
       }
@@ -90,14 +89,30 @@ export class UserService {
 
   }
 
+  public sendAccountDeleteRequest() {
+    const url = `${this.theServerURL}/Delete-PatientAccountDeletionRequest`;
+
+    this.http.delete<{ message: string }>(url, this.httpOptions)
+    .subscribe({
+      next: (response) => {
+        this.log(`${response.message}`);
+      },
+      error: (err) => {
+        catchError(this.handleError('Send patient account deletion email'))
+      }
+    }
+
+    );
+  }
+
+  
 
   private decodeTokenandRedirect(token: string) {
     const url = `${this.theServerURL}/decode-token?token=${encodeURIComponent(token)}`;
   
-    this.http.get<DecodeResponse>(url, this.httpOptions) // Send an empty body
+    this.http.get<DecodeResponse>(url, this.httpOptions)
       .pipe(catchError(this.handleError<DecodeResponse>('Role identification')))
       .subscribe(data => {
-        console.log(data);
         if (data && data.roles && data.roles.length > 0) {
           const roles = data.roles;
 
@@ -107,7 +122,7 @@ export class UserService {
             token : token
           }
 
-          localStorage.setItem('user',JSON.stringify(userInfo))
+          localStorage.setItem('user', JSON.stringify(userInfo));
 
           if (roles.includes('Admin')) {
             this.router.navigate(['/admin']);
@@ -120,7 +135,7 @@ export class UserService {
           }
 
           } else {
-          console.error('No roles found to be associated with the user.');
+          this.log('No roles found to be associated with the user.');
         }
       });
   }
@@ -129,24 +144,25 @@ export class UserService {
   //------------------------/------------------------/------------------------
   private handleError<T>(operation = 'operation', result?: T) {
     return (error: any): Observable<T> => {
-
+      console.error(`${operation} failed: ${error.message}`);
+  
+      // Customize error handling based on status
       if (error.status === 440) {
         this.log("Error: Login session expired.");
-        return of(result as T);
       } else if (error.status === 401) {
         this.log("Error: Authentication is required.");
-        return of(result as T);
       } else if (error.status === 403) {
         this.log("Error: Not allowed to access the feature.");
-        return of(result as T);
-      } else if(error.status === 200 ||error.status === 400 ){
-        this.log(`${operation} failed: ${error.error}`);
+      } else if (error.status === 400) {
+        this.log(`Bad request: ${error.error.message}`);
       } else {
-        this.log(`${operation} failed: an unexpected error occured.`);
+        this.log(`${operation} failed: an unexpected error occurred.`);
       }
+  
       return of(result as T);
     };
   }
+  
 
   private log(message: string, p0?: { data: UserLogin; }) {
     this.messageService.add(`${message}`);
