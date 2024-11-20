@@ -2,83 +2,15 @@
     <meta charset="utf-8">
     <title>Hospital Floor Simulation</title>
 </head>
-<canvas #myCanvas id="myCanvas" ></canvas>
+<canvas #myCanvas id="myCanvas"></canvas>
+
 <body>
-    <div id="parent">
-        <div id="views-panel">
-            <table class="views">
-                <tr>
-                    <td>
-                        <label>View:</label>
-                        <select id="view">
-                            <option value="fixed">Fixed</option>
-                        </select>
-                    </td>
-                    <td>
-                        <label>Orientation (h):</label>
-                        <input type="number" id="horizontal" required>
-                    </td>
-                    <td>
-                        <label>Orientation (v):</label>
-                        <input type="number" id="vertical" required>
-                    </td>
-                    <td>
-                        <input type="button" id="reset" value="Reset view">
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <label>Projection:</label>
-                        <select id="projection">
-                            <option value="perspective">Perspective</option>
-                            <option value="orthographic">Orthographic</option>
-                        </select>
-                    </td>
-                    <td>
-                        <label>Distance:</label>
-                        <input type="number" id="distance" required>
-                    </td>
-                    <td>
-                        <label>Zoom:</label>
-                        <input type="number" id="zoom" required>
-                    </td>
-                </tr>
-            </table>
-        </div>
-        <div id="help-panel">
-            <table class="help" id="help-table">
-                <tr>
-                    <th colspan="2" style="font-size: 3.0vmin">
-                        Help
-                    </th>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td>User interface</td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td>Help</td>
-                </tr>
-            </table>
-        </div>
-        <div id="subwindows-panel">
-            <table class="subwindows">
-                <tr>
-                    <td>
-                        <label>User interface:</label>
-                        <input type="checkbox" id="user-interface">
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <label>Help:</label>
-                        <input type="checkbox" id="help">
-                    </td>
-                </tr>
-            </table>
+    <div>
+        <h1 class="main-title">Hospital Floor</h1>
+
+        <div id="parent">
+            <div id="subwindows-panel">
+            </div>
         </div>
     </div>
 </body>
-
-
