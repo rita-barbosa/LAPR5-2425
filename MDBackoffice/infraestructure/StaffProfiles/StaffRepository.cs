@@ -109,14 +109,14 @@ namespace MDBackoffice.Infrastructure.StaffProfiles
             return await _context.StaffProfiles
                 .Where(staff =>
                     staff.UserReference != null &&
-                    staff.UserReference.ToString() == userId)
+                    staff.UserReference == userId)
                     .FirstOrDefaultAsync() ?? throw new NullReferenceException("Couldn't find the staff with the specified user reference.");
         }
 
         public async Task<List<Staff>> GetAllActiveAsync()
         {
             return await _context.StaffProfiles
-                .Where(staff => staff.Status != null && staff.Status.ToString() == "1")
+                .Where(staff => staff.Status == true)
                 .ToListAsync();
         }
 

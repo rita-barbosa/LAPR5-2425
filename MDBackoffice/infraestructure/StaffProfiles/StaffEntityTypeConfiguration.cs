@@ -118,6 +118,8 @@ namespace MDBackoffice.Infrastructure.StaffProfiles
                         .IsRequired()
                         .HasColumnName("EndDate");
                 });
+                slotBuilder.Property(s => s.Description)
+                        .HasColumnName("Description");
                 slotBuilder.ToTable("StaffSlots");
             });
 

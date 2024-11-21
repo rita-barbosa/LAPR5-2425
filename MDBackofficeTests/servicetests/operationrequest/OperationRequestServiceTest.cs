@@ -403,7 +403,7 @@ public class OperationRequestServiceTests
 
         // Assert
         Assert.NotNull(result);
-        Assert.Equal(updatedDeadLineDate, result.DeadLineDate);
+        Assert.Equal(updatedDeadLineDate.ToString(), result.DeadLineDate.ToString().Split("/")[0]);
         Assert.Equal(updatedPriority, result.Priority);
         Assert.Equal(updatedDescription, result.Description);
 

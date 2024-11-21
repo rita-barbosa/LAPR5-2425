@@ -1,5 +1,8 @@
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using MDBackoffice.Domain.Rooms;
 using MDBackoffice.Infrastructure.Shared;
+using Microsoft.EntityFrameworkCore;
 
 namespace MDBackoffice.Infrastructure.Rooms
 {
@@ -9,6 +12,12 @@ namespace MDBackoffice.Infrastructure.Rooms
         public RoomRepository(MDBackofficeDbContext context) : base(context.Rooms)
         {
             _context = context;
+        }
+        
+        public async Task<List<Room>> GetAllRoomsAsync()
+        {
+            return await _context.Rooms
+                .ToListAsync();
         }
     }
 }

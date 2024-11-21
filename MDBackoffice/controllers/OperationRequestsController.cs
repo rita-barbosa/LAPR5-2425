@@ -205,7 +205,7 @@ namespace MDBackoffice.Controllers
                 bool result = await _service.AddOperationRequestToPatient(addOrRemoveFromPatientDto.PatientId, addOrRemoveFromPatientDto.OperationRequestId, User.FindFirstValue(ClaimTypes.Email)); 
                 if (result)
                 {
-                    return Ok("Operation request successfully add.");
+                    return Ok(new { message ="Operation request successfully add."});
                 }
                 else
                 {

@@ -29,10 +29,15 @@ import { EditStaffProfileComponent } from './components/admin/edit-staff-profile
 import { VerifyProfileEditComponent } from './components/staff/verify-profile-edit/verify-profile-edit.component';
 import { PatientPreferences } from './components/patient/patient-preferences/patient-preferences.component';
 import { PatientAccountDeletionConfirm } from './components/patient/confirm-patient-account-deletion/confirm-patient-account-deletion.component';
+import { LoginCallbackComponent } from './components/login-callback/login-callback.component';
+import { AddOperationRequestPatientComponent } from './components/staff/doctor/add-operation-request-patient/add-operation-request-patient.component';
+import { OperationRequestScheduler } from './components/admin/operation-request-scheduler/operation-request-scheduler.component';
+
 
 export const routes: Routes = [
   { path: '', component: MenuComponent, pathMatch: 'full' },
   { path: 'login', component: LoginComponent },
+  { path: 'login-callback', component: LoginCallbackComponent },
   { path: 'menu', component: MenuComponent },
   { path: 'admin', component: AdminComponent },
   { path: 'create-patient-profile', component: CreatePatientProfileComponent },
@@ -41,15 +46,16 @@ export const routes: Routes = [
   { path: 'edit-staff-profile', component: EditStaffProfileComponent },
   { path: 'verify-profile-edit', component: VerifyProfileEditComponent },
   { path: 'staff', component: StaffComponent },
-  { path: 'patient/registration', component: RegistrationComponent},
-  { path: 'patient/verify', component: ActivationComponent},
-  { path: 'staff/verify-staff', component: VerifyStaffComponent},
+  { path: 'patient/registration', component: RegistrationComponent },
+  { path: 'patient/verify', component: ActivationComponent },
+  { path: 'staff/verify-staff', component: VerifyStaffComponent },
   { path: 'doctor', component: DoctorComponent },
   { path: 'list-operation-request', component: ListOperationRequestComponent },
   { path: 'patient', component: PatientComponent },
   { path: 'update-patient-profile', component: UpdateProfileComponent },
+  { path: 'add-operation-request-patient', component: AddOperationRequestPatientComponent},
   { path: 'create-operation-request', component: CreateOperationRequestComponent },
-  { path: 'list-operation-type', component: ListOperationTypeComponent},
+  { path: 'list-operation-type', component: ListOperationTypeComponent },
   { path: 'cube', component: CubeComponent },
   { path: 'curso-angular', component: CursoAngularComponent },
   { path: 'curso-detail', component: CursoDetailComponent },
@@ -60,6 +66,7 @@ export const routes: Routes = [
   { path: 'create-staff-user', component: CreateStaffUserComponent },
   { path: 'patient-preferences', component: PatientPreferences },
   { path: 'confirm-patient-account-deletion', component: PatientAccountDeletionConfirm },
+  { path: 'operation-request-scheduler', component: OperationRequestScheduler },
   { path: '**', redirectTo: '' }
 ];
 

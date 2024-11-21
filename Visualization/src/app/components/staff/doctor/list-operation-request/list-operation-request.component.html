@@ -73,11 +73,12 @@
                 <p><strong>Operation Type:</strong> {{ fullOperationRequest.operationTypeId || '-' }}</p>
                 <p><strong>Description:</strong> {{ fullOperationRequest.description || '-' }}</p>
                 <p><strong>Priority:</strong> {{ fullOperationRequest.priority || '-' }}</p>
-                <p><strong>Deadline Date:</strong> {{ fullOperationRequest.deadLineDate || '-' }}</p>
-                <p><strong>Date of Request:</strong> {{ fullOperationRequest.dateOfRequest || '-' }}</p>
+                <p><strong>Deadline Date:</strong> {{ fullOperationRequest.deadLineDate.split('/')[0] || '-' }}</p>
+                <p><strong>Date of Request:</strong> {{ fullOperationRequest.dateOfRequest.split('/')[0] || '-' }}</p>
 
                 <div class="action-buttons">
                     <button (click)="closeDetails()">Close</button>
+                    <button (click)="toggleDetails(selectedOperationRequest)">Update</button>
                 </div>
             </div>
 
@@ -107,7 +108,7 @@
                     <label for="deadlineDate"><strong>Deadline Date:</strong></label>
                     <input id="deadlineDate" type="date" [(ngModel)]="update.deadlineDate" />
             
-                    <p><strong>Date of Request:</strong> {{ fullOperationRequest.dateOfRequest || '-' }}</p>
+                    <p><strong>Date of Request:</strong> {{ fullOperationRequest.dateOfRequest.split('/')[0] || '-' }}</p>
                 </div>
                 <div class="action-buttons">
                     <button (click)="saveUpdateDetails()">Save changes</button>

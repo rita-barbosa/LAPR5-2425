@@ -6,6 +6,7 @@ namespace MDBackoffice.Domain.Shared
         public string EndDate { get; set; }
         public string StartTime { get; set; }
         public string EndTime { get; set; }
+        public string? Name { get; set; }
 
         public SlotsDto(string startDate, string endDate, string startTime, string endTime)
         {
@@ -14,6 +15,13 @@ namespace MDBackoffice.Domain.Shared
             StartTime = startTime;
             EndTime = endTime;
         }
-
+        public SlotsDto(string startDate, string endDate, string startTime, string endTime, string name)
+        {
+            StartDate = startDate;
+            EndDate = endDate;
+            StartTime = startTime;
+            EndTime = endTime;
+            Name = name;
+        }
     }
 }

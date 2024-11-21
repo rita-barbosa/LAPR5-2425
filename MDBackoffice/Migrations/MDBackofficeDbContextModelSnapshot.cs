@@ -91,7 +91,7 @@ namespace MDBackoffice.Migrations
                     b.ToTable("Logs", (string)null);
                 });
 
-            modelBuilder.Entity("MDBackoffice.Domain.OperationRequest.OperationRequest", b =>
+            modelBuilder.Entity("MDBackoffice.Domain.OperationRequests.OperationRequest", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("varchar(255)");
@@ -497,7 +497,7 @@ namespace MDBackoffice.Migrations
 
             modelBuilder.Entity("MDBackoffice.Domain.Appointments.Appointment", b =>
                 {
-                    b.HasOne("MDBackoffice.Domain.OperationRequest.OperationRequest", null)
+                    b.HasOne("MDBackoffice.Domain.OperationRequests.OperationRequest", null)
                         .WithMany()
                         .HasForeignKey("OperationRequestId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -513,6 +513,10 @@ namespace MDBackoffice.Migrations
                         {
                             b1.Property<string>("AppointmentId")
                                 .HasColumnType("varchar(255)");
+
+                            b1.Property<string>("Description")
+                                .HasColumnType("longtext")
+                                .HasColumnName("Description");
 
                             b1.HasKey("AppointmentId");
 
@@ -643,7 +647,7 @@ namespace MDBackoffice.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("MDBackoffice.Domain.OperationRequest.OperationRequest", b =>
+            modelBuilder.Entity("MDBackoffice.Domain.OperationRequests.OperationRequest", b =>
                 {
                     b.HasOne("MDBackoffice.Domain.OperationTypes.OperationType", null)
                         .WithMany()
@@ -697,7 +701,7 @@ namespace MDBackoffice.Migrations
                                 .HasForeignKey("OperationRequestId");
                         });
 
-                    b.OwnsOne("MDBackoffice.Domain.OperationRequest.OperationRequestDescription", "Description", b1 =>
+                    b.OwnsOne("MDBackoffice.Domain.OperationRequests.OperationRequestDescription", "Description", b1 =>
                         {
                             b1.Property<string>("OperationRequestId")
                                 .HasColumnType("varchar(255)");
@@ -715,7 +719,7 @@ namespace MDBackoffice.Migrations
                                 .HasForeignKey("OperationRequestId");
                         });
 
-                    b.OwnsOne("MDBackoffice.Domain.OperationRequest.OperationRequestStatus", "Status", b1 =>
+                    b.OwnsOne("MDBackoffice.Domain.OperationRequests.OperationRequestStatus", "Status", b1 =>
                         {
                             b1.Property<string>("OperationRequestId")
                                 .HasColumnType("varchar(255)");
@@ -733,7 +737,7 @@ namespace MDBackoffice.Migrations
                                 .HasForeignKey("OperationRequestId");
                         });
 
-                    b.OwnsOne("MDBackoffice.Domain.OperationRequest.Priority", "Priority", b1 =>
+                    b.OwnsOne("MDBackoffice.Domain.OperationRequests.Priority", "Priority", b1 =>
                         {
                             b1.Property<string>("OperationRequestId")
                                 .HasColumnType("varchar(255)");
@@ -1457,6 +1461,10 @@ namespace MDBackoffice.Migrations
                                 .ValueGeneratedOnAdd()
                                 .HasColumnType("char(36)");
 
+                            b1.Property<string>("Description")
+                                .HasColumnType("longtext")
+                                .HasColumnName("Description");
+
                             b1.Property<string>("RoomId")
                                 .IsRequired()
                                 .HasColumnType("varchar(255)");
@@ -1702,6 +1710,10 @@ namespace MDBackoffice.Migrations
                             b1.Property<Guid>("Id")
                                 .ValueGeneratedOnAdd()
                                 .HasColumnType("char(36)");
+
+                            b1.Property<string>("Description")
+                                .HasColumnType("longtext")
+                                .HasColumnName("Description");
 
                             b1.Property<string>("StaffId")
                                 .HasColumnType("varchar(255)");

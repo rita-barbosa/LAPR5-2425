@@ -5,12 +5,14 @@ import { catchError, map, Observable, of } from 'rxjs';
 import { OperationType } from '../domain/OperationType';
 import { OperationRequest } from '../domain/OperationRequest';
 import { ListOperationRequest } from '../domain/list-operation-request';
+import { AddOrRemoveFromPatient } from '../domain/add-or-remove-from-patient';
+import { StaffWithFunction } from '../domain/staff-with-function';
 
 interface UpdateOperationRequest {
-  id : string,
-  priority : string,
-  description : string,
-  deadlineDate : string
+  id: string,
+  priority: string,
+  description: string,
+  deadlineDate: string
 }
 
 @Injectable({
@@ -70,7 +72,7 @@ export class OperationRequestService {
       );
   }
 
-  public updateOperationRequest(updatedInfo : UpdateOperationRequest) {
+  public updateOperationRequest(updatedInfo: UpdateOperationRequest) {
     const url = `${this.theServerURL}/OperationRequest/Update`;
 
     this.http.put<OperationRequest>(url, updatedInfo, this.httpOptions)
@@ -106,12 +108,12 @@ export class OperationRequestService {
     }
     const url = `${this.theServerURL}/OperationRequest/filtered`;
     return this.http.get<ListOperationRequest[]>(url, { headers: this.httpOptions.headers, params })
-    .pipe(
-      catchError((error) => {
-        catchError(this.handleError<OperationRequest>('Create Operation Request'));
-        return of([]);
-      })
-    );
+      .pipe(
+        catchError((error) => {
+          catchError(this.handleError<OperationRequest>('Create Operation Request'));
+          return of([]);
+        })
+      );
   }
 
   public createOperationRequest(deadLineDate: string, priority: string, dateOfRequest: string, status: string, staffId: string, description: string, patientId: string, operationTypeId: string) {
@@ -133,6 +135,50 @@ export class OperationRequestService {
         this.log(`Operation Request: ${data.id} was successfully created.`);
       });
   }
+
+  public addOperationRequestToPatient(patientId: string, operationRequestId: string){
+    const url = `${this.theServerURL}/OperationRequest/Add-OperationRequestToPatient`;
+
+    let opReqHis: AddOrRemoveFromPatient = {
+      patientId: patientId,
+      operationRequestId: operationRequestId
+    }
+
+    this.http.post<AddOrRemoveFromPatient>(url, opReqHis, this.httpOptions)
+      .pipe(catchError(this.handleError<AddOrRemoveFromPatient>('Add Operation Request to Patient History')))
+      .subscribe(data => {
+        this.log(`Operation request successfully add to patient history.`);
+      });
+  }
+
+  
+getAllOperationRequests() : Observable<OperationRequest[]> {
+  const url = `${this.theServerURL}/OperationRequest/Get-AllOpRequests`;
+
+  return this.http.get<OperationRequest[]>(url)
+    .pipe(
+      catchError((error) => {
+        this.handleError<OperationRequest[]>('Get all operation requests', error);
+        return [];
+    })
+  );
+}
+
+scheduleOperationRequest(selectedStaff: StaffWithFunction[], selectedRoomId: string, operationRequestId: string, algorithm: string) {
+  const url = `${this.theServerURL}/OperationRequest/Schedule`;
+
+  const params = new HttpParams()
+    .set('selectedStaff', JSON.stringify(selectedStaff))
+    .set('selectedRoomId', selectedRoomId)
+    .set('operationRequestId', operationRequestId)
+    .set('algorithm', algorithm);
+
+  this.http
+    .post(url, { params, ...this.httpOptions })
+    .pipe(catchError(this.handleError('Scheduling Operation Request')))
+    .subscribe();
+}
+
 
 
 

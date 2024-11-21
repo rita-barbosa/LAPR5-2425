@@ -20,7 +20,7 @@ export class OperationTypeService {
       'Content-Type': 'application/json',
        Authorization: `Bearer ${this.token}`
     })
-   };
+  };
 
   constructor(private messageService: MessageService, private http: HttpClient) { }
 
@@ -30,13 +30,13 @@ export class OperationTypeService {
     console.log(url)
 
     return this.http.get<Specialization[]>(url, this.httpOptions)
-          .pipe(
-            map(data => data.map(spec => spec.denomination)),
-            catchError(this.handleError<string[]>('Get Specializations', []))
-          );
+      .pipe(
+        map(data => data.map(spec => spec.denomination)),
+        catchError(this.handleError<string[]>('Get Specializations', []))
+      );
   }
 
-  createOperationType(operationType : OperationType) {
+  createOperationType(operationType: OperationType) {
     const url = `${this.theServerURL}/OperationTypes`;
 
     console.log('Payload sent to backend:', JSON.stringify(operationType, null, 2));
@@ -50,7 +50,7 @@ export class OperationTypeService {
       });
   }
 
-   //------------------------/------------------------/------------------------
+  //------------------------/------------------------/------------------------
   public getOperationTypeById(name: string): Observable<OperationType> {
     const url = `${this.theServerURL}/OperationTypes/Get-WithName/${name}`;
 
@@ -98,12 +98,30 @@ export class OperationTypeService {
   getOperationTypesByFilters(filters: any): Observable<any> {
     const url = `${this.theServerURL}/OperationTypes/Filtered-List`
     // return this.http.post<any>(url, filters);
-    return this.http.post<any>(url, filters, this.httpOptions).pipe(
+    return this.http.post<ListOperationType[]>(url, filters, this.httpOptions).pipe(
       catchError((error) => {
-          this.handleError<any>('Get operation types list', error);
+          this.handleError<OperationType>('Get operation types list', error);
           return of([]);
       })
-  );
+    );
+  }
+
+
+  public removeOperationType(name: string) {
+    const url = `${this.theServerURL}/OperationTypes/${name}`;
+
+    return this.http.delete<OperationType>(url, this.httpOptions)
+      .pipe(
+        catchError(this.handleError<OperationType>('Remove Operation Type'))
+      ).subscribe({
+        next: () => {
+          this.log(`Operation type: ${name} was successfully removed.`);
+        },
+        error: (err) => {
+          this.log(`Failed to remove operation type: ${name}. Error: ${err.message}`);
+        }
+      });
+
   }
 
   //------------------------/------------------------/------------------------
@@ -119,7 +137,7 @@ export class OperationTypeService {
       } else if (error.status === 403) {
         this.log("Error: Not allowed to access the feature.");
         return of(result as T);
-      } else if(error.status === 200 ||error.status === 400 ){
+      } else if (error.status === 200 || error.status === 400) {
         this.log(`${operation} failed: ${error.error}`);
       } else {
         this.log(`${operation} failed: an unexpected error occured.`);

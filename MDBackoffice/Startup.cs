@@ -58,16 +58,18 @@ namespace MDBackoffice
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
-             services.AddCors(options =>
+            services.AddControllers().AddNewtonsoftJson();
+            services.AddCors(options =>
             {
                 options.AddPolicy("AllowAll",
                     builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
             });
+
             services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                
             })
             .AddJwtBearer(options =>
             {
@@ -127,9 +129,38 @@ namespace MDBackoffice
             );
             ConfigureMyServices(services);
 
-            services.AddControllers().AddNewtonsoftJson();
             services.AddSwaggerGen();
-            
+        }
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        {
+            if (env.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+                app.UseSwagger();
+                app.UseSwaggerUI(c =>
+                {
+                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "MDBackoffice API V1");
+                    c.RoutePrefix = string.Empty; // Makes Swagger available at root (https://localhost:5001/)
+                });
+
+            }
+            else
+            {
+                app.UseHsts();
+            }
+            app.UseHttpsRedirection();
+            app.UseRouting();
+
+            app.UseCors("AllowAll");
+            app.UseAuthentication();
+            app.UseAuthorization();
+
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+            });
+
+            SeedData(app);
         }
 
         public void SeedData(IApplicationBuilder app)
@@ -150,38 +181,6 @@ namespace MDBackoffice
 
         }
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
-        {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-                app.UseSwagger();
-                app.UseSwaggerUI(c =>
-                {
-                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "MDBackoffice API V1");
-                    c.RoutePrefix = string.Empty; // Makes Swagger available at root (https://localhost:5001/)
-                });
-
-            }
-            else
-            {
-                app.UseHsts();
-            }
-            app.UseCors("AllowAll");
-            app.UseHttpsRedirection();
-            app.UseRouting();
-
-            //DON'T CHANGE ORDER
-            app.UseAuthentication();
-            app.UseAuthorization();
-
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllers();
-            });
-
-            SeedData(app);
-        }
 
         public void ConfigureMyServices(IServiceCollection services)
         {

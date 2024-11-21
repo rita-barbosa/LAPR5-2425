@@ -57,6 +57,8 @@ namespace MDBackoffice.Infrastructure.Appointments
                         .IsRequired()
                         .HasColumnName("EndDate");
                 });
+                slotBuilder.Property(s => s.Description)
+                     .HasColumnName("Description");
             });
 
             // Configure the table name for Appointment

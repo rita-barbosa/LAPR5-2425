@@ -132,7 +132,7 @@ export class HospitalSimulationComponent implements AfterViewInit {
       MIDDLE: THREE.MOUSE.DOLLY, // Middle-click dolly (zoom)
       RIGHT: THREE.MOUSE.ROTATE  // Right-click rotation
     };
-    this.controls.zoomSpeed = 0.5; 
+    this.controls.zoomSpeed = 0.5;
     this.controls.update();
 
     // // Position the camera above the.layout, looking down
@@ -332,6 +332,7 @@ export class HospitalSimulationComponent implements AfterViewInit {
 
   private async loadLayout(data: any): Promise<void> {
     this.ground = new Ground(data.groundTextureUrl, data.size).object;
+    this.ground.position.y = -1.265;
     this.layout.add(this.ground);
 
     this.wall = new Wall(data.wallTextureUrl).object;
@@ -339,6 +340,16 @@ export class HospitalSimulationComponent implements AfterViewInit {
     this.surgical_bed = await this.createModel(data.bedModel, this.bedScale);
     this.patient = await this.createModel(data.patientModel, this.patientScale);
     this.door = await this.createModel(data.doorModelUrl, this.doorScale);
+
+    const textureLoader = new THREE.TextureLoader();
+    this.door.traverse((child: any) => {
+      if (child.isMesh) {
+        const material = child.material as THREE.MeshStandardMaterial;
+        material.map = textureLoader.load(data.doorTextureUrl);
+        material.color.set(0xD7EBFA);
+        material.needsUpdate = true;
+      }
+    });
 
     // Build the maze
     for (let i = 0; i <= data.size.width; i++) {
@@ -363,32 +374,32 @@ export class HospitalSimulationComponent implements AfterViewInit {
           this.objectsToIntersect.push(wallObject);
         }
 
-        //Surgical bed
+        //North Surgical bed
         if (data.layout[j][i] === 4) {
           const bedObject = this.surgical_bed.clone();
-          bedObject.position.set(i - data.size.width / 2, 0, j - data.size.height / 2 - 0.5);
+          bedObject.position.set(i - data.size.width / 2, - 0.8, j - data.size.height / 2 - 0.5);
           bedObject.scale.set(0.03, 0.03, 0.025);
-          bedObject.name = "Surgical Bed";
+          bedObject.name = "North Surgical Bed";
           bedObject.rotation.y = Math.PI / 2;
           this.layout.add(bedObject);
           this.objectsToIntersect.push(bedObject);
         }
 
-        //Door
+        //North Door
         if (data.layout[j][i] === 5) {
           const doorObject = this.door.clone();
-          doorObject.position.set(i - data.size.width / 2, 0, j - data.size.height / 2 - 0.5);
+          doorObject.position.set(i - data.size.width / 2, -1.25, j - data.size.height / 2 - 0.5);
           doorObject.position.z -= 0.55;
-          doorObject.scale.set(0.4, 1, 0.6);
-          doorObject.name = "Door";
+          doorObject.scale.set(0.7, 1, 0.6);
+          doorObject.name = "North Door";
           this.layout.add(doorObject);
           this.objectsToIntersect.push(doorObject);
         }
 
-        //Surgical bed + Patient
+        //North Surgical bed + Patient
         if (data.layout[j][i] === 6) {
           const bedObject = this.surgical_bed.clone();
-          bedObject.position.set(i - data.size.width / 2, 0, j - data.size.height / 2 - 0.5);
+          bedObject.position.set(i - data.size.width / 2, -0.8, j - data.size.height / 2 - 0.5);
           bedObject.scale.set(0.03, 0.03, 0.025);
           bedObject.name = "Surgical Bed";
           bedObject.rotation.y = Math.PI / 2;
@@ -396,10 +407,55 @@ export class HospitalSimulationComponent implements AfterViewInit {
           this.objectsToIntersect.push(bedObject);
 
           const patientObject = this.patient.clone();
-          patientObject.position.set(i - data.size.width / 2, 0.5, j - data.size.height / 2 - 0.5);
+          patientObject.position.set(i - data.size.width / 2, -0.8, j - data.size.height / 2 - 0.5);
           patientObject.position.y += 0.2;
           patientObject.position.z += 0.1 * 2;
-          patientObject.scale.set(0.005, 0.005, 0.005);
+          patientObject.scale.set(0.007, 0.005, 0.007);
+          patientObject.name = "Patient";
+          patientObject.rotation.y = Math.PI;
+          this.layout.add(patientObject);
+          this.objectsToIntersect.push(patientObject);
+        }
+
+        //South Surgical bed
+        if (data.layout[j][i] === 7) {
+          const bedObject = this.surgical_bed.clone();
+          bedObject.position.set(i - data.size.width / 2, -0.8, j - data.size.height / 2 - 0.5);
+          bedObject.scale.set(0.03, 0.03, 0.025);
+          bedObject.name = "South Surgical Bed";
+          bedObject.rotation.y = - Math.PI / 2;
+          this.layout.add(bedObject);
+          this.objectsToIntersect.push(bedObject);
+        }
+
+        //South Door
+        if (data.layout[j][i] === 8) {
+          const doorObject = this.door.clone();
+          doorObject.position.set(i - data.size.width / 2, -1.25, j - data.size.height / 2 - 0.4);
+          doorObject.position.z -= 0.55;
+          doorObject.scale.set(0.7, 1, 0.6);
+          doorObject.name = "South Door";
+          doorObject.rotation.y = Math.PI;
+          this.layout.add(doorObject);
+          this.objectsToIntersect.push(doorObject);
+        }
+
+
+        //South Surgical bed + Patient
+        if (data.layout[j][i] === 9) {
+          const bedObject = this.surgical_bed.clone();
+          bedObject.position.set(i - data.size.width / 2, -0.8, j - data.size.height / 2 - 0.5);
+          bedObject.scale.set(0.03, 0.03, 0.025);
+          bedObject.name = "Surgical Bed";
+          bedObject.rotation.y = - Math.PI / 2;
+          this.layout.add(bedObject);
+          this.objectsToIntersect.push(bedObject);
+
+          const patientObject = this.patient.clone();
+          patientObject.position.set(i - data.size.width / 2, -0.8, j - data.size.height / 2 - 0.9);
+          patientObject.position.y += 0.2;
+          patientObject.position.z += 0.1 * 2;
+          patientObject.scale.set(0.007, 0.005, 0.007);
           patientObject.name = "Patient";
           this.layout.add(patientObject);
           this.objectsToIntersect.push(patientObject);
@@ -410,7 +466,7 @@ export class HospitalSimulationComponent implements AfterViewInit {
     //Adding Room ID Sprites
     for (let i = 0; i <= data.size.width; i++) {
       for (let j = 0; j <= data.size.height; j++) {
-        if (data.layout[j][i] === 4 || data.layout[j][i] === 6) {
+        if (data.layout[j][i] === 4 || data.layout[j][i] === 6 || data.layout[j][i] === 7 || data.layout[j][i] === 9 ) {
           const position = this.cellToCartesian(data, [j, i]);
           this.roomPositions.push(position);
 
@@ -639,7 +695,7 @@ export class HospitalSimulationComponent implements AfterViewInit {
       const intersects = this.raycaster.intersectObjects(this.layout.children);
       this.raycasterIntersectedObjectTooltip(intersects);
 
-    
+
 
       // Loop
       this.animationFrameId = requestAnimationFrame(animate);

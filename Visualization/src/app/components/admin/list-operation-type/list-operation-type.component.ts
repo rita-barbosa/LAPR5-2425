@@ -56,7 +56,7 @@ export class ListOperationTypeComponent implements OnInit {
   functions: string[] = ['Surgeon', 'Nurse', 'Technician']; // Example functions
   specializations: string[] = ['Cardiology', 'Orthopedics', 'General Surgery']; // Example specializations
 
-  constructor(private service: OperationTypeService) {}
+  constructor(private service: OperationTypeService) { }
 
   ngOnInit(): void {
     this.fetchOperations();
@@ -71,6 +71,7 @@ export class ListOperationTypeComponent implements OnInit {
       }
     ];
 
+    // Fazer a requisição para o endpoint do backend
     this.service.getOperationTypesByFilters({ queryFilters }).subscribe({
       next: data => {
         this.operationTypes = data;
@@ -141,7 +142,8 @@ export class ListOperationTypeComponent implements OnInit {
   }
 
   deleteOperationType(operationType: ListOperationType): void {
-    //To Implement
+    this.service.removeOperationType(operationType.name);
+    this.fetchOperations(); // to update the list of operation types
   }
 
   addStaff(): void {
@@ -183,4 +185,5 @@ export class ListOperationTypeComponent implements OnInit {
       input.classList.remove('invalid-placeholder');
     });
   }
+
 }
