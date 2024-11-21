@@ -9,6 +9,16 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using Xunit;
 using MDBackoffice.Domain.Users;
+using Microsoft.Extensions.Options;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Authentication;
+using MDBackoffice.Domain.Tokens;
+using MDBackoffice.Domain.Emails;
+using MDBackoffice.Infrastructure.Emails;
+using Microsoft.Extensions.Configuration;
+using MDBackoffice.Infrastructure.Users;
 
 namespace MDBackofficeTests.integrationtests.operationtype
 {
@@ -24,6 +34,37 @@ namespace MDBackofficeTests.integrationtests.operationtype
 
         public DeletOperationTypesIntegrationTests()
         {
+            Mock<LogService> _logServiceMock = new Mock<LogService>(new Mock<IUnitOfWork>().Object, new Mock<ILogRepository>().Object);
+
+            var identityOptionsMock = new Mock<IOptions<IdentityOptions>>();
+            identityOptionsMock.Setup(o => o.Value).Returns(new IdentityOptions());
+            var identityErrorDescriberMock = new Mock<IdentityErrorDescriber>();
+
+            var _userManagerMock = new Mock<UserManager<User>>(new Mock<IUserStore<User>>().Object, identityOptionsMock.Object, new Mock<IPasswordHasher<User>>().Object, new List<IUserValidator<User>> { new Mock<IUserValidator<User>>().Object }, new List<IPasswordValidator<User>> { new Mock<IPasswordValidator<User>>().Object }, new Mock<ILookupNormalizer>().Object, identityErrorDescriberMock.Object, new Mock<IServiceProvider>().Object, new Mock<ILogger<UserManager<User>>>().Object);
+
+            var signinManagerMock = new Mock<SignInManager<User>>(_userManagerMock.Object,
+                                                                new Mock<IHttpContextAccessor>().Object,
+                                                                new Mock<IUserClaimsPrincipalFactory<User>>().Object,
+                                                                identityOptionsMock.Object,
+                                                                new Mock<ILogger<SignInManager<User>>>().Object,
+                                                                new Mock<IAuthenticationSchemeProvider>().Object,
+                                                                new Mock<IUserConfirmation<User>>().Object);
+
+            var roleManagerMock = new Mock<RoleManager<Role>>(new Mock<IRoleStore<Role>>().Object, new List<IRoleValidator<Role>>(), new Mock<ILookupNormalizer>().Object, identityErrorDescriberMock.Object, new Mock<ILogger<RoleManager<Role>>>().Object);
+
+
+            _opRecordService = new Mock<OperationTypeRecordService>(_unitOfWorkMock.Object, _logServiceMock.Object, new Mock<IOperationTypeRecordRepository>().Object);
+
+            _service = new Mock<OperationTypeService>(_unitOfWorkMock.Object, _repoMock.Object, _logServiceMock.Object, _opRecordService.Object).Object;
+
+           var tokenServiceMock = new Mock<TokenService>(_unitOfWorkMock.Object, new Mock<ITokenRepository>().Object, _userManagerMock.Object);
+            var _emailServiceMock = new Mock<EmailService>(tokenServiceMock.Object, new Mock<IEmailAdapter>().Object);
+            var _configurationMock = new Mock<IConfiguration>();
+            var _loginAdapterMock = new Mock<ILoginAdapter>();
+
+            _userService = new Mock<UserService>(_userManagerMock.Object, roleManagerMock.Object, _logServiceMock.Object, signinManagerMock.Object, _emailServiceMock.Object, _configurationMock.Object, tokenServiceMock.Object, _loginAdapterMock.Object);
+
+
             _opRecordService = new Mock<OperationTypeRecordService>(_unitOfWorkMock.Object, _logServiceMock.Object, new Mock<IOperationTypeRecordRepository>().Object);
 
             _service = new OperationTypeService(_unitOfWorkMock.Object, _repoMock.Object, _logServiceMock.Object, _opRecordService.Object);
@@ -67,6 +108,15 @@ namespace MDBackofficeTests.integrationtests.operationtype
 
             _repoMock.Setup(repo => repo.GetByIdAsync(new OperationTypeId(operationTypeId))).ReturnsAsync(operationType);
             _unitOfWorkMock.Setup(u => u.CommitAsync()).ReturnsAsync(1);
+
+            var context = new DefaultHttpContext();
+            context.Request.Headers["Authorization"] = "Bearer valid-token";
+            _controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = context
+            };
+            _userService.Setup(_userService => _userService.CheckUserRole("valid-token", "Admin")).Returns(false);
+
 
             // Act
             var result = await _controller.RemoveOperationType(operationTypeId);
