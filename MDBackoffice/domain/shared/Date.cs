@@ -7,7 +7,7 @@ namespace MDBackoffice.Domain.Shared
         public DateTime Start { get; }
         public DateTime End { get; }
 
-        public Date(){}
+        public Date() { }
 
         public Date(string start, string end = null)
         {
@@ -17,19 +17,36 @@ namespace MDBackoffice.Domain.Shared
             if (!DateTime.TryParse(start, out DateTime startDate))
                 throw new BusinessRuleValidationException("Invalid start date format.", nameof(start));
 
-            End = string.IsNullOrWhiteSpace(end)
-                ? startDate
-                : (DateTime.TryParse(end, out DateTime endDate) && endDate >= startDate)
-                    ? endDate
-                    : throw new BusinessRuleValidationException("End date must be greater than or equal to start date.");
+            if (string.IsNullOrWhiteSpace(end))
+            {
+                End = startDate;
+            }
+            else
+            {
+                if (!DateTime.TryParse(end, out DateTime endDate))
+                    throw new BusinessRuleValidationException("Invalid end date format.", nameof(end));
 
+                if (endDate < startDate)
+                    throw new BusinessRuleValidationException("End date cannot be earlier than start date.", nameof(end));
+
+                End = endDate;
+            }
             Start = startDate;
         }
 
         public override string ToString()
         {
-            return Start.Equals(End) ?  $"{Start:yyyy-MM-dd}/{End:yyyy-MM-dd}" : $"{Start:yyyy-MM-dd}";
+            // Check if End date is DateTime.MinValue or if Start equals End
+            if (End == DateTime.MinValue || Start.Equals(End))
+            {
+                return $"{Start:yyyy-MM-dd}";
+            }
+            else
+            {
+                return $"{Start:yyyy-MM-dd}/{End:yyyy-MM-dd}";
+            }
         }
+
 
 
         public override bool Equals(object obj)
