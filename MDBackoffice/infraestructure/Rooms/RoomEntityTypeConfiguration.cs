@@ -80,7 +80,8 @@ namespace MDBackoffice.Infrastructure.Rooms
                         .IsRequired()
                         .HasColumnName("EndDate");
                 });
-
+                slotBuilder.Property(s => s.Description)
+                    .HasColumnName("Description");
                 slotBuilder.ToTable("RoomMaintenanceSlots");
             });
 

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Security.Claims;
@@ -24,63 +25,76 @@ using Newtonsoft.Json.Linq;
 namespace MDBackoffice.Infrastructure.Users
 {
     public class GoogleLoginAdapter : ILoginAdapter
-{
-    private readonly SignInManager<User> _signinManager;
-    private readonly IHttpContextAccessor _httpContextAccessor;
-    private readonly IUrlHelperFactory _urlHelperFactory;
-
-    public GoogleLoginAdapter(IHttpContextAccessor httpContextAccessor, IUrlHelperFactory urlHelperFactory, SignInManager<User> signInManager)
     {
-        _signinManager = signInManager;
-        _httpContextAccessor = httpContextAccessor;
-        _urlHelperFactory = urlHelperFactory;
-    }
+        private readonly SignInManager<User> _signinManager;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IUrlHelperFactory _urlHelperFactory;
 
-   public async Task<AuthenticateResult> GetAuthenticationInfo()
-    {
-        var httpContext = _httpContextAccessor.HttpContext;
-
-        if (httpContext == null)
-            return null;
-
-        // Create the IUrlHelper
-        var urlHelper = _urlHelperFactory.GetUrlHelper(new ActionContext
+        public GoogleLoginAdapter(IHttpContextAccessor httpContextAccessor, IUrlHelperFactory urlHelperFactory, SignInManager<User> signInManager)
         {
-            HttpContext = httpContext,
-            RouteData = httpContext.GetRouteData(),
-            ActionDescriptor = new Microsoft.AspNetCore.Mvc.Abstractions.ActionDescriptor()
-        });
-
-        // Authenticate the user with Google
-        AuthenticateResult result = await httpContext.AuthenticateAsync(GoogleDefaults.AuthenticationScheme);
-
-        if (result.Succeeded && result.Principal != null)
-        {
-            return result;
+            _signinManager = signInManager;
+            _httpContextAccessor = httpContextAccessor;
+            _urlHelperFactory = urlHelperFactory;
         }
 
-        return null;
-    }
-
-    public async Task<AuthenticationProperties> GetRedirectionInfo()
-    {
-        var httpContext = _httpContextAccessor.HttpContext;
-
-        if (httpContext == null)
-            return null;
-
-        // Create the IUrlHelper
-        var urlHelper = _urlHelperFactory.GetUrlHelper(new ActionContext
+        public async Task<AuthenticateResult> GetAuthenticationInfo()
         {
-            HttpContext = httpContext,
-            RouteData = httpContext.GetRouteData(),
-            ActionDescriptor = new Microsoft.AspNetCore.Mvc.Abstractions.ActionDescriptor()
-        });
+            var httpContext = _httpContextAccessor.HttpContext;
 
-        var redirectUrl = urlHelper.Action("LoginGoogleEnd", "User");
-        var properties = _signinManager.ConfigureExternalAuthenticationProperties("Google", redirectUrl);
+            if (httpContext == null)
+                return null;
 
-        return properties;
+            // Create the IUrlHelper
+            var urlHelper = _urlHelperFactory.GetUrlHelper(new ActionContext
+            {
+                HttpContext = httpContext,
+                RouteData = httpContext.GetRouteData(),
+                ActionDescriptor = new Microsoft.AspNetCore.Mvc.Abstractions.ActionDescriptor()
+            });
+
+            // Authenticate the user with Google
+            AuthenticateResult result = await httpContext.AuthenticateAsync(GoogleDefaults.AuthenticationScheme);
+
+            if (result.Succeeded && result.Principal != null)
+            {
+                return result;
+            }
+
+            return null;
+        }
+
+        public async Task<AuthenticationProperties> GetRedirectionInfo()
+        {
+            var httpContext = _httpContextAccessor.HttpContext;
+
+            if (httpContext == null)
+                return null;
+
+            // Create the IUrlHelper
+            var urlHelper = _urlHelperFactory.GetUrlHelper(new ActionContext
+            {
+                HttpContext = httpContext,
+                RouteData = httpContext.GetRouteData(),
+                ActionDescriptor = new Microsoft.AspNetCore.Mvc.Abstractions.ActionDescriptor()
+            });
+            var redirectUrl = "https://localhost:5001/api/login-externalEnd";
+            var properties = _signinManager.ConfigureExternalAuthenticationProperties("Google", redirectUrl);
+
+            return properties;
+        }
+
+        private string GetLocalIPAddress()
+        {
+            var host = Dns.GetHostEntry(Dns.GetHostName());
+            foreach (var ip in host.AddressList)
+            {
+                // Use the first IPv4 address found
+                if (ip.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork)
+                {
+                    return ip.ToString();
+                }
+            }
+            throw new Exception("No IPv4 address found for this machine.");
+        }
     }
-}
 }

@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MDBackoffice.Migrations
 {
     [DbContext(typeof(MDBackofficeDbContext))]
-    [Migration("20241114160752_InitialCreate")]
+    [Migration("20241121172646_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -51,6 +51,28 @@ namespace MDBackoffice.Migrations
                     b.ToTable("appointmentHistories");
                 });
 
+            modelBuilder.Entity("MDBackoffice.Domain.Appointments.Appointment", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<string>("OperationRequestId")
+                        .IsRequired()
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<string>("RoomNumber")
+                        .IsRequired()
+                        .HasColumnType("varchar(255)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OperationRequestId");
+
+                    b.HasIndex("RoomNumber");
+
+                    b.ToTable("Appointment", (string)null);
+                });
+
             modelBuilder.Entity("MDBackoffice.Domain.Logs.Log", b =>
                 {
                     b.Property<string>("Id")
@@ -72,7 +94,7 @@ namespace MDBackoffice.Migrations
                     b.ToTable("Logs", (string)null);
                 });
 
-            modelBuilder.Entity("MDBackoffice.Domain.OperationRequest.OperationRequest", b =>
+            modelBuilder.Entity("MDBackoffice.Domain.OperationRequests.OperationRequest", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("varchar(255)");
@@ -179,6 +201,16 @@ namespace MDBackoffice.Migrations
                         .IsUnique();
 
                     b.ToTable("Patients");
+                });
+
+            modelBuilder.Entity("MDBackoffice.Domain.Rooms.Room", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("varchar(255)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Rooms", (string)null);
                 });
 
             modelBuilder.Entity("MDBackoffice.Domain.Specializations.Specialization", b =>
@@ -466,6 +498,110 @@ namespace MDBackoffice.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("MDBackoffice.Domain.Appointments.Appointment", b =>
+                {
+                    b.HasOne("MDBackoffice.Domain.OperationRequests.OperationRequest", null)
+                        .WithMany()
+                        .HasForeignKey("OperationRequestId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("MDBackoffice.Domain.Rooms.Room", null)
+                        .WithMany()
+                        .HasForeignKey("RoomNumber")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.OwnsOne("MDBackoffice.Domain.Shared.Slot", "Slot", b1 =>
+                        {
+                            b1.Property<string>("AppointmentId")
+                                .HasColumnType("varchar(255)");
+
+                            b1.Property<string>("Description")
+                                .HasColumnType("longtext")
+                                .HasColumnName("Description");
+
+                            b1.HasKey("AppointmentId");
+
+                            b1.ToTable("Appointment");
+
+                            b1.WithOwner()
+                                .HasForeignKey("AppointmentId");
+
+                            b1.OwnsOne("MDBackoffice.Domain.Shared.Date", "Date", b2 =>
+                                {
+                                    b2.Property<string>("SlotAppointmentId")
+                                        .HasColumnType("varchar(255)");
+
+                                    b2.Property<DateTime>("End")
+                                        .HasColumnType("datetime(6)")
+                                        .HasColumnName("EndDate");
+
+                                    b2.Property<DateTime>("Start")
+                                        .HasColumnType("datetime(6)")
+                                        .HasColumnName("StartDate");
+
+                                    b2.HasKey("SlotAppointmentId");
+
+                                    b2.ToTable("Appointment");
+
+                                    b2.WithOwner()
+                                        .HasForeignKey("SlotAppointmentId");
+                                });
+
+                            b1.OwnsOne("MDBackoffice.Domain.Shared.TimeInterval", "TimeInterval", b2 =>
+                                {
+                                    b2.Property<string>("SlotAppointmentId")
+                                        .HasColumnType("varchar(255)");
+
+                                    b2.Property<TimeSpan>("End")
+                                        .HasColumnType("time(6)")
+                                        .HasColumnName("EndTime");
+
+                                    b2.Property<TimeSpan>("Start")
+                                        .HasColumnType("time(6)")
+                                        .HasColumnName("StartTime");
+
+                                    b2.HasKey("SlotAppointmentId");
+
+                                    b2.ToTable("Appointment");
+
+                                    b2.WithOwner()
+                                        .HasForeignKey("SlotAppointmentId");
+                                });
+
+                            b1.Navigation("Date")
+                                .IsRequired();
+
+                            b1.Navigation("TimeInterval")
+                                .IsRequired();
+                        });
+
+                    b.OwnsOne("MDBackoffice.Domain.Appointments.AppointmentStatus", "Status", b1 =>
+                        {
+                            b1.Property<string>("AppointmentId")
+                                .HasColumnType("varchar(255)");
+
+                            b1.Property<string>("Description")
+                                .IsRequired()
+                                .HasColumnType("longtext")
+                                .HasColumnName("Status");
+
+                            b1.HasKey("AppointmentId");
+
+                            b1.ToTable("Appointment");
+
+                            b1.WithOwner()
+                                .HasForeignKey("AppointmentId");
+                        });
+
+                    b.Navigation("Slot")
+                        .IsRequired();
+
+                    b.Navigation("Status")
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("MDBackoffice.Domain.Logs.Log", b =>
                 {
                     b.OwnsOne("MDBackoffice.Domain.Logs.Change", "Change", b1 =>
@@ -514,7 +650,7 @@ namespace MDBackoffice.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("MDBackoffice.Domain.OperationRequest.OperationRequest", b =>
+            modelBuilder.Entity("MDBackoffice.Domain.OperationRequests.OperationRequest", b =>
                 {
                     b.HasOne("MDBackoffice.Domain.OperationTypes.OperationType", null)
                         .WithMany()
@@ -568,7 +704,7 @@ namespace MDBackoffice.Migrations
                                 .HasForeignKey("OperationRequestId");
                         });
 
-                    b.OwnsOne("MDBackoffice.Domain.OperationRequest.OperationRequestDescription", "Description", b1 =>
+                    b.OwnsOne("MDBackoffice.Domain.OperationRequests.OperationRequestDescription", "Description", b1 =>
                         {
                             b1.Property<string>("OperationRequestId")
                                 .HasColumnType("varchar(255)");
@@ -586,7 +722,7 @@ namespace MDBackoffice.Migrations
                                 .HasForeignKey("OperationRequestId");
                         });
 
-                    b.OwnsOne("MDBackoffice.Domain.OperationRequest.OperationRequestStatus", "Status", b1 =>
+                    b.OwnsOne("MDBackoffice.Domain.OperationRequests.OperationRequestStatus", "Status", b1 =>
                         {
                             b1.Property<string>("OperationRequestId")
                                 .HasColumnType("varchar(255)");
@@ -604,7 +740,7 @@ namespace MDBackoffice.Migrations
                                 .HasForeignKey("OperationRequestId");
                         });
 
-                    b.OwnsOne("MDBackoffice.Domain.OperationRequest.Priority", "Priority", b1 =>
+                    b.OwnsOne("MDBackoffice.Domain.OperationRequests.Priority", "Priority", b1 =>
                         {
                             b1.Property<string>("OperationRequestId")
                                 .HasColumnType("varchar(255)");
@@ -1261,37 +1397,89 @@ namespace MDBackoffice.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("MDBackoffice.Domain.StaffProfiles.Staff", b =>
+            modelBuilder.Entity("MDBackoffice.Domain.Rooms.Room", b =>
                 {
-                    b.HasOne("MDBackoffice.Domain.Specializations.Specialization", null)
-                        .WithMany()
-                        .HasForeignKey("SpecializationId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.OwnsOne("MDBackoffice.Domain.Rooms.Capacity", "Capacity", b1 =>
+                        {
+                            b1.Property<string>("RoomId")
+                                .HasColumnType("varchar(255)");
 
-                    b.HasOne("MDBackoffice.Domain.Users.User", null)
-                        .WithOne()
-                        .HasForeignKey("MDBackoffice.Domain.StaffProfiles.Staff", "UserReference")
-                        .OnDelete(DeleteBehavior.SetNull);
+                            b1.Property<int>("CapcityNumber")
+                                .HasColumnType("int")
+                                .HasColumnName("Capacity");
 
-                    b.OwnsMany("MDBackoffice.Domain.Shared.Slot", "Slots", b1 =>
+                            b1.HasKey("RoomId");
+
+                            b1.ToTable("Rooms");
+
+                            b1.WithOwner()
+                                .HasForeignKey("RoomId");
+                        });
+
+                    b.OwnsOne("MDBackoffice.Domain.Rooms.CurrentStatus", "CurrentStatus", b1 =>
+                        {
+                            b1.Property<string>("RoomId")
+                                .HasColumnType("varchar(255)");
+
+                            b1.Property<string>("Description")
+                                .IsRequired()
+                                .HasColumnType("longtext")
+                                .HasColumnName("CurrentStatus");
+
+                            b1.HasKey("RoomId");
+
+                            b1.ToTable("Rooms");
+
+                            b1.WithOwner()
+                                .HasForeignKey("RoomId");
+                        });
+
+                    b.OwnsMany("MDBackoffice.Domain.Rooms.Equipment", "AvailableEquipment", b1 =>
+                        {
+                            b1.Property<string>("RoomId")
+                                .HasColumnType("varchar(255)");
+
+                            b1.Property<int>("Id")
+                                .ValueGeneratedOnAdd()
+                                .HasColumnType("int");
+
+                            MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b1.Property<int>("Id"));
+
+                            b1.Property<string>("EquipmentName")
+                                .IsRequired()
+                                .HasColumnType("longtext")
+                                .HasColumnName("EquipmentName");
+
+                            b1.HasKey("RoomId", "Id");
+
+                            b1.ToTable("RoomAvailableEquipment", (string)null);
+
+                            b1.WithOwner()
+                                .HasForeignKey("RoomId");
+                        });
+
+                    b.OwnsMany("MDBackoffice.Domain.Shared.Slot", "MaintenanceSlots", b1 =>
                         {
                             b1.Property<Guid>("Id")
                                 .ValueGeneratedOnAdd()
                                 .HasColumnType("char(36)");
 
-                            b1.Property<string>("StaffId")
+                            b1.Property<string>("Description")
+                                .HasColumnType("longtext")
+                                .HasColumnName("Description");
+
+                            b1.Property<string>("RoomId")
                                 .IsRequired()
                                 .HasColumnType("varchar(255)");
 
                             b1.HasKey("Id");
 
-                            b1.HasIndex("StaffId");
+                            b1.HasIndex("RoomId");
 
-                            b1.ToTable("StaffSlots", (string)null);
+                            b1.ToTable("RoomMaintenanceSlots", (string)null);
 
                             b1.WithOwner()
-                                .HasForeignKey("StaffId");
+                                .HasForeignKey("RoomId");
 
                             b1.OwnsOne("MDBackoffice.Domain.Shared.Date", "Date", b2 =>
                                 {
@@ -1308,7 +1496,7 @@ namespace MDBackoffice.Migrations
 
                                     b2.HasKey("SlotId");
 
-                                    b2.ToTable("StaffSlots");
+                                    b2.ToTable("RoomMaintenanceSlots");
 
                                     b2.WithOwner()
                                         .HasForeignKey("SlotId");
@@ -1329,7 +1517,7 @@ namespace MDBackoffice.Migrations
 
                                     b2.HasKey("SlotId");
 
-                                    b2.ToTable("StaffSlots");
+                                    b2.ToTable("RoomMaintenanceSlots");
 
                                     b2.WithOwner()
                                         .HasForeignKey("SlotId");
@@ -1341,6 +1529,51 @@ namespace MDBackoffice.Migrations
                             b1.Navigation("TimeInterval")
                                 .IsRequired();
                         });
+
+                    b.OwnsOne("MDBackoffice.Domain.Rooms.RoomType", "Type", b1 =>
+                        {
+                            b1.Property<string>("RoomId")
+                                .HasColumnType("varchar(255)");
+
+                            b1.Property<string>("RoomTypeName")
+                                .IsRequired()
+                                .HasColumnType("longtext")
+                                .HasColumnName("RoomType");
+
+                            b1.HasKey("RoomId");
+
+                            b1.ToTable("Rooms");
+
+                            b1.WithOwner()
+                                .HasForeignKey("RoomId");
+                        });
+
+                    b.Navigation("AvailableEquipment");
+
+                    b.Navigation("Capacity")
+                        .IsRequired();
+
+                    b.Navigation("CurrentStatus")
+                        .IsRequired();
+
+                    b.Navigation("MaintenanceSlots");
+
+                    b.Navigation("Type")
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("MDBackoffice.Domain.StaffProfiles.Staff", b =>
+                {
+                    b.HasOne("MDBackoffice.Domain.Specializations.Specialization", null)
+                        .WithMany()
+                        .HasForeignKey("SpecializationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("MDBackoffice.Domain.Users.User", null)
+                        .WithOne()
+                        .HasForeignKey("MDBackoffice.Domain.StaffProfiles.Staff", "UserReference")
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.OwnsOne("MDBackoffice.Domain.StaffProfiles.LicenseNumber", "LicenseNumber", b1 =>
                         {
@@ -1473,6 +1706,77 @@ namespace MDBackoffice.Migrations
 
                             b1.WithOwner()
                                 .HasForeignKey("StaffId");
+                        });
+
+                    b.OwnsMany("MDBackoffice.Domain.Shared.Slot", "Slots", b1 =>
+                        {
+                            b1.Property<Guid>("Id")
+                                .ValueGeneratedOnAdd()
+                                .HasColumnType("char(36)");
+
+                            b1.Property<string>("Description")
+                                .HasColumnType("longtext")
+                                .HasColumnName("Description");
+
+                            b1.Property<string>("StaffId")
+                                .HasColumnType("varchar(255)");
+
+                            b1.HasKey("Id");
+
+                            b1.HasIndex("StaffId");
+
+                            b1.ToTable("StaffSlots", (string)null);
+
+                            b1.WithOwner()
+                                .HasForeignKey("StaffId");
+
+                            b1.OwnsOne("MDBackoffice.Domain.Shared.Date", "Date", b2 =>
+                                {
+                                    b2.Property<Guid>("SlotId")
+                                        .HasColumnType("char(36)");
+
+                                    b2.Property<DateTime>("End")
+                                        .HasColumnType("datetime(6)")
+                                        .HasColumnName("EndDate");
+
+                                    b2.Property<DateTime>("Start")
+                                        .HasColumnType("datetime(6)")
+                                        .HasColumnName("StartDate");
+
+                                    b2.HasKey("SlotId");
+
+                                    b2.ToTable("StaffSlots");
+
+                                    b2.WithOwner()
+                                        .HasForeignKey("SlotId");
+                                });
+
+                            b1.OwnsOne("MDBackoffice.Domain.Shared.TimeInterval", "TimeInterval", b2 =>
+                                {
+                                    b2.Property<Guid>("SlotId")
+                                        .HasColumnType("char(36)");
+
+                                    b2.Property<TimeSpan>("End")
+                                        .HasColumnType("time(6)")
+                                        .HasColumnName("EndTime");
+
+                                    b2.Property<TimeSpan>("Start")
+                                        .HasColumnType("time(6)")
+                                        .HasColumnName("StartTime");
+
+                                    b2.HasKey("SlotId");
+
+                                    b2.ToTable("StaffSlots");
+
+                                    b2.WithOwner()
+                                        .HasForeignKey("SlotId");
+                                });
+
+                            b1.Navigation("Date")
+                                .IsRequired();
+
+                            b1.Navigation("TimeInterval")
+                                .IsRequired();
                         });
 
                     b.Navigation("Address")

@@ -6,10 +6,8 @@ namespace MDBackoffice.Infrastructure.Users
 {
     public interface ILoginAdapter
     {
-        
         Task<AuthenticateResult> GetAuthenticationInfo();
         Task<AuthenticationProperties> GetRedirectionInfo();
-
     }
 }
 
