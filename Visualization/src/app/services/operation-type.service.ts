@@ -66,10 +66,10 @@ export class OperationTypeService {
   getOperationTypesByFilters(filters: any): Observable<any> {
     const url = `${this.theServerURL}/OperationTypes/Filtered-List`
     // return this.http.post<any>(url, filters);
-    return this.http.post<any>(url, filters, this.httpOptions).pipe(
+    return this.http.post<ListOperationType[]>(url, filters, this.httpOptions).pipe(
       catchError((error) => {
-        this.handleError<any>('Get operation types list', error);
-        return of([]);
+          this.handleError<OperationType>('Get operation types list', error);
+          return of([]);
       })
     );
   }
