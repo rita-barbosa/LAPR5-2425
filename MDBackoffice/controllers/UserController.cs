@@ -8,11 +8,8 @@ using MDBackoffice.Domain.Patients;
 using MDBackoffice.Domain.StaffProfiles;
 using MDBackoffice.Domain.Tokens;
 using MDBackoffice.Domain.Shared;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Google;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using System.Linq;
-using Microsoft.AspNetCore.Identity;
+
 
 namespace MDBackoffice.Controllers
 {
@@ -30,7 +27,7 @@ namespace MDBackoffice.Controllers
             _userService = userService;
             _patientService = patientService;
             _staffService = staffService;
-         _tokenService = tokenService;
+            _tokenService = tokenService;
         }
 
         [HttpPost("login-internal")]
@@ -56,7 +53,7 @@ namespace MDBackoffice.Controllers
         {
             try
             {
-               var (email, roles) = _userService.DecodeJwtToken(token);
+                var (email, roles) = _userService.DecodeJwtToken(token);
                 return Ok(new { Email = email, Roles = roles });
             }
             catch (BusinessRuleValidationException ex)
@@ -68,25 +65,6 @@ namespace MDBackoffice.Controllers
                 return BadRequest(new { V = $"An unexpected error occurred: {ex.Message}" });
             }
         }
-
-
-     /* [HttpGet("Login-Google")]
-        public async Task<IActionResult> LoginGoogle()
-        {
-            try
-            {
-                var token = await _userService.LoginGoogle();
-                return Ok(new { Token = token });
-            }
-            catch (BusinessRuleValidationException ex)
-            {
-                return BadRequest(new { ex.Message });
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new { V = $"An unexpected error occurred: {ex.Message}" });
-            }
-        } */
 
         [HttpGet("login-external")]
         public async Task<IActionResult> LoginExternalStart()
@@ -108,11 +86,12 @@ namespace MDBackoffice.Controllers
 
         [HttpGet("login-externalEnd")]
         public async Task<IActionResult> LoginExternalEnd()
-        {   
+        {
             try
             {
                 var token = await _userService.LoginExternalEnd();
-                return Ok(new { Token = token });
+                var redirectUrl = $"http://localhost:4200/login-callback?token={token}";
+                return Redirect(redirectUrl);
             }
             catch (BusinessRuleValidationException ex)
             {
@@ -130,7 +109,7 @@ namespace MDBackoffice.Controllers
             try
             {
                 await _userService.ConfirmEmailStaff(userId, token, confirmEmailUserDto.NewPassword);
-                return Ok(new { message = $"Email confirmed successfully and account activated."});
+                return Ok(new { message = $"Email confirmed successfully and account activated." });
             }
             catch (BusinessRuleValidationException ex)
             {
@@ -148,7 +127,7 @@ namespace MDBackoffice.Controllers
             try
             {
                 await _userService.ConfirmEmailPatient(userId, token);
-                return Ok(new { message = $"Email confirmed successfully and account activated."});
+                return Ok(new { message = $"Email confirmed successfully and account activated." });
             }
             catch (BusinessRuleValidationException ex)
             {
@@ -200,7 +179,7 @@ namespace MDBackoffice.Controllers
         }
 
         [HttpPost("create-staff")]
-        [Authorize(Policy = "Admin")] 
+        [Authorize(Policy = "Admin")]
         public async Task<IActionResult> RegisterStaffUser([FromBody] RegisterUserDto registerUserDto)
         {
             try
@@ -316,7 +295,7 @@ namespace MDBackoffice.Controllers
             // anonymize the patient's profile according to GDPR policies -> readme info for now
             await _patientService.AnonymizeProfile(userEmail);
 
-            return Ok( new { message = "Patient account successfully deleted!\nSome of your non-identifiable data will be retained, as per our GDPR policies."});
+            return Ok(new { message = "Patient account successfully deleted!\nSome of your non-identifiable data will be retained, as per our GDPR policies." });
         }
 
 
@@ -365,4 +344,7 @@ namespace MDBackoffice.Controllers
 
     }
 
+    internal class GoogleTokenResponse
+    {
+    }
 }

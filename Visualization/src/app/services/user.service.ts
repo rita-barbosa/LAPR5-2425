@@ -7,7 +7,7 @@ import { JwtHelperService } from '@auth0/angular-jwt';
 
 interface UserLogin {
   email: string;
-  password : string;
+  password: string;
 }
 
 interface LoginResponse {
@@ -36,7 +36,7 @@ interface UserInfo {
   token: string;
 }
 
-var token : string;
+var token: string;
 
 @Injectable({
   providedIn: 'root'
@@ -45,86 +45,46 @@ var token : string;
 export class UserService {
   theServerURL = 'https://localhost:5001/api';
   httpOptions = {
-    headers: new HttpHeaders({'Content-Type': 'application/json', 'Authorization': `Bearer ${token}`})
+    headers: new HttpHeaders({ 'Content-Type': 'application/json' })
   };
-  
-  constructor(private messageService: MessageService, private http: HttpClient, private router : Router) { }
+  constructor(private messageService: MessageService, private http: HttpClient, private router: Router) { }
 
-  public login(userEmail : string, userPassword : string) {
+  public loginExternal() {
+    const url = `${this.theServerURL}/login-external`;
+    window.location.href = url;
+  }
+
+  public login(userEmail: string, userPassword: string) {
     const url = `${this.theServerURL}/login-internal`;
     let user: UserLogin = {
-      email : userEmail,
-      password : userPassword
+      email: userEmail,
+      password: userPassword
     };
-  
-    this.http.post<LoginResponse>(url, user, this.httpOptions) 
+
+    this.http.post<LoginResponse>(url, user, this.httpOptions)
       .pipe(catchError(this.handleError<LoginResponse>('User login')))
       .subscribe(data => {
         if (data && data.token) {
-        console.log(data.token);
-        this.decodeTokenandRedirect(data.token); 
-      } else {
-        this.log(`Login failed: No token received.`);
+          console.log(data.token);
+          this.decodeTokenandRedirect(data.token);
+        } else {
+          this.log(`Login failed: No token received.`);
         }
       });
-
   }
-
-  public createStaffUser(userEmail : string, userPassword : string, userPhone : string, userRole : string, tokenAuth : string) {
-    const url = `${this.theServerURL}/create-staff`;
-    let user: UserStaff = {
-      email : userEmail,
-      password : userPassword,
-      phone : userPhone,
-      role : userRole
-    };
-
-    token = tokenAuth;
-
-    this.http.post<CreateStaffUserResponse>(url, user, this.httpOptions) 
-    .pipe(catchError(this.handleError<CreateStaffUserResponse>('Create staff user'))) 
-    .subscribe(data => {
-      if (data.message) { 
-        console.log(data.message);
-        this.log(data.message);
-      } else {
-        this.log(`Creation of user failed.`);
-      }
-    });
-
-  }
-
-  public sendAccountDeleteRequest() {
-    const url = `${this.theServerURL}/Delete-PatientAccountDeletionRequest`;
-
-    this.http.delete<{ message: string }>(url, this.httpOptions)
-    .subscribe({
-      next: (response) => {
-        this.log(`${response.message}`);
-      },
-      error: (err) => {
-        catchError(this.handleError('Send patient account deletion email'))
-      }
-    }
-
-    );
-  }
-
-  
-
-  private decodeTokenandRedirect(token: string) {
+  public decodeTokenandRedirect(token: string) {
     const url = `${this.theServerURL}/decode-token?token=${encodeURIComponent(token)}`;
-  
+
     this.http.get<DecodeResponse>(url, this.httpOptions)
       .pipe(catchError(this.handleError<DecodeResponse>('Role identification')))
       .subscribe(data => {
         if (data && data.roles && data.roles.length > 0) {
           const roles = data.roles;
 
-          const userInfo : UserInfo ={
-            email : data.email,
-            roles : data.roles,
-            token : token
+          const userInfo: UserInfo = {
+            email: data.email,
+            roles: data.roles,
+            token: token
           }
 
           localStorage.setItem('user', JSON.stringify(userInfo));
@@ -139,18 +99,55 @@ export class UserService {
             this.router.navigate(['/patient']);
           }
 
-          } else {
+        } else {
           this.log('No roles found to be associated with the user.');
         }
       });
   }
-  
+
+
+  public createStaffUser(userEmail: string, userPassword: string, userPhone: string, userRole: string, tokenAuth: string) {
+    const url = `${this.theServerURL}/create-staff`;
+    let user: UserStaff = {
+      email: userEmail,
+      password: userPassword,
+      phone: userPhone,
+      role: userRole
+    };
+    token = tokenAuth;
+    this.http.post<CreateStaffUserResponse>(url, user, this.httpOptions)
+      .pipe(catchError(this.handleError<CreateStaffUserResponse>('Create staff user')))
+      .subscribe(data => {
+        if (data.message) {
+          console.log(data.message);
+          this.log(data.message);
+        } else {
+          this.log(`Creation of user failed.`);
+        }
+      });
+  }
+
+  public sendAccountDeleteRequest() {
+    const url = `${this.theServerURL}/Delete-PatientAccountDeletionRequest`;
+
+    this.http.delete<{ message: string }>(url, this.httpOptions)
+      .subscribe({
+        next: (response) => {
+          this.log(`${response.message}`);
+        },
+        error: (err) => {
+          catchError(this.handleError('Send patient account deletion email'))
+        }
+      }
+
+      );
+  }
 
   //------------------------/------------------------/------------------------
   private handleError<T>(operation = 'operation', result?: T) {
     return (error: any): Observable<T> => {
       console.error(`${operation} failed: ${error.message}`);
-  
+
       // Customize error handling based on status
       if (error.status === 440) {
         this.log("Error: Login session expired.");
@@ -163,11 +160,11 @@ export class UserService {
       } else {
         this.log(`${operation} failed: an unexpected error occurred.`);
       }
-  
+
       return of(result as T);
     };
   }
-  
+
 
   private log(message: string, p0?: { data: UserLogin; }) {
     this.messageService.add(`${message}`);

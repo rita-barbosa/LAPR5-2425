@@ -52,4 +52,7 @@ export class LoginComponent {
     });
   }
 
+  loginWithGoogle(): void{
+      this.service.loginExternal();
+  }
 }
