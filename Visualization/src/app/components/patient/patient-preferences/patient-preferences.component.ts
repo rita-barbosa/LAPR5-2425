@@ -16,7 +16,6 @@ export class PatientPreferences {
   constructor(private service: UserService) { }
 
   confirmDelete() {
-    this.service.sendAccountDeleteRequest();  
+    this.service.sendAccountDeleteRequest();
   }
-
 }
