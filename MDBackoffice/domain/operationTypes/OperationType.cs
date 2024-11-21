@@ -5,7 +5,6 @@ using MDBackoffice.Domain.OperationTypes.ValueObjects.Phase;
 using MDBackoffice.Domain.OperationTypes.ValueObjects.RequiredStaff;
 using MDBackoffice.Domain.OperationTypesRecords;
 using MDBackoffice.Domain.Shared;
-using MimeKit.Cryptography;
 
 namespace MDBackoffice.Domain.OperationTypes
 {
@@ -71,38 +70,25 @@ namespace MDBackoffice.Domain.OperationTypes
 
         public void ChangeStatus(bool status)
         {
-            var newStatus = new OperationTypeStatus(status);
-            this.Status = newStatus;
+            this.Status = new OperationTypeStatus(status);
         }
 
         public void Inactive()
         {
             this.Status = new OperationTypeStatus(false);
         }
-        
-        public void RemoveRequiredStaff(){
-            this.RequiredStaff.Clear();
-        }
-
         public void ChangeRequiredStaff(List<RequiredStaffDto> newStaff)
         {
             if (!this.Status.Active)
                 throw new BusinessRuleValidationException("It is not possible to change the required staff for an inactive Operation Type.");
 
+            // Clear the current collection
+            this.RequiredStaff.Clear();
+
+            // Add new staff with the correct OperationTypeId
             foreach (RequiredStaffDto staffDto in newStaff)
             {
-                var existingStaff = this.RequiredStaff.Find(rs => rs.SpecializationId.Value == staffDto.Specialization);
-
-                if (existingStaff != null)
-                {
-                    existingStaff.ChangeStaffQuantity(staffDto.StaffQuantity);
-                    existingStaff.ChangeFunction(staffDto.Function);
-                    existingStaff.ChangeSpecialization(staffDto.Specialization);
-                }
-                else
-                {
-                    this.RequiredStaff.Add(new RequiredStaff(staffDto.StaffQuantity, staffDto.Function, staffDto.Specialization));
-                }
+                this.RequiredStaff.Add(new RequiredStaff(staffDto.StaffQuantity, staffDto.Function, staffDto.Specialization));
             }
         }
         public void ChangePhases(List<PhaseDto> newPhases)
@@ -115,14 +101,11 @@ namespace MDBackoffice.Domain.OperationTypes
                 throw new BusinessRuleValidationException("An operation type must have " + NUMBER_OF_OPERATION_PHASES + " phases.");
             }
 
-            this.Phases.Clear();
+            Phases = new List<Phase>();
 
             foreach (PhaseDto phaseDto in newPhases)
             {
-                // Create a new Phase and explicitly set the OperationTypeId
-                var newPhase = new Phase(phaseDto.Description, phaseDto.Duration);
-                newPhase.OperationTypeId = this.Id;  // Explicitly link the Phase to the OperationType
-                this.Phases.Add(newPhase);
+                this.Phases.Add(new Phase(phaseDto.Description, phaseDto.Duration));
             }
         }
 

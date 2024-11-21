@@ -198,48 +198,33 @@ namespace MDBackoffice.Domain.OperationTypes
 
         public async Task EditOperationType(EditOpTypeDto editOpTypeDto)
         {
-            var operationType = await _repo.GetByIdWithStaffAsync(new OperationTypeId(editOpTypeDto.Id));
+            var operationType = await _repo.GetByIdAsync(new OperationTypeId(editOpTypeDto.Id));
             if (operationType == null)
             {
                 throw new BusinessRuleValidationException("No operation type found with this Id.");
             }
 
-            if (editOpTypeDto.Status != null)
-            {
-                operationType.ChangeStatus(editOpTypeDto.Status);
-            }       
-
-            var result = await this._unitOfWork.CommitAsync();     
-
             if (editOpTypeDto.EstimatedDuration != null)
             {
                 operationType.ChangeEstimatedDuration(editOpTypeDto.EstimatedDuration);
             }
-
-            result = await this._unitOfWork.CommitAsync();
             
             if (editOpTypeDto.Name != null)
             {
                 operationType.ChangeName(editOpTypeDto.Name);
             }
 
-            result = await this._unitOfWork.CommitAsync();
-
-            if (!editOpTypeDto.Phases.IsNullOrEmpty())
+            if (editOpTypeDto.Phases != null)
             {
                 operationType.ChangePhases(editOpTypeDto.Phases);
             }
 
-            result = await this._unitOfWork.CommitAsync();
-
-            if (!editOpTypeDto.RequiredStaff.IsNullOrEmpty())
+            if (editOpTypeDto.RequiredStaff != null)
             {
-                operationType.RemoveRequiredStaff();
-                result = await this._unitOfWork.CommitAsync();
                 operationType.ChangeRequiredStaff(editOpTypeDto.RequiredStaff);
             }
 
-            result = await this._unitOfWork.CommitAsync();
+            var result = await this._unitOfWork.CommitAsync();
 
             await _logService.CreateEditLog(operationType.Id.Value, operationType.GetType().Name, "Operation type edited: " + operationType.Name.OperationName);
 
