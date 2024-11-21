@@ -5,6 +5,7 @@ using MDBackoffice.Domain.OperationTypes.ValueObjects.Phase;
 using MDBackoffice.Domain.OperationTypes.ValueObjects.RequiredStaff;
 using MDBackoffice.Domain.OperationTypesRecords;
 using MDBackoffice.Domain.Shared;
+using MDBackoffice.Domain.Users;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using System;
@@ -23,6 +24,7 @@ namespace MDBackofficeTests.integrationtests.operationtype
         private readonly Mock<IOperationTypeRepository> _repoMock = new Mock<IOperationTypeRepository>();
         private readonly Mock<OperationTypeRecordService> _opRecordService;
         private readonly OperationTypeService _service;
+        private readonly Mock<UserService> _userService;
         public CreateOperationTypeIntegrationTests()
         {
             _opRecordService = new Mock<OperationTypeRecordService>(_unitOfWorkMock.Object, _logServiceMock.Object, new Mock<IOperationTypeRecordRepository>().Object);
@@ -34,7 +36,7 @@ namespace MDBackofficeTests.integrationtests.operationtype
         public async Task Create_ReturnsOperationTypeDto_ControllerServiceIntegrationTest()
         {
 
-            var _controller = new OperationTypesController(_service);
+            var _controller = new OperationTypesController(_service, _userService.Object);
             //Arrange
             var operationTypeId = "test type 1";
             var phasesDto = new List<PhaseDto>

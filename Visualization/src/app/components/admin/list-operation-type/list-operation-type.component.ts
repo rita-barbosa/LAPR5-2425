@@ -1,33 +1,60 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { SideBarAdminComponent } from "../sidebar-admin/side-bar-admin.component";
 import { CommonModule } from '@angular/common';
 import { TableModule } from 'primeng/table';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, NgForm } from '@angular/forms';
 import { MessageComponent } from '../../message/message.component';
 import { ListOperationType } from '../../../domain/list-operation-type';
 import { OperationType } from '../../../domain/OperationType';
 import { OperationTypeService } from '../../../services/operation-type.service';
-import { OperationTypeEdit } from '../../../domain/OperationTypeEdit';
+import { catchError, of, switchMap } from 'rxjs';
 
 @Component({
   selector: 'app-list-operation-type',
   standalone: true,
   imports: [SideBarAdminComponent, CommonModule, TableModule, FormsModule, MessageComponent],
   templateUrl: './list-operation-type.component.html',
-  styleUrl: './list-operation-type.component.css'
+  styleUrls: ['./list-operation-type.component.css']
 })
 export class ListOperationTypeComponent implements OnInit {
-  operationTypes : ListOperationType[] = [];
+  @ViewChild('newOperationTypeForm') newOperationTypeForm!: NgForm;
+  operationTypes: ListOperationType[] = [];
   selectedOperationType!: ListOperationType;
   fullOperationType!: OperationType;
   detailsVisible: boolean = false;
   editDetails: boolean = false;
+  isSubmitted: boolean = false;
+
+  getId: string = '';
+
+  newOperationType: OperationType = {
+    name: '',
+    status: true,
+    estimatedDuration: 0,
+    requiredStaff: [],
+    phases: [
+      { description: 'Anesthesia/Patient Preparation', duration: 0 },
+      { description: 'Surgery', duration: 0 },
+      { description: 'Cleaning', duration: 0 }
+    ]
+  };
 
   filters = {
     name: '',
     specialization: '',
     status: ''
   };
+
+  operationType: OperationType = {
+    name: '',
+    estimatedDuration: 0,
+    status: false,
+    requiredStaff: [],
+    phases: []
+  };
+
+  functions: string[] = ['Surgeon', 'Nurse', 'Technician']; // Example functions
+  specializations: string[] = ['Cardiology', 'Orthopedics', 'General Surgery']; // Example specializations
 
   constructor(private service: OperationTypeService) {}
 
@@ -36,7 +63,6 @@ export class ListOperationTypeComponent implements OnInit {
   }
 
   fetchOperations(): void {
-    // Construir a lista de filtros
     const queryFilters = [
       {
         name: this.filters.name || '',
@@ -44,11 +70,9 @@ export class ListOperationTypeComponent implements OnInit {
         status: this.filters.status || ''
       }
     ];
-  
-    // Fazer a requisição para o endpoint do backend
+
     this.service.getOperationTypesByFilters({ queryFilters }).subscribe({
       next: data => {
-        console.log('Fetched Operations:', data); // Log para validar a resposta
         this.operationTypes = data;
       },
       error: err => {
@@ -63,23 +87,50 @@ export class ListOperationTypeComponent implements OnInit {
   }
 
   toggleDetails(operationType: ListOperationType): void {
-    this.service.getOperationTypeById(operationType.name).subscribe({
+    this.service.getOperationTypeByName(operationType.name).subscribe({
       next: (fullRequest: OperationType) => {
         this.fullOperationType = fullRequest;
-        this.detailsVisible = true; // Show the details section after fetching the data
+        this.detailsVisible = true;
       },
-      error: (error) => {
+      error: error => {
         console.error('Error fetching operation type details:', error);
       }
     });
   }
+
   closeDetails(): void {
     this.detailsVisible = false;
   }
 
-  editOperationType(operationTypeEdit: OperationTypeEdit): void {
-    operationTypeEdit.id = this.selectedOperationType.name;
-  }
+  editOperationType(form: NgForm): void {
+    if (form.valid && this.selectedOperationType) {
+      this.isSubmitted = true; // Mark form as submitted initially
+      console.log(this.newOperationType);
+      this.service
+        .getOperationTypeByName(this.selectedOperationType.name)
+        .pipe(
+          switchMap((data) => {
+            if (data?.id) {
+              return this.service.editOperationType(data.id, this.newOperationType);
+            } else {
+              throw new Error('Operation type not found'); // Handle case where no data is returned
+            }
+          }),
+          catchError((err) => {
+            console.error('Error during operation type edit process:', err);
+            this.isSubmitted = false;
+            return of(null); // Allow graceful fallback on error
+          })
+        )
+        .subscribe((result) => {
+          if (result) {
+            this.isSubmitted = false;
+            this.editDetails = false; // Close edit details
+            this.fetchOperations(); // Refresh the list
+          }
+        });
+    }
+  }  
 
   toggleEdition(operationType: ListOperationType): void {
     this.editDetails = true;
@@ -90,7 +141,46 @@ export class ListOperationTypeComponent implements OnInit {
   }
 
   deleteOperationType(operationType: ListOperationType): void {
-    // Implement delete logic
+    //To Implement
   }
 
+  addStaff(): void {
+    this.newOperationType.requiredStaff.push({ function: '', specialization: '', staffQuantity: 1 });
+  }
+
+  removeStaff(index: number): void {
+    this.newOperationType.requiredStaff.splice(index, 1);
+  }
+
+  calculateTotalDuration(): number {
+    var value = this.newOperationType.phases.reduce((total, phase) => total + phase.duration, 0);
+    this.newOperationType.estimatedDuration = value;
+    return value;
+  }
+
+  clearForm(): void {
+
+    this.isSubmitted = false;
+
+    if (this.newOperationTypeForm) {
+      this.newOperationTypeForm.resetForm();
+    }
+
+    this.newOperationType = {
+      name: '',
+      status: true,
+      estimatedDuration: 0,
+      requiredStaff: [],
+      phases: [
+        { description: 'Anesthesia/Patient Preparation', duration: 0 },
+        { description: 'Surgery', duration: 0 },
+        { description: 'Cleaning', duration: 0 }
+      ]
+    };
+
+    const inputs = document.querySelectorAll('.input-field input');
+    inputs.forEach(input => {
+      input.classList.remove('invalid-placeholder');
+    });
+  }
 }

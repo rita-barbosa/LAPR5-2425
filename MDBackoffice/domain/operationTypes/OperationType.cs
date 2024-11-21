@@ -5,6 +5,7 @@ using MDBackoffice.Domain.OperationTypes.ValueObjects.Phase;
 using MDBackoffice.Domain.OperationTypes.ValueObjects.RequiredStaff;
 using MDBackoffice.Domain.OperationTypesRecords;
 using MDBackoffice.Domain.Shared;
+using MimeKit.Cryptography;
 
 namespace MDBackoffice.Domain.OperationTypes
 {
@@ -70,13 +71,19 @@ namespace MDBackoffice.Domain.OperationTypes
 
         public void ChangeStatus(bool status)
         {
-            this.Status = new OperationTypeStatus(status);
+            var newStatus = new OperationTypeStatus(status);
+            this.Status = newStatus;
         }
 
         public void Inactive()
         {
             this.Status = new OperationTypeStatus(false);
         }
+        
+        public void RemoveRequiredStaff(){
+            this.RequiredStaff.Clear();
+        }
+
         public void ChangeRequiredStaff(List<RequiredStaffDto> newStaff)
         {
             if (!this.Status.Active)
@@ -108,11 +115,14 @@ namespace MDBackoffice.Domain.OperationTypes
                 throw new BusinessRuleValidationException("An operation type must have " + NUMBER_OF_OPERATION_PHASES + " phases.");
             }
 
-            Phases = new List<Phase>();
+            this.Phases.Clear();
 
             foreach (PhaseDto phaseDto in newPhases)
             {
-                this.Phases.Add(new Phase(phaseDto.Description, phaseDto.Duration));
+                // Create a new Phase and explicitly set the OperationTypeId
+                var newPhase = new Phase(phaseDto.Description, phaseDto.Duration);
+                newPhase.OperationTypeId = this.Id;  // Explicitly link the Phase to the OperationType
+                this.Phases.Add(newPhase);
             }
         }
 

@@ -8,6 +8,7 @@ using Moq;
 using Xunit;
 using MDBackoffice.Controllers;
 using Microsoft.AspNetCore.Mvc;
+using MDBackoffice.Domain.Users;
 
 namespace MDBackofficeTests.controllertests
 {
@@ -18,6 +19,7 @@ namespace MDBackofficeTests.controllertests
         private readonly Mock<IOperationTypeRepository> _repoMock = new Mock<IOperationTypeRepository>();
         private readonly Mock<OperationTypeRecordService> _opRecordService;
         private readonly Mock<OperationTypeService> _service;
+        private readonly Mock<UserService> _userService;
         private readonly OperationTypesController _controller;
 
         public OperationTypeControllerTests()
@@ -26,7 +28,7 @@ namespace MDBackofficeTests.controllertests
 
             _service = new Mock<OperationTypeService>(_unitOfWorkMock.Object, _repoMock.Object, _logServiceMock.Object, _opRecordService.Object);
 
-            _controller = new OperationTypesController(_service.Object);
+            _controller = new OperationTypesController(_service.Object, _userService.Object);
         }
 
         [Fact]
@@ -191,7 +193,14 @@ namespace MDBackofficeTests.controllertests
              operationType.Object.Name.OperationName, operationType.Object.EstimatedDuration.TotalDurationMinutes,
               operationType.Object.Status.Active, reqStaffDto, phasesDto);
 
-            var editDto = new EditOpTypeDto(operationType.Object.Id.Value, "NEW NAME", 300);
+            var editDto = new EditOpTypeDto
+            {
+                Id = operationType.Object.Id.Value.ToString(),
+                Name = "NEW NAME",
+                EstimatedDuration = 300,
+                Status = true
+            };
+
 
             _repoMock.Setup(r => r.GetByIdAsync(operationType.Object.Id)).ReturnsAsync(operationType.Object);
             _opRecordService.Setup(r =>r.AddAsync(operationType.Object)).ReturnsAsync(recordDto);

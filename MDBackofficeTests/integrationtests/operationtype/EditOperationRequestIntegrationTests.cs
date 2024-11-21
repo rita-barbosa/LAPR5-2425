@@ -8,6 +8,7 @@ using MDBackoffice.Domain.Shared;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using Xunit;
+using MDBackoffice.Domain.Users;
 
 namespace MDBackofficeTests.integrationtests.operationtype
 {
@@ -18,6 +19,7 @@ namespace MDBackofficeTests.integrationtests.operationtype
         private readonly Mock<IOperationTypeRepository> _repoMock = new Mock<IOperationTypeRepository>();
         private readonly Mock<OperationTypeRecordService> _opRecordService;
         private readonly OperationTypeService _service;
+        private readonly Mock<UserService> _userService;
       
 
         public EditOperationRequestIntegrationTests()
@@ -66,7 +68,13 @@ namespace MDBackofficeTests.integrationtests.operationtype
              operationType.Name.OperationName, operationType.EstimatedDuration.TotalDurationMinutes,
               operationType.Status.Active, reqStaffDto, phasesDto);
 
-            var editDto = new EditOpTypeDto(operationType.Id.Value, "NEW NAME", 300);
+            var editDto = new EditOpTypeDto
+            {
+                Id = operationType.Id.Value.ToString(),
+                Name = "NEW NAME",
+                EstimatedDuration = 300,
+                Status = true
+            };
 
             _repoMock.Setup(r => r.GetByIdAsync(operationType.Id)).ReturnsAsync(operationType);
             _opRecordService.Setup(r =>r.AddAsync(operationType)).ReturnsAsync(recordDto);
@@ -85,7 +93,7 @@ namespace MDBackofficeTests.integrationtests.operationtype
         public async Task EditOperationType_ReturnsOkResult_IntegrationControllerService()
         {
             // Arrange
-            var _controller = new OperationTypesController(_service);
+            var _controller = new OperationTypesController(_service, _userService.Object);
 
              var phasesDto = new List<PhaseDto>
             {
@@ -120,7 +128,13 @@ namespace MDBackofficeTests.integrationtests.operationtype
              operationType.Object.Name.OperationName, operationType.Object.EstimatedDuration.TotalDurationMinutes,
               operationType.Object.Status.Active, reqStaffDto, phasesDto);
 
-            var editDto = new EditOpTypeDto(operationType.Object.Id.Value, "NEW NAME", 300);
+            var editDto = new EditOpTypeDto
+            {
+                Id = operationType.Object.Id.Value.ToString(),
+                Name = "NEW NAME",
+                EstimatedDuration = 300,
+                Status = true
+            };
 
             _repoMock.Setup(r => r.GetByIdAsync(operationType.Object.Id)).ReturnsAsync(operationType.Object);
             _opRecordService.Setup(r =>r.AddAsync(operationType.Object)).ReturnsAsync(recordDto);

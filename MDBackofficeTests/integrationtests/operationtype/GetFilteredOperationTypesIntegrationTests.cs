@@ -13,6 +13,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Xunit;
+using MDBackoffice.Domain.Users;
 
 namespace MDBackofficeTests.integrationtests.operationtype
 {
@@ -23,7 +24,7 @@ namespace MDBackofficeTests.integrationtests.operationtype
         private readonly Mock<IOperationTypeRepository> _repoMock = new Mock<IOperationTypeRepository>();
         private readonly Mock<OperationTypeRecordService> _opRecordService;
         private readonly OperationTypeService _service;
-      
+        private readonly Mock<UserService> _userService;
 
         public GetFilteredOperationTypesIntegrationTests()
         {
@@ -38,7 +39,7 @@ namespace MDBackofficeTests.integrationtests.operationtype
         public async Task GetFilteredOperationTypes_ReturnsOkOperationTypeDtos_IntegrationControllerService()
         {
             // Arrange
-            var _controller = new OperationTypesController(_service);
+            var _controller = new OperationTypesController(_service, _userService.Object);
 
             var queryParameters = new OperationTypeQueryParametersDto
             {

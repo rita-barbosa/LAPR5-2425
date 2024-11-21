@@ -8,6 +8,7 @@ using MDBackoffice.Domain.Shared;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using Xunit;
+using MDBackoffice.Domain.Users;
 
 namespace MDBackofficeTests.integrationtests.operationtype
 {
@@ -17,6 +18,7 @@ namespace MDBackofficeTests.integrationtests.operationtype
         private readonly Mock<LogService> _logServiceMock = new(new Mock<IUnitOfWork>().Object, new Mock<ILogRepository>().Object);
         private readonly Mock<IOperationTypeRepository> _repoMock = new Mock<IOperationTypeRepository>();
         private readonly Mock<OperationTypeRecordService> _opRecordService;
+        private readonly Mock<UserService> _userService;
         private readonly OperationTypeService _service;
       
 
@@ -30,7 +32,7 @@ namespace MDBackofficeTests.integrationtests.operationtype
         [Fact]
         public async Task RemoveOperationType_ValidId_ReturnsOkResult_IntegrationControllerService()
         {
-            var _controller = new OperationTypesController(_service);
+            var _controller = new OperationTypesController(_service, _userService.Object);
 
             // Arrange
             var operationTypeId = "test type 1";

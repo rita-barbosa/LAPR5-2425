@@ -12,6 +12,7 @@ namespace MDBackoffice.Domain.Shared
         public static Function Intern { get; } = new Function("intern");
         [NotMapped]
         public static Function Doctor { get; } = new Function("doctor");
+        
         [NotMapped]
         public static Function Nurse { get; } = new Function("nurse");
         [NotMapped]
@@ -19,6 +20,7 @@ namespace MDBackoffice.Domain.Shared
 
         private static readonly Dictionary<string, Function> _functions = new Dictionary<string, Function>(StringComparer.OrdinalIgnoreCase)
         {
+            { "surgeon", Doctor },
             { Intern.Description, Intern },
             { Doctor.Description, Doctor },
             { Nurse.Description, Nurse },
