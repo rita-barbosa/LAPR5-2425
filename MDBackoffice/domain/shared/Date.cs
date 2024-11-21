@@ -28,7 +28,7 @@ namespace MDBackoffice.Domain.Shared
 
         public override string ToString()
         {
-            return Start == End ? $"{Start:yyyy-MM-dd}" : $"{Start:yyyy-MM-dd}/{End:yyyy-MM-dd}";
+            return Start.Equals(End) ?  $"{Start:yyyy-MM-dd}/{End:yyyy-MM-dd}" : $"{Start:yyyy-MM-dd}";
         }
 
 
