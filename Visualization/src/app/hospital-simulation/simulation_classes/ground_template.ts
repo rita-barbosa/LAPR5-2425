@@ -18,11 +18,12 @@ export default class Ground {
     const geometry = new THREE.PlaneGeometry(size.width, size.height);
 
     // Create the material with the texture
-    const material = new THREE.MeshPhongMaterial({ color: 0xffffff, map: texture });
+    const material = new THREE.MeshPhongMaterial({ color: 0x90adbf, map: texture, side: THREE.DoubleSide });
 
     // Create the mesh
     this.object = new THREE.Mesh(geometry, material);
     this.object.rotation.x = -Math.PI / 2.0;
+    this.object.position.y = 0;
 
     // Configure shadows
     this.object.castShadow = false;
