@@ -31,6 +31,8 @@ import { PatientPreferences } from './components/patient/patient-preferences/pat
 import { PatientAccountDeletionConfirm } from './components/patient/confirm-patient-account-deletion/confirm-patient-account-deletion.component';
 import { LoginCallbackComponent } from './components/login-callback/login-callback.component';
 import { AddOperationRequestPatientComponent } from './components/staff/doctor/add-operation-request-patient/add-operation-request-patient.component';
+import { OperationRequestScheduler } from './components/admin/operation-request-scheduler/operation-request-scheduler.component';
+
 
 export const routes: Routes = [
   { path: '', component: MenuComponent, pathMatch: 'full' },
@@ -64,6 +66,7 @@ export const routes: Routes = [
   { path: 'create-staff-user', component: CreateStaffUserComponent },
   { path: 'patient-preferences', component: PatientPreferences },
   { path: 'confirm-patient-account-deletion', component: PatientAccountDeletionConfirm },
+  { path: 'operation-request-scheduler', component: OperationRequestScheduler },
   { path: '**', redirectTo: '' }
 ];
 

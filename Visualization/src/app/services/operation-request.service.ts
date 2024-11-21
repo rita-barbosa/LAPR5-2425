@@ -6,6 +6,7 @@ import { OperationType } from '../domain/OperationType';
 import { OperationRequest } from '../domain/OperationRequest';
 import { ListOperationRequest } from '../domain/list-operation-request';
 import { AddOrRemoveFromPatient } from '../domain/add-or-remove-from-patient';
+import { StaffWithFunction } from '../domain/staff-with-function';
 
 interface UpdateOperationRequest {
   id: string,
@@ -149,6 +150,35 @@ export class OperationRequestService {
         this.log(`Operation request successfully add to patient history.`);
       });
   }
+
+  
+getAllOperationRequests() : Observable<OperationRequest[]> {
+  const url = `${this.theServerURL}/OperationRequest/Get-AllOpRequests`;
+
+  return this.http.get<OperationRequest[]>(url)
+    .pipe(
+      catchError((error) => {
+        this.handleError<OperationRequest[]>('Get all operation requests', error);
+        return [];
+    })
+  );
+}
+
+scheduleOperationRequest(selectedStaff: StaffWithFunction[], selectedRoomId: string, operationRequestId: string, algorithm: string) {
+  const url = `${this.theServerURL}/OperationRequest/Schedule`;
+
+  const params = new HttpParams()
+    .set('selectedStaff', JSON.stringify(selectedStaff))
+    .set('selectedRoomId', selectedRoomId)
+    .set('operationRequestId', operationRequestId)
+    .set('algorithm', algorithm);
+
+  this.http
+    .post(url, { params, ...this.httpOptions })
+    .pipe(catchError(this.handleError('Scheduling Operation Request')))
+    .subscribe();
+}
+
 
 
 

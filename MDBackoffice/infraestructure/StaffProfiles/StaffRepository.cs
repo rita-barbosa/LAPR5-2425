@@ -116,7 +116,7 @@ namespace MDBackoffice.Infrastructure.StaffProfiles
         public async Task<List<Staff>> GetAllActiveAsync()
         {
             return await _context.StaffProfiles
-                .Where(staff => staff.Status != null && staff.Status.ToString() == "1")
+                .Where(staff => staff.Status == true)
                 .ToListAsync();
         }
 

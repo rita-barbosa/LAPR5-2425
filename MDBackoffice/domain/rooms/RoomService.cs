@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using MDBackoffice.Domain.Shared;
 
@@ -57,5 +59,19 @@ namespace MDBackoffice.Domain.Rooms
             );
         }
 
+        public async Task<List<RoomDto>> GetAllAsync()
+        {
+            var list = await _repo.GetAllRoomsAsync();
+
+             List<RoomDto> listDto = list.ConvertAll(room =>
+                new RoomDto
+                (room.Id.AsString(), room.Type.RoomTypeName, room.Capacity.CapcityNumber, 
+                room.AvailableEquipment.Select(equipment => equipment.EquipmentName).ToList(), room.CurrentStatus.Description,
+                    room.MaintenanceSlots.Select(slot => new SlotsDto(slot.Date.Start.ToString(), slot.Date.End.ToString(),
+                    slot.TimeInterval.Start.ToString(),  slot.TimeInterval.End.ToString())).ToList()
+                ));
+
+            return listDto;
+        }
     }
 }

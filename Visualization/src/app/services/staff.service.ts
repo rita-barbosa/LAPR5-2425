@@ -8,13 +8,12 @@ import { Staff } from '../domain/staff';
 import { StaffQueryParameters } from '../domain/staff-query-parameters';
 import { IdPasser } from '../domain/IdPasser';
 import { EditStaffProfile } from '../domain/edit-staff';
-import { JwtHelperService } from '@auth0/angular-jwt';
+import { StaffWithFunction } from '../domain/staff-with-function';
 
 @Injectable({
   providedIn: 'root'
 })
 export class StaffService {
-
   theServerURL = 'https://localhost:5001/api';
   token = localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')!).token : null;
   httpOptions = {
@@ -138,16 +137,28 @@ export class StaffService {
   }
   
 
-getStaffById(id: string): Observable<StaffWithId> {
-  const url = `${this.theServerURL}/Staff/${id}`;
+  getStaffById(id: string): Observable<StaffWithId> {
+    const url = `${this.theServerURL}/Staff/${id}`;
 
-  return this.http.get<StaffWithId>(url).pipe(
-      catchError((error) => {
-          this.handleError<StaffWithId>('Get staff profile', error);
-          return of({} as StaffWithId);
-      })
-  );
-}
+    return this.http.get<StaffWithId>(url).pipe(
+        catchError((error) => {
+            this.handleError<StaffWithId>('Get staff profile', error);
+            return of({} as StaffWithId);
+        })
+    );
+  }
+
+  getAllActiveStaffProfiles() : Observable<StaffWithFunction[]> {
+    const url = `${this.theServerURL}/Staff/Get-ActiveStaffProfiles`;
+
+    return this.http.get<StaffWithFunction[]>(url).pipe(
+        catchError((error) => {
+            this.handleError<StaffWithFunction[]>('Get staff profile', error);
+            return [];
+        })
+    );
+  }
+
 
   //------------------------/------------------------/------------------------
   private handleError<T>(operation = 'operation', result?: T) {

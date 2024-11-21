@@ -73,7 +73,7 @@ namespace MDBackoffice.Controllers
 
         [HttpGet]
         [Route("Get-ActiveStaffProfiles")]
-        public async Task<ActionResult<IEnumerable<StaffDto>>> GetActiveStaffProfiles()
+        public async Task<ActionResult<IEnumerable<StaffWithFunctionDto>>> GetActiveStaffProfiles()
         {
             return await _service.GetAllActiveAsync();
         }

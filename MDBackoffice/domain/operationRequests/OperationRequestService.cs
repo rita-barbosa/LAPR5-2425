@@ -39,9 +39,9 @@ namespace MDBackoffice.Domain.OperationRequests
 
         public async Task<List<OperationRequestDto>> GetAllAsysnc()
         {
-            var list = await this._repo.GetAllAsync();
+            var list = await _repo.GetAllAsync();
 
-            List<OperationRequestDto> listDto = list.ConvertAll<OperationRequestDto>(opRequest =>
+            List<OperationRequestDto> listDto = list.ConvertAll(opRequest =>
                 new OperationRequestDto(opRequest.Id.AsGuid(), opRequest.DeadLineDate.ToString(), opRequest.Priority.ToString(),
                  opRequest.DateOfRequest.ToString(), opRequest.Status.ToString(), opRequest.StaffId.AsString(), opRequest.Description.DescriptionText, opRequest.PatientId.AsString(), opRequest.OperationTypeId.AsString()));
 

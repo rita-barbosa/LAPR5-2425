@@ -102,20 +102,20 @@ namespace MDBackoffice.Domain.StaffProfiles
 
         public virtual async Task<List<StaffDto>> GetAllAsync()
         {
-            var list = await this._repo.GetAllAsync();
+            var list = await _repo.GetAllAsync();
 
-            List<StaffDto> listDto = list.ConvertAll<StaffDto>(staff => new StaffDto(staff.Name.ToString(),
+            List<StaffDto> listDto = list.ConvertAll(staff => new StaffDto(staff.Name.ToString(),
                 staff.Phone.ToString(), staff.Email.ToString(), staff.Address.ToString(), staff.Id.AsString(), staff.SpecializationId.AsString()));
 
             return listDto;
         }
 
-        public async Task<List<StaffDto>> GetAllActiveAsync()
+        public async Task<List<StaffWithFunctionDto>> GetAllActiveAsync()
         {
-            var list = await this._repo.GetAllActiveAsync();
+            var list = await _repo.GetAllActiveAsync();
 
-            List<StaffDto> listDto = list.ConvertAll<StaffDto>(staff => new StaffDto(staff.Name.ToString(),
-                staff.Phone.ToString(), staff.Email.ToString(), staff.Address.ToString(), staff.Id.AsString(), staff.SpecializationId.AsString()));
+            List<StaffWithFunctionDto> listDto = list.ConvertAll(staff => new StaffWithFunctionDto(staff.Name.ToString(),
+                staff.Phone.ToString(), staff.Email.ToString(), staff.Address.ToString(), staff.Function.Description, staff.Id.AsString(), staff.SpecializationId.AsString()));
 
             return listDto;
         }

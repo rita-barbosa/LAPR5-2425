@@ -2,7 +2,6 @@ using System;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
 using MDBackoffice.Domain.Rooms;
 using MDBackoffice.Domain.Shared;
 
@@ -33,6 +32,12 @@ namespace MDBackoffice.Controllers
             {
                 return BadRequest(new { V = $"An unexpected error occurred: {ex.Message}" });
             }
+        }
+
+        [HttpGet]
+        [Route("Get-All")]
+        public async Task<List<RoomDto>> GetAll(){
+            return await _service.GetAllAsync();
         }
 
     }

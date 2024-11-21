@@ -3,7 +3,7 @@ import { MessageService } from './message.service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { catchError, Observable, of, tap } from 'rxjs';
 import { Router } from '@angular/router';
-import { JwtHelperService } from '@auth0/angular-jwt';
+import { UserInfo } from '../domain/user-info';
 
 interface UserLogin {
   email: string;
@@ -28,12 +28,6 @@ interface UserStaff {
 
 interface CreateStaffUserResponse {
   message: string;
-}
-
-interface UserInfo {
-  email: string;
-  roles: string[];
-  token: string;
 }
 
 var token: string;
@@ -119,7 +113,6 @@ export class UserService {
       .pipe(catchError(this.handleError<CreateStaffUserResponse>('Create staff user')))
       .subscribe(data => {
         if (data.message) {
-          console.log(data.message);
           this.log(data.message);
         } else {
           this.log(`Creation of user failed.`);

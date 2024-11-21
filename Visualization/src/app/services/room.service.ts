@@ -1,0 +1,60 @@
+import { Injectable } from '@angular/core';
+import { MessageService } from './message.service';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { catchError, Observable, of, tap } from 'rxjs';
+import { Router } from '@angular/router';
+import { Room } from '../domain/room';
+
+
+@Injectable({
+  providedIn: 'root'
+})
+
+export class RoomService {
+
+  theServerURL = 'https://localhost:5001/api';
+  httpOptions = {
+    headers: new HttpHeaders({'Content-Type': 'application/json'})
+  };
+  
+  constructor(private messageService: MessageService, private http: HttpClient, private router : Router) { }
+
+
+  getAllRooms() : Observable<Room[]>{
+    const url = `${this.theServerURL}/Room/Get-All`;
+
+    return this.http.get<Room[]>(url).pipe(
+        catchError((error) => {
+            this.handleError<Room[]>('Get rooms', error);
+            return [];
+        })
+    );
+  }
+
+  //------------------------/------------------------/------------------------
+  private handleError<T>(operation = 'operation', result?: T) {
+    return (error: any): Observable<T> => {
+      console.error(`${operation} failed: ${error.message}`);
+  
+      // Customize error handling based on status
+      if (error.status === 440) {
+        this.log("Error: Login session expired.");
+      } else if (error.status === 401) {
+        this.log("Error: Authentication is required.");
+      } else if (error.status === 403) {
+        this.log("Error: Not allowed to access the feature.");
+      } else if (error.status === 400) {
+        this.log(`Bad request: ${error.error.message}`);
+      } else {
+        this.log(`${operation} failed: an unexpected error occurred.`);
+      }
+  
+      return of(result as T);
+    };
+  }
+  
+
+  private log(message: string) {
+    this.messageService.add(`${message}`);
+  }
+}
