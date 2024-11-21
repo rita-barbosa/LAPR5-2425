@@ -3,6 +3,7 @@
     "wallTextureUrl": "hospital_wall.png",
     "bedModel" : "hospital_bed.glb",
     "doorModelUrl": "door_glb.glb",
+    "doorTextureUrl": "door_texture.png",
     "patientModel" : "patient.glb",
     "size": { "width": 20, "height": 10 },
     "layout": [
