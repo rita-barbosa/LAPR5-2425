@@ -5,12 +5,13 @@ import { catchError, map, Observable, of } from 'rxjs';
 import { OperationType } from '../domain/OperationType';
 import { OperationRequest } from '../domain/OperationRequest';
 import { ListOperationRequest } from '../domain/list-operation-request';
+import { AddOrRemoveFromPatient } from '../domain/add-or-remove-from-patient';
 
 interface UpdateOperationRequest {
-  id : string,
-  priority : string,
-  description : string,
-  deadlineDate : string
+  id: string,
+  priority: string,
+  description: string,
+  deadlineDate: string
 }
 
 @Injectable({
@@ -70,7 +71,7 @@ export class OperationRequestService {
       );
   }
 
-  public updateOperationRequest(updatedInfo : UpdateOperationRequest) {
+  public updateOperationRequest(updatedInfo: UpdateOperationRequest) {
     const url = `${this.theServerURL}/OperationRequest/Update`;
 
     this.http.put<OperationRequest>(url, updatedInfo, this.httpOptions)
@@ -106,12 +107,12 @@ export class OperationRequestService {
     }
     const url = `${this.theServerURL}/OperationRequest/filtered`;
     return this.http.get<ListOperationRequest[]>(url, { headers: this.httpOptions.headers, params })
-    .pipe(
-      catchError((error) => {
-        catchError(this.handleError<OperationRequest>('Create Operation Request'));
-        return of([]);
-      })
-    );
+      .pipe(
+        catchError((error) => {
+          catchError(this.handleError<OperationRequest>('Create Operation Request'));
+          return of([]);
+        })
+      );
   }
 
   public createOperationRequest(deadLineDate: string, priority: string, dateOfRequest: string, status: string, staffId: string, description: string, patientId: string, operationTypeId: string) {
@@ -131,6 +132,21 @@ export class OperationRequestService {
       .pipe(catchError(this.handleError<OperationRequest>('Create Operation Request')))
       .subscribe(data => {
         this.log(`Operation Request: ${data.id} was successfully created.`);
+      });
+  }
+
+  public addOperationRequestToPatient(patientId: string, operationRequestId: string){
+    const url = `${this.theServerURL}/OperationRequest/Add-OperationRequestToPatient`;
+
+    let opReqHis: AddOrRemoveFromPatient = {
+      patientId: patientId,
+      operationRequestId: operationRequestId
+    }
+
+    this.http.post<AddOrRemoveFromPatient>(url, opReqHis, this.httpOptions)
+      .pipe(catchError(this.handleError<AddOrRemoveFromPatient>('Add Operation Request to Patient History')))
+      .subscribe(data => {
+        this.log(`Operation request successfully add to patient history.`);
       });
   }
 

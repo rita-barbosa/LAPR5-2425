@@ -30,6 +30,7 @@ import { VerifyProfileEditComponent } from './components/staff/verify-profile-ed
 import { PatientPreferences } from './components/patient/patient-preferences/patient-preferences.component';
 import { PatientAccountDeletionConfirm } from './components/patient/confirm-patient-account-deletion/confirm-patient-account-deletion.component';
 import { LoginCallbackComponent } from './components/login-callback/login-callback.component';
+import { AddOperationRequestPatientComponent } from './components/staff/doctor/add-operation-request-patient/add-operation-request-patient.component';
 
 export const routes: Routes = [
   { path: '', component: MenuComponent, pathMatch: 'full' },
@@ -50,6 +51,7 @@ export const routes: Routes = [
   { path: 'list-operation-request', component: ListOperationRequestComponent },
   { path: 'patient', component: PatientComponent },
   { path: 'update-patient-profile', component: UpdateProfileComponent },
+  { path: 'add-operation-request-patient', component: AddOperationRequestPatientComponent},
   { path: 'create-operation-request', component: CreateOperationRequestComponent },
   { path: 'list-operation-type', component: ListOperationTypeComponent },
   { path: 'cube', component: CubeComponent },
