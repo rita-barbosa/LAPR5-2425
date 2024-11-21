@@ -89,7 +89,6 @@ export class HospitalSimulationComponent implements AfterViewInit {
   private tooltipSprite !: THREE.Sprite;
 
   private ground!: THREE.Mesh;
-  private ground2!: THREE.Mesh;
   private wall = new THREE.Group();
   private patient = new THREE.Group();
   private surgical_bed = new THREE.Group();
@@ -341,6 +340,16 @@ export class HospitalSimulationComponent implements AfterViewInit {
     this.surgical_bed = await this.createModel(data.bedModel, this.bedScale);
     this.patient = await this.createModel(data.patientModel, this.patientScale);
     this.door = await this.createModel(data.doorModelUrl, this.doorScale);
+
+    const textureLoader = new THREE.TextureLoader();
+    this.door.traverse((child: any) => {
+      if (child.isMesh) {
+        const material = child.material as THREE.MeshStandardMaterial;
+        material.map = textureLoader.load(data.doorTextureUrl);
+        material.color.set(0xD7EBFA);
+        material.needsUpdate = true;
+      }
+    });
 
     // Build the maze
     for (let i = 0; i <= data.size.width; i++) {
