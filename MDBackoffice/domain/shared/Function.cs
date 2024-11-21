@@ -20,9 +20,8 @@ namespace MDBackoffice.Domain.Shared
 
         private static readonly Dictionary<string, Function> _functions = new Dictionary<string, Function>(StringComparer.OrdinalIgnoreCase)
         {
-            { "surgeon", Doctor },
-            { Intern.Description, Intern },
             { Doctor.Description, Doctor },
+            { Intern.Description, Intern },
             { Nurse.Description, Nurse },
             { Assistant.Description, Assistant }
         };

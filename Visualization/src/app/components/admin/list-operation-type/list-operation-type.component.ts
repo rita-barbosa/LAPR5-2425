@@ -53,8 +53,8 @@ export class ListOperationTypeComponent implements OnInit {
     phases: []
   };
 
-  functions: string[] = ['Surgeon', 'Nurse', 'Technician']; // Example functions
-  specializations: string[] = ['Cardiology', 'Orthopedics', 'General Surgery']; // Example specializations
+  functions: string[] = ['Doctor', 'Nurse', 'Technician']; // Example functions
+  specializations: string[] = ['Cardiology', 'Orthopaedics', 'General Surgery']; // Example specializations
 
   constructor(private service: OperationTypeService) { }
 
