@@ -200,7 +200,7 @@ namespace MDBackoffice.Domain.OperationTypes
 
         public async Task EditOperationType(EditOpTypeDto editOpTypeDto)
         {
-            var operationType = await _repo.GetByIdAsync(new OperationTypeId(editOpTypeDto.Id));
+            var operationType = await _repo.GetByIdWithStaffAsync(new OperationTypeId(editOpTypeDto.Id));
             if (operationType == null)
             {
                 throw new BusinessRuleValidationException("No operation type found with this Id.");

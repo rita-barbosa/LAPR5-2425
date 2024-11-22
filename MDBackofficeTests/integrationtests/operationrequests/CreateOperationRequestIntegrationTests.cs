@@ -74,7 +74,7 @@ namespace MDBackofficeTests.integrationtests.operationrequests
                                                     _repoStaMock.Object, _logServiceMock.Object, _patientServiceMock.Object,
                                                     _repoPatMock.Object, _repoOpTypeMock.Object, _userServiceMock.Object);
 
-            var _controller = new OperationRequestController(_service);
+            var _controller = new OperationRequestController(_service, _userServiceMock.Object);
             var staffId = "D202400001";
             var opTyId = "tumor removal";
             var patientId = "202410000001";

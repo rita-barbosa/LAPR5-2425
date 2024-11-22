@@ -75,14 +75,14 @@ namespace MDBackofficeTests.controllertests
                                                     _repoStaMock.Object, _logServiceMock.Object, _patientServiceMock.Object,
                                                     _repoPatMock.Object, _repoOpTypeMock.Object, _userServiceMock.Object);
 
-            _controller = new OperationRequestController(_service.Object);
+            _controller = new OperationRequestController(_service.Object, _userServiceMock.Object);
         }
 
         [Fact]
         public async Task Create_ReturnsCreatedResult()
         {
             // Arrange
-            var controller = new OperationRequestController(_service.Object);
+            var controller = new OperationRequestController(_service.Object, _userServiceMock.Object);
 
             var staffId = "D202400001";
             var opTyId = "tumor removal";
@@ -468,7 +468,7 @@ namespace MDBackofficeTests.controllertests
             _unitOfWorkMock.Setup(r => r.CommitAsync()).ReturnsAsync(1);
 
             // Act
-            var result = await _controller.DeleteOperationRequest(new IdPassDto(operationRequest.Object.Id.Value));
+            var result = await _controller.DeleteOperationRequest(operationRequest.Object.Id.Value);
 
             // Assert
             Assert.IsType<OkObjectResult>(result);

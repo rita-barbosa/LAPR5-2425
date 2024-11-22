@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Sockets;
 using MDBackoffice.Domain.OperationRequests;
 using MDBackoffice.Domain.Shared;
@@ -158,20 +159,22 @@ namespace MDBackoffice.Domain.Patients
             AppointmentList.Add(appointmentHistory);  
         }
 
-        public virtual void RemoveRequestFromHistory(OperationRequestId operationRequestId)
-        {    
-
-            if(this.AppointmentList.IsNullOrEmpty()){
+       public virtual void RemoveRequestFromHistory(OperationRequestId operationRequestId)
+        {
+            if (this.AppointmentList.IsNullOrEmpty())
+            {
                 return;
             }
 
-            foreach (AppointmentHistory appointmentHistory in this.AppointmentList)
+            var toRemove = this.AppointmentList
+                .Where(appointment => appointment.ObjectId.Equals(operationRequestId.Value))
+                .ToList(); // Materialize the list to prevent modification during iteration
+
+            foreach (var appointment in toRemove)
             {
-                if(appointmentHistory.Id.Equals(operationRequestId.Value.ToString()))
-                {
-                    this.AppointmentList.Remove(appointmentHistory);
-                }
+                this.AppointmentList.Remove(appointment);
             }
         }
+
     }
 }

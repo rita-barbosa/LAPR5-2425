@@ -28,6 +28,7 @@ import { PatientAccountDeletionConfirm } from './components/patient/confirm-pati
 import { LoginCallbackComponent } from './components/login-callback/login-callback.component';
 import { AddOperationRequestPatientComponent } from './components/staff/doctor/add-operation-request-patient/add-operation-request-patient.component';
 import { OperationRequestScheduler } from './components/admin/operation-request-scheduler/operation-request-scheduler.component';
+import { RemoveOperationRequestPatientComponent } from './components/staff/doctor/remove-operation-request-patient/remove-operation-request-patient.component';
 
 
 export const routes: Routes = [
@@ -50,6 +51,7 @@ export const routes: Routes = [
   { path: 'patient', component: PatientComponent },
   { path: 'update-patient-profile', component: UpdateProfileComponent },
   { path: 'add-operation-request-patient', component: AddOperationRequestPatientComponent},
+  { path: 'remove-operation-request-patient', component: RemoveOperationRequestPatientComponent},
   { path: 'create-operation-request', component: CreateOperationRequestComponent },
   { path: 'list-operation-type', component: ListOperationTypeComponent },
   { path: 'hospital-simulation', component: HospitalSimulationComponent },

@@ -105,6 +105,7 @@ export class ListOperationTypeComponent implements OnInit {
 
   editOperationType(form: NgForm): void {
     if (form.valid && this.selectedOperationType) {
+      console.log("It reached here : Start editMethod at component.");
       this.isSubmitted = true; // Mark form as submitted initially
       console.log(this.newOperationType);
       this.service
@@ -112,6 +113,7 @@ export class ListOperationTypeComponent implements OnInit {
         .pipe(
           switchMap((data) => {
             if (data?.id) {
+              console.log("It reached here : Middle editMethod at component.");
               return this.service.editOperationType(data.id, this.newOperationType);
             } else {
               throw new Error('Operation type not found'); // Handle case where no data is returned

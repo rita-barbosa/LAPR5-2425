@@ -84,7 +84,7 @@ namespace MDBackofficeTests.integrationtests.operationrequests
                                                     _repoStaMock.Object, _logServiceMock.Object, _patientServiceMock.Object,
                                                     _repoPatMock.Object, _repoOpTypeMock.Object, _userServiceMock.Object);
 
-            var _controller = new OperationRequestController(_service);
+            var _controller = new OperationRequestController(_service, _userServiceMock.Object);
 
             // Create a mock for the controller context and set the User
             _controller.ControllerContext = new ControllerContext
@@ -149,7 +149,7 @@ namespace MDBackofficeTests.integrationtests.operationrequests
             _unitOfWorkMock.Setup(r => r.CommitAsync()).ReturnsAsync(1);
 
             // Act
-            var result = await _controller.DeleteOperationRequest(new IdPassDto(operationRequest.Object.Id.Value));
+            var result = await _controller.DeleteOperationRequest(operationRequest.Object.Id.Value);
 
             // Assert
             Assert.IsType<OkObjectResult>(result);
@@ -174,7 +174,7 @@ namespace MDBackofficeTests.integrationtests.operationrequests
                                                     _repoStaMock.Object, _logServiceMock.Object, _patientServiceMock.Object,
                                                     _repoPatMock.Object, _repoOpTypeMock.Object, _userServiceMock.Object);
 
-            var _controller = new OperationRequestController(_service);
+            var _controller = new OperationRequestController(_service, _userServiceMock.Object);
 
             // Create a mock for the controller context and set the User
             _controller.ControllerContext = new ControllerContext
