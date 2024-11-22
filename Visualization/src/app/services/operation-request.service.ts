@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { MessageService } from './message.service';
-import { catchError, map, Observable, of } from 'rxjs';
+import { catchError, map, Observable, of, throwError } from 'rxjs';
 import { OperationType } from '../domain/OperationType';
 import { OperationRequest } from '../domain/OperationRequest';
 import { ListOperationRequest } from '../domain/list-operation-request';
@@ -15,6 +15,14 @@ interface UpdateOperationRequest {
   deadlineDate: string
 }
 
+interface OperationRequestScheduleInfo {
+  selectedStaff: StaffWithFunction[], 
+  selectedRoomId: string, 
+  operationRequestId: string, 
+  algorithm: string,
+  day: string
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -26,7 +34,7 @@ export class OperationRequestService {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${this.token}`
     })
-   };
+  };
 
   constructor(private messageService: MessageService, private http: HttpClient) { }
 
@@ -114,9 +122,9 @@ export class OperationRequestService {
       );
   }
 
-  public createOperationRequest(deadLineDate: string, priority: string, dateOfRequest: string, status: string, staffId: string, description: string, patientId: string, operationTypeId: string) {
+  public createOperationRequest(deadLineDate: string, priority: string, dateOfRequest: string, status: string, staffId: string, description: string, patientId: string, operationTypeId: string): Observable<string> {
     const url = `${this.theServerURL}/OperationRequest`;
-    let opRequest: OperationRequest = {
+    const opRequest: OperationRequest = {
       deadLineDate: deadLineDate,
       priority: priority,
       dateOfRequest: dateOfRequest,
@@ -127,14 +135,23 @@ export class OperationRequestService {
       operationTypeId: operationTypeId
     };
 
-    this.http.post<OperationRequest>(url, opRequest, this.httpOptions)
-      .pipe(catchError(this.handleError<OperationRequest>('Create Operation Request')))
-      .subscribe(data => {
-        this.log(`Operation Request: ${data.id} was successfully created.`);
-      });
+    return this.http.post<OperationRequest>(url, opRequest, this.httpOptions).pipe(
+      map((response: OperationRequest) => {
+        if (!response.id) {
+          throw new Error('Operation Request ID is undefined');
+        }
+        this.log(`Operation Request successfully created`);
+        return response.id;
+      }),
+      catchError((error) => {
+        this.log(`Failed to create Operation Request!`);
+        return throwError(error);
+      })
+    );
   }
 
-  public addOperationRequestToPatient(patientId: string, operationRequestId: string){
+
+  public addOperationRequestToPatient(patientId: string, operationRequestId: string) {
     const url = `${this.theServerURL}/OperationRequest/Add-OperationRequestToPatient`;
 
     let opReqHis: AddOrRemoveFromPatient = {
@@ -177,20 +194,22 @@ getAllOperationRequests() : Observable<OperationRequest[]> {
   );
 }
 
-scheduleOperationRequest(selectedStaff: StaffWithFunction[], selectedRoomId: string, operationRequestId: string, algorithm: string) {
-  const url = `${this.theServerURL}/OperationRequest/Schedule`;
+  scheduleOperationRequest(selectedStaffChosen: StaffWithFunction[], selectedRoomIdChosen: string, operationRequestIdChosen: string, algorithmChosen: string, dayChosen: string) {
+    const url = `${this.theServerURL}/OperationRequest/Schedule`;
 
-  const params = new HttpParams()
-    .set('selectedStaff', JSON.stringify(selectedStaff))
-    .set('selectedRoomId', selectedRoomId)
-    .set('operationRequestId', operationRequestId)
-    .set('algorithm', algorithm);
+    const body: OperationRequestScheduleInfo = {
+      selectedStaff: selectedStaffChosen,
+      selectedRoomId: selectedRoomIdChosen,
+      operationRequestId: operationRequestIdChosen,
+      algorithm: algorithmChosen,
+      day: dayChosen
+    }; 
 
-  this.http
-    .post(url, { params, ...this.httpOptions })
-    .pipe(catchError(this.handleError('Scheduling Operation Request')))
-    .subscribe();
-}
+    this.http
+      .post(url, body, {...this.httpOptions })
+      .pipe(catchError(this.handleError('Scheduling Operation Request')))
+      .subscribe();
+  }
 
   deleteOperationRequestById(id: string) {
     const url = `${this.theServerURL}/OperationRequest/${id}`;

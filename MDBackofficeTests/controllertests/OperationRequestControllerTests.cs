@@ -78,11 +78,19 @@ namespace MDBackofficeTests.controllertests
             _controller = new OperationRequestController(_service.Object, _userServiceMock.Object);
         }
 
-        /* [Fact]
+        [Fact]
         public async Task Create_ReturnsCreatedResult()
         {
             // Arrange
             var controller = new OperationRequestController(_service.Object, _userServiceMock.Object);
+
+            var context = new DefaultHttpContext();
+            context.Request.Headers["Authorization"] = "Bearer valid-token";
+            controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = context
+            };
+            _userServiceMock.Setup(_userService => _userService.CheckUserRole("valid-token", "Doctor")).Returns(false);
 
             var staffId = "D202400001";
             var opTyId = "tumor removal";
@@ -97,20 +105,6 @@ namespace MDBackofficeTests.controllertests
                 patientId,
                 opTyId
                 );
-
-                 var emailClaim = "email@email.com";
-            var claims = new List<Claim>
-            {
-                new Claim(ClaimTypes.Email, emailClaim)
-            };
-            var identity = new ClaimsIdentity(claims, "TestAuthType");
-            var claimsPrincipal = new ClaimsPrincipal(identity);
-
-            // Create a mock for the controller context and set the User
-            _controller.ControllerContext = new ControllerContext
-            {
-                HttpContext = new DefaultHttpContext { User = claimsPrincipal }
-            };
 
             var staffMock = new Mock<Staff>("00001", "country, 12345, street test", "12345", "first", "last", "first last", "email@email.com", "+123", "12345678", "doctor", "ortho");
             var patientMock = new Mock<Patient>("first", "last", "first last", "country, 12345, street test", "female", "+123", "12345678", "98765432", "email@email.com", "2000-10-10", "000001");
@@ -130,7 +124,7 @@ namespace MDBackofficeTests.controllertests
                             }
             };
 
-                var reqStaff = new List<RequiredStaffDto>
+            var reqStaff = new List<RequiredStaffDto>
             {
                 new RequiredStaffDto{
                     StaffQuantity = 1,
@@ -141,16 +135,6 @@ namespace MDBackofficeTests.controllertests
 
             var operationTypeMock = new Mock<OperationType>(opTyId, 100, true, reqStaff, phases);
 
-            var context = new DefaultHttpContext();
-            context.Request.Headers["Authorization"] = "Bearer valid-token";
-            _controller.ControllerContext = new ControllerContext
-            {
-                HttpContext = context
-            };
-            _userServiceMock.Setup(_userService => _userService.CheckUserRole("valid-token", "Doctor")).Returns(false);
-
-
-            _unitOfWorkMock.Setup(u => u.CommitAsync()).ReturnsAsync(1);
             _repoStaMock.Setup(_repoMock => _repoMock.GetByIdAsync(It.IsAny<StaffId>())).ReturnsAsync(staffMock.Object);
             _repoPatMock.Setup(_repoPatMock => _repoPatMock.GetByIdAsync(It.IsAny<MedicalRecordNumber>()))
                 .ReturnsAsync(patientMock.Object);
@@ -166,7 +150,7 @@ namespace MDBackofficeTests.controllertests
             var createdAtActionResult = Assert.IsType<CreatedAtActionResult>(actionResult.Result);
             Assert.Equal("GetGetById", createdAtActionResult.ActionName);
         }
- */
+
 
 
         [Fact]
@@ -175,18 +159,6 @@ namespace MDBackofficeTests.controllertests
             // Arrange
             // Set up the User claims
             var emailClaim = "email@email.com";
-            var claims = new List<Claim>
-            {
-                new Claim(ClaimTypes.Email, emailClaim)
-            };
-            var identity = new ClaimsIdentity(claims, "TestAuthType");
-            var claimsPrincipal = new ClaimsPrincipal(identity);
-
-            // Create a mock for the controller context and set the User
-            _controller.ControllerContext = new ControllerContext
-            {
-                HttpContext = new DefaultHttpContext { User = claimsPrincipal }
-            };
 
             var staffId = "D202400001";
             var opTyId = "tumor removal";
@@ -226,7 +198,7 @@ namespace MDBackofficeTests.controllertests
                 }
             };
 
-            var operationTypeMock = new Mock<OperationType>(opTyId, 100, true, reqStaff,phases);
+            var operationTypeMock = new Mock<OperationType>(opTyId, 100, true, reqStaff, phases);
 
             var operationRequests = new List<Mock<OperationRequest>>
             {
@@ -281,18 +253,13 @@ namespace MDBackofficeTests.controllertests
         {
             //Arrange
             var emailClaim = "email@email.com";
-            var claims = new List<Claim>
-            {
-                new Claim(ClaimTypes.Email, emailClaim)
-            };
-            var identity = new ClaimsIdentity(claims, "TestAuthType");
-            var claimsPrincipal = new ClaimsPrincipal(identity);
-
-            // Create a mock for the controller context and set the User
+            var context = new DefaultHttpContext();
+            context.Request.Headers["Authorization"] = "Bearer valid-token";
             _controller.ControllerContext = new ControllerContext
             {
-                HttpContext = new DefaultHttpContext { User = claimsPrincipal }
+                HttpContext = context
             };
+            _userServiceMock.Setup(_userService => _userService.GetLoggedInEmail("valid-token")).Returns(emailClaim);
 
             var id = Guid.NewGuid();
             var staffId = "D202400001";
@@ -355,18 +322,15 @@ namespace MDBackofficeTests.controllertests
         {
             //Arrange
             var emailClaim = "email@email.com";
-            var claims = new List<Claim>
-            {
-                new Claim(ClaimTypes.Email, emailClaim)
-            };
-            var identity = new ClaimsIdentity(claims, "TestAuthType");
-            var claimsPrincipal = new ClaimsPrincipal(identity);
 
-            // Create a mock for the controller context and set the User
+            var context = new DefaultHttpContext();
+            context.Request.Headers["Authorization"] = "Bearer valid-token";
             _controller.ControllerContext = new ControllerContext
             {
-                HttpContext = new DefaultHttpContext { User = claimsPrincipal }
+                HttpContext = context
             };
+            _userServiceMock.Setup(_userService => _userService.CheckUserRole("valid-token", "Doctor")).Returns(false);
+            _userServiceMock.Setup(_userService => _userService.GetLoggedInEmail("valid-token")).Returns(emailClaim);
 
             var id = Guid.NewGuid();
             var staffId = "D202400001";
@@ -413,17 +377,6 @@ namespace MDBackofficeTests.controllertests
             _service.Setup(s => s.CheckDoctorIsRequestingDoctor(emailClaim, updateOperationRequestDto.Id)).ReturnsAsync(true);
             _service.Setup(s => s.UpdateAsync(updateOperationRequestDto)).ReturnsAsync(operationRequestDto);
 
-            var context = new DefaultHttpContext();
-            context.Request.Headers["Authorization"] = "Bearer valid-token";
-            _controller.ControllerContext = new ControllerContext
-            {
-                HttpContext = context
-            };
-            _userServiceMock.Setup(_userService => _userService.CheckUserRole("valid-token", "Doctor")).Returns(false);
-
-            _userServiceMock.Setup(_userService => _userService.DecodeJwtToken("valid-token")).Returns((emailClaim, new List<string> { "Doctor" }));
-
-
             //Act
             var result = await _controller.Update(updateOperationRequestDto);
 
@@ -449,13 +402,6 @@ namespace MDBackofficeTests.controllertests
             };
             var identity = new ClaimsIdentity(claims, "TestAuthType");
             var claimsPrincipal = new ClaimsPrincipal(identity);
-
-            // Create a mock for the controller context and set the User
-            _controller.ControllerContext = new ControllerContext
-            {
-                HttpContext = new DefaultHttpContext { User = claimsPrincipal }
-            };
-
 
             var staffId = "D202400001";
             var opTyId = "tumor removal";
@@ -491,10 +437,10 @@ namespace MDBackofficeTests.controllertests
                 }
             };
 
-            var operationTypeMock = new Mock<OperationType>(opTyId, 100, true, reqStaff,phases);
+            var operationTypeMock = new Mock<OperationType>(opTyId, 100, true, reqStaff, phases);
 
-            var operationRequest = new Mock<OperationRequest>("TestCode","2024-12-31","Elective","2024-10-25",
-                staffId,"descript",patientId,opTyId);
+            var operationRequest = new Mock<OperationRequest>("TestCode", "2024-12-31", "Elective", "2024-10-25",
+                staffId, "descript", patientId, opTyId);
 
 
             var userMock = new Mock<User>();
@@ -538,19 +484,6 @@ namespace MDBackofficeTests.controllertests
 
             // Set up the User claims
             var emailClaim = "email@email.com";
-            var claims = new List<Claim>
-            {
-                new Claim(ClaimTypes.Email, emailClaim)
-            };
-            var identity = new ClaimsIdentity(claims, "TestAuthType");
-            var claimsPrincipal = new ClaimsPrincipal(identity);
-
-            // Create a mock for the controller context and set the User
-            _controller.ControllerContext = new ControllerContext
-            {
-                HttpContext = new DefaultHttpContext { User = claimsPrincipal }
-            };
-
 
             var staffId = "D202400001";
             var opTyId = "tumor removal";
@@ -586,10 +519,10 @@ namespace MDBackofficeTests.controllertests
                 }
             };
 
-            var operationTypeMock = new Mock<OperationType>(opTyId, 100, true, reqStaff,phases);
+            var operationTypeMock = new Mock<OperationType>(opTyId, 100, true, reqStaff, phases);
 
-            var operationRequest = new Mock<OperationRequest>("TestCode","2024-12-31","Elective","2024-10-25",
-                staffId,"descript",patientId,opTyId);
+            var operationRequest = new Mock<OperationRequest>("TestCode", "2024-12-31", "Elective", "2024-10-25",
+                staffId, "descript", patientId, opTyId);
 
             var removeDto = new AddOrRemoveFromPatientDto(patientId, operationRequest.Object.Id.Value);
 

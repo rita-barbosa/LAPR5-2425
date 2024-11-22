@@ -36,8 +36,15 @@ namespace MDBackoffice.Controllers
         [Route("Get-AllOpRequestsFromDoctor")]
         public async Task<ActionResult<IEnumerable<OperationRequestDto>>> GetAllFromDoctor()
         {
-            string? userEmail = User.FindFirstValue(ClaimTypes.Email);
-            return await _service.GetAllFromDoctorAsysnc(userEmail);
+            var token = HttpContext.Request.Headers.Authorization.ToString()?.Split(' ')[1];
+
+            if (string.IsNullOrWhiteSpace(token))
+            {
+                return BadRequest("Invalid authorization or user role.");
+            }
+            var email = _userSvc.GetLoggedInEmail(token);
+
+            return await _service.GetAllFromDoctorAsysnc(email);
         }
 
         // GET: api/OperationRequest/5
@@ -56,14 +63,14 @@ namespace MDBackoffice.Controllers
 
         // POST: api/OperationRequest
         [HttpPost]
-       /*  [Authorize(Policy = "Doctor")] */
+        // [Authorize(Policy = "Doctor")]
         public async Task<ActionResult<OperationRequestDto>> Create(CreatingOperationRequestDto dto)
         {
             try
             {
                 var token = HttpContext.Request.Headers.Authorization.ToString()?.Split(' ')[1];
 
-                if (string.IsNullOrWhiteSpace(token) || _userSvc.CheckUserRole(token, "Doctor")) 
+                if (string.IsNullOrWhiteSpace(token) || _userSvc.CheckUserRole(token, "Doctor"))
                 {
                     return BadRequest("Invalid authorization or user role.");
                 }
@@ -85,18 +92,18 @@ namespace MDBackoffice.Controllers
 
         // PUT: api/OperationRequest/Update
         [HttpPut("Update")]
-       /*  [Authorize(Policy = "Doctor")] */
+        // [Authorize(Policy = "Doctor")]
         public async Task<ActionResult<OperationRequestDto>> Update(UpdateOperationRequestDto dto)
         {
 
             var token = HttpContext.Request.Headers.Authorization.ToString()?.Split(' ')[1];
 
-                if (string.IsNullOrWhiteSpace(token) || _userSvc.CheckUserRole(token, "Doctor")) 
+                if (string.IsNullOrWhiteSpace(token) || _userSvc.CheckUserRole(token, "Doctor"))
                 {
                     return BadRequest("Invalid authorization or user role.");
                 }
 
-            string? userEmail = _userSvc.DecodeJwtToken(token).Email;
+            string? userEmail = _userSvc.GetLoggedInEmail(token);
 
             if (!await _service.CheckDoctorIsRequestingDoctor(userEmail, dto.Id)){
                 return BadRequest("You are not the requesting doctor for the choosen operation request.");
@@ -132,7 +139,7 @@ namespace MDBackoffice.Controllers
             {
                 var token = HttpContext.Request.Headers.Authorization.ToString()?.Split(' ')[1];
 
-                if (string.IsNullOrWhiteSpace(token) || _userSvc.CheckUserRole(token, "Doctor")) 
+                if (string.IsNullOrWhiteSpace(token) || _userSvc.CheckUserRole(token, "Doctor"))
                 {
                     return BadRequest("Invalid authorization or user role.");
                 }
@@ -166,36 +173,36 @@ namespace MDBackoffice.Controllers
         // POST: api/OperationRequest/Delete-OperationRequest
         [HttpDelete("{id}")]
         //[Authorize(Policy = "Doctor")]
-        public async Task<ActionResult> DeleteOperationRequest(string id) 
+        public async Task<ActionResult> DeleteOperationRequest(string id)
         {
             try
             {
                 var token = HttpContext.Request.Headers.Authorization.ToString()?.Split(' ')[1];
 
-                if (string.IsNullOrWhiteSpace(token) || _userSvc.CheckUserRole(token, "Doctor")) 
+                if (string.IsNullOrWhiteSpace(token) || _userSvc.CheckUserRole(token, "Doctor"))
                 {
                     return BadRequest(new {message = "Invalid authorization or user role."});
                 }
 
                 var email = _userSvc.DecodeJwtToken(token).Email;
 
-                bool result = await _service.DeleteOperationRequest(id, email); 
+                bool result = await _service.DeleteOperationRequest(id, email);
                 if (result)
                 {
                     return Ok(new {message = "Operation request successfully removed."});
                 }
                 else
                 {
-                    return NotFound($"Operation request with ID {id} not found or wrong authorization."); 
+                    return NotFound($"Operation request with ID {id} not found or wrong authorization.");
                 }
             }
             catch (BusinessRuleValidationException ex)
             {
-                return BadRequest(new { ex.Message }); 
+                return BadRequest(new { ex.Message });
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { ex.Message }); 
+                return StatusCode(500, new { ex.Message });
             }
         }
 
@@ -209,30 +216,30 @@ namespace MDBackoffice.Controllers
             {
                 var token = HttpContext.Request.Headers.Authorization.ToString()?.Split(' ')[1];
 
-                if (string.IsNullOrWhiteSpace(token) || _userSvc.CheckUserRole(token, "Doctor")) 
+                if (string.IsNullOrWhiteSpace(token) || _userSvc.CheckUserRole(token, "Doctor"))
                 {
                     return BadRequest(new {message = "Invalid authorization or user role."});
                 }
 
                 var email = _userSvc.DecodeJwtToken(token).Email;
 
-                bool result = await _service.DeleteOperationRequestFromPatient(removingFromPatientDto.PatientId, removingFromPatientDto.OperationRequestId, email); 
+                bool result = await _service.DeleteOperationRequestFromPatient(removingFromPatientDto.PatientId, removingFromPatientDto.OperationRequestId, email);
                 if (result)
                 {
                     return Ok("Operation request successfully removed from patient profile.");
                 }
                 else
                 {
-                    return NotFound($"Operation request with ID {removingFromPatientDto.PatientId} not found or wrong authorization."); 
+                    return NotFound($"Operation request with ID {removingFromPatientDto.PatientId} not found or wrong authorization.");
                 }
             }
             catch (BusinessRuleValidationException ex)
             {
-                return BadRequest(new { ex.Message }); 
+                return BadRequest(new { ex.Message });
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { ex.Message }); 
+                return StatusCode(500, new { ex.Message });
             }
         }
 
@@ -246,30 +253,30 @@ namespace MDBackoffice.Controllers
             {
                 var token = HttpContext.Request.Headers.Authorization.ToString()?.Split(' ')[1];
 
-                if (string.IsNullOrWhiteSpace(token) || _userSvc.CheckUserRole(token, "Doctor")) 
+                if (string.IsNullOrWhiteSpace(token) || _userSvc.CheckUserRole(token, "Doctor"))
                 {
                     return BadRequest(new {message = "Invalid authorization or user role."});
                 }
 
-                var email = _userSvc.DecodeJwtToken(token).Email;
+                var email = _userSvc.GetLoggedInEmail(token);
 
-                bool result = await _service.AddOperationRequestToPatient(addOrRemoveFromPatientDto.PatientId, addOrRemoveFromPatientDto.OperationRequestId, email); 
+                bool result = await _service.AddOperationRequestToPatient(addOrRemoveFromPatientDto.PatientId, addOrRemoveFromPatientDto.OperationRequestId, email);
                 if (result)
                 {
-                    return Ok(new { message ="Operation request successfully add."});
+                    return Ok(new { message = "Operation request successfully add." });
                 }
                 else
                 {
-                    return NotFound($"Operation request with ID {addOrRemoveFromPatientDto.PatientId} not found or wrong authorization."); 
+                    return NotFound($"Operation request with ID {addOrRemoveFromPatientDto.PatientId} not found or wrong authorization.");
                 }
             }
             catch (BusinessRuleValidationException ex)
             {
-                return BadRequest(new { ex.Message }); 
+                return BadRequest(new { ex.Message });
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { ex.Message }); 
+                return StatusCode(500, new { ex.Message });
             }
         }
 

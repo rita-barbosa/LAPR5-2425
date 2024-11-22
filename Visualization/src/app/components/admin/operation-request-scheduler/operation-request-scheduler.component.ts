@@ -30,6 +30,7 @@ export class OperationRequestScheduler implements OnInit {
   operationRequestList: OperationRequest[] = [];
   selectedOperationRequest!: OperationRequest;
   algorithm = '';
+  day = '';
 
   storedToken = localStorage.getItem('user');
 
@@ -98,7 +99,7 @@ export class OperationRequestScheduler implements OnInit {
   }
 
   scheduleOperationRequest(){
-    this.opRequestsService.scheduleOperationRequest(this.selectedStaff, this.selectedRoom.roomNumber, this.selectedOperationRequest.id !, this.algorithm);
+    this.opRequestsService.scheduleOperationRequest(this.selectedStaff, this.selectedRoom.roomNumber, this.selectedOperationRequest.id !, this.algorithm, this.day);
   }
 
 }

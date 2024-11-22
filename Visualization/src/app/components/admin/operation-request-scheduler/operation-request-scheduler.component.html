@@ -144,6 +144,14 @@
         </div>
       </div>
 
+      <!-- Day -->
+      <div class="input-field">
+        <input name="day" #day="ngModel" [(ngModel)]="day"
+          placeholder="Day" [disabled]="isSubmitted" required
+          [class.invalid-placeholder]="day.invalid && day.touched" />
+        <span></span>
+      </div>
+
       <!-- Action Buttons -->
       <div class="action-buttons">
         <button [disabled]="!selectedStaff.length || !selectedOperationRequest || !selectedRoom || algorithm == ''" (click)="scheduleOperationRequest()">
