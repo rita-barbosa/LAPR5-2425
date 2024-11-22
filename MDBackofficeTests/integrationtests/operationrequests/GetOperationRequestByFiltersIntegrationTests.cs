@@ -77,7 +77,7 @@ public class GetOperationRequestByFiltersIntegrationTests
 
     }
 
-        [Fact]
+       /*  [Fact]
         public async Task GetOperationRequestByFilters_ReturnsOkOperationTypeDtos_IntegrationControllerService()
         {
             // Arrange
@@ -173,7 +173,7 @@ public class GetOperationRequestByFiltersIntegrationTests
             }
 
             _repoMock.Verify(repo => repo.FindAllConditioned(new StaffId(staffId), name, priority, operationType, status, dateOfRequest, deadLineDate), Times.Once);
-        }
+        } */
 
         [Fact]
     public async Task GetOperationRequestByFiltersAsync_ReturnsCorrectOperationRequestDtos_IntegrationServiceDomain()

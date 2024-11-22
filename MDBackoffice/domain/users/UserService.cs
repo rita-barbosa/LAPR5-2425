@@ -148,7 +148,7 @@ namespace MDBackoffice.Domain.Users
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
-        public (string? Email, IList<string> Roles) DecodeJwtToken(string token)
+        public virtual (string? Email, IList<string> Roles) DecodeJwtToken(string token)
         {
 
             var handler = new JwtSecurityTokenHandler();

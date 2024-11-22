@@ -220,7 +220,7 @@ namespace MDBackoffice.Domain.OperationRequests
             return false;            
         }
 
-        public async Task<bool> DeleteOperationRequestFromPatient(string patientId, string operationRequestId, string email)
+        public virtual async Task<bool> DeleteOperationRequestFromPatient(string patientId, string operationRequestId, string email)
         {
             User user = await _userService.FindByEmailAsync(email);
             if (user == null)

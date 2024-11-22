@@ -260,7 +260,7 @@ namespace MDBackofficeTests.controllertests
             };
 
 
-            _repoMock.Setup(r => r.GetByIdAsync(operationType.Object.Id)).ReturnsAsync(operationType.Object);
+            _repoMock.Setup(r => r.GetByIdWithStaffAsync(operationType.Object.Id)).ReturnsAsync(operationType.Object);
             _opRecordService.Setup(r =>r.AddAsync(operationType.Object)).ReturnsAsync(recordDto);
             _unitOfWorkMock.Setup(u => u.CommitAsync()).ReturnsAsync(1);
 

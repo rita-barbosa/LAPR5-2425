@@ -96,7 +96,7 @@ namespace MDBackoffice.Controllers
                     return BadRequest("Invalid authorization or user role.");
                 }
 
-            string? userEmail = User.FindFirstValue(ClaimTypes.Email);
+            string? userEmail = _userSvc.DecodeJwtToken(token).Email;
 
             if (!await _service.CheckDoctorIsRequestingDoctor(userEmail, dto.Id)){
                 return BadRequest("You are not the requesting doctor for the choosen operation request.");

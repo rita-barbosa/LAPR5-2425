@@ -332,7 +332,16 @@ namespace MDBackofficeTests.controllertests
                 role,
                 specialization
             );
-    
+
+
+            var context = new DefaultHttpContext();
+            context.Request.Headers["Authorization"] = "Bearer valid-token";
+            _controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = context
+            };
+            _userServiceMock.Setup(_userService => _userService.CheckUserRole("valid-token", "Admin")).Returns(false);
+ 
             var token = "test-token";
             _userManagerMock.Setup(um => um.CreateAsync(It.IsAny<User>(), password)).ReturnsAsync(resultMock);
             _userManagerMock.Setup(um => um.AddToRoleAsync(It.IsAny<User>(), role)).ReturnsAsync(resultMock);
