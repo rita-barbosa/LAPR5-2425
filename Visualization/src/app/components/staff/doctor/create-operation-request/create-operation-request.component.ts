@@ -14,8 +14,10 @@ import { OperationRequestService } from '../../../../services/operation-request.
 })
 export class CreateOperationRequestComponent {
   @ViewChild('operationRequestForm') operationRequestForm!: NgForm;
+  @ViewChild('operationRequestToPatientForm') operationRequestToPatientForm!: NgForm;
 
   isSubmitted = false;
+  operationRequestCreated = false;
   operationRequest = {
     deadLineDate: '',
     priority: '',
@@ -27,25 +29,23 @@ export class CreateOperationRequestComponent {
     operationTypeId: ''
   };
 
-  patients : string[] = [];
-  staffs : string[] = [];
-  operationTypes : string[] = [];
+  isSubmittedToPatient = false;
+  addRemoveFromPatient = {
+    patientId: '',
+    operationRequestId: ''
+  }
+
+  patients: string[] = [];
+  staffs: string[] = [];
+  operationTypes: string[] = [];
+  showAddToPatientForm = false;
+  messageService: any;
+  opReqId!: string;
+  mainTitleCheck = false;
 
   constructor(private service: OperationRequestService) { }
 
-  ngOnInit(): void {  
-    // this.service.getAllPatients().subscribe({
-    //   next: data => {
-    //     this.patients = data;
-    //   }
-    // });
-
-    // this.service.getAllStaffs().subscribe({
-    //   next: data => {
-    //     this.staffs = data;
-    //   }
-    // });
-
+  ngOnInit(): void {
     this.service.getAllOperationTypes().subscribe({
       next: data => {
         this.operationTypes = data;
@@ -66,14 +66,24 @@ export class CreateOperationRequestComponent {
         this.operationRequest.description,
         this.operationRequest.patientId,
         this.operationRequest.operationTypeId
-      );
-    } else {
-      this.isSubmitted = false;
+      ).subscribe({
+        next: (id: string) => {
+          if (id != null) {
+            this.opReqId = id,
+              this.operationRequestCreated = true;
+          }
+        },
+        error: (err) => {
+          this.isSubmitted = false;
+          console.error('Failed to create operation request:', err);
+        }
+      });
     }
   }
 
   clearForm(): void {
     this.isSubmitted = false;
+    this.operationRequestCreated = false;
 
     this.operationRequest = {
       deadLineDate: '',
@@ -93,4 +103,33 @@ export class CreateOperationRequestComponent {
       input.classList.remove('invalid-placeholder');
     });
   }
+
+  addToPatient(form: NgForm): void {
+    if (form.valid) {
+      this.service.addOperationRequestToPatient(
+        this.operationRequest.patientId,
+        this.opReqId
+      );
+      this.isSubmittedToPatient = true;
+      this.showAddToPatientForm = false;
+      this.mainTitleCheck = true;
+      form.resetForm();
+      this.clearAddToPatientForm();
+    }
+  }
+
+  toggleAddToPatientForm(): void {
+    this.showAddToPatientForm = !this.showAddToPatientForm;
+  }
+
+  clearAddToPatientForm(): void {
+    this.addRemoveFromPatient = {
+      patientId: '',
+      operationRequestId: ''
+    };
+
+    this.showAddToPatientForm = false;
+    this.isSubmittedToPatient = false;
+  }
+
 }

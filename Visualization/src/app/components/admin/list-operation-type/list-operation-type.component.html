@@ -17,8 +17,8 @@ Dito por si:
 
         <select [(ngModel)]="filters.status">
             <option value="">Select Status</option>
-            <option value="true">True</option>
-            <option value="false">False</option>
+            <option value="true">Active</option>
+            <option value="false">Desactive</option>
         </select>
 
         <!-- Add a button to trigger the filter function -->
@@ -54,7 +54,7 @@ Dito por si:
                             </ul>
                         </td>
                         <td>{{ operationType.estimatedDuration || "-" }}</td>
-                        <td>{{ operationType.status }}</td>
+                        <td>{{ operationType.status ? 'Active' : 'Desactive' }}</td>
                     </tr>
                 </ng-template>
             </p-table>
@@ -70,8 +70,8 @@ Dito por si:
                 <h3>Operation Request Details</h3>
                 <p><strong>Name:</strong> {{ fullOperationType.name || '-' }}</p>
                 <p><strong>Estimated Duration:</strong> {{ fullOperationType.estimatedDuration || '-' }}</p>
-                <p><strong>Status:</strong> {{ fullOperationType.status }}</p>
-            
+                <p><strong>Status:</strong> {{ fullOperationType.status ? 'Active' : 'Desactive' }}</p>
+
                 <p><strong>Required Staff:</strong></p>
                 <ul *ngIf="fullOperationType.requiredStaff && fullOperationType.requiredStaff.length > 0; else noRequiredStaff">
                     <li *ngFor="let staff of fullOperationType.requiredStaff">
@@ -81,7 +81,7 @@ Dito por si:
                 <ng-template #noRequiredStaff>
                     <p>-</p>
                 </ng-template>
-            
+
                 <p><strong>Phases:</strong></p>
                 <ul *ngIf="fullOperationType.phases && fullOperationType.phases.length > 0; else noPhases">
                     <li *ngFor="let phase of fullOperationType.phases">
@@ -91,7 +91,7 @@ Dito por si:
                 <ng-template #noPhases>
                     <p>-</p>
                 </ng-template>
-            
+
                 <div class="action-buttons">
                     <button (click)="closeDetails()">Close</button>
                     <button (click)="toggleDetails(selectedOperationType)">Update</button>
@@ -109,9 +109,9 @@ Dito por si:
                       />
                       <span></span>
                     </div>
-              
+
                     <br>
-              
+
                     <!-- Status -->
                     <div class="input-field">
                       <label><strong>Status:</strong></label>
@@ -126,9 +126,9 @@ Dito por si:
                         </label>
                       </div>
                     </div>
-              
+
                     <br>
-              
+
                     <!-- Phases -->
                     <div class="input-field">
                       <label><strong>Phases:</strong></label>
@@ -139,9 +139,9 @@ Dito por si:
                         <br><br>
                       </div>
                     </div>
-              
+
                     <br>
-              
+
                     <!-- Estimated Duration -->
                     <div class="input-field">
                       <label><strong>Total Estimated Duration:</strong></label>
@@ -154,9 +154,9 @@ Dito por si:
                         disabled
                       />
                     </div>
-              
+
                     <br>
-              
+
               <!-- Required Staff -->
               <div class="input-field">
                 <label><strong>Required Staff:</strong></label>
@@ -193,20 +193,20 @@ Dito por si:
                   <!-- Remove button for each staff -->
                   <button type="button" (click)="removeStaff(i)">Remove</button>
                 </div>
-              
+
                 <br>
                 <!-- Add Staff button OUTSIDE the loop -->
                 <button type="button" (click)="addStaff()">+ Add Staff</button>
               </div>
-              
-              
+
+
                     <br>
-              
+
                     <div class="button">
                       <button type="submit" class="add-button-submit" [disabled]="newOperationTypeForm.invalid || isSubmitted">Submit</button>
                       <button type="button" class="add-button-clear" (click)="clearForm()">Clear Input</button>
                     </div>
-              
+
                   </form>
             </div>
 
