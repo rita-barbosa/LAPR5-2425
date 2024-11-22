@@ -11,7 +11,7 @@ namespace MDBackoffice.Infrastructure.OperationRequests
 {
     public class PlanningSchedulerAdapter : IOperationSchedulerAdapter
     {
-        public List<AppointmentDto> ScheduleOperations(
+        public List<SchedulesDto> ScheduleOperations(
             Dictionary<ScheduleOperationRequestDto, List<ScheduleStaffDto>> operationsMap,
             RoomDto room,
             string day,
@@ -110,7 +110,7 @@ namespace MDBackoffice.Infrastructure.OperationRequests
 
             string json = JsonSerializer.Serialize(allData, new JsonSerializerOptions { WriteIndented = true });
             Console.WriteLine(json);
-            return new List<AppointmentDto>();
+            return new List<SchedulesDto>();
         }
     }
 }
