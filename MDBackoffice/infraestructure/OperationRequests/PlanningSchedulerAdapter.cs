@@ -1,7 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
+using System.Text;
 using System.Text.Json;
+using System.Threading.Tasks;
 using MDBackoffice.Domain.Appointments;
 using MDBackoffice.Domain.OperationRequests;
 using MDBackoffice.Domain.Rooms;
@@ -11,11 +14,47 @@ namespace MDBackoffice.Infrastructure.OperationRequests
 {
     public class PlanningSchedulerAdapter : IOperationSchedulerAdapter
     {
-        public List<SchedulesDto> ScheduleOperations(
+        public async Task<List<SchedulesDto>> ScheduleOperationsAsync(
             Dictionary<ScheduleOperationRequestDto, List<ScheduleStaffDto>> operationsMap,
             RoomDto room,
             string day,
             string algorithm)
+        {
+
+            string json = CreateScheduleJson(operationsMap, room, day);
+            Console.WriteLine(json);
+
+            var url = "https://yourserver.com/api/schedule";
+
+            using (var httpClient = new HttpClient())
+            {
+                var content = new StringContent(json, Encoding.UTF8, "application/json");
+                try
+                {
+                    // Send POST request
+                    var response = httpClient.PostAsync(url, content).Result;
+
+                    // Ensure the response indicates success
+                    response.EnsureSuccessStatusCode();
+
+                    // Read and process the response
+                    var responseBody = response.Content.ReadAsStringAsync().Result;
+                    return ConvertJsonToDto(responseBody);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error occurred: {ex.Message}");
+                    throw;
+                }
+            }
+
+
+
+        }
+
+        private string CreateScheduleJson(Dictionary<ScheduleOperationRequestDto, List<ScheduleStaffDto>> operationsMap,
+            RoomDto room,
+            string day)
         {
             var agRoom = new
             {
@@ -108,9 +147,13 @@ namespace MDBackoffice.Infrastructure.OperationRequests
                 assignSurgeryJson
             };
 
-            string json = JsonSerializer.Serialize(allData, new JsonSerializerOptions { WriteIndented = true });
-            Console.WriteLine(json);
-            return new List<SchedulesDto>();
+            return JsonSerializer.Serialize(allData, new JsonSerializerOptions { WriteIndented = true });
+        }
+
+        private List<SchedulesDto> ConvertJsonToDto(String json)
+        {
+
+            return null;
         }
     }
 }

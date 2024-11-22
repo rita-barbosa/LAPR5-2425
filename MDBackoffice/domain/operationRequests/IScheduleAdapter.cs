@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using MDBackoffice.Domain.Appointments;
 using MDBackoffice.Domain.OperationRequests;
 using MDBackoffice.Domain.Rooms;
@@ -8,7 +9,7 @@ namespace MDBackoffice.Domain.OperationRequests
 {
     public interface IOperationSchedulerAdapter
     {
-        List<SchedulesDto> ScheduleOperations(
+         Task<List<SchedulesDto>> ScheduleOperationsAsync(
             Dictionary<ScheduleOperationRequestDto, List<ScheduleStaffDto>> operationsMap,
             RoomDto room,
             string day,
