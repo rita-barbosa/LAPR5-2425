@@ -46,6 +46,5 @@ describe('PatientPreferences', () => {
   it('should call sendAccountDeleteRequest when confirmDelete is called', () => {
     component.confirmDelete();
     expect(userService.sendAccountDeleteRequest).toHaveBeenCalled();
-    expect()
   });
 });
