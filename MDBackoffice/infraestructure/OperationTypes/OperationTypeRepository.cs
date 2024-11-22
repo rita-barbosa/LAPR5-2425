@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using MDBackoffice.Domain.OperationTypes;
+using MDBackoffice.Domain.OperationTypes.ValueObjects;
 using MDBackoffice.Infrastructure.Shared;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -67,5 +68,13 @@ namespace MDBackoffice.Infrastructure.OperationTypes
 
             return [.. combinedQuery];
         }
+
+    public async Task<OperationType> GetByNameAsync(string name)
+    {
+        return await _context.OperationTypes
+            .Include(p => p.RequiredStaff)
+            .Include(p => p.Phases)
+            .FirstOrDefaultAsync(p => p.Name.OperationName == name); // Compare the primitive property
+    }
     }
 }

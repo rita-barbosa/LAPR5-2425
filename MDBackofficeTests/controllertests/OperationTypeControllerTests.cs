@@ -9,16 +9,16 @@ using Xunit;
 using MDBackoffice.Controllers;
 using Microsoft.AspNetCore.Mvc;
 using MDBackoffice.Domain.Users;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Logging;
 using MDBackoffice.Infrastructure.Users;
 using MDBackoffice.Domain.Tokens;
 using MDBackoffice.Domain.Emails;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Authentication;
 using MDBackoffice.Infrastructure.Emails;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
-using IConfiguration = Microsoft.Extensions.Configuration.IConfiguration;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Authentication;
 
 namespace MDBackofficeTests.controllertests
 {
@@ -29,40 +29,44 @@ namespace MDBackofficeTests.controllertests
         private readonly Mock<IOperationTypeRepository> _repoMock = new Mock<IOperationTypeRepository>();
         private readonly Mock<OperationTypeRecordService> _opRecordService;
         private readonly Mock<OperationTypeService> _service;
-        private readonly Mock<UserService> _userServiceMock;
-        private readonly Mock<IConfiguration> _configurationMock = new Mock<IConfiguration>();
-        private readonly Mock<UserManager<User>> _userManagerMock;
-        private readonly Mock<ILoginAdapter> _loginAdapterMock;
-
+        private readonly Mock<UserService> _userService;
         private readonly OperationTypesController _controller;
+        private readonly Mock<ILoginAdapter> _loginAdapterMock;
+        private readonly Mock<UserManager<User>> _userManagerMock;
 
         public OperationTypeControllerTests()
         {
-            _opRecordService = new Mock<OperationTypeRecordService>(_unitOfWorkMock.Object, _logServiceMock.Object, new Mock<IOperationTypeRecordRepository>().Object);
+            Mock<LogService> _logServiceMock = new Mock<LogService>(new Mock<IUnitOfWork>().Object, new Mock<ILogRepository>().Object);
 
-            _service = new Mock<OperationTypeService>(_unitOfWorkMock.Object, _repoMock.Object, _logServiceMock.Object, _opRecordService.Object);
-           
-           var identityOptionsMock = new Mock<IOptions<IdentityOptions>>();
+            var identityOptionsMock = new Mock<IOptions<IdentityOptions>>();
             identityOptionsMock.Setup(o => o.Value).Returns(new IdentityOptions());
             var identityErrorDescriberMock = new Mock<IdentityErrorDescriber>();
 
             _userManagerMock = new Mock<UserManager<User>>(new Mock<IUserStore<User>>().Object, identityOptionsMock.Object, new Mock<IPasswordHasher<User>>().Object, new List<IUserValidator<User>> { new Mock<IUserValidator<User>>().Object }, new List<IPasswordValidator<User>> { new Mock<IPasswordValidator<User>>().Object }, new Mock<ILookupNormalizer>().Object, identityErrorDescriberMock.Object, new Mock<IServiceProvider>().Object, new Mock<ILogger<UserManager<User>>>().Object);
+
+            var signinManagerMock = new Mock<SignInManager<User>>(_userManagerMock.Object,
+                                                                new Mock<IHttpContextAccessor>().Object,
+                                                                new Mock<IUserClaimsPrincipalFactory<User>>().Object,
+                                                                identityOptionsMock.Object,
+                                                                new Mock<ILogger<SignInManager<User>>>().Object,
+                                                                new Mock<IAuthenticationSchemeProvider>().Object,
+                                                                new Mock<IUserConfirmation<User>>().Object);
+
             var roleManagerMock = new Mock<RoleManager<Role>>(new Mock<IRoleStore<Role>>().Object, new List<IRoleValidator<Role>>(), new Mock<ILookupNormalizer>().Object, identityErrorDescriberMock.Object, new Mock<ILogger<RoleManager<Role>>>().Object);
 
-            var tokenServiceMock = new Mock<TokenService>(_unitOfWorkMock.Object, new Mock<ITokenRepository>().Object, _userManagerMock.Object);
+
+            _opRecordService = new Mock<OperationTypeRecordService>(_unitOfWorkMock.Object, _logServiceMock.Object, new Mock<IOperationTypeRecordRepository>().Object);
+
+            _service = new Mock<OperationTypeService>(_unitOfWorkMock.Object, _repoMock.Object, _logServiceMock.Object, _opRecordService.Object);
+
+           var tokenServiceMock = new Mock<TokenService>(_unitOfWorkMock.Object, new Mock<ITokenRepository>().Object, _userManagerMock.Object);
             var _emailServiceMock = new Mock<EmailService>(tokenServiceMock.Object, new Mock<IEmailAdapter>().Object);
+            var _configurationMock = new Mock<IConfiguration>();
             _loginAdapterMock = new Mock<ILoginAdapter>();
-            var signinManagerMock = new Mock<SignInManager<User>>(_userManagerMock.Object,
-                                                                           new Mock<IHttpContextAccessor>().Object,
-                                                                           new Mock<IUserClaimsPrincipalFactory<User>>().Object,
-                                                                           identityOptionsMock.Object,
-                                                                           new Mock<ILogger<SignInManager<User>>>().Object,
-                                                                           new Mock<IAuthenticationSchemeProvider>().Object,
-                                                                           new Mock<IUserConfirmation<User>>().Object);
 
-            _userServiceMock = new Mock<UserService>(_userManagerMock.Object, roleManagerMock.Object, _logServiceMock.Object, signinManagerMock.Object, _emailServiceMock.Object, _configurationMock.Object, tokenServiceMock.Object, _loginAdapterMock.Object);
+            _userService = new Mock<UserService>(_userManagerMock.Object, roleManagerMock.Object, _logServiceMock.Object, signinManagerMock.Object, _emailServiceMock.Object, _configurationMock.Object, tokenServiceMock.Object, _loginAdapterMock.Object);
 
-            _controller = new OperationTypesController(_service.Object, _userServiceMock.Object);
+            _controller = new OperationTypesController(_service.Object, _userService.Object);
         }
 
         [Fact]
@@ -119,6 +123,17 @@ namespace MDBackofficeTests.controllertests
             };
 
             var operationTypeObjects = operationTypes.Select(mock => mock.Object).ToList();
+            var context = new DefaultHttpContext();
+            context.Request.Headers["Authorization"] = "Bearer valid-token";
+            _controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = context
+            };
+            _userService.Setup(_userService => _userService.CheckUserRole("valid-token", "Admin")).Returns(false);
+
+
+            _unitOfWorkMock.Setup(u => u.CommitAsync()).ReturnsAsync(1);
+
             _repoMock.Setup(repo => repo.FilterOperationTypes(queryParameters))
                     .ReturnsAsync(operationTypeObjects);
 
@@ -197,6 +212,15 @@ namespace MDBackofficeTests.controllertests
 
             _unitOfWorkMock.Setup(u => u.CommitAsync()).ReturnsAsync(1);
 
+            var context = new DefaultHttpContext();
+            context.Request.Headers["Authorization"] = "Bearer valid-token";
+            _controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = context
+            };
+            _userService.Setup(_userService => _userService.CheckUserRole("valid-token", "Admin")).Returns(false);
+
+
             // Act
             var result = await _controller.RemoveOperationType(operationTypeId);
 
@@ -246,9 +270,16 @@ namespace MDBackofficeTests.controllertests
              operationType.Object.Name.OperationName, operationType.Object.EstimatedDuration.TotalDurationMinutes,
               operationType.Object.Status.Active, reqStaffDto, phasesDto);
 
-            var editDto = new EditOpTypeDto(operationType.Object.Id.Value, "NEW NAME", 300);
+            var editDto = new EditOpTypeDto
+            {
+                Id = operationType.Object.Id.Value.ToString(),
+                Name = "NEW NAME",
+                EstimatedDuration = 300,
+                Status = true
+            };
 
-            _repoMock.Setup(r => r.GetByIdAsync(operationType.Object.Id)).ReturnsAsync(operationType.Object);
+
+            _repoMock.Setup(r => r.GetByIdWithStaffAsync(operationType.Object.Id)).ReturnsAsync(operationType.Object);
             _opRecordService.Setup(r =>r.AddAsync(operationType.Object)).ReturnsAsync(recordDto);
             _unitOfWorkMock.Setup(u => u.CommitAsync()).ReturnsAsync(1);
 
@@ -258,8 +289,9 @@ namespace MDBackofficeTests.controllertests
             {
                 HttpContext = context
             };
-            _userServiceMock.Setup(_userService => _userService.CheckUserRole("valid-token", "Admin")).Returns(false);
+            _userService.Setup(_userService => _userService.CheckUserRole("valid-token", "Admin")).Returns(false);
 
+            _unitOfWorkMock.Setup(u => u.CommitAsync()).ReturnsAsync(1);
 
 
             // Act
@@ -301,6 +333,13 @@ namespace MDBackofficeTests.controllertests
 
             var dto = new OperationTypeDto { Name = "test type 1", EstimatedDuration = 100, Status = true, RequiredStaff = reqStaffDto, Phases = phasesDto };
 
+            var context = new DefaultHttpContext();
+            context.Request.Headers["Authorization"] = "Bearer valid-token";
+            _controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = context
+            };
+            _userService.Setup(_userService => _userService.CheckUserRole("valid-token", "Admin")).Returns(false);
 
             _service.Setup(s => s.AddAsync(dto)).ReturnsAsync(dto);
             var context = new DefaultHttpContext();

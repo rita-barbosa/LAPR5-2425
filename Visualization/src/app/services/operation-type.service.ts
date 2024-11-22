@@ -1,22 +1,24 @@
 import { Injectable } from '@angular/core';
 import { MessageService } from './message.service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { catchError, map, Observable, of } from 'rxjs';
+import { catchError, map, Observable, of, switchMap } from 'rxjs';
 import { Specialization } from '../domain/specialization';
 import { OperationType } from '../domain/OperationType';
 import { ListOperationType } from '../domain/list-operation-type';
+import { OperationTypeEditEntity } from '../domain/OperationTypeEdit';
 
 @Injectable({
   providedIn: 'root'
 })
 export class OperationTypeService {
+  // Proceed with the PUT request to edit the operation type
 
   theServerURL = 'https://localhost:5001/api';
   token = localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')!).token : null;
   httpOptions = {
     headers: new HttpHeaders({
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${this.token}`
+       Authorization: `Bearer ${this.token}`
     })
   };
 
@@ -50,7 +52,7 @@ export class OperationTypeService {
 
   //------------------------/------------------------/------------------------
   public getOperationTypeById(name: string): Observable<OperationType> {
-    const url = `${this.theServerURL}/OperationTypes/${name}`;
+    const url = `${this.theServerURL}/OperationTypes/Get-WithName/${name}`;
 
     return this.http.get<OperationType>(url, this.httpOptions)
       .pipe(
@@ -59,9 +61,39 @@ export class OperationTypeService {
 
   }
 
-  editOperationType(operationType: ListOperationType) {
-    throw new Error('Method not implemented.');
+  editOperationType(operationTypeId: string, editOpType: ListOperationType) {
+    // Construct the initial entity with provided data
+    
+    var operationType = new OperationTypeEditEntity(
+      operationTypeId,
+      editOpType.name,
+      editOpType.estimatedDuration,
+      editOpType.status,
+      editOpType.requiredStaff,
+      editOpType.phases
+    );
+
+    const editUrl = `${this.theServerURL}/OperationTypes/Edit-OperationType`;
+  
+    // Proceed with the PUT request to edit the operation type
+    return this.http.put<any>(editUrl, operationType, this.httpOptions).pipe(
+      catchError((error) => {
+        this.handleError<any>('Edit operation type', error);
+        return of(null); // Return null if the PUT request fails
+      }));
+    }
+  
+  
+  getOperationTypeByName(name: string) {
+    const getUrl = `${this.theServerURL}/OperationTypes/Get-WithName/${name}`;
+
+    return this.http.get<any>(getUrl, this.httpOptions).pipe(
+      catchError((error) => {
+        this.handleError<any>('Get operation type by name', error);
+        return of(null);
+    })) 
   }
+  
 
   getOperationTypesByFilters(filters: any): Observable<any> {
     const url = `${this.theServerURL}/OperationTypes/Filtered-List`

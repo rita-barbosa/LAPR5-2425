@@ -6,6 +6,8 @@ using MDBackoffice.Domain.OperationTypes.ValueObjects.Phase;
 using System;
 using MDBackoffice.Domain.Logs;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
+using MDBackoffice.Domain.OperationTypes.ValueObjects;
 
 namespace MDBackoffice.Domain.OperationTypes
 {
@@ -14,9 +16,7 @@ namespace MDBackoffice.Domain.OperationTypes
 
         private readonly IUnitOfWork _unitOfWork;
         private readonly IOperationTypeRepository _repo;
-      
-       private readonly OperationTypeRecordService _recordService;
-
+        private readonly OperationTypeRecordService _recordService;
         private readonly LogService _logService;
 
         public OperationTypeService(IUnitOfWork unitOfWork, IOperationTypeRepository repo, LogService logService, OperationTypeRecordService operationTypeRecordService)
@@ -169,6 +169,33 @@ namespace MDBackoffice.Domain.OperationTypes
 
         }
 
+    private EditOpTypeDto ToDtoEdit(OperationType operationType)
+{
+    var requiredStaff = operationType.RequiredStaff.Count == 0 
+        ? new List<RequiredStaffDto>() 
+        : operationType.RequiredStaff.ConvertAll(staff => new RequiredStaffDto
+        {
+            StaffQuantity = staff.StaffQuantity.NumberRequired,
+            Function = staff.Function.Description,
+            Specialization = staff.SpecializationId.Value
+        });
+
+    return new EditOpTypeDto
+    {
+        Id = operationType.Id.Value.ToString(),
+        Name = operationType.Name.OperationName,
+        EstimatedDuration = operationType.EstimatedDuration.TotalDurationMinutes,
+        Status = operationType.Status.Active,
+        RequiredStaff = requiredStaff,
+        Phases = operationType.Phases.ConvertAll(phase => new PhaseDto
+        {
+            Description = phase.Description.Description,
+            Duration = phase.Duration.DurationMinutes
+        })
+    };
+}
+
+
         public async Task EditOperationType(EditOpTypeDto editOpTypeDto)
         {
             var operationType = await _repo.GetByIdAsync(new OperationTypeId(editOpTypeDto.Id));
@@ -205,6 +232,16 @@ namespace MDBackoffice.Domain.OperationTypes
 
             await _unitOfWork.CommitAsync();
 
+        }
+
+        public async Task<EditOpTypeDto> GetWithName(string name)
+        {
+            var operationType = await this._repo.GetByNameAsync(name);
+
+            if (operationType == null)
+                return null;
+
+            return ToDtoEdit(operationType);
         }
     }
 }

@@ -83,16 +83,31 @@
   }
   
   /* Styling for the operation details section */
-  .operation-details {
-    margin-left: 17%;
-    margin-right: 17%;
-    padding: 20px;
-    background-color: #f0f0f0fb;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    max-width: calc(100% - 34%);
-    box-sizing: content-box;
-  }
+  /* Center all content within operation-details */
+.operation-details {
+  margin-left: auto;
+  margin-right: auto;
+  padding: 20px;
+  background-color: #f0f0f0fb;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  max-width: 800px; /* Adjust as needed */
+  text-align: center; /* Centers inline and block elements like <p>, <h3>, etc. */
+}
+
+/* Ensure lists are also centered */
+.operation-details ul {
+  display: inline-block; /* Makes the list itself behave like an inline element */
+  text-align: left; /* Ensures list items align within the list */
+  margin: 0 auto; /* Centers the list horizontally */
+  padding: 0;
+}
+
+/* Additional alignment for list items */
+.operation-details ul li {
+  text-align: left; /* Aligns each item to the left for readability */
+}
+
   
   /* Header for operation details */
   .operation-details h3 {

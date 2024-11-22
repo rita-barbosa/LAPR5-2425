@@ -183,9 +183,15 @@ namespace MDBackofficeTests.servicetests.operationtype
              operationType.Object.Name.OperationName, operationType.Object.EstimatedDuration.TotalDurationMinutes,
               operationType.Object.Status.Active, reqStaffDto, phasesDto);
 
-            var editDto = new EditOpTypeDto(operationType.Object.Id.Value, "NEW NAME", 300);
+            var editDto = new EditOpTypeDto
+            {
+                Id = operationType.Object.Id.Value.ToString(),
+                Name = "NEW NAME",
+                EstimatedDuration = 300,
+                Status = true
+            };
 
-            _repoMock.Setup(r => r.GetByIdAsync(operationType.Object.Id)).ReturnsAsync(operationType.Object);
+            _repoMock.Setup(r => r.GetByIdWithStaffAsync(operationType.Object.Id)).ReturnsAsync(operationType.Object);
             _opRecordService.Setup(r =>r.AddAsync(operationType.Object)).ReturnsAsync(recordDto);
             _unitOfWorkMock.Setup(u => u.CommitAsync()).ReturnsAsync(1);
 

@@ -82,6 +82,7 @@ namespace MDBackoffice.Domain.OperationTypes
             if (!this.Status.Active)
                 throw new BusinessRuleValidationException("It is not possible to change the required staff for an inactive Operation Type.");
 
+            // Add new staff with the correct OperationTypeId
             foreach (RequiredStaffDto staffDto in newStaff)
             {
                 var existingStaff = this.RequiredStaff.Find(rs => rs.SpecializationId.Value == staffDto.Specialization);
@@ -94,7 +95,7 @@ namespace MDBackoffice.Domain.OperationTypes
                 }
                 else
                 {
-                    this.RequiredStaff.Add(new RequiredStaff(staffDto.StaffQuantity, staffDto.Function, staffDto.Specialization));
+                    RequiredStaff.Add(new RequiredStaff(staffDto.StaffQuantity, staffDto.Function, staffDto.Specialization));
                 }
             }
         }

@@ -4,12 +4,15 @@ using MDBackoffice.Domain.OperationTypes.ValueObjects.RequiredStaff;
 
 namespace MDBackoffice.Domain.OperationTypes
 {
-    public class EditOpTypeDto(string id, string newName, int newEstimatedDuration)
+    public class EditOpTypeDto
     {
-        public string Id { get; set; } = id;
-        public string Name { get; set; } = newName;
-        public int EstimatedDuration { get; set; } = newEstimatedDuration;
+        public string Id { get; set; } 
+        public string Name { get; set; } 
+        public int EstimatedDuration { get; set; } 
+        public bool Status { get; set; } 
         public List<RequiredStaffDto> RequiredStaff {get; set;}
         public List<PhaseDto> Phases {get; set;}
+
+        
     }
 }

@@ -3,10 +3,6 @@ import { RouterModule, Routes } from '@angular/router';
 import { MenuComponent } from './components/menu/menu.component';
 import { LoginComponent } from './components/login/login.component';
 import { AdminComponent } from './components/admin/admin.component';
-import { CubeComponent } from './components/cube/cube.component';
-import { CursoAngularComponent } from './components/curso-angular/curso-angular.component';
-import { CursoDetailComponent } from './components/curso-detail/curso-detail.component';
-import { TestModuleComponent } from './modules/test-module/test-module.component';
 import { StaffComponent } from './components/staff/staff.component';
 import { PatientComponent } from './components/patient/patient.component';
 import { CreatePatientProfileComponent } from './components/admin/create-patient-profile/create-patient-profile.component';
@@ -56,9 +52,6 @@ export const routes: Routes = [
   { path: 'add-operation-request-patient', component: AddOperationRequestPatientComponent},
   { path: 'create-operation-request', component: CreateOperationRequestComponent },
   { path: 'list-operation-type', component: ListOperationTypeComponent },
-  { path: 'cube', component: CubeComponent },
-  { path: 'curso-angular', component: CursoAngularComponent },
-  { path: 'curso-detail', component: CursoDetailComponent },
   { path: 'hospital-simulation', component: HospitalSimulationComponent },
   { path: 'create-operation-type', component: CreateOperationTypeComponent },
   { path: 'list-staff-profiles', component: ListStaffProfiles },
