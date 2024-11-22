@@ -19,14 +19,12 @@ interface UpdateOperationRequest {
   providedIn: 'root'
 })
 export class OperationRequestService {
-
-
   theServerURL = 'https://localhost:5001/api';
   token = localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')!).token : null;
   httpOptions = {
     headers: new HttpHeaders({
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${this.token}`
+      Authorization: `Bearer ${this.token}`
     })
    };
 
@@ -151,11 +149,26 @@ export class OperationRequestService {
       });
   }
 
-  
+  public removeOperationRequestToPatient(patientId: string, operationRequestId: string){
+    const url = `${this.theServerURL}/OperationRequest/Delete-OperationRequestFromPatient`;
+
+    let opReqHis: AddOrRemoveFromPatient = {
+      patientId: patientId,
+      operationRequestId: operationRequestId
+    }
+
+    this.http.put<AddOrRemoveFromPatient>(url, opReqHis, this.httpOptions)
+      .pipe(catchError(this.handleError<AddOrRemoveFromPatient>('Add Operation Request to Patient History')))
+      .subscribe(data => {
+        this.log(`Operation request successfully add to patient history.`);
+      });
+  }
+
+
 getAllOperationRequests() : Observable<OperationRequest[]> {
   const url = `${this.theServerURL}/OperationRequest/Get-AllOpRequests`;
 
-  return this.http.get<OperationRequest[]>(url)
+  return this.http.get<OperationRequest[]>(url, this.httpOptions)
     .pipe(
       catchError((error) => {
         this.handleError<OperationRequest[]>('Get all operation requests', error);
@@ -179,8 +192,21 @@ scheduleOperationRequest(selectedStaff: StaffWithFunction[], selectedRoomId: str
     .subscribe();
 }
 
+  deleteOperationRequestById(id: string) {
+    const url = `${this.theServerURL}/OperationRequest/${id}`;
 
-
+    return this.http.delete<{message : string}>(url, this.httpOptions)
+      .pipe(
+        catchError(this.handleError<{message : string}>('Remove Operation Type'))
+      ).subscribe({
+        next: () => {
+          this.log(`Operation request: ${id} was successfully removed.`);
+        },
+        error: (err) => {
+          this.log(`Failed to remove operation request: ${id}. Error: ${err.message}`);
+        }
+      });
+  }
 
   //------------------------/------------------------/------------------------
   private handleError<T>(operation = 'operation', result?: T) {

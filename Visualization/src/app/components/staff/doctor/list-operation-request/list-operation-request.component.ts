@@ -68,7 +68,7 @@ export class ListOperationRequestComponent implements OnInit {
       }
     });
   }
-  
+
   applyFilters(): void {
     this.fetchOperations();
   }
@@ -84,7 +84,7 @@ export class ListOperationRequestComponent implements OnInit {
       }
     });
   }
-  
+
   closeDetails(): void {
     // Hide the details section
     this.detailsVisible = false;
@@ -113,6 +113,9 @@ export class ListOperationRequestComponent implements OnInit {
   }
 
   deleteOperationRequest(operationRequest: ListOperationRequest): void {
-    // Implement delete logic
+    console.log('Delete button clicked:', operationRequest);
+    this.service.deleteOperationRequestById(operationRequest.id);
+    this.fetchOperations();
   }
+
 }

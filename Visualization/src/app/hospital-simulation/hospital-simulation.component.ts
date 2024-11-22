@@ -69,6 +69,7 @@ export class HospitalSimulationComponent implements AfterViewInit {
   activeElement!: Element | null;
   userInterface!: UserInterface;
   workDayTime!: number;
+  
 
 
   fixedViewCamera!: Camera;
@@ -117,7 +118,6 @@ export class HospitalSimulationComponent implements AfterViewInit {
     this.renderer.setPixelRatio(devicePixelRatio);
     document.body.appendChild(this.renderer.domElement);
 
-
     const aspectRatio = this.getAspectRatio();
 
     this.camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 10000);
@@ -138,11 +138,6 @@ export class HospitalSimulationComponent implements AfterViewInit {
     // // Position the camera above the.layout, looking down
     this.camera.position.set(20, 30, 30); // Higher Y position to hover over.layout
     this.camera.lookAt(0, 0, 0); // Look down at the center of the scene
-
-
-
-    const ambientLight = new THREE.AmbientLight(0xffffff, 3);
-    this.scene.add(ambientLight);
 
     this.getElementsFromHtml();
 

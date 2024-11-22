@@ -63,7 +63,7 @@ export class OperationTypeService {
 
   editOperationType(operationTypeId: string, editOpType: ListOperationType) {
     // Construct the initial entity with provided data
-    
+    console.log("It reached here : Start editMethod at service.");
     var operationType = new OperationTypeEditEntity(
       operationTypeId,
       editOpType.name,

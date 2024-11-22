@@ -191,8 +191,7 @@ namespace MDBackofficeTests.controllertests
             var expectedDto = new OperationTypeDto {Name ="test type 1",EstimatedDuration = 100, Status = true,RequiredStaff = reqStaffDto,Phases = phasesDto };
 
             _repoMock.Setup(repo => repo.GetByIdAsync(new OperationTypeId(operationTypeId))).ReturnsAsync(operationType);
-            _unitOfWorkMock.Setup(u => u.CommitAsync()).ReturnsAsync(1);
-
+           
             var context = new DefaultHttpContext();
             context.Request.Headers["Authorization"] = "Bearer valid-token";
             _controller.ControllerContext = new ControllerContext
@@ -201,6 +200,7 @@ namespace MDBackofficeTests.controllertests
             };
             _userService.Setup(_userService => _userService.CheckUserRole("valid-token", "Admin")).Returns(false);
 
+            _unitOfWorkMock.Setup(u => u.CommitAsync()).ReturnsAsync(1);
 
             // Act
             var result = await _controller.RemoveOperationType(operationTypeId);

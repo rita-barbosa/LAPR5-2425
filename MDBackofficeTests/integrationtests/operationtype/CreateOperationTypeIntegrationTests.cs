@@ -1,4 +1,5 @@
 ﻿using MDBackoffice.Controllers;
+using MDBackoffice.Domain.Emails;
 using MDBackoffice.Domain.Logs;
 using MDBackoffice.Domain.OperationTypes;
 using MDBackoffice.Domain.OperationTypes.ValueObjects.Phase;
@@ -7,20 +8,16 @@ using MDBackoffice.Domain.OperationTypesRecords;
 using MDBackoffice.Domain.Shared;
 using MDBackoffice.Domain.Users;
 using Microsoft.AspNetCore.Mvc;
-using Moq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Xunit;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using IConfiguration = Microsoft.Extensions.Configuration.IConfiguration;
+using Moq;
+
+using Xunit;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Authentication;
 using MDBackoffice.Domain.Tokens;
-using MDBackoffice.Domain.Emails;
 using MDBackoffice.Infrastructure.Emails;
 using Microsoft.Extensions.Configuration;
 using MDBackoffice.Infrastructure.Users;
@@ -72,6 +69,7 @@ namespace MDBackofficeTests.integrationtests.operationtype
             _opRecordService = new Mock<OperationTypeRecordService>(_unitOfWorkMock.Object, _logServiceMock.Object, new Mock<IOperationTypeRecordRepository>().Object);
 
             _service = new OperationTypeService(_unitOfWorkMock.Object, _repoMock.Object, _logServiceMock.Object, _opRecordService.Object);
+        
         }
 
         [Fact]

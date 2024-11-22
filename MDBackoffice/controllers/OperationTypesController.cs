@@ -24,6 +24,21 @@ namespace MDBackoffice.Controllers
             _userSvc = userSvc;
         }
 
+        [HttpGet()]
+        public async Task<ActionResult<List<OperationTypeDto>>> GetAllAvailable()
+        {
+            try
+            {
+                var operationType = await _service.GetAllAsync();
+                return Ok(operationType);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { V = $"An unexpected error occurred: {ex.Message}" });
+            }
+        }
+
+
         // GET: api/operationTypes/5
         [HttpGet("{id}")]
         public async Task<ActionResult<OperationTypeDto>> GetGetById(string id)
@@ -77,7 +92,7 @@ namespace MDBackoffice.Controllers
 
         //POST: api/operationTypes/Filtered-List
         [HttpPost("Filtered-List")]
-        /* [Authorize(Policy = "Admin")] */
+        // [Authorize(Policy = "Admin")]
         public async Task<ActionResult<List<OperationTypeDto>>> GetFilteredOperationTypes(OperationTypeQueryParametersDto dto)
         {
             var token = HttpContext.Request.Headers.Authorization.ToString()?.Split(' ')[1];
@@ -117,9 +132,9 @@ namespace MDBackoffice.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(new { 
+                return BadRequest(new {
                     error = $"An unexpected error occurred: {ex.Message}",
-                    details = ex.InnerException?.Message 
+                    details = ex.InnerException?.Message
                 });
             }
             return Ok(new { message = "Operation successfully edited." });

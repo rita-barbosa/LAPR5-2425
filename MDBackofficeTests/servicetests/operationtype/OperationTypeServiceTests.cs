@@ -4,7 +4,6 @@ using MDBackoffice.Domain.OperationTypes.ValueObjects.Phase;
 using MDBackoffice.Domain.OperationTypes.ValueObjects.RequiredStaff;
 using MDBackoffice.Domain.OperationTypesRecords;
 using MDBackoffice.Domain.Shared;
-using Microsoft.AspNetCore.Mvc;
 using Moq;
 using Xunit;
 

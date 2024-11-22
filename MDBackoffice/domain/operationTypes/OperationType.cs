@@ -99,6 +99,24 @@ namespace MDBackoffice.Domain.OperationTypes
                 }
             }
         }
+
+        /* public void ChangeRequiredStaff(List<RequiredStaffDto> newStaff)
+        {
+            if (!this.Status.Active)
+                throw new BusinessRuleValidationException("It is not possible to change the required staff for an inactive Operation Type.");
+
+            // Clear the current collection
+            this.RequiredStaff.Clear();
+
+            foreach (RequiredStaffDto staffDto in newStaff)
+            {
+                var newStaff1 = new RequiredStaff(staffDto.StaffQuantity, staffDto.Function, staffDto.Specialization);
+                newStaff1.OperationTypeId = this.Id;
+                this.RequiredStaff.Add(newStaff1);
+            }
+        } */
+
+
         public void ChangePhases(List<PhaseDto> newPhases)
         {
             if (!this.Status.Active)

@@ -117,6 +117,8 @@ namespace MDBackofficeTests.integrationtests.operationtype
                 Status = true
             };
 
+
+
             _repoMock.Setup(r => r.GetByIdWithStaffAsync(operationType.Id)).ReturnsAsync(operationType);
             _opRecordService.Setup(r =>r.AddAsync(operationType)).ReturnsAsync(recordDto);
             _unitOfWorkMock.Setup(u => u.CommitAsync()).ReturnsAsync(1);

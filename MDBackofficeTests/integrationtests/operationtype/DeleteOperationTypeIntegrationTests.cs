@@ -30,6 +30,10 @@ namespace MDBackofficeTests.integrationtests.operationtype
         private readonly Mock<OperationTypeRecordService> _opRecordService;
         private readonly Mock<UserService> _userService;
         private readonly OperationTypeService _service;
+        private readonly Mock<UserService> _userServiceMock;
+        private readonly Mock<IConfiguration> _configurationMock = new Mock<IConfiguration>();
+        private readonly Mock<UserManager<User>> _userManagerMock;
+        private readonly Mock<ILoginAdapter> _loginAdapterMock;
       
 
         public DeletOperationTypesIntegrationTests()
@@ -68,6 +72,7 @@ namespace MDBackofficeTests.integrationtests.operationtype
             _opRecordService = new Mock<OperationTypeRecordService>(_unitOfWorkMock.Object, _logServiceMock.Object, new Mock<IOperationTypeRecordRepository>().Object);
 
             _service = new OperationTypeService(_unitOfWorkMock.Object, _repoMock.Object, _logServiceMock.Object, _opRecordService.Object);
+
         }
 
         [Fact]

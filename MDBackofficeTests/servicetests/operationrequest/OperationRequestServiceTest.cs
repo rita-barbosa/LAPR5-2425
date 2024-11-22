@@ -365,11 +365,12 @@ public class OperationRequestServiceTests
             
             _userManagerMock.Setup(r => r.FindByEmailAsync(email)).ReturnsAsync(userMock.Object);
             _repoStaMock.Setup(r => r.FindStaffWithUserId(patientId)).ReturnsAsync(staffMock.Object);
-            _repoPatMock.Setup(r => r.GetByIdAsync(It.IsAny<MedicalRecordNumber>())).ReturnsAsync(patientMock.Object);
+            _repoPatMock.Setup(r => r.GetByIdWithAppointmentHistoryAsync(It.IsAny<MedicalRecordNumber>())).ReturnsAsync(patientMock.Object);
             _repoMock.Setup(repo => repo.GetByIdAsync(It.IsAny<OperationRequestId>())).ReturnsAsync(operationRequest.Object);
             patientMock.Setup(r => r.RemoveRequestFromHistory(operationRequest.Object.Id));
             _repoMock.Setup(r => r.Remove(operationRequest.Object));
             _unitOfWorkMock.Setup(r => r.CommitAsync()).ReturnsAsync(1);
+            
 
             // Act
             var result = await _service.DeleteOperationRequestFromPatient(patientId, operationRequest.Object.Id.Value, email);

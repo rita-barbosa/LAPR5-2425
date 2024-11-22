@@ -3,11 +3,11 @@ import { MessageService } from './message.service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { catchError, Observable, of } from 'rxjs';
 import { EditPatient } from '../domain/edit-patient';
-import { Patient } from '../domain/patient';
 import { PatientQueryParameters } from '../domain/patient-query-parameters';
 import { PatientWithId } from '../domain/patient-with-id';
 import { EditPatientProfile } from '../domain/edit-patient-profile';
 import { IdPasser } from '../domain/IdPasser';
+import { Patient } from '../domain/Patient';
 
 @Injectable({
   providedIn: 'root'

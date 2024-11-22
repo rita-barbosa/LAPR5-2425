@@ -48,7 +48,7 @@ export class StaffService {
       specializationId: specialization
     };
 
-    this.http.post<Staff>(url, staff)
+    this.http.post<Staff>(url, staff, this.httpOptions)
       .pipe(catchError(this.handleError<Staff>('Create staff profile')))
       .subscribe(data => {
         this.log(`Staff profile: ${data.email} was successfully created.`);
@@ -136,7 +136,7 @@ export class StaffService {
         })
     );
   }
-  
+
 
   getStaffById(id: string): Observable<StaffWithId> {
     const url = `${this.theServerURL}/Staff/${id}`;

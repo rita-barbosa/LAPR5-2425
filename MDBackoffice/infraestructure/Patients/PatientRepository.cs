@@ -150,6 +150,14 @@ namespace MDBackoffice.Infrastructure.Patients
                 .FirstOrDefaultAsync(); // Get the first match or return null if none found
         }
 
-        
+        public async Task<Patient> GetByIdWithAppointmentHistoryAsync(MedicalRecordNumber medicalRecordNumber)
+        {
+             var patient =
+                _context.Patients
+                .Include(p => p.AppointmentList)
+                .Where(p => p.Id.Equals(medicalRecordNumber));
+
+            return patient.FirstOrDefault();
+        }
     }
 }
