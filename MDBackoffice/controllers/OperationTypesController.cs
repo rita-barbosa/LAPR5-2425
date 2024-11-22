@@ -93,7 +93,6 @@ namespace MDBackoffice.Controllers
         //POST: api/operationTypes/Filtered-List
         [HttpPost("Filtered-List")]
         // [Authorize(Policy = "Admin")]
-        /* [Authorize(Policy = "Admin")] */
         public async Task<ActionResult<List<OperationTypeDto>>> GetFilteredOperationTypes(OperationTypeQueryParametersDto dto)
         {
             var token = HttpContext.Request.Headers.Authorization.ToString()?.Split(' ')[1];

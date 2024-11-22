@@ -5,19 +5,26 @@ namespace MDBackoffice.Domain.Patients
 {
     public class AppointmentHistoryId : EntityId
     {
-
-        public AppointmentHistoryId(String value, bool v) :base(value)
+        // Parameterless constructor required by EF Core
+        public AppointmentHistoryId(string value) : base(value)
         {
-            
         }
 
-        override
-        protected  Object createFromString(String text){
+        // Constructor for normal instantiation
+        public AppointmentHistoryId(string value, bool v) : base(value)
+        {
+        }
+
+        // Override to create the object from a string
+        protected override object createFromString(string text)
+        {
             return text;
         }
-        override
-        public String AsString(){
-            return (String) base.Value;
+
+        // Override to convert to string
+        public override string AsString()
+        {
+            return (string)base.Value;
         }
     }
 }

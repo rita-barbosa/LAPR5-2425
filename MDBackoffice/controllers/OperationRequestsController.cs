@@ -6,6 +6,7 @@ using MDBackoffice.Domain.OperationRequests;
 using MDBackoffice.Domain.Shared;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
+using MDBackoffice.Domain.Users;
 
 namespace MDBackoffice.Controllers
 {
@@ -14,10 +15,12 @@ namespace MDBackoffice.Controllers
     public class OperationRequestController : ControllerBase
     {
         private readonly OperationRequestService _service;
+        private readonly UserService _userSvc;
 
-        public OperationRequestController(OperationRequestService service)
+        public OperationRequestController(OperationRequestService service, UserService svc)
         {
             _service = service;
+            _userSvc = svc;
         }
 
         // GET: api/OperationRequest
@@ -53,11 +56,18 @@ namespace MDBackoffice.Controllers
 
         // POST: api/OperationRequest
         [HttpPost]
-        [Authorize(Policy = "Doctor")]
+       /*  [Authorize(Policy = "Doctor")] */
         public async Task<ActionResult<OperationRequestDto>> Create(CreatingOperationRequestDto dto)
         {
             try
             {
+                var token = HttpContext.Request.Headers.Authorization.ToString()?.Split(' ')[1];
+
+                if (string.IsNullOrWhiteSpace(token) || _userSvc.CheckUserRole(token, "Doctor")) 
+                {
+                    return BadRequest("Invalid authorization or user role.");
+                }
+
                 var opReq = await _service.AddAsync(dto);
 
                 return CreatedAtAction(nameof(GetGetById), new { id = opReq.Id }, opReq);
@@ -75,9 +85,17 @@ namespace MDBackoffice.Controllers
 
         // PUT: api/OperationRequest/Update
         [HttpPut("Update")]
-        [Authorize(Policy = "Doctor")]
+       /*  [Authorize(Policy = "Doctor")] */
         public async Task<ActionResult<OperationRequestDto>> Update(UpdateOperationRequestDto dto)
         {
+
+            var token = HttpContext.Request.Headers.Authorization.ToString()?.Split(' ')[1];
+
+                if (string.IsNullOrWhiteSpace(token) || _userSvc.CheckUserRole(token, "Doctor")) 
+                {
+                    return BadRequest("Invalid authorization or user role.");
+                }
+
             string? userEmail = User.FindFirstValue(ClaimTypes.Email);
 
             if (!await _service.CheckDoctorIsRequestingDoctor(userEmail, dto.Id)){
@@ -112,7 +130,14 @@ namespace MDBackoffice.Controllers
         {
             try
             {
-                var email = User.FindFirstValue(ClaimTypes.Email);
+                var token = HttpContext.Request.Headers.Authorization.ToString()?.Split(' ')[1];
+
+                if (string.IsNullOrWhiteSpace(token) || _userSvc.CheckUserRole(token, "Doctor")) 
+                {
+                    return BadRequest("Invalid authorization or user role.");
+                }
+
+                var email = _userSvc.DecodeJwtToken(token).Email;
 
                 // var email = "ritabfbarbosa@gmail.com";
                 if (email == null)
@@ -139,21 +164,29 @@ namespace MDBackoffice.Controllers
         }
 
         // POST: api/OperationRequest/Delete-OperationRequest
-        [HttpDelete]
-        [Route("Delete-OperationRequest")]
-        [Authorize(Policy = "Doctor")]
-        public async Task<ActionResult> DeleteOperationRequest([FromBody] IdPassDto idPassDto) 
+        [HttpDelete("{id}")]
+        //[Authorize(Policy = "Doctor")]
+        public async Task<ActionResult> DeleteOperationRequest(string id) 
         {
             try
             {
-                bool result = await _service.DeleteOperationRequest(idPassDto.Id, User.FindFirstValue(ClaimTypes.Email)); 
+                var token = HttpContext.Request.Headers.Authorization.ToString()?.Split(' ')[1];
+
+                if (string.IsNullOrWhiteSpace(token) || _userSvc.CheckUserRole(token, "Doctor")) 
+                {
+                    return BadRequest(new {message = "Invalid authorization or user role."});
+                }
+
+                var email = _userSvc.DecodeJwtToken(token).Email;
+
+                bool result = await _service.DeleteOperationRequest(id, email); 
                 if (result)
                 {
-                    return Ok("Operation request successfully removed.");
+                    return Ok(new {message = "Operation request successfully removed."});
                 }
                 else
                 {
-                    return NotFound($"Operation request with ID {idPassDto.Id} not found or wrong authorization."); 
+                    return NotFound($"Operation request with ID {id} not found or wrong authorization."); 
                 }
             }
             catch (BusinessRuleValidationException ex)
@@ -167,14 +200,23 @@ namespace MDBackoffice.Controllers
         }
 
         // POST: api/OperationRequest/Delete-OperationRequest
-        [HttpDelete]
+        [HttpPut]
         [Route("Delete-OperationRequestFromPatient")]
-        [Authorize(Policy = "Doctor")]
+       /*  [Authorize(Policy = "Doctor")] */
         public async Task<ActionResult> DeleteOperationRequestFromPatient([FromBody] AddOrRemoveFromPatientDto removingFromPatientDto) 
         {
             try
             {
-                bool result = await _service.DeleteOperationRequestFromPatient(removingFromPatientDto.PatientId, removingFromPatientDto.OperationRequestId, User.FindFirstValue(ClaimTypes.Email)); 
+                var token = HttpContext.Request.Headers.Authorization.ToString()?.Split(' ')[1];
+
+                if (string.IsNullOrWhiteSpace(token) || _userSvc.CheckUserRole(token, "Doctor")) 
+                {
+                    return BadRequest(new {message = "Invalid authorization or user role."});
+                }
+
+                var email = _userSvc.DecodeJwtToken(token).Email;
+
+                bool result = await _service.DeleteOperationRequestFromPatient(removingFromPatientDto.PatientId, removingFromPatientDto.OperationRequestId, email); 
                 if (result)
                 {
                     return Ok("Operation request successfully removed from patient profile.");
@@ -197,12 +239,21 @@ namespace MDBackoffice.Controllers
         // POST: api/OperationRequest/Add-OperationRequestToPatient
         [HttpPost]
         [Route("Add-OperationRequestToPatient")]
-        [Authorize(Policy = "Doctor")]
+        /* [Authorize(Policy = "Doctor")] */
         public async Task<ActionResult> AddOperationRequestToPatient([FromBody] AddOrRemoveFromPatientDto addOrRemoveFromPatientDto) 
         {
             try
             {
-                bool result = await _service.AddOperationRequestToPatient(addOrRemoveFromPatientDto.PatientId, addOrRemoveFromPatientDto.OperationRequestId, User.FindFirstValue(ClaimTypes.Email)); 
+                var token = HttpContext.Request.Headers.Authorization.ToString()?.Split(' ')[1];
+
+                if (string.IsNullOrWhiteSpace(token) || _userSvc.CheckUserRole(token, "Doctor")) 
+                {
+                    return BadRequest(new {message = "Invalid authorization or user role."});
+                }
+
+                var email = _userSvc.DecodeJwtToken(token).Email;
+
+                bool result = await _service.AddOperationRequestToPatient(addOrRemoveFromPatientDto.PatientId, addOrRemoveFromPatientDto.OperationRequestId, email); 
                 if (result)
                 {
                     return Ok(new { message ="Operation request successfully add."});

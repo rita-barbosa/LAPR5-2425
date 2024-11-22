@@ -179,11 +179,18 @@ namespace MDBackoffice.Controllers
         }
 
         [HttpPost("create-staff")]
-        [Authorize(Policy = "Admin")]
+        /* [Authorize(Policy = "Admin")] */
         public async Task<IActionResult> RegisterStaffUser([FromBody] RegisterUserDto registerUserDto)
         {
             try
             {
+                var token = HttpContext.Request.Headers.Authorization.ToString()?.Split(' ')[1];
+
+                if (string.IsNullOrWhiteSpace(token) || _userService.CheckUserRole(token, "Admin")) 
+                {
+                    return BadRequest("Invalid authorization or user role.");
+                }
+
                 var user = await _userService.CreateStaffUserAsync(registerUserDto);
                 await _staffService.AddUser(user, registerUserDto.Email, registerUserDto.Phone);
                 string email = await _staffService.GetProfileEmail(user.Email.ToString(), registerUserDto.Phone);

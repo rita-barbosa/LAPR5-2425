@@ -234,7 +234,7 @@ namespace MDBackoffice.Domain.OperationRequests
                 throw new BusinessRuleValidationException("No staff found with this user.");
             }
 
-            Patient patient = await _repoPat.GetByIdAsync(new MedicalRecordNumber(patientId));
+            Patient patient = await _repoPat.GetByIdWithAppointmentHistoryAsync(new MedicalRecordNumber(patientId));
             if (patient == null)
             {
                 throw new BusinessRuleValidationException("No patient found with this id.");
@@ -260,7 +260,7 @@ namespace MDBackoffice.Domain.OperationRequests
                 throw new BusinessRuleValidationException("No staff found with this user.");
             }
 
-            Patient patient = await _repoPat.GetByIdAsync(new MedicalRecordNumber(patientId));
+            Patient patient = await _repoPat.GetByIdWithAppointmentHistoryAsync(new MedicalRecordNumber(patientId));
             if (patient == null)
             {
                 throw new BusinessRuleValidationException("No patient found with this id.");
