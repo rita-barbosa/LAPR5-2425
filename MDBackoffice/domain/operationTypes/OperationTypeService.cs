@@ -36,6 +36,8 @@ namespace MDBackoffice.Domain.OperationTypes
             return listDto;
         }
 
+        
+
         public async Task<OperationTypeDto> GetByIdAsync(OperationTypeId id)
         {
             var operationType = await this._repo.GetByIdWithStaffAsync(id);
