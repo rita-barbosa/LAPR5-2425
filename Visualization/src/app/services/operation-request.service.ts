@@ -15,6 +15,14 @@ interface UpdateOperationRequest {
   deadlineDate: string
 }
 
+interface OperationRequestScheduleInfo {
+  selectedStaff: StaffWithFunction[], 
+  selectedRoomId: string, 
+  operationRequestId: string, 
+  algorithm: string,
+  day: string
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -186,17 +194,19 @@ getAllOperationRequests() : Observable<OperationRequest[]> {
   );
 }
 
-  scheduleOperationRequest(selectedStaff: StaffWithFunction[], selectedRoomId: string, operationRequestId: string, algorithm: string) {
+  scheduleOperationRequest(selectedStaffChosen: StaffWithFunction[], selectedRoomIdChosen: string, operationRequestIdChosen: string, algorithmChosen: string, dayChosen: string) {
     const url = `${this.theServerURL}/OperationRequest/Schedule`;
 
-    const params = new HttpParams()
-      .set('selectedStaff', JSON.stringify(selectedStaff))
-      .set('selectedRoomId', selectedRoomId)
-      .set('operationRequestId', operationRequestId)
-      .set('algorithm', algorithm);
+    const body: OperationRequestScheduleInfo = {
+      selectedStaff: selectedStaffChosen,
+      selectedRoomId: selectedRoomIdChosen,
+      operationRequestId: operationRequestIdChosen,
+      algorithm: algorithmChosen,
+      day: dayChosen
+    }; 
 
     this.http
-      .post(url, { params, ...this.httpOptions })
+      .post(url, body, {...this.httpOptions })
       .pipe(catchError(this.handleError('Scheduling Operation Request')))
       .subscribe();
   }
