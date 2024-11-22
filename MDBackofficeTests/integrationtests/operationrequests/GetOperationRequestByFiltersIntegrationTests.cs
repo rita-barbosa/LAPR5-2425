@@ -65,9 +65,9 @@ public class GetOperationRequestByFiltersIntegrationTests
                                                                  new Mock<IAuthenticationSchemeProvider>().Object,
                                                                  new Mock<IUserConfirmation<User>>().Object);
 
-            var _userServiceMock = new Mock<UserService>(userManagerMock.Object, roleManagerMock.Object, _logServiceMock.Object, _signinManagerMock.Object, _emailServiceMock.Object, _configurationMock.Object, tokenServiceMock.Object, _loginAdapterMock.Object);
+             _userServiceMock = new Mock<UserService>(userManagerMock.Object, roleManagerMock.Object, _logServiceMock.Object, _signinManagerMock.Object, _emailServiceMock.Object, _configurationMock.Object, tokenServiceMock.Object, _loginAdapterMock.Object);
 
-            var _patientServiceMock = new Mock<PatientService>(_unitOfWorkMock.Object, _logServiceMock.Object, _configurationMock.Object, _repoPatMock.Object, _userServiceMock.Object, _emailServiceMock.Object);
+             _patientServiceMock = new Mock<PatientService>(_unitOfWorkMock.Object, _logServiceMock.Object, _configurationMock.Object, _repoPatMock.Object, _userServiceMock.Object, _emailServiceMock.Object);
 
 
             _service = new OperationRequestService(_unitOfWorkMock.Object, _repoMock.Object,
@@ -77,7 +77,7 @@ public class GetOperationRequestByFiltersIntegrationTests
 
     }
 
-       /*  [Fact]
+        [Fact]
         public async Task GetOperationRequestByFilters_ReturnsOkOperationTypeDtos_IntegrationControllerService()
         {
             // Arrange
@@ -85,18 +85,15 @@ public class GetOperationRequestByFiltersIntegrationTests
 
             // Set up the User claims
             var emailClaim = "email@email.com";
-            var claims = new List<Claim>
-            {
-                new Claim(ClaimTypes.Email, emailClaim)
-            };
-            var identity = new ClaimsIdentity(claims, "TestAuthType");
-            var claimsPrincipal = new ClaimsPrincipal(identity);
-
-            // Create a mock for the controller context and set the User
+            var context = new DefaultHttpContext();
+            context.Request.Headers["Authorization"] = "Bearer valid-token";
             _controller.ControllerContext = new ControllerContext
             {
-                HttpContext = new DefaultHttpContext { User = claimsPrincipal }
+                HttpContext = context
             };
+            _userServiceMock.Setup(_userService => _userService.CheckUserRole("valid-token", "Doctor")).Returns(false);
+
+            _userServiceMock.Setup(_userService => _userService.DecodeJwtToken("valid-token")).Returns((emailClaim, new List<string> { "Doctor" }));
 
             var staffId = "D202400001";
             var opTyId = "tumor removal";
@@ -173,7 +170,7 @@ public class GetOperationRequestByFiltersIntegrationTests
             }
 
             _repoMock.Verify(repo => repo.FindAllConditioned(new StaffId(staffId), name, priority, operationType, status, dateOfRequest, deadLineDate), Times.Once);
-        } */
+        }
 
         [Fact]
     public async Task GetOperationRequestByFiltersAsync_ReturnsCorrectOperationRequestDtos_IntegrationServiceDomain()

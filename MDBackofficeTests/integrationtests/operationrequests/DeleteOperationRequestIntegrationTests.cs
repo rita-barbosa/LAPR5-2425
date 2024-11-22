@@ -73,12 +73,12 @@ namespace MDBackofficeTests.integrationtests.operationrequests
             // Arrange
             // Set up the User claims
             var emailClaim = "email@email.com";
-            var claims = new List<Claim>
-            {
-                new Claim(ClaimTypes.Email, emailClaim)
-            };
-            var identity = new ClaimsIdentity(claims, "TestAuthType");
-            var claimsPrincipal = new ClaimsPrincipal(identity);
+            // var claims = new List<Claim>
+            // {
+            //     new Claim(ClaimTypes.Email, emailClaim)
+            // };
+            // var identity = new ClaimsIdentity(claims, "TestAuthType");
+            // var claimsPrincipal = new ClaimsPrincipal(identity);
 
             var _service = new OperationRequestService(_unitOfWorkMock.Object, _repoMock.Object,
                                                     _repoStaMock.Object, _logServiceMock.Object, _patientServiceMock.Object,
@@ -87,10 +87,15 @@ namespace MDBackofficeTests.integrationtests.operationrequests
             var _controller = new OperationRequestController(_service, _userServiceMock.Object);
 
             // Create a mock for the controller context and set the User
+            var context = new DefaultHttpContext();
+            context.Request.Headers["Authorization"] = "Bearer valid-token";
             _controller.ControllerContext = new ControllerContext
             {
-                HttpContext = new DefaultHttpContext { User = claimsPrincipal }
+                HttpContext = context
             };
+            _userServiceMock.Setup(_userService => _userService.CheckUserRole("valid-token", "Doctor")).Returns(false);
+
+            _userServiceMock.Setup(_userService => _userService.DecodeJwtToken("valid-token")).Returns((emailClaim, new List<string> { "Doctor" }));
 
 
             var staffId = "D202400001";
@@ -127,10 +132,10 @@ namespace MDBackofficeTests.integrationtests.operationrequests
                 }
             };
 
-            var operationTypeMock = new Mock<OperationType>(opTyId, 100, true, reqStaff,phases);
+            var operationTypeMock = new Mock<OperationType>(opTyId, 100, true, reqStaff, phases);
 
-            var operationRequest = new Mock<OperationRequest>("TestCode","2024-12-31","Elective","2024-10-25",
-                staffId,"descript",patientId,opTyId);
+            var operationRequest = new Mock<OperationRequest>("TestCode", "2024-12-31", "Elective", "2024-10-25",
+                staffId, "descript", patientId, opTyId);
 
 
             var userMock = new Mock<User>();
@@ -148,16 +153,6 @@ namespace MDBackofficeTests.integrationtests.operationrequests
             _repoMock.Setup(r => r.Remove(operationRequest.Object));
             _unitOfWorkMock.Setup(r => r.CommitAsync()).ReturnsAsync(1);
 
-            var context = new DefaultHttpContext();
-            context.Request.Headers["Authorization"] = "Bearer valid-token";
-            _controller.ControllerContext = new ControllerContext
-            {
-                HttpContext = context
-            };
-            _userServiceMock.Setup(_userService => _userService.CheckUserRole("valid-token", "Doctor")).Returns(false);
-
-            _userServiceMock.Setup(_userService => _userService.DecodeJwtToken("valid-token")).Returns((emailClaim, new List<string> { "Doctor" }));
-
 
             // Act
             var result = await _controller.DeleteOperationRequest(operationRequest.Object.Id.Value);
@@ -167,31 +162,30 @@ namespace MDBackofficeTests.integrationtests.operationrequests
         }
 
 
-        /* [Fact]
+        [Fact]
         public async Task DeleteOperationRequestFromPatient_ReturnsOkResponse_IntegrationControllerService()
         {
             // Arrange
 
             // Set up the User claims
             var emailClaim = "email@email.com";
-            var claims = new List<Claim>
-            {
-                new Claim(ClaimTypes.Email, emailClaim)
-            };
-            var identity = new ClaimsIdentity(claims, "TestAuthType");
-            var claimsPrincipal = new ClaimsPrincipal(identity);
 
-             var _service = new OperationRequestService(_unitOfWorkMock.Object, _repoMock.Object,
-                                                    _repoStaMock.Object, _logServiceMock.Object, _patientServiceMock.Object,
-                                                    _repoPatMock.Object, _repoOpTypeMock.Object, _userServiceMock.Object);
+            var _service = new OperationRequestService(_unitOfWorkMock.Object, _repoMock.Object,
+                                                   _repoStaMock.Object, _logServiceMock.Object, _patientServiceMock.Object,
+                                                   _repoPatMock.Object, _repoOpTypeMock.Object, _userServiceMock.Object);
 
             var _controller = new OperationRequestController(_service, _userServiceMock.Object);
 
             // Create a mock for the controller context and set the User
+            var context = new DefaultHttpContext();
+            context.Request.Headers["Authorization"] = "Bearer valid-token";
             _controller.ControllerContext = new ControllerContext
             {
-                HttpContext = new DefaultHttpContext { User = claimsPrincipal }
+                HttpContext = context
             };
+            _userServiceMock.Setup(_userService => _userService.CheckUserRole("valid-token", "Doctor")).Returns(false);
+
+            _userServiceMock.Setup(_userService => _userService.DecodeJwtToken("valid-token")).Returns((emailClaim, new List<string> { "Doctor" }));
 
 
             var staffId = "D202400001";
@@ -228,10 +222,10 @@ namespace MDBackofficeTests.integrationtests.operationrequests
                 }
             };
 
-            var operationTypeMock = new Mock<OperationType>(opTyId, 100, true, reqStaff,phases);
+            var operationTypeMock = new Mock<OperationType>(opTyId, 100, true, reqStaff, phases);
 
-            var operationRequest = new Mock<OperationRequest>("TestCode","2024-12-31","Elective","2024-10-25",
-                staffId,"descript",patientId,opTyId);
+            var operationRequest = new Mock<OperationRequest>("TestCode", "2024-12-31", "Elective", "2024-10-25",
+                staffId, "descript", patientId, opTyId);
 
             var removeDto = new AddOrRemoveFromPatientDto(patientId, operationRequest.Object.Id.Value);
 
@@ -241,46 +235,37 @@ namespace MDBackofficeTests.integrationtests.operationrequests
             userMock.Setup(u => u.Email).Returns(email);
             userMock.Setup(u => u.Status).Returns(true);
             userMock.Setup(u => u.PasswordHash).Returns(password);
-          
+
             _userManagerMock.Setup(r => r.FindByEmailAsync(email)).ReturnsAsync(userMock.Object);
             _repoStaMock.Setup(r => r.FindStaffWithUserId(patientId)).ReturnsAsync(staffMock.Object);
             _repoPatMock.Setup(repo => repo.GetByIdWithAppointmentHistoryAsync(It.IsAny<MedicalRecordNumber>())).ReturnsAsync(patientMock.Object);
             _unitOfWorkMock.Setup(r => r.CommitAsync()).ReturnsAsync(1);
-
-            var context = new DefaultHttpContext();
-            context.Request.Headers["Authorization"] = "Bearer valid-token";
-            _controller.ControllerContext = new ControllerContext
-            {
-                HttpContext = context
-            };
-            _userServiceMock.Setup(_userService => _userService.CheckUserRole("valid-token", "Admin")).Returns(false);
-
 
             // Act
             var result = await _controller.DeleteOperationRequestFromPatient(removeDto);
 
             // Assert
             Assert.IsType<OkObjectResult>(result);
-        } */
+        }
 
 
-            [Fact]
-    public async Task DeleteOperationRequest_ReturnsOkResponse_IntegrationServiceDomain()
-    {
-       // Arrange
-        var _service = new OperationRequestService(_unitOfWorkMock.Object, _repoMock.Object,
-                                                    _repoStaMock.Object, _logServiceMock.Object, _patientServiceMock.Object,
-                                                    _repoPatMock.Object, _repoOpTypeMock.Object, _userServiceMock.Object);
+        [Fact]
+        public async Task DeleteOperationRequest_ReturnsOkResponse_IntegrationServiceDomain()
+        {
+            // Arrange
+            var _service = new OperationRequestService(_unitOfWorkMock.Object, _repoMock.Object,
+                                                        _repoStaMock.Object, _logServiceMock.Object, _patientServiceMock.Object,
+                                                        _repoPatMock.Object, _repoOpTypeMock.Object, _userServiceMock.Object);
 
 
-        var staffId = "D202400001";
-        var opTyId = "tumor removal";
-        var patientId = "202410000001";
-        var email = "email@email.com";
+            var staffId = "D202400001";
+            var opTyId = "tumor removal";
+            var patientId = "202410000001";
+            var email = "email@email.com";
 
-        var staffMock = new Mock<Staff>("00001", "country, 12345, street test", "12345", "first", "last", "first last", "email@email.com", "+123", "12345678", "doctor", "ortho");
-        var patientMock = new Mock<Patient>("first", "last", "first last", "country, 12345, street test", "female", "+123", "12345678", "98765432", "email@email.com", "2000-10-10", "000001");
-        var phases = new List<PhaseDto>
+            var staffMock = new Mock<Staff>("00001", "country, 12345, street test", "12345", "first", "last", "first last", "email@email.com", "+123", "12345678", "doctor", "ortho");
+            var patientMock = new Mock<Patient>("first", "last", "first last", "country, 12345, street test", "female", "+123", "12345678", "98765432", "email@email.com", "2000-10-10", "000001");
+            var phases = new List<PhaseDto>
         {
             new PhaseDto {
                         Description = "descrip",
@@ -296,7 +281,7 @@ namespace MDBackofficeTests.integrationtests.operationrequests
                         }
         };
 
-        var reqStaff = new List<RequiredStaffDto>
+            var reqStaff = new List<RequiredStaffDto>
         {
             new RequiredStaffDto{
                 StaffQuantity = 1,
@@ -305,41 +290,41 @@ namespace MDBackofficeTests.integrationtests.operationrequests
             }
         };
 
-        var operationTypeMock = new Mock<OperationType>(opTyId, 100, true, reqStaff,phases);
+            var operationTypeMock = new Mock<OperationType>(opTyId, 100, true, reqStaff, phases);
 
-        var operationRequest = new OperationRequest("TestCode","2024-12-31","Elective","2024-10-25",
-            staffId,"descript",patientId,opTyId);
+            var operationRequest = new OperationRequest("TestCode", "2024-12-31", "Elective", "2024-10-25",
+                staffId, "descript", patientId, opTyId);
 
-        var password = "NewPass00_d";
+            var password = "NewPass00_d";
 
-        var userMock = new Mock<User>();
-        userMock.Setup(u => u.Id).Returns(patientId);
-        userMock.Setup(u => u.UserName).Returns(email);
-        userMock.Setup(u => u.Email).Returns(email);
-        userMock.Setup(u => u.Status).Returns(true);
-        userMock.Setup(u => u.PasswordHash).Returns(password);
+            var userMock = new Mock<User>();
+            userMock.Setup(u => u.Id).Returns(patientId);
+            userMock.Setup(u => u.UserName).Returns(email);
+            userMock.Setup(u => u.Email).Returns(email);
+            userMock.Setup(u => u.Status).Returns(true);
+            userMock.Setup(u => u.PasswordHash).Returns(password);
 
-        _userManagerMock.Setup(r => r.FindByEmailAsync(email)).ReturnsAsync(userMock.Object);
-        _repoStaMock.Setup(r => r.FindStaffWithUserId(patientId)).ReturnsAsync(staffMock.Object);
-        _repoMock.Setup(repo => repo.GetByIdAsync(It.IsAny<OperationRequestId>())).ReturnsAsync(operationRequest);
+            _userManagerMock.Setup(r => r.FindByEmailAsync(email)).ReturnsAsync(userMock.Object);
+            _repoStaMock.Setup(r => r.FindStaffWithUserId(patientId)).ReturnsAsync(staffMock.Object);
+            _repoMock.Setup(repo => repo.GetByIdAsync(It.IsAny<OperationRequestId>())).ReturnsAsync(operationRequest);
 
-        _repoMock.Setup(r => r.Remove(operationRequest));
-        _unitOfWorkMock.Setup(r => r.CommitAsync()).ReturnsAsync(1);
+            _repoMock.Setup(r => r.Remove(operationRequest));
+            _unitOfWorkMock.Setup(r => r.CommitAsync()).ReturnsAsync(1);
 
-        // Act
-        var result = await _service.DeleteOperationRequest(operationRequest.Id.Value, email);
+            // Act
+            var result = await _service.DeleteOperationRequest(operationRequest.Id.Value, email);
 
-        //Assert
-        Assert.True(result);
-    }
+            //Assert
+            Assert.True(result);
+        }
 
-      [Fact]
+        [Fact]
         public async Task DeleteOperationRequestFromPatient_ReturnsOkResponse_IntegrationServiceDomain()
         {
             // Arrange
-             var _service = new OperationRequestService(_unitOfWorkMock.Object, _repoMock.Object,
-                                                    _repoStaMock.Object, _logServiceMock.Object, _patientServiceMock.Object,
-                                                    _repoPatMock.Object, _repoOpTypeMock.Object, _userServiceMock.Object);
+            var _service = new OperationRequestService(_unitOfWorkMock.Object, _repoMock.Object,
+                                                   _repoStaMock.Object, _logServiceMock.Object, _patientServiceMock.Object,
+                                                   _repoPatMock.Object, _repoOpTypeMock.Object, _userServiceMock.Object);
 
 
             var staffId = "D202400001";
@@ -374,10 +359,10 @@ namespace MDBackofficeTests.integrationtests.operationrequests
                 }
             };
 
-            var operationTypeMock = new Mock<OperationType>(opTyId, 100, true, reqStaff,phases);
+            var operationTypeMock = new Mock<OperationType>(opTyId, 100, true, reqStaff, phases);
 
-            var operationRequest = new OperationRequest("TestCode","2024-12-31","Elective","2024-10-25",
-                staffId,"descript",patientId,opTyId);
+            var operationRequest = new OperationRequest("TestCode", "2024-12-31", "Elective", "2024-10-25",
+                staffId, "descript", patientId, opTyId);
 
             var password = "NewPass00_d";
 
@@ -387,7 +372,7 @@ namespace MDBackofficeTests.integrationtests.operationrequests
             userMock.Setup(u => u.Email).Returns(email);
             userMock.Setup(u => u.Status).Returns(true);
             userMock.Setup(u => u.PasswordHash).Returns(password);
-            
+
             _userManagerMock.Setup(r => r.FindByEmailAsync(email)).ReturnsAsync(userMock.Object);
             _repoStaMock.Setup(r => r.FindStaffWithUserId(patientId)).ReturnsAsync(staffMock.Object);
             _repoPatMock.Setup(r => r.GetByIdWithAppointmentHistoryAsync(It.IsAny<MedicalRecordNumber>())).ReturnsAsync(patientMock.Object);
@@ -396,7 +381,7 @@ namespace MDBackofficeTests.integrationtests.operationrequests
             _repoMock.Setup(r => r.Remove(operationRequest));
             _unitOfWorkMock.Setup(r => r.CommitAsync()).ReturnsAsync(1);
 
-            
+
 
             // Act
             var result = await _service.DeleteOperationRequestFromPatient(patientId, operationRequest.Id.Value, email);
