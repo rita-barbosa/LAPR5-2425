@@ -1,15 +1,15 @@
 /* Container do título e imagem */
 .main-title-container {
-  background-color: #a0bbd8; /*DA PROBELMAS AO DESCER A PAGINA DEPOIS*/
-  padding: 1rem 2rem; /* Espaço interno ao redor da imagem e título */
+  background-color: #a0bbd8;
+  padding: 1rem 2rem;
   /* border-radius: 8px; */
-  display: flex; /* Flexbox para alinhar imagem e título lado a lado */
-  align-items: center; /* Alinha verticalmente a imagem e o título */
+  display: flex; 
+  align-items: center;
   width: 100%;
-  position: fixed; /* Fixado ao topo da página */
+  position: fixed;
   top: 0;
   left: 0;
-  z-index: 1; /* Garante que o retângulo e o título estejam no topo */
+  z-index: 1;
 }
 
 /* Estilo da imagem do logo */
@@ -99,8 +99,8 @@
 
   .button-container {
     display: flex;
-    justify-content: center; /* Alinha os botões à direita */
-    gap: 10px; /* Adiciona um espaçamento entre os botões */
+    justify-content: center; 
+    gap: 10px;
   }
 
   /* Estilo dos botões */
@@ -112,8 +112,8 @@
     color: white;
     border: none;
     border-radius: 5px;
-    margin-left: auto; /* Alinha à direita */
-    width: 200px; /* Largura fixa para todos os botões */
+    margin-left: auto;
+    width: 200px;
     transition: background-color 0.3s ease;
     margin-right: 20px;
   }
@@ -126,10 +126,9 @@
     color: white;
     border: none;
     border-radius: 5px;
-    margin-left: auto; /* Alinha à direita */
-    width: 200px; /* Largura fixa para todos os botões */
+    width: 200px;
     transition: background-color 0.3s ease;
-    margin-right: 20px;
+    margin-right: 10px;
   }
 
   .logout-button {
@@ -140,12 +139,13 @@
     color: white;
     border: none;
     border-radius: 5px;
-    width: 200px; /* Largura fixa para todos os botões */
+    width: 200px; 
     transition: background-color 0.3s ease;
-    margin-right: 50px;
+    margin-right: 10px;
   }
   
   .login-button:hover,
-  .logout-button:hover {
+  .logout-button:hover,
+  .register-button:hover {
     background-color: #45a0a0;
   }
