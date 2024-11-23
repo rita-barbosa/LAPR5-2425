@@ -52,5 +52,33 @@ namespace MDBackoffice.Domain.Rooms
             var slot = new Slot(startTime, endTime, startDate, endDate);
             MaintenanceSlots.Add(slot);
         }
+
+        public void ChangeSlots(List<SlotsDto> slots)
+        {
+            MaintenanceSlots = new List<Slot>();
+
+            foreach (SlotsDto slotDto in slots)
+            {
+                this.MaintenanceSlots.Add(new Slot(slotDto.StartTime, slotDto.EndTime, slotDto.StartDate, slotDto.EndDate));
+
+            }
+        }
+
+        public RoomDto ToDto()
+        {
+            return new RoomDto(
+                roomNumber: this.Id.Value,
+                type: this.Type.RoomTypeName,
+                capacity: Capacity.CapcityNumber,
+                availableEquipment: AvailableEquipment?.ConvertAll(equipment => equipment.EquipmentName),
+                currentStatus: CurrentStatus.Description,
+                maintenanceSlots: MaintenanceSlots?.ConvertAll(slot => new SlotsDto(
+                    startTime: slot.TimeInterval.Start.ToString(),
+                    endTime: slot.TimeInterval.End.ToString(),
+                    startDate: slot.Date.Start.ToString(),
+                    endDate: slot.Date.End.ToString()
+                ))
+            );
+        }
     }
 }

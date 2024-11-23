@@ -13,5 +13,6 @@ namespace MDBackoffice.Domain.StaffProfiles
         Task<StaffId> FindLastStaffIdAsync();
         Task<Staff> GetStaffWithEmail(string email);
         Task<List<Staff>> GetAllActiveAsync();
+        Task<Staff> GetStaffWithIdIncludingSlots(string id);
     }
 }
