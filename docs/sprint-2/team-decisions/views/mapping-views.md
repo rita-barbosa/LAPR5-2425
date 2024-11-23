@@ -5,8 +5,9 @@
   - [Introduction](#introduction)
   - [Logical - Development Views](#logical---development-views)
     - [Level 2](#level-2)
-  - [Observations](#observations)
-
+    - [Level 3](#level-3)
+  - [Physical - Development Views](#physical---development-views)
+    - [Level 2](#level-2-1)
 <!-- TOC -->
 
 ## Introduction
@@ -17,10 +18,16 @@ This document provides an overview of the mapping between views of our system, o
 
 ### Level 2
 
-![healthcare_system_vl1.drawio.svg](mapping-views/mapping-logical-to-development-level-2.svg)
+![Mapping level 2 | Logical - Development Views](mapping-views/mapping-logical-to-development-level-2.svg)
 
 **Nota:** This diagram illustrates the mapping between the logical and development views of our system. As shown, the GDPR component does not have a direct counterpart in the development view.
 
-## Observations
+### Level 3
 
-The team decided to represent only the mapping from the Logical View to the Development View at Level 2, as it provided the most clarification. For the other views, the Logical and Development Views align, making additional diagrams unnecessary.
+![Mapping level 3 | Logical - Development Views](mapping-views/mapping-logical-to-development-level-3.svg)
+
+## Physical - Development Views
+
+### Level 2
+
+![Mapping level 2 | Physical - Development Views](mapping-views/mapping-physical-to-development-level-2.svg)
