@@ -29,6 +29,8 @@ import { LoginCallbackComponent } from './components/login-callback/login-callba
 import { AddOperationRequestPatientComponent } from './components/staff/doctor/add-operation-request-patient/add-operation-request-patient.component';
 import { OperationRequestScheduler } from './components/admin/operation-request-scheduler/operation-request-scheduler.component';
 import { RemoveOperationRequestPatientComponent } from './components/staff/doctor/remove-operation-request-patient/remove-operation-request-patient.component';
+import { ResetPasswordComponent } from './components/reset-password/reset-password.component';
+import { UpdatePasswordComponent } from './components/update-password/update-password.component';
 import { AddTimeSlotsComponent } from './components/staff/add-time-slots/add-time-slots.component';
 
 
@@ -36,6 +38,8 @@ export const routes: Routes = [
   { path: '', component: MenuComponent, pathMatch: 'full' },
   { path: 'login', component: LoginComponent },
   { path: 'login-callback', component: LoginCallbackComponent },
+  { path: 'reset-password', component: ResetPasswordComponent },
+  { path: 'Update-UserPassword', component: UpdatePasswordComponent },
   { path: 'menu', component: MenuComponent },
   { path: 'admin', component: AdminComponent },
   { path: 'create-patient-profile', component: CreatePatientProfileComponent },

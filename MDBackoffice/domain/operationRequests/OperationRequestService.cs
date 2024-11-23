@@ -28,10 +28,11 @@ namespace MDBackoffice.Domain.OperationRequests
         private readonly IPatientRepository _repoPat;
         private readonly IOperationTypeRepository _repoOpTy;
         private readonly UserService _userService;
-        private readonly PlanningSchedulerAdapter _planningAdapter;
+        private readonly IOperationSchedulerAdapter _planningAdapter;
         private readonly RoomService _roomService;
 
-        public OperationRequestService(IUnitOfWork unitOfWork, IOperationRequestRepository repo, IStaffRepository repoSta, LogService logService, PatientService patientService, IPatientRepository repoPat, IOperationTypeRepository repoOpTy, UserService userService)
+        public OperationRequestService(IUnitOfWork unitOfWork, IOperationRequestRepository repo, IStaffRepository repoSta, LogService logService, PatientService patientService, IPatientRepository repoPat, IOperationTypeRepository repoOpTy, UserService userService,
+                                            IOperationSchedulerAdapter adapter, RoomService room)
         {
             this._unitOfWork = unitOfWork;
             this._repo = repo;
@@ -41,6 +42,8 @@ namespace MDBackoffice.Domain.OperationRequests
             this._logService = logService;
             this._patientService = patientService;
             this._userService = userService;
+            this._planningAdapter = adapter;
+            this._roomService = room;
         }
 
         public async Task<List<OperationRequestDto>> GetAllAsysnc()
@@ -114,17 +117,20 @@ namespace MDBackoffice.Domain.OperationRequests
             if (opRequest == null)
                 return null;
 
-            if (!opRequest.DeadLineDate.Equals(dto.DeadLineDate)){
+            if (!opRequest.DeadLineDate.Equals(dto.DeadLineDate))
+            {
                 opRequest.ChangeDeadLineDate(dto.DeadLineDate);
                 await _logService.CreateEditLog(opRequest.Id.ToString(), opRequest.DeadLineDate.GetType().Name, "The operation request deadline date was altered.");
             }
 
-            if (!opRequest.Priority.Equals(dto.Priority)){
+            if (!opRequest.Priority.Equals(dto.Priority))
+            {
                 opRequest.ChangePriority(dto.Priority);
                 await _logService.CreateEditLog(opRequest.Id.ToString(), opRequest.Priority.GetType().Name, "The operation request priority was altered.");
             }
 
-            if (!opRequest.Description.Equals(dto.Description)){
+            if (!opRequest.Description.Equals(dto.Description))
+            {
                 opRequest.ChangeDescription(dto.Description);
                 await _logService.CreateEditLog(opRequest.Id.ToString(), opRequest.Description.GetType().Name, "The operation request description was altered.");
             }
@@ -168,7 +174,7 @@ namespace MDBackoffice.Domain.OperationRequests
 
                 var dto = new ListOperationRequestDto(
                     opRequest.Id.Value.ToString(),
-                    patient.Name.ToString(), 
+                    patient.Name.ToString(),
                     opRequest.OperationTypeId.AsString(),
                     opRequest.Status.ToString()
                 );
@@ -198,7 +204,7 @@ namespace MDBackoffice.Domain.OperationRequests
                 return false;
             }
 
-            if (operationRequest.Status.Description.Equals("Requested") && 
+            if (operationRequest.Status.Description.Equals("Requested") &&
                 operationRequest.Id.Value == id &&
                 operationRequest.StaffId == staff.Id)
             {
@@ -219,11 +225,12 @@ namespace MDBackoffice.Domain.OperationRequests
 
             var doctor = await _repoSta.GetStaffWithEmail(userEmail);
 
-            if (request.StaffId.Equals(doctor.Id.AsString())){
+            if (request.StaffId.Equals(doctor.Id.AsString()))
+            {
                 return true;
             }
 
-            return false;            
+            return false;
         }
 
         public virtual async Task<bool> DeleteOperationRequestFromPatient(string patientId, string operationRequestId, string email)
@@ -310,7 +317,9 @@ namespace MDBackoffice.Domain.OperationRequests
                 throw new ArgumentNullException(nameof(scheduleInfoDto));
             }
 
-            var room = await this._roomService.GetRoomDtoById(scheduleInfoDto.SelectedRoomId);
+            var r = scheduleInfoDto.RoomID;
+
+            var room = await _roomService.GetRoomDtoById(r);
             if (room == null)
             {
                 throw new InvalidOperationException("Room not found.");
@@ -318,11 +327,12 @@ namespace MDBackoffice.Domain.OperationRequests
 
             var operationsMap = new Dictionary<ScheduleOperationRequestDto, List<ScheduleStaffDto>>();
 
-            foreach (StaffForRequestEntry staffForRequestEntry in scheduleInfoDto.StaffForRequest){
-                var operationRequest = await GetByIdAsync(new OperationRequestId(staffForRequestEntry.Value));
+            foreach (StaffForRequestEntry staffForRequestEntry in scheduleInfoDto.SchedulingData)
+            {
+                var operationRequest = await GetByIdAsync(new OperationRequestId(staffForRequestEntry.OperationRequestID));
                 var opType = await _repoOpTy.GetByIdAsync(new OperationTypeId(operationRequest.OperationTypeId));
 
-                ScheduleOperationRequestDto scheduleOperationRequestDto = new ScheduleOperationRequestDto(staffForRequestEntry.Value,
+                ScheduleOperationRequestDto scheduleOperationRequestDto = new ScheduleOperationRequestDto(staffForRequestEntry.OperationRequestID,
                                                                                                         opType.Name.OperationName,
                                                                                                         opType.Phases[0].Duration.DurationMinutes.ToString(),
                                                                                                         opType.Phases[1].Duration.DurationMinutes.ToString(),
@@ -330,8 +340,9 @@ namespace MDBackoffice.Domain.OperationRequests
 
                 var listStaff = new List<ScheduleStaffDto>();
 
-                foreach (StaffDto staffDto in staffForRequestEntry.Staff){
-                    var busySpots = GetBusyIntervals(staffDto.Slots, scheduleInfoDto.Day);
+                foreach (StaffDto staffDto in staffForRequestEntry.Staff)
+                {
+                    var busySpots = GetBusyIntervals(staffDto.Slots, scheduleInfoDto.Date);
                     ScheduleStaffDto scheduleStaffDto = new ScheduleStaffDto(staffDto.Id, staffDto.Function, staffDto.SpecializationId, busySpots);
                     listStaff.Add(scheduleStaffDto);
                 }
@@ -339,17 +350,17 @@ namespace MDBackoffice.Domain.OperationRequests
                 operationsMap.Add(scheduleOperationRequestDto, listStaff);
             }
 
-            List<SchedulesDto> listSchedulesToDo = await _planningAdapter.ScheduleOperationsAsync(operationsMap, room, scheduleInfoDto.Day, scheduleInfoDto.Algorithm);
+            List<SchedulesDto> listSchedulesToDo = await _planningAdapter.ScheduleOperationsAsync(operationsMap, room, scheduleInfoDto.Date, scheduleInfoDto.Algorithm);
 
             UpdateSchedules(listSchedulesToDo);
 
             StringBuilder sb = new StringBuilder();
             sb.Append("DAY : ");
-            sb.Append(scheduleInfoDto.Day);
+            sb.Append(scheduleInfoDto.Date);
             sb.Append("\n");
 
             sb.Append("ROOM ID : ");
-            sb.Append(scheduleInfoDto.SelectedRoomId);
+            sb.Append(scheduleInfoDto.RoomID);
             sb.Append("\n");
 
             sb.Append("ALGORITHM : ");
@@ -410,6 +421,7 @@ namespace MDBackoffice.Domain.OperationRequests
                 throw new ArgumentException("Invalid date format. Use a valid date string (e.g., yyyy-MM-dd).");
             }
 
+            
             // Filter slots for the target day
             var daySlots = freeSlots
                 .Where(slot => DateTime.TryParse(slot.StartDate, out DateTime startDate) && startDate.Date == targetDay.Date)
@@ -456,8 +468,8 @@ namespace MDBackoffice.Domain.OperationRequests
 
                 // Process room schedule (adding maintenance slots)
                 var roomId = schedule.RoomId;
-                var roomBusySlots = schedule.RoomSchedule.ContainsKey(roomId) 
-                    ? schedule.RoomSchedule[roomId] 
+                var roomBusySlots = schedule.RoomSchedule.ContainsKey(roomId)
+                    ? schedule.RoomSchedule[roomId]
                     : new List<SlotsDto>();
 
                 // Add maintenance slots to the room's busy schedule
@@ -540,7 +552,7 @@ namespace MDBackoffice.Domain.OperationRequests
 
             room.ChangeSlots(roomSchedule);
 
-            await _unitOfWork.CommitAsync(); 
+            await _unitOfWork.CommitAsync();
         }
 
 

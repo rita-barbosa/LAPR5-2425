@@ -22,6 +22,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
 using MDBackoffice.Infrastructure.Users;
+using MDBackoffice.Domain.Rooms;
 
 namespace MDBackofficeTests.integrationtests.operationrequests
 {
@@ -34,11 +35,14 @@ namespace MDBackofficeTests.integrationtests.operationrequests
         private readonly Mock<IStaffRepository> _repoStaMock = new Mock<IStaffRepository>();
         private readonly Mock<IPatientRepository> _repoPatMock = new Mock<IPatientRepository>();
         private readonly Mock<IOperationTypeRepository> _repoOpTypeMock = new Mock<IOperationTypeRepository>();
+        private readonly Mock<IRoomRepository> _repoRoomMock = new Mock<IRoomRepository>();
         private readonly Mock<LogService> _logServiceMock;
         private readonly Mock<PatientService> _patientServiceMock;
         private readonly Mock<UserService> _userServiceMock;
         private readonly Mock<UserManager<User>> _userManagerMock;
         private readonly Mock<ILoginAdapter> _loginAdapterMock;
+        private readonly Mock<IOperationSchedulerAdapter> _schedulerAdapterMock;
+        private readonly Mock<RoomService> _roomServiceMock;
 
         public DeleteOperationRequestIntegrationTests()
         {
@@ -65,6 +69,9 @@ namespace MDBackofficeTests.integrationtests.operationrequests
 
             _userServiceMock = new Mock<UserService>(_userManagerMock.Object, roleManagerMock.Object, _logServiceMock.Object, signinManagerMock.Object, _emailServiceMock.Object, _configurationMock.Object, tokenServiceMock.Object, _loginAdapterMock.Object);
             _patientServiceMock = new Mock<PatientService>(_unitOfWorkMock.Object, _logServiceMock.Object, _configurationMock.Object, _repoPatMock.Object, _userServiceMock.Object, _emailServiceMock.Object);
+            _schedulerAdapterMock = new Mock<IOperationSchedulerAdapter>();
+            _roomServiceMock = new Mock<RoomService>(_unitOfWorkMock.Object, _repoRoomMock.Object);
+
         }
 
         [Fact]
@@ -82,7 +89,7 @@ namespace MDBackofficeTests.integrationtests.operationrequests
 
             var _service = new OperationRequestService(_unitOfWorkMock.Object, _repoMock.Object,
                                                     _repoStaMock.Object, _logServiceMock.Object, _patientServiceMock.Object,
-                                                    _repoPatMock.Object, _repoOpTypeMock.Object, _userServiceMock.Object);
+                                                    _repoPatMock.Object, _repoOpTypeMock.Object, _userServiceMock.Object, _schedulerAdapterMock.Object, _roomServiceMock.Object);
 
             var _controller = new OperationRequestController(_service, _userServiceMock.Object);
 
@@ -172,7 +179,7 @@ namespace MDBackofficeTests.integrationtests.operationrequests
 
             var _service = new OperationRequestService(_unitOfWorkMock.Object, _repoMock.Object,
                                                    _repoStaMock.Object, _logServiceMock.Object, _patientServiceMock.Object,
-                                                   _repoPatMock.Object, _repoOpTypeMock.Object, _userServiceMock.Object);
+                                                   _repoPatMock.Object, _repoOpTypeMock.Object, _userServiceMock.Object, _schedulerAdapterMock.Object, _roomServiceMock.Object);
 
             var _controller = new OperationRequestController(_service, _userServiceMock.Object);
 
@@ -255,7 +262,7 @@ namespace MDBackofficeTests.integrationtests.operationrequests
             // Arrange
             var _service = new OperationRequestService(_unitOfWorkMock.Object, _repoMock.Object,
                                                         _repoStaMock.Object, _logServiceMock.Object, _patientServiceMock.Object,
-                                                        _repoPatMock.Object, _repoOpTypeMock.Object, _userServiceMock.Object);
+                                                        _repoPatMock.Object, _repoOpTypeMock.Object, _userServiceMock.Object, _schedulerAdapterMock.Object, _roomServiceMock.Object);
 
 
             var staffId = "D202400001";
@@ -324,7 +331,7 @@ namespace MDBackofficeTests.integrationtests.operationrequests
             // Arrange
             var _service = new OperationRequestService(_unitOfWorkMock.Object, _repoMock.Object,
                                                    _repoStaMock.Object, _logServiceMock.Object, _patientServiceMock.Object,
-                                                   _repoPatMock.Object, _repoOpTypeMock.Object, _userServiceMock.Object);
+                                                   _repoPatMock.Object, _repoOpTypeMock.Object, _userServiceMock.Object, _schedulerAdapterMock.Object, _roomServiceMock.Object);
 
 
             var staffId = "D202400001";

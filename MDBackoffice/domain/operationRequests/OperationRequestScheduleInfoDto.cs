@@ -7,32 +7,39 @@ using System.Collections.Generic;
 
 namespace MDBackoffice.Domain.OperationRequests
 {
-    public class StaffForRequestEntry
-    {
-        public List<StaffDto> Staff { get; set; }
-        public string Value { get; set; }
-    }
-
     public class OperationRequestScheduleInfoDto
     {
-        public List<StaffForRequestEntry> StaffForRequest { get; set; }
-
-        public string SelectedRoomId { get; set; }
+        public string RoomID { get; set; }
+        public List<StaffForRequestEntry> SchedulingData { get; set; }
 
         public string Algorithm { get; set; }
 
-        public string Day { get; set; }
+        public string Date { get; set; }
 
+        public OperationRequestScheduleInfoDto() { }
         public OperationRequestScheduleInfoDto(
             List<StaffForRequestEntry> staffForRequest,
             string selectedRoomId,
             string algorithm,
             string day)
         {
-            this.StaffForRequest = staffForRequest;
-            this.SelectedRoomId = selectedRoomId;
+            this.SchedulingData = staffForRequest;
+            this.RoomID = selectedRoomId;
             this.Algorithm = algorithm;
-            this.Day = day;
+            this.Date = day;
+        }
+    }
+
+    public class StaffForRequestEntry
+    {
+        public List<StaffDto> Staff { get; set; }
+        public string OperationRequestID { get; set; }
+
+        public StaffForRequestEntry() { }
+        public StaffForRequestEntry(List<StaffDto> staffDtos, string op)
+        {
+            Staff = staffDtos;
+            OperationRequestID = op;
         }
     }
 

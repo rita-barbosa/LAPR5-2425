@@ -220,6 +220,9 @@ namespace MDBackoffice
 
             services.AddTransient<IAppointmentRepository, AppointmentRepository>();
             services.AddTransient<AppointmentService>();
+
+            services.AddTransient<IOperationSchedulerAdapter, PlanningSchedulerAdapter>();
+            services.AddTransient<PlanningSchedulerAdapter>();
         }
 
 

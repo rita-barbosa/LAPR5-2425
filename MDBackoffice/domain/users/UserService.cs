@@ -344,7 +344,8 @@ namespace MDBackoffice.Domain.Users
             if (role == null) throw new NullReferenceException("Can't obtain the user role.");
 
             var encodedToken = Uri.EscapeDataString(token);
-            var baseUrl = _configuration["App:BaseUrl"];
+            // var baseUrl = _configuration["App:BaseUrl"];
+            var baseUrl = "http://localhost:4200";
             if (role.Equals("Admin") || role.Equals("Technician") || role.Equals("Doctor") || role.Equals("Nurse"))
                 return $"{baseUrl}/Update-UserPassword?email={user.Email}&token={encodedToken}";
 

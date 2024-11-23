@@ -4,11 +4,12 @@ import { UserService } from '../../services/user.service';
 import { MessageComponent } from '../message/message.component';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [MessageComponent, FormsModule, CommonModule],
+  imports: [MessageComponent, FormsModule, CommonModule, RouterLink],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css'
 })

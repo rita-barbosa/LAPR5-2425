@@ -313,7 +313,7 @@ namespace MDBackoffice.Controllers
             {
                 await _userService.ResetPassword(email);
 
-                return Ok("Password reset email was sent!");
+                return Ok(new { message ="Password reset email was sent!"});
             }
             catch (BusinessRuleValidationException ex)
             {
@@ -332,7 +332,7 @@ namespace MDBackoffice.Controllers
             {
                 if (await _userService.UpdatePassword(email, token, confirmEmailUserDto.NewPassword))
                 {
-                    return Ok("Password was changed successfully.");
+                    return Ok(new { message ="Password was changed successfully."});
                 }
                 else
                 {

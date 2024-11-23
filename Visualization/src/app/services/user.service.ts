@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
 import { MessageService } from './message.service';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { catchError, Observable, of, tap } from 'rxjs';
 import { Router } from '@angular/router';
 import { UserInfo } from '../domain/user-info';
+import { NewPass } from '../domain/NewPass';
 
 interface UserLogin {
   email: string;
@@ -31,6 +32,10 @@ interface CreateStaffUserResponse {
 }
 
 var token: string;
+
+interface ServerResponse {
+  message: string;
+}
 
 @Injectable({
   providedIn: 'root'
@@ -138,6 +143,33 @@ export class UserService {
 
       );
   }
+
+  resetPassword(email: string) {
+    const url = `${this.theServerURL}/send-passwordemail`;
+
+    const params = new HttpParams()
+      .set('email', email);
+
+    this.http.put<any>(url,  null, { params })
+      .pipe(catchError(this.handleError<any>('Reset Password')))
+      .subscribe(data => {
+        this.log('Password reset email was sent!')
+      })
+  }
+
+  updatePassword(email: string, token: string, newpassword: string) : Observable<any> {
+    const url = `${this.theServerURL}/Update-UserPassword`;
+
+      const params = new HttpParams()
+      .set('email', email)
+      .set('token', token);
+
+      const body = { NewPassword: newpassword };
+
+    return this.http.put(url, body, { params });
+  }
+
+
 
   //------------------------/------------------------/------------------------
   private handleError<T>(operation = 'operation', result?: T) {
