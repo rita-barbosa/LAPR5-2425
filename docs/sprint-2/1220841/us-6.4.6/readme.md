@@ -54,50 +54,11 @@ apt install default-mysql-client
 
 1. **Create the Full Backup Script**
 
-- `full_backup.sh`
-
-```
-#!/bin/bash
-# Full backup script
-DATE=$(date +%Y-%m-%d)
-BACKUP_DIR="/backup/full"
-
-# Check if the backup directory exists, and create it only if it does not
-if [ ! -d "$BACKUP_DIR" ]; then
-  mkdir -p "$BACKUP_DIR"
-fi
-
-# Perform the full backup and compress it
-mysqldump -h vsgate-s1.dei.isep.ipp.pt -P 11433  -u root -p'PF+w2gYZ+0Wz' --all-databases > $BACKUP_DIR/full_backup_$DATE.sql
-tar -czf $BACKUP_DIR/full_backup_$DATE.tar.gz -C $BACKUP_DIR full_backup_$DATE.sql
-
-# Remove the uncompressed SQL file to save space
-rm $BACKUP_DIR/full_backup_$DATE.sql
-```
+   - [`full_backup.sh`](full-backup.sh)
 
 2. **Create the Differential Backup Script**
 
-- `differential_backup.sh`
-
-````
-#!/bin/bash
-# Differential backup script
-DATE=$(date +%Y-%m-%d)
-BACKUP_DIR="/backup/differential"
-
-# Check if the backup directory exists, and create it only if it does not
-if [ ! -d "$BACKUP_DIR" ]; then
-  mkdir -p "$BACKUP_DIR"
-fi
-
-# Perform the differential backup and compress it
-mysqldump -h vsgate-s1.dei.isep.ipp.pt -P 11433  -u root -p'PF+w2gYZ+0Wz' --all-databases --single-transaction --flush-logs --skip-lock-tables > $BACKUP_DIR/diff_backup_$DATE.sql
-tar -czf $BACKUP_DIR/diff_backup_$DATE.tar.gz -C $BACKUP_DIR diff_backup_$DATE.sql
-
-# Remove the uncompressed SQL file to save space
-rm $BACKUP_DIR/diff_backup_$DATE.sql
-
-````
+   - [`differential_backup.sh`](differential-backup.sh)
 
 3. **Make Scripts Executable**
 
@@ -108,6 +69,7 @@ The appropriate permissions were set to run the scripts using `chmod +x`.
 To automate the backups I edited the file `/etc/crontab`.
 
 **Note:** This is the format of the file:
+
 ```
 MIN HOUR DOM MON DAY COMMAND
 
@@ -123,10 +85,10 @@ Taking that into account, the following lines were added:
 
 ```
 # Full backup at 2 a.m. every Sunday
-0 2 * * 0 /path/to/full_backup.sh
+0 2 * * 0  root  /scripts/full-backup.sh >> /tmp/cron_test.log 2>&1
 
 # Differential backup at 2 a.m. on weekdays (Monday to Friday)
-0 2 * * 1-5 /path/to/differential_backup.sh
+0 2 * * 1-6 root /scripts/differential-backup.sh >> /tmp/cron_test.log 2>&1
 ```
 
 ## 5. Testing
