@@ -116,7 +116,7 @@ export class ListPatientProfiles implements OnInit {
   onSubmit(form: NgForm): void {
     this.isSubmitted = true;
     if (form.valid) {
-      this.service.EditPatientProfile(
+      this.service.editPatientProfile(
         this.patient.id,
         this.patient.name || '',
         this.patient.phone || '',
