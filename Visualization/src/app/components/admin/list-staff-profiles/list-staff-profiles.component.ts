@@ -3,13 +3,11 @@ import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { TableModule } from 'primeng/table';
 import { MessageComponent } from '../../message/message.component';
-
 import { SideBarAdminComponent } from '../sidebar-admin/side-bar-admin.component';
 import { StaffService } from '../../../services/staff.service';
 import { StaffListingFilterParameters } from '../../../domain/staff-listing-filter-parameters';
 import { StaffWithId } from '../../../domain/staff-with-id';
 import { StaffQueryParameters } from '../../../domain/staff-query-parameters';
-import { Router } from '@angular/router';
 
 interface UserInfo {
   email: string;
@@ -38,54 +36,24 @@ export class ListStaffProfiles implements OnInit {
 
   storedToken = localStorage.getItem('user');
 
-  constructor(private service: StaffService, private router: Router) {}
+  constructor(private service: StaffService) { }
 
   ngOnInit(): void {
-    if(this.storedToken){
-
-      var userInfo : UserInfo ={
-        email : '',
-        roles : [],
-        token : ''
+    this.service.getAllSpecializationsAvailable().subscribe({
+      next: (data) => {
+        this.specializations = data;
       }
-
-      userInfo = JSON.parse(this.storedToken);
-
-      if(userInfo.roles.includes('Admin')){
-        this.service.getAllSpecializationsAvailable().subscribe({
-          next: (data) => {
-            this.specializations = data;
-          }
-        });
-        this.addFilter();
-        this.fetchStaff();
-      }
-      else
-      {
-        this.router.navigate(['']);
-      }
-    }
-    else
-    {
-      this.router.navigate(['login']);
-    }
+    });
+    this.addFilter();
+    this.fetchStaff();
   }
 
   fetchStaff(): void {
-    if(this.storedToken){
-
-      var userInfo : UserInfo ={
-        email : '',
-        roles : [],
-        token : ''
-      }
-
-      userInfo = JSON.parse(this.storedToken);
       const queryParameters: StaffQueryParameters = {
         queryfilters: this.queryFiltersList
       };
 
-      this.service.getStaffByFilters(queryParameters, userInfo.token).subscribe({
+      this.service.getStaffByFilters(queryParameters).subscribe({
         next: (data) => {
           this.staffList = data;
         },
@@ -93,7 +61,6 @@ export class ListStaffProfiles implements OnInit {
           console.error('Error fetching staff profiles:', error);
         }
       });
-    }
   }
 
   applyFilters(): void {
@@ -144,11 +111,11 @@ export class ListStaffProfiles implements OnInit {
   }
 
   deactivateStaffProfile(staff: StaffWithId): void {
-    if(this.storedToken){
-      var userInfo : UserInfo ={
-        email : '',
-        roles : [],
-        token : ''
+    if (this.storedToken) {
+      var userInfo: UserInfo = {
+        email: '',
+        roles: [],
+        token: ''
       }
 
       userInfo = JSON.parse(this.storedToken);
