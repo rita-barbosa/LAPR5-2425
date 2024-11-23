@@ -13,6 +13,8 @@ import { OperationRequest } from '../../../domain/OperationRequest';
 import { Room } from '../../../domain/room';
 import { RoomService } from '../../../services/room.service';
 import { StaffWithFunction } from '../../../domain/staff-with-function';
+import { SchedulingBackend } from 'src/app/domain/scheduling-backend';
+import { SchedulingData } from 'src/app/domain/scheduling-data';
 
 @Component({
   selector: 'app-operation-request-scheduler',
@@ -23,6 +25,7 @@ import { StaffWithFunction } from '../../../domain/staff-with-function';
 })
 
 export class OperationRequestScheduler implements OnInit {
+
   staffList: StaffWithFunction[] = [];
   selectedStaff: StaffWithFunction[] = [];
   roomList: Room[] = [];
@@ -30,7 +33,16 @@ export class OperationRequestScheduler implements OnInit {
   operationRequestList: OperationRequest[] = [];
   selectedOperationRequest!: OperationRequest;
   algorithm = '';
-  day = '';
+  day !: Date;
+
+  scheduleOperation !: SchedulingData;
+  schedulingBackend: SchedulingBackend = {
+    roomID : '',
+    schedulingData : [],
+    algorithm : '',
+    date : ''
+  };
+
 
   storedToken = localStorage.getItem('user');
 
@@ -57,6 +69,17 @@ export class OperationRequestScheduler implements OnInit {
     {
       this.router.navigate(['login']);
     }
+  }
+
+  addSchedulingData() {
+    this.schedulingBackend.schedulingData.push({
+      staff : [],
+      operationRequestID : ''
+    });
+  }
+
+  removeSchedulingData(index: number) {
+    this.schedulingBackend.schedulingData.splice(index, 1);
   }
 
   fetchOperationRequests() {
@@ -99,7 +122,10 @@ export class OperationRequestScheduler implements OnInit {
   }
 
   scheduleOperationRequest(){
-    this.opRequestsService.scheduleOperationRequest(this.selectedStaff, this.selectedRoom.roomNumber, this.selectedOperationRequest.id !, this.algorithm, this.day);
+    this.schedulingBackend.algorithm = this.algorithm;
+    this.schedulingBackend.roomID = this.selectedRoom.roomNumber;
+    this.schedulingBackend.date = this.day.toString();
+    this.opRequestsService.scheduleOperationRequest(this.schedulingBackend);
   }
 
 }

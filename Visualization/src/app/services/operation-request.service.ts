@@ -7,6 +7,7 @@ import { OperationRequest } from '../domain/OperationRequest';
 import { ListOperationRequest } from '../domain/list-operation-request';
 import { AddOrRemoveFromPatient } from '../domain/add-or-remove-from-patient';
 import { StaffWithFunction } from '../domain/staff-with-function';
+import { SchedulingBackend } from '../domain/scheduling-backend';
 
 interface UpdateOperationRequest {
   id: string,
@@ -15,13 +16,6 @@ interface UpdateOperationRequest {
   deadlineDate: string
 }
 
-interface OperationRequestScheduleInfo {
-  selectedStaff: StaffWithFunction[], 
-  selectedRoomId: string, 
-  operationRequestId: string, 
-  algorithm: string,
-  day: string
-}
 
 @Injectable({
   providedIn: 'root'
@@ -37,27 +31,6 @@ export class OperationRequestService {
   };
 
   constructor(private messageService: MessageService, private http: HttpClient) { }
-
-  // public getAllPatients(): Observable<string[]> {
-  //   const url = `${this.theServerURL}/Patient`;
-
-  //   return this.http.get<Patient[]>(url, this.httpOptions)
-  //     .pipe(
-  //       map(data => data.map(pat => pat.id)),
-  //       catchError(this.handleError<string[]>('Get Patients', []))
-  //     );
-  // }
-
-  // public getAllStaffs(): Observable<string[]> {
-  //   const url = `${this.theServerURL}/Staff`;
-
-  //   return this.http.get<Staff[]>(url, this.httpOptions)
-  //     .pipe(
-  //       map(data => data.map(staff => staff.id)),
-  //       catchError(this.handleError<string[]>('Get Staffs', []))
-  //     );
-  // }
-
 
   public getAllOperationTypes(): Observable<string[]> {
     const url = `${this.theServerURL}/OperationTypes`;
@@ -194,20 +167,13 @@ getAllOperationRequests() : Observable<OperationRequest[]> {
   );
 }
 
-  scheduleOperationRequest(selectedStaffChosen: StaffWithFunction[], selectedRoomIdChosen: string, operationRequestIdChosen: string, algorithmChosen: string, dayChosen: string) {
+  scheduleOperationRequest(scheduleBackend : SchedulingBackend) {
     const url = `${this.theServerURL}/OperationRequest/Schedule`;
-
-    const body: OperationRequestScheduleInfo = {
-      selectedStaff: selectedStaffChosen,
-      selectedRoomId: selectedRoomIdChosen,
-      operationRequestId: operationRequestIdChosen,
-      algorithm: algorithmChosen,
-      day: dayChosen
-    }; 
+    console.log(scheduleBackend)
 
     this.http
-      .post(url, body, {...this.httpOptions })
-      .pipe(catchError(this.handleError('Scheduling Operation Request')))
+      .post(url, scheduleBackend, this.httpOptions)
+      .pipe(catchError(this.handleError('Scheduling Operation Requests')))
       .subscribe();
   }
 
