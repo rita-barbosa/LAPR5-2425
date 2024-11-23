@@ -256,5 +256,26 @@ namespace MDBackoffice.Domain.StaffProfiles
 
             return staff.Email.EmailAddress;
         }
+
+        public async Task<bool> AddTimeSlots(AddTimeSlotsDto addTimeSlotsDto, string email)
+        {
+            var staff = await this._repo.GetStaffWithEmail(email);
+            if (staff == null)
+            {
+                throw new BusinessRuleValidationException("No staff exists with that Id.");
+            }
+
+            string[] slots = addTimeSlotsDto.Slot.Split("-");
+
+            string startTimeSlot = slots[0].Replace("[","").Replace("]","");
+
+            string endTimeSlot = slots[1].Replace("[","").Replace("]","");
+
+            staff.AddSlot(startTimeSlot, endTimeSlot, addTimeSlotsDto.Date);
+
+            await this._unitOfWork.CommitAsync();
+
+            return true;
+        }
     }
 }

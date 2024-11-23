@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
 using MDBackoffice.Domain.Users;
 using Microsoft.IdentityModel.Tokens;
+using MDBackoffice.Domain.StaffProfiles;
 
 namespace MDBackoffice.Controllers
 {
@@ -314,6 +315,8 @@ namespace MDBackoffice.Controllers
                 return StatusCode(500, new { ex.Message });
             }
         }
+
+    
 
     }
 }

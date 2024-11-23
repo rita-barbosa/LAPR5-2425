@@ -29,6 +29,7 @@ import { LoginCallbackComponent } from './components/login-callback/login-callba
 import { AddOperationRequestPatientComponent } from './components/staff/doctor/add-operation-request-patient/add-operation-request-patient.component';
 import { OperationRequestScheduler } from './components/admin/operation-request-scheduler/operation-request-scheduler.component';
 import { RemoveOperationRequestPatientComponent } from './components/staff/doctor/remove-operation-request-patient/remove-operation-request-patient.component';
+import { AddTimeSlotsComponent } from './components/staff/add-time-slots/add-time-slots.component';
 
 
 export const routes: Routes = [
@@ -60,6 +61,7 @@ export const routes: Routes = [
   { path: 'list-patient-profiles', component: ListPatientProfiles },
   { path: 'create-staff-user', component: CreateStaffUserComponent },
   { path: 'patient-preferences', component: PatientPreferences },
+  { path: 'add-time-slots', component: AddTimeSlotsComponent },
   { path: 'confirm-patient-account-deletion', component: PatientAccountDeletionConfirm },
   { path: 'operation-request-scheduler', component: OperationRequestScheduler },
   { path: '**', redirectTo: '' }

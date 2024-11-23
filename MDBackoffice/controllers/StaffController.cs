@@ -186,5 +186,40 @@ namespace MDBackoffice.Controllers
             }
         }
 
+        [HttpPost]
+        [Route("Add-TimeSlots")]
+        public async Task<ActionResult> AddTimeSlots([FromBody] AddTimeSlotsDto addTimeSlotsDto) 
+        {
+            try
+            {
+                var token = HttpContext.Request.Headers.Authorization.ToString()?.Split(' ')[1];
+
+                if (string.IsNullOrWhiteSpace(token) || _userSvc.CheckUserRole(token, "Doctor"))
+                {
+                    return BadRequest(new {message = "Invalid authorization or user role."});
+                }
+
+                var email = _userSvc.DecodeJwtToken(token).Email;
+
+                bool result = await _service.AddTimeSlots(addTimeSlotsDto, email);
+                if (result)
+                {
+                    return Ok(result);
+                }
+                else
+                {
+                    return NotFound($"Operation request not found or wrong authorization.");
+                }
+            }
+            catch (BusinessRuleValidationException ex)
+            {
+                return BadRequest(new { ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { ex.Message });
+            }
+        }
+
     }
 }

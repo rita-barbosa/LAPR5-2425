@@ -37,7 +37,7 @@ export class OperationRequestScheduler implements OnInit {
 
   scheduleOperation !: SchedulingData;
   schedulingBackend: SchedulingBackend = {
-    roomID : '',
+    roomId : '',
     schedulingData : [],
     algorithm : '',
     date : ''
@@ -123,7 +123,7 @@ export class OperationRequestScheduler implements OnInit {
 
   scheduleOperationRequest(){
     this.schedulingBackend.algorithm = this.algorithm;
-    this.schedulingBackend.roomID = this.selectedRoom.roomNumber;
+    this.schedulingBackend.roomId = this.selectedRoom.roomNumber;
     this.schedulingBackend.date = this.day.toString();
     this.opRequestsService.scheduleOperationRequest(this.schedulingBackend);
   }

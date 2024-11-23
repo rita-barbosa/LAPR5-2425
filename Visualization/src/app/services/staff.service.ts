@@ -9,6 +9,8 @@ import { StaffQueryParameters } from '../domain/staff-query-parameters';
 import { IdPasser } from '../domain/IdPasser';
 import { EditStaffProfile } from '../domain/edit-staff';
 import { StaffWithFunction } from '../domain/staff-with-function';
+import { AddTimeSlotsComponent } from '../components/staff/add-time-slots/add-time-slots.component';
+import { AddTimeSlot } from '../domain/add-time-slots';
 
 @Injectable({
   providedIn: 'root'
@@ -152,7 +154,7 @@ export class StaffService {
   getAllActiveStaffProfiles() : Observable<StaffWithFunction[]> {
     const url = `${this.theServerURL}/Staff/Get-ActiveStaffProfiles`;
 
-    return this.http.get<StaffWithFunction[]>(url).pipe(
+    return this.http.get<StaffWithFunction[]>(url, this.httpOptions).pipe(
         catchError((error) => {
             this.handleError<StaffWithFunction[]>('Get staff profile', error);
             return [];
@@ -160,6 +162,22 @@ export class StaffService {
     );
   }
 
+  StaffProfileAddSlot(slot: string, date: string) {
+
+    const url = `${this.theServerURL}/Staff/Add-TimeSlots`;
+
+    let addTimeSlot: AddTimeSlot = {
+      slot: slot,
+      date: date
+    };
+    console.log(addTimeSlot);
+    return this.http.post<AddTimeSlot>(url, addTimeSlot, this.httpOptions).pipe(
+        catchError((error) => {
+            this.handleError<{message: string}>('Add staff profile time slot', error);
+            return [];
+        })
+    );
+  }
 
   //------------------------/------------------------/------------------------
   private handleError<T>(operation = 'operation', result?: T) {
