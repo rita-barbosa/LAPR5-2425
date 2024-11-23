@@ -63,7 +63,6 @@ export class UserService {
       .pipe(catchError(this.handleError<LoginResponse>('User login')))
       .subscribe(data => {
         if (data && data.token) {
-          console.log(data.token);
           this.decodeTokenandRedirect(data.token);
         } else {
           this.log(`Login failed: No token received.`);
