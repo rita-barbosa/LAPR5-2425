@@ -74,7 +74,7 @@ export class PatientService {
       });
   }
 
-  EditPatientProfile(id: string, name: string, phone: string, email: string, address: string, dateBirth: string) {
+  public editPatientProfile(id: string, name: string, phone: string, email: string, address: string, dateBirth: string) {
     const url = `${this.theServerURL}/${id}`;
     let editPatient: EditPatientProfile = {
       id: id
