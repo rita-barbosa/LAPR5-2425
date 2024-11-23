@@ -11,8 +11,5 @@ import { SideBarAdminComponent } from "./sidebar-admin/side-bar-admin.component"
   styleUrl: './admin.component.css'
 })
 export class AdminComponent {
-  // constructor(private router: Router) {}
-  // goBackToMenu() {
-  //   this.router.navigate(['/']);
-  // }
+
 }

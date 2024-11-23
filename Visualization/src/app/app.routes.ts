@@ -34,7 +34,7 @@ import { UpdatePasswordComponent } from './components/update-password/update-pas
 
 
 export const routes: Routes = [
-  { path: '', component: MenuComponent, pathMatch: 'full' },
+  { path: '', component: LoginComponent, pathMatch: 'full' },
   { path: 'login', component: LoginComponent },
   { path: 'login-callback', component: LoginCallbackComponent },
   { path: 'reset-password', component: ResetPasswordComponent },
