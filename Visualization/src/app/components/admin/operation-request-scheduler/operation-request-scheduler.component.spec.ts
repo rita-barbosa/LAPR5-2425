@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { OperationRequestScheduler } from './operation-request-scheduler.component';
 
 
-describe('ListStaffProfiles', () => {
+describe('OperationRequestSchedulerComponent', () => {
   let component: OperationRequestScheduler;
   let fixture: ComponentFixture<OperationRequestScheduler>;
 

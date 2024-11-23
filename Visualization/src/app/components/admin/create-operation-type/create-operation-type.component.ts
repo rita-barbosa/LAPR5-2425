@@ -49,7 +49,6 @@ export class CreateOperationTypeComponent {
   onSubmit(form: NgForm): void {
     if (form.valid) {
       this.isSubmitted = true;
-      console.log(this.operationType);
       this.service.createOperationType(this.operationType);
     } else {
       this.isSubmitted = false;

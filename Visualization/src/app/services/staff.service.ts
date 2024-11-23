@@ -110,7 +110,7 @@ export class StaffService {
       });
   }
 
-  getStaffByFilters(staffQueryParameters: StaffQueryParameters, token: string): Observable<StaffWithId[]> {
+  getStaffByFilters(staffQueryParameters: StaffQueryParameters): Observable<StaffWithId[]> {
     const url = `${this.theServerURL}/Staff/Filtered-List`;
 
     return this.http.post<StaffWithId[]>(url, staffQueryParameters, this.httpOptions).pipe(
