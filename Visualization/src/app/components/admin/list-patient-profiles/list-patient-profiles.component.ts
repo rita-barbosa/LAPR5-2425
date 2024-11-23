@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { FormsModule, NgForm } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { TableModule } from 'primeng/table';
 import { MessageComponent } from '../../message/message.component';
@@ -19,10 +19,24 @@ import { PatientListingFilterParameters } from '../../../domain/patient-listing-
   styleUrls: ['./list-patient-profiles.component.css']
 })
 export class ListPatientProfiles implements OnInit {
+  @ViewChild('patientForm') patientForm!: NgForm;
+
+  isSubmitted = false;
+  patient = {
+    id: '',
+    name: '',
+    phone: '',
+    email: '',
+    address: '',
+    dateBirth: ''
+  };
+
   patientList: PatientWithId[] = [];
   selectedPatient!: PatientWithId;
   fullPatient!: PatientWithId;
   detailsVisible: boolean = false;
+  isEditing = false;
+  editDetails: boolean = false;
 
   specializations: string[] = [];
   functions: string[] = ['Doctor', 'Intern', 'Nurse', 'Assistant'];
@@ -52,6 +66,14 @@ export class ListPatientProfiles implements OnInit {
 
   applyFilters(): void {
     this.fetchPatients();
+  }
+
+  toggleEdition(patient : PatientWithId): void {
+    this.editDetails = true;
+  }
+
+  closeEdition(): void {
+    this.editDetails = false;
   }
 
   addFilter(): void {
@@ -88,6 +110,39 @@ export class ListPatientProfiles implements OnInit {
 
   editPatientProfile(patient : PatientWithId): void {
     // Implement edit logic
+    this.isEditing = true;
+  }
+
+  onSubmit(form: NgForm): void {
+    this.isSubmitted = true;
+    if (form.valid) {
+      this.service.EditPatientProfile(
+        this.patient.id,
+        this.patient.name || '',
+        this.patient.phone || '',
+        this.patient.email || '',
+        this.patient.address || '',
+        this.patient.dateBirth || ''
+      );
+    } else {
+      this.isSubmitted = false;
+    }
+  }
+
+  clearForm(): void {
+    this.isSubmitted = false;
+
+    this.patient = {
+      id: '',
+      name: '',
+      phone: '',
+      email: '',
+      address: '',
+      dateBirth: ''
+    };
+    if (this.patientForm) {
+      this.patientForm.resetForm();
+    }
   }
 
   deletePatientProfile(patient : PatientWithId): void {
