@@ -342,7 +342,13 @@ namespace MDBackoffice.Domain.OperationRequests
 
                 foreach (StaffDto staffDto in staffForRequestEntry.Staff)
                 {
-                    var busySpots = GetBusyIntervals(staffDto.Slots, scheduleInfoDto.Date);
+                    var staff = await this._repoSta.GetByIdAsync(new StaffId(staffDto.Id));
+                    if (staff == null)
+                    {
+                        throw new BusinessRuleValidationException("No staff exists with that Id.");
+                    }
+                    List<Slot> freeSlots = staff.Slots;
+                    var busySpots = GetBusyIntervals(freeSlots, scheduleInfoDto.Date);
                     ScheduleStaffDto scheduleStaffDto = new ScheduleStaffDto(staffDto.Id, staffDto.Function, staffDto.SpecializationId, busySpots);
                     listStaff.Add(scheduleStaffDto);
                 }
@@ -413,7 +419,7 @@ namespace MDBackoffice.Domain.OperationRequests
             return message;
         }
 
-        public static List<SlotsDto> GetBusyIntervals(List<SlotsDto> freeSlots, string targetDate)
+        public static List<SlotsDto> GetBusyIntervals(List<Slot> freeSlots, string targetDate)
         {
             // Validate the input date
             if (!DateTime.TryParse(targetDate, out DateTime targetDay))
@@ -424,8 +430,8 @@ namespace MDBackoffice.Domain.OperationRequests
             
             // Filter slots for the target day
             var daySlots = freeSlots
-                .Where(slot => DateTime.TryParse(slot.StartDate, out DateTime startDate) && startDate.Date == targetDay.Date)
-                .OrderBy(slot => DateTime.Parse(slot.StartTime)) // Sort by StartTime
+                .Where(slot => slot.Date.Start == targetDay.Date)
+                .OrderBy(slot => slot.TimeInterval) // Sort by StartTime
                 .ToList();
 
             var busyIntervals = new List<SlotsDto>();
@@ -433,8 +439,8 @@ namespace MDBackoffice.Domain.OperationRequests
             // Find gaps between consecutive free slots
             for (int i = 0; i < daySlots.Count - 1; i++)
             {
-                var currentSlotEnd = DateTime.Parse(daySlots[i].EndTime);
-                var nextSlotStart = DateTime.Parse(daySlots[i + 1].StartTime);
+                var currentSlotEnd = daySlots[i].TimeInterval.End;
+                var nextSlotStart = daySlots[i + 1].TimeInterval.Start;
 
                 if (currentSlotEnd < nextSlotStart) // A busy interval exists
                 {
