@@ -7,6 +7,7 @@ using MDBackoffice.Domain.Shared;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
 using MDBackoffice.Domain.Users;
+using Microsoft.IdentityModel.Tokens;
 
 namespace MDBackoffice.Controllers
 {
@@ -268,6 +269,40 @@ namespace MDBackoffice.Controllers
                 else
                 {
                     return NotFound($"Operation request with ID {addOrRemoveFromPatientDto.PatientId} not found or wrong authorization.");
+                }
+            }
+            catch (BusinessRuleValidationException ex)
+            {
+                return BadRequest(new { ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { ex.Message });
+            }
+        }
+
+        [HttpPost]
+        [Route("Schedule")]
+
+        public async Task<ActionResult> Schedule([FromBody] OperationRequestScheduleInfoDto operationRequestScheduleInfoDto) 
+        {
+            try
+            {
+                var token = HttpContext.Request.Headers.Authorization.ToString()?.Split(' ')[1];
+
+                if (string.IsNullOrWhiteSpace(token) || _userSvc.CheckUserRole(token, "Doctor"))
+                {
+                    return BadRequest(new {message = "Invalid authorization or user role."});
+                }
+
+                var result = await _service.Schedule(operationRequestScheduleInfoDto);
+                if (!result.IsNullOrEmpty())
+                {
+                    return Ok(result);
+                }
+                else
+                {
+                    return NotFound($"Operation request not found or wrong authorization.");
                 }
             }
             catch (BusinessRuleValidationException ex)

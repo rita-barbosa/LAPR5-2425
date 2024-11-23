@@ -129,6 +129,16 @@ namespace MDBackoffice.Infrastructure.StaffProfiles
                     staff.Email.EmailAddress == email)
                     .FirstOrDefaultAsync() ?? throw new NullReferenceException("Couldn't find the staff with the specified email.");
         }
+
+        public async Task<Staff> GetStaffWithIdIncludingSlots(string id)
+        {
+            return await _context.StaffProfiles
+                .Include(staff => staff.Slots)
+                .Where(staff =>
+                    staff.Id != null &&
+                    staff.Id.Value == id)
+                    .FirstOrDefaultAsync() ?? throw new NullReferenceException("Couldn't find the staff with the specified email.");
+        }
     }
 }
 

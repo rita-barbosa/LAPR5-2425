@@ -73,5 +73,18 @@ namespace MDBackoffice.Domain.Rooms
 
             return listDto;
         }
+
+        public async Task<RoomDto> GetRoomDtoById(string id)
+        {
+            var room = await _repo.GetByIdAsync(new RoomNumber(id));
+            RoomDto roomDto = room.ToDto();
+            return roomDto;
+        }
+
+        public async Task<Room> GetRoomById(string id)
+        {
+            var room = await _repo.GetByIdAsync(new RoomNumber(id));
+            return room;
+        }
     }
 }

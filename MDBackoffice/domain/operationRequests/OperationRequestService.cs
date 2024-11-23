@@ -11,6 +11,10 @@ using MDBackoffice.Domain.Users;
 using Microsoft.AspNetCore.Identity;
 using MDBackoffice.Domain.Logs;
 using Microsoft.AspNetCore.Mvc;
+using MDBackoffice.Infrastructure.OperationRequests;
+using MDBackoffice.Domain.Rooms;
+using MDBackoffice.Domain.Appointments;
+using System.Text;
 
 namespace MDBackoffice.Domain.OperationRequests
 {
@@ -24,6 +28,8 @@ namespace MDBackoffice.Domain.OperationRequests
         private readonly IPatientRepository _repoPat;
         private readonly IOperationTypeRepository _repoOpTy;
         private readonly UserService _userService;
+        private readonly PlanningSchedulerAdapter _planningAdapter;
+        private readonly RoomService _roomService;
 
         public OperationRequestService(IUnitOfWork unitOfWork, IOperationRequestRepository repo, IStaffRepository repoSta, LogService logService, PatientService patientService, IPatientRepository repoPat, IOperationTypeRepository repoOpTy, UserService userService)
         {
@@ -296,5 +302,247 @@ namespace MDBackoffice.Domain.OperationRequests
 
             return listDto;
         }
+
+        public async Task<string> Schedule(OperationRequestScheduleInfoDto scheduleInfoDto)
+        {
+            if (scheduleInfoDto == null)
+            {
+                throw new ArgumentNullException(nameof(scheduleInfoDto));
+            }
+
+            var room = await this._roomService.GetRoomDtoById(scheduleInfoDto.SelectedRoomId);
+            if (room == null)
+            {
+                throw new InvalidOperationException("Room not found.");
+            }
+
+            var operationsMap = new Dictionary<ScheduleOperationRequestDto, List<ScheduleStaffDto>>();
+
+            foreach (StaffForRequestEntry staffForRequestEntry in scheduleInfoDto.StaffForRequest){
+                var operationRequest = await GetByIdAsync(new OperationRequestId(staffForRequestEntry.Value));
+                var opType = await _repoOpTy.GetByIdAsync(new OperationTypeId(operationRequest.OperationTypeId));
+
+                ScheduleOperationRequestDto scheduleOperationRequestDto = new ScheduleOperationRequestDto(staffForRequestEntry.Value,
+                                                                                                        opType.Name.OperationName,
+                                                                                                        opType.Phases[0].Duration.DurationMinutes.ToString(),
+                                                                                                        opType.Phases[1].Duration.DurationMinutes.ToString(),
+                                                                                                        opType.Phases[2].Duration.DurationMinutes.ToString());
+
+                var listStaff = new List<ScheduleStaffDto>();
+
+                foreach (StaffDto staffDto in staffForRequestEntry.Staff){
+                    var busySpots = GetBusyIntervals(staffDto.Slots, scheduleInfoDto.Day);
+                    ScheduleStaffDto scheduleStaffDto = new ScheduleStaffDto(staffDto.Id, staffDto.Function, staffDto.SpecializationId, busySpots);
+                    listStaff.Add(scheduleStaffDto);
+                }
+
+                operationsMap.Add(scheduleOperationRequestDto, listStaff);
+            }
+
+            List<SchedulesDto> listSchedulesToDo = await _planningAdapter.ScheduleOperationsAsync(operationsMap, room, scheduleInfoDto.Day, scheduleInfoDto.Algorithm);
+
+            UpdateSchedules(listSchedulesToDo);
+
+            StringBuilder sb = new StringBuilder();
+            sb.Append("DAY : ");
+            sb.Append(scheduleInfoDto.Day);
+            sb.Append("\n");
+
+            sb.Append("ROOM ID : ");
+            sb.Append(scheduleInfoDto.SelectedRoomId);
+            sb.Append("\n");
+
+            sb.Append("ALGORITHM : ");
+            sb.Append(scheduleInfoDto.Algorithm);
+            sb.Append("\n");
+
+            foreach (SchedulesDto schedules in listSchedulesToDo)
+            {
+                sb.Append("\nOperation Request ID: ");
+                sb.Append(schedules.RoomSchedule.First().Key); // Make sure this property exists in the SchedulesDto
+                sb.Append("\n");
+
+                // Process Room Schedule
+                sb.Append("Room Schedule:\n");
+                if (schedules.RoomSchedule.ContainsKey(schedules.RoomId))
+                {
+                    var roomSlots = schedules.RoomSchedule[schedules.RoomId];
+                    foreach (var slot in roomSlots)
+                    {
+                        sb.Append($"- Start: {slot.StartTime}, End: {slot.EndTime}, Date: {slot.StartDate}\n");
+                    }
+                }
+                else
+                {
+                    sb.Append("No room schedule available.\n");
+                }
+
+                // Process Staff Schedule
+                sb.Append("Staff Schedule:\n");
+                if (schedules.StaffSchedule != null && schedules.StaffSchedule.Count > 0)
+                {
+                    foreach (var staff in schedules.StaffSchedule)
+                    {
+                        sb.Append($"Staff ID: {staff.Key}\n");
+                        var staffSlots = staff.Value;
+                        foreach (var slot in staffSlots)
+                        {
+                            sb.Append($"- Start: {slot.StartTime}, End: {slot.EndTime}, Date: {slot.StartDate}\n");
+                        }
+                    }
+                }
+                else
+                {
+                    sb.Append("No staff schedule available.\n");
+                }
+            }
+
+            // Output the message
+            string message = sb.ToString();
+            return message;
+        }
+
+        public static List<SlotsDto> GetBusyIntervals(List<SlotsDto> freeSlots, string targetDate)
+        {
+            // Validate the input date
+            if (!DateTime.TryParse(targetDate, out DateTime targetDay))
+            {
+                throw new ArgumentException("Invalid date format. Use a valid date string (e.g., yyyy-MM-dd).");
+            }
+
+            // Filter slots for the target day
+            var daySlots = freeSlots
+                .Where(slot => DateTime.TryParse(slot.StartDate, out DateTime startDate) && startDate.Date == targetDay.Date)
+                .OrderBy(slot => DateTime.Parse(slot.StartTime)) // Sort by StartTime
+                .ToList();
+
+            var busyIntervals = new List<SlotsDto>();
+
+            // Find gaps between consecutive free slots
+            for (int i = 0; i < daySlots.Count - 1; i++)
+            {
+                var currentSlotEnd = DateTime.Parse(daySlots[i].EndTime);
+                var nextSlotStart = DateTime.Parse(daySlots[i + 1].StartTime);
+
+                if (currentSlotEnd < nextSlotStart) // A busy interval exists
+                {
+                    busyIntervals.Add(new SlotsDto(
+                        targetDate, targetDate,
+                        currentSlotEnd.ToString("HH:mm"),
+                        nextSlotStart.ToString("HH:mm"),
+                        "Busy Interval"
+                    ));
+                }
+            }
+
+            return busyIntervals;
+        }
+
+        public async void UpdateSchedules(IEnumerable<SchedulesDto> schedules)
+        {
+            // Process each schedule in the list
+            foreach (var schedule in schedules)
+            {
+                // Process staff schedules
+                foreach (var staffId in schedule.StaffSchedule.Keys)
+                {
+                    if (!schedule.StaffSchedule.TryGetValue(staffId, out var busySlots)) continue;
+
+                    // Replace staff's free time slots with updated free slots based on busy schedule
+                    var freeSlots = CalculateFreeSlots(busySlots, 400, 1400);
+                    // Update the staff's free time slots in the system (assuming a dictionary or similar structure exists)
+                    UpdateStaffSchedule(staffId, freeSlots);
+                }
+
+                // Process room schedule (adding maintenance slots)
+                var roomId = schedule.RoomId;
+                var roomBusySlots = schedule.RoomSchedule.ContainsKey(roomId) 
+                    ? schedule.RoomSchedule[roomId] 
+                    : new List<SlotsDto>();
+
+                // Add maintenance slots to the room's busy schedule
+                roomBusySlots.AddRange(await GetRoomMaintenanceSlots(roomId));
+
+                // Update the room's schedule in the system (assuming a dictionary or similar structure exists)
+                UpdateRoomSchedule(roomId, roomBusySlots);
+            }
+        }
+
+        private List<SlotsDto> CalculateFreeSlots(List<SlotsDto> busySlots, int startOfDay, int endOfDay)
+        {
+            // Convert start and end times into `TimeSpan` objects
+            var dayStart = TimeSpan.FromMinutes(startOfDay);
+            var dayEnd = TimeSpan.FromMinutes(endOfDay);
+
+            // Sort busy slots by start time
+            var sortedBusySlots = busySlots
+                .OrderBy(slot => TimeSpan.Parse(slot.StartTime))
+                .ToList();
+
+            var freeSlots = new List<SlotsDto>();
+            var currentFreeStart = dayStart;
+
+            // Identify gaps between busy slots
+            foreach (var slot in sortedBusySlots)
+            {
+                var busyStart = TimeSpan.Parse(slot.StartTime);
+                var busyEnd = TimeSpan.Parse(slot.EndTime);
+
+                if (currentFreeStart < busyStart) // Gap exists
+                {
+                    freeSlots.Add(new SlotsDto(
+                        slot.StartDate,
+                        slot.StartDate,
+                        currentFreeStart.ToString(@"hh\:mm"),
+                        busyStart.ToString(@"hh\:mm"),
+                        "Free Time"
+                    ));
+                }
+
+                // Update the free start to the end of the current busy slot
+                currentFreeStart = busyEnd > currentFreeStart ? busyEnd : currentFreeStart;
+            }
+
+            // Add free slot from the last busy slot to the end of the day
+            if (currentFreeStart < dayEnd)
+            {
+                freeSlots.Add(new SlotsDto(
+                    sortedBusySlots.FirstOrDefault()?.StartDate ?? DateTime.Now.ToString("yyyy-MM-dd"),
+                    sortedBusySlots.FirstOrDefault()?.StartDate ?? DateTime.Now.ToString("yyyy-MM-dd"),
+                    currentFreeStart.ToString(@"hh\:mm"),
+                    dayEnd.ToString(@"hh\:mm"),
+                    "Free Time"
+                ));
+            }
+
+            return freeSlots;
+        }
+
+        private async Task<List<SlotsDto>> GetRoomMaintenanceSlots(string roomId)
+        {
+            var room = await _roomService.GetRoomDtoById(roomId);
+
+            return room.MaintenanceSlots;
+        }
+
+        private async void UpdateStaffSchedule(string staffId, List<SlotsDto> freeSlots)
+        {
+            var staff = await _repoSta.GetStaffWithIdIncludingSlots(staffId);
+
+            staff.ChangeSlots(freeSlots);
+
+            await _unitOfWork.CommitAsync();
+        }
+
+        private async void UpdateRoomSchedule(string roomId, List<SlotsDto> roomSchedule)
+        {
+            var room = await _roomService.GetRoomById(roomId);
+
+            room.ChangeSlots(roomSchedule);
+
+            await _unitOfWork.CommitAsync(); 
+        }
+
+
     }
 }
