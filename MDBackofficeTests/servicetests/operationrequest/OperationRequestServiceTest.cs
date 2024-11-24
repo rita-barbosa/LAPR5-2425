@@ -150,7 +150,7 @@ public class OperationRequestServiceTests
         _repoStaMock.Setup(_repoMock => _repoMock.GetByIdAsync(It.IsAny<StaffId>())).ReturnsAsync(staffMock.Object);
         _repoPatMock.Setup(_repoPatMock => _repoPatMock.GetByIdAsync(It.IsAny<MedicalRecordNumber>()))
             .ReturnsAsync(patientMock.Object);
-        _repoOpTypeMock.Setup(_repoOpTypeMock => _repoOpTypeMock.GetByIdWithStaffAsync(It.IsAny<OperationTypeId>())).ReturnsAsync(operationTypeMock.Object);
+        _repoOpTypeMock.Setup(_repoOpTypeMock => _repoOpTypeMock.GetByNameAsync(It.IsAny<string>())).ReturnsAsync(operationTypeMock.Object);
 
         _unitOfWorkMock.Setup(u => u.CommitAsync()).ReturnsAsync(1);
 
