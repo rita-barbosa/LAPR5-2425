@@ -132,7 +132,7 @@ namespace MDBackofficeTests.servicetests.operationtype
 
             var expectedDto = new OperationTypeDto {Name ="test type 1",EstimatedDuration = 100, Status = true,RequiredStaff = reqStaffDto,Phases = phasesDto };
 
-            _repoMock.Setup(repo => repo.GetByIdAsync(It.IsAny<OperationTypeId>())).ReturnsAsync(operationTypeMock.Object);
+            _repoMock.Setup(repo => repo.GetByNameAsync(It.IsAny<string>())).ReturnsAsync(operationTypeMock.Object);
             _unitOfWorkMock.Setup(u => u.CommitAsync()).ReturnsAsync(1);
 
             // Act

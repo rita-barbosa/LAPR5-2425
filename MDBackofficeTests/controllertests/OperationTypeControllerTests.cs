@@ -190,7 +190,7 @@ namespace MDBackofficeTests.controllertests
 
             var expectedDto = new OperationTypeDto {Name ="test type 1",EstimatedDuration = 100, Status = true,RequiredStaff = reqStaffDto,Phases = phasesDto };
 
-            _repoMock.Setup(repo => repo.GetByIdAsync(new OperationTypeId(operationTypeId))).ReturnsAsync(operationType);
+            _repoMock.Setup(repo => repo.GetByNameAsync(operationTypeId)).ReturnsAsync(operationType);
            
             var context = new DefaultHttpContext();
             context.Request.Headers["Authorization"] = "Bearer valid-token";
