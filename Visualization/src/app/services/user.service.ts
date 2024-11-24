@@ -70,7 +70,7 @@ export class UserService {
         if (data && data.token) {
           this.decodeTokenandRedirect(data.token);
         } else {
-          this.log(`Login failed: No token received.`);
+          this.log(`Login failed.`);
         }
       });
   }
