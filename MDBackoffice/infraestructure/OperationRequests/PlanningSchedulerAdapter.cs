@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using MDBackoffice.Domain.Appointments;
 using MDBackoffice.Domain.OperationRequests;
 using MDBackoffice.Domain.Rooms;
+using MDBackoffice.Domain.Shared;
 using MDBackoffice.Domain.StaffProfiles;
 
 namespace MDBackoffice.Infrastructure.OperationRequests
@@ -24,21 +25,31 @@ namespace MDBackoffice.Infrastructure.OperationRequests
             string json = CreateScheduleJson(operationsMap, room, day);
             Console.WriteLine(json);
 
-            var url = "https://yourserver.com/api/schedule";
+            string url = string.Empty; // Declare the url variable before the if-else block
+
+            if (algorithm.Equals("better-solution"))
+            {
+                url = "http://localhost:8080/api/p/better-solution";
+            }
+            else if (algorithm.Equals("first-doctor"))
+            {
+                url = "http://localhost:8080/api/p/heuristic-first-available";
+            }
+            else if (algorithm.Equals("highest-occupancy"))
+            {
+                url = "http://localhost:8080/api/p/heuristic-highest-occupancy";
+            }
 
             using (var httpClient = new HttpClient())
             {
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
                 try
                 {
-                    // Send POST request
                     var response = httpClient.PostAsync(url, content).Result;
-
-                    // Ensure the response indicates success
                     response.EnsureSuccessStatusCode();
-
-                    // Read and process the response
                     var responseBody = response.Content.ReadAsStringAsync().Result;
+                    Console.WriteLine(responseBody);
+
                     return ConvertJsonToDto(responseBody);
                 }
                 catch (Exception ex)
@@ -47,58 +58,59 @@ namespace MDBackoffice.Infrastructure.OperationRequests
                     throw;
                 }
             }
-
-
-
         }
 
         private string CreateScheduleJson(Dictionary<ScheduleOperationRequestDto, List<ScheduleStaffDto>> operationsMap,
             RoomDto room,
             string day)
         {
-            var agRoom = new
+            var agRoom = new List<object>
             {
-                roomId = room.RoomNumber,
-                date = day,
-                occupied = room.MaintenanceSlots.Select(slot => new
+                new
                 {
-                    start = slot.StartTime, // Combine date and time in ISO format
-                    end = slot.EndTime,
-                    operationId = slot.Name
-                }).ToList()
+                    roomId = room.RoomNumber,
+                    date = day.Replace("-", ""),
+                    occupied = room.MaintenanceSlots.Select(slot => new
+                    {
+                        start = ConvertToMinutes(slot.StartTime),
+                        end = ConvertToMinutes(slot.EndTime),
+                        operationId = slot.Name ?? "occupied"
+                    }).ToList()
+                }
             };
 
-            var staffJson = operationsMap
+
+            var staff = operationsMap
                 .SelectMany(op => op.Value, (operation, staff) => new
                 {
                     staffId = staff.Id,
-                    function = staff.Function,
-                    spec = staff.SpecializationId,
+                    function = staff.Function.ToLower(),
+                    spec = staff.SpecializationId.ToLower(),
                     assocOp = new List<string>()
                 })
                 .Distinct() // Remove duplicates if staff are referenced in multiple operations
                 .ToList();
 
-            var agStaffJson = operationsMap
+            var agStaff = operationsMap
                 .SelectMany(op => op.Value, (operation, staff) => new
                 {
                     staffId = staff.Id,
-                    date = day,
+                    date = int.Parse(day.Replace("-", "")),
                     schedule = staff.Slots.Select(slot => new
                     {
-                        start = slot.StartTime, // Combine date and time in ISO format
-                        end = slot.EndTime,
+                        start = ConvertToMinutes(slot.StartTime),
+                        end = ConvertToMinutes(slot.EndTime),
                         operationId = slot.Name
                     }).ToList()
                 })
                 .Distinct() // Remove duplicates if staff are referenced in multiple operations
                 .ToList();
 
-            var timetableJson = operationsMap
+            var timetable = operationsMap
                .SelectMany(op => op.Value, (operation, staff) => new
                {
                    staffId = staff.Id,
-                   date = day,
+                   date = int.Parse(day.Replace("-", "")),
                    availability = new
                    {
                        start = 400, // Combine date and time in ISO format
@@ -108,7 +120,7 @@ namespace MDBackoffice.Infrastructure.OperationRequests
                .Distinct() // Remove duplicates if staff are referenced in multiple operations
                .ToList();
 
-            var surgeryJson = operationsMap
+            var surgery = operationsMap
                 .Keys // Get all OperationRequestDto keys from the dictionary
                 .Select(operation => new
                 {
@@ -119,7 +131,7 @@ namespace MDBackoffice.Infrastructure.OperationRequests
                 })
                 .ToList();
 
-            var surgeryIdJson = operationsMap
+            var surgeryId = operationsMap
               .Keys // Get all OperationRequestDto keys from the dictionary
               .Select(operation => new
               {
@@ -129,31 +141,119 @@ namespace MDBackoffice.Infrastructure.OperationRequests
               .ToList();
 
 
-            var assignSurgeryJson = operationsMap
+            var assignSurgery = operationsMap
                 .SelectMany(op => op.Value, (operation, staff) => new
                 {
-                    operationId = operation.Key.Id, // Assuming OperationRequestDto has OperationId
-                    staffId = staff.Id // Assuming StaffDto has StaffId
+                    operationId = operation.Key.Id,
+                    staffId = staff.Id
                 })
                 .ToList();
             var allData = new
             {
                 agRoom,
-                staffJson,
-                agStaffJson,
-                timetableJson,
-                surgeryJson,
-                surgeryIdJson,
-                assignSurgeryJson
+                staff,
+                surgery,
+                agStaff,
+                timetable,
+                surgeryId,
+                assignSurgery
             };
 
             return JsonSerializer.Serialize(allData, new JsonSerializerOptions { WriteIndented = true });
         }
 
-        private List<SchedulesDto> ConvertJsonToDto(String json)
+        private int ConvertToMinutes(string time)
         {
+            if (string.IsNullOrWhiteSpace(time))
+                throw new ArgumentException("Time string cannot be null or empty.");
 
-            return null;
+            // Split the time string into hours and minutes
+            string[] timeParts = time.Split(':');
+            if (timeParts.Length != 2 && timeParts.Length != 3)
+                throw new FormatException("Invalid time format. Expected format: 'HH:mm' or 'HH:mm:ss'.");
+
+            // Parse the hours and minutes
+            if (!int.TryParse(timeParts[0], out int hours) || !int.TryParse(timeParts[1], out int minutes))
+                throw new FormatException("Invalid numeric values in time string.");
+
+            if (hours < 0 || hours > 23 || minutes < 0 || minutes > 59)
+                throw new ArgumentOutOfRangeException("Hours or minutes are out of valid range.");
+
+            // Calculate total minutes
+            return (hours * 60) + minutes;
         }
+
+        public string ConvertToTime(int totalMinutes)
+        {
+            // Calculate hours and minutes from total minutes
+            int hours = totalMinutes / 60;
+            int minutes = totalMinutes % 60;
+
+            // Return the formatted string as "HH:mm"
+            return $"{hours:D2}:{minutes:D2}:00";
+        }
+
+        private List<SchedulesDto> ConvertJsonToDto(string json)
+        {
+            Console.WriteLine(json);
+
+            // Parse the JSON string into a dictionary
+            var parsedJson = JsonSerializer.Deserialize<Dictionary<string, JsonElement>>(json);
+
+            // Extract the fields from the parsed JSON
+            string date = parsedJson["Day"].GetInt32().ToString(); // This is in "yyyyMMdd" format
+            string roomId = parsedJson["Room"].GetString();
+
+            // Parse the date from the "Day" field
+            var startDate = DateTime.ParseExact(date, "yyyyMMdd", null);
+
+            // Helper function to convert timestamps to SlotsDto
+            Func<JsonElement, SlotsDto> toSlotsDto = slot =>
+            {
+                int start = slot.GetProperty("start").GetInt32();
+                int end = slot.GetProperty("end").GetInt32();
+                string operationId = slot.TryGetProperty("operationId", out var id) ? id.GetString() : null;
+
+                // Use the Day field directly as StartDate and EndDate
+                return new SlotsDto(
+                    startDate.ToString("yyyy-MM-dd"), // StartDate
+                    startDate.ToString("yyyy-MM-dd"), // EndDate
+                    ConvertToTime(start), // StartTime
+                    ConvertToTime(end), // EndTime
+                    operationId // Name (operationId)
+                );
+            };
+
+            // Extract and deserialize the RoomSchedule from the JSON string
+            string roomScheduleRaw = parsedJson["RoomSchedule:"].GetString(); // Get the RoomSchedule string
+            var roomScheduleList = JsonSerializer.Deserialize<List<JsonElement>>(roomScheduleRaw); // Deserialize into a list of JsonElement
+
+            // Convert the RoomSchedule to SlotsDto
+            var roomScheduleDict = new Dictionary<string, List<SlotsDto>>
+            {
+                { roomId, roomScheduleList.Select(toSlotsDto).ToList() }
+            };
+
+            // Deserialize StaffSchedule
+            // Get the raw JSON string for StaffSchedule
+            var staffScheduleRaw = parsedJson["StaffSchedule"].GetString();
+
+            // Deserialize the raw JSON string into a list of dictionaries (each dictionary representing a staff member)
+            var staffScheduleList = JsonSerializer.Deserialize<List<Dictionary<string, JsonElement>>>(staffScheduleRaw);
+
+            // Convert the StaffSchedule to a dictionary of SlotsDto
+            var staffScheduleDict = staffScheduleList
+                .ToDictionary(
+                    staff => staff["id"].GetString() ?? "unknown", // Use "unknown" if id is null
+                    staff => staff["slots"].EnumerateArray().Select(toSlotsDto).ToList() // Handle empty slots gracefully
+                );
+
+            // Create SchedulesDto instance
+            var schedulesDto = new SchedulesDto(date, roomId, roomScheduleDict, staffScheduleDict);
+
+            // Return as a list
+            return new List<SchedulesDto> { schedulesDto };
+        }
+
     }
 }

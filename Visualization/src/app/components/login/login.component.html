@@ -26,18 +26,11 @@
   </div>
 
   <div class="google-login">
-    <button type="button" class="google-login-button" (click)="loginWithGoogle()">
-      Login with Google
-    </button>
+    <button type="button" class="google-login-button" (click)="loginWithGoogle()">Login with Google</button>
   </div>
 
-    <div class="google-login">
-      <button class="google-login-button" routerLink="/reset-password">Reset Password</button>
-
-    <!-- <form action="http://localhost:5001/api/login-external" method="get">
-      <input type="submit" value="Press to log in"/>
-    </form> -->
-
-  </div>
+    <div class="reset-password">
+      <button type="button" class="reset-password-button" routerLink="/reset-password">Reset Password</button>
+    </div>
   <app-message></app-message>
 </body>

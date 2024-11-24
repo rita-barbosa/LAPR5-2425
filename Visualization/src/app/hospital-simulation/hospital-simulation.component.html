@@ -1,18 +1,11 @@
-<head>
-
-
-    <title>Hospital Floor Simulation</title>
-</head>
-
-<canvas #myCanvas id="myCanvas"></canvas>
-
 <body>
     <div>
-        <h1 class="main-title">Hospital Floor</h1>
-
-        <div id="parent">
-            <div id="subwindows-panel">
-            </div>
-        </div>
+        <app-side-bar-doctor></app-side-bar-doctor>
+    </div>
+    <header>
+        <h1 style="margin-left: 14%;" class="main-title">Hospital Floor Simulation</h1>
+    </header>
+    <div id="parent">
+        <canvas class="canvas" #myCanvas id="myCanvas"></canvas>
     </div>
 </body>

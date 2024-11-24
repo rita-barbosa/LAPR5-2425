@@ -398,9 +398,19 @@ remove_equals([X|L],[X|L1]):-remove_equals(L,L1).
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Heuristic 1 %%%
 % schedule surgeries considering doctor earliest availability
-obtain_heuristic_solution(Room, Day, AgOpRoomHeuristic, LAgDoctorsHeuristic, TFinOp) :-
+obtain_heuristic_solution(Room,Day,AgOpRoomBetter,LAgDoctorsBetter,TFinOp):-
     get_time(Ti),
-    findall(OpCode, surgery_id(OpCode, _), LOC),!,
+    (obtain_heuristic_solution1(Room,Day),!),
+    retract(better_sol(Day,Room,AgOpRoomBetter,LAgDoctorsBetter,TFinOp)),
+    write('Final Result: AgOpRoomBetter='),write(AgOpRoomBetter),nl,
+    write('LAgDoctorsBetter='),write(LAgDoctorsBetter),nl,
+    write('TFinOp='),write(TFinOp),nl,
+    get_time(Tf),
+    T is Tf-Ti,
+    write('Tempo de geracao da solucao:'),write(T),nl.
+
+obtain_heuristic_solution1(Room,Day):-
+    findall(OpCode,surgery_id(OpCode,_),LOC),!, 
     retractall(agenda_staff1(_,_,_)),
     retractall(agenda_operation_room1(_,_,_)),
     retractall(availability(_,_,_)),
@@ -409,24 +419,19 @@ obtain_heuristic_solution(Room, Day, AgOpRoomHeuristic, LAgDoctorsHeuristic, TFi
     agenda_operation_room(Room,Day,Agenda),assert(agenda_operation_room1(Room,Day,Agenda)),
     findall(_,(agenda_staff1(D,Day,L),free_agenda0(L,LFA),adapt_timetable(D,Day,LFA,LFA2),assertz(availability(D,Day,LFA2))),_),
     availability_early_surgeries(LOC, Room, Day),
-    agenda_operation_room1(Room,Day,AgOpRoomHeuristic),
+    retract(final_time_heuristics(TFinOp)),
+    agenda_operation_room1(Room,Day,AgendaR),
     findall(Doctor,assignment_surgery(_,Doctor),LDoctors1),
     remove_equals(LDoctors1,LDoctors),
     list_doctors_agenda(Day,LDoctors,LAgDoctorsHeuristic),
-    retract(final_time_heuristics(TFinOp)),
-    write('Final Result: AgOpRoomHeuristic='), write(AgOpRoomHeuristic), nl,
-    write('LAgDoctorsHeuristic='), write(LAgDoctorsHeuristic), nl,
-    write('TFinOp='), write(TFinOp), nl,
-    get_time(Tf),
-    T is Tf - Ti,
-    write('Time taken for solution generation:'), write(T), nl.
+    asserta(better_sol(Day,Room,AgendaR,LAgDoctorsHeuristic,TFinOp)).
 % -------------------------------------------------------------------
 availability_early_surgeries([], _, _) :-!.  % Added message for termination
 availability_early_surgeries(LOpCode, Room, Day):-
     retractall(earliest_surgery(_, _, _)),  
     asserta(earliest_surgery(_, 1441, _)),
     find_earliest_surgery(LOpCode, Room, Day), !,
-    earliest_surgery(OpCode, TinS, _),
+    earliest_surgery(OpCode, TinS, LStaff),
     (
         TinS == 1441,
         select(OpCode, LOpCode, LRestOpCode),
@@ -450,7 +455,7 @@ availability_early_surgeries(LOpCode, Room, Day):-
         insert_agenda_anesthesia_team((TinS,TAnesthesia,TSurgery,OpCode),Day,LAnesth),
         insert_agenda_surgery_team((TinS,TAnesthesia,TSurgery,OpCode),Day,LSurgeons),
         insert_agenda_cleaning_team((TinS,TAnesthesia,TSurgery,TCleaning,OpCode),Day,LCleaners),
-    
+
         select(OpCode, LOpCode, LRestOpCode),
         availability_early_surgeries(LRestOpCode, Room, Day)
     ). 
@@ -488,6 +493,7 @@ obtain_heuristic_highest_occupancy_solution(Room,Day,AgOpRoomBetter,LAgDoctorsBe
     write('Tempo de geracao da solucao:'),write(T),nl.
 
 obtain_heuristic_highest_occupancy_solution1(Room,Day):-
+    asserta(better_sol(Day,Room,_,_,0)),
     findall(OpCode,surgery_id(OpCode,_),LOC),!,
     retractall(agenda_staff1(_,_,_)),
     retractall(agenda_operation_room1(_,_,_)),
@@ -521,8 +527,11 @@ find_surgery_by_highest_occupancy(LOpCodes, Room, Day) :-
         surgery(OpType, TAnesthesia, TSurgery, TCleaning),
 
         schedule_first_interval(TAnesthesia,TSurgery,TCleaning,LPossibilities,(TinS,TfinS)),
-        retractall(better_sol(_,_,_,_,_)),
-        asserta(better_sol(Day,Room,_,_,TfinS)),
+        better_sol(Day,Room,_,_,FinTime),
+        ((TfinS > FinTime,
+            retractall(better_sol(_,_,_,_,_)),
+            asserta(better_sol(Day,Room,_,_,TfinS))
+        ); true),  
 
         retract(agenda_operation_room1(Room,Day,Agenda)),
         insert_agenda((TinS,TfinS,OpCode),Agenda,Agenda1),

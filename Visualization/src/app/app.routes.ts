@@ -38,6 +38,7 @@ export const routes: Routes = [
   { path: '', component: LoginComponent, pathMatch: 'full' },
   { path: 'login', component: LoginComponent },
   { path: 'login-callback', component: LoginCallbackComponent },
+  { path: 'menu', component: MenuComponent },
   { path: 'reset-password', component: ResetPasswordComponent },
   { path: 'Update-UserPassword', component: UpdatePasswordComponent },
   { path: 'menu', component: MenuComponent },

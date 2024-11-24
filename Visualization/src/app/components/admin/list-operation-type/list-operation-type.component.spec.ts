@@ -86,16 +86,16 @@ describe('ListOperationTypeComponent', () => {
       requiredStaff: [],
       phases: []
     };
-  
+
     const validForm = { valid: true } as any;
     const editResponse = { id: '123' };
-  
+
     service.getOperationTypeByName.and.returnValue(of(editResponse));
     service.editOperationType.and.returnValue(of(editResponse));
-  
+
     // Act
     component.editOperationType(validForm);
-  
+
     // Wait for the asynchronous code to complete
     fixture.detectChanges();
     setTimeout(() => {
@@ -106,11 +106,26 @@ describe('ListOperationTypeComponent', () => {
       done();
     }, 0);  // Use done() to handle async completion
   });
-  
+
+
 
   it('should not edit operation type if form is invalid', () => {
     // Arrange
     const invalidForm = { valid: false } as any;
+
+    // Act
+    component.editOperationType(invalidForm);
+
+    // Assert
+    expect(service.editOperationType).not.toHaveBeenCalled();
+    expect(component.isSubmitted).toBeFalse();
+  });
+
+  it('should get operation type but not edit operation type if form is invalid', () => {
+    // Arrange
+    const invalidForm = { valid: false } as any;
+    const editResponse = { id: '123' };
+    service.getOperationTypeByName.and.returnValue(of(editResponse));
 
     // Act
     component.editOperationType(invalidForm);

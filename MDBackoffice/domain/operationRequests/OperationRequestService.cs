@@ -358,27 +358,19 @@ namespace MDBackoffice.Domain.OperationRequests
 
             List<SchedulesDto> listSchedulesToDo = await _planningAdapter.ScheduleOperationsAsync(operationsMap, room, scheduleInfoDto.Date, scheduleInfoDto.Algorithm);
 
-            UpdateSchedules(listSchedulesToDo);
+            await UpdateSchedules(listSchedulesToDo);
 
             StringBuilder sb = new StringBuilder();
             sb.Append("DAY : ");
             sb.Append(scheduleInfoDto.Date);
-            sb.Append("\n");
+            sb.Append("/");
 
             sb.Append("ROOM ID : ");
             sb.Append(scheduleInfoDto.RoomID);
-            sb.Append("\n");
-
-            sb.Append("ALGORITHM : ");
-            sb.Append(scheduleInfoDto.Algorithm);
-            sb.Append("\n");
+            sb.Append("/");
 
             foreach (SchedulesDto schedules in listSchedulesToDo)
             {
-                sb.Append("\nOperation Request ID: ");
-                sb.Append(schedules.RoomSchedule.First().Key); // Make sure this property exists in the SchedulesDto
-                sb.Append("\n");
-
                 // Process Room Schedule
                 sb.Append("Room Schedule:\n");
                 if (schedules.RoomSchedule.ContainsKey(schedules.RoomId))
@@ -395,7 +387,8 @@ namespace MDBackoffice.Domain.OperationRequests
                 }
 
                 // Process Staff Schedule
-                sb.Append("Staff Schedule:\n");
+                
+                sb.Append(" | Staff Schedule:\n");
                 if (schedules.StaffSchedule != null && schedules.StaffSchedule.Count > 0)
                 {
                     foreach (var staff in schedules.StaffSchedule)
@@ -427,11 +420,11 @@ namespace MDBackoffice.Domain.OperationRequests
                 throw new ArgumentException("Invalid date format. Use a valid date string (e.g., yyyy-MM-dd).");
             }
 
-            
+
             // Filter slots for the target day
             var daySlots = freeSlots
                 .Where(slot => slot.Date.Start == targetDay.Date)
-                .OrderBy(slot => slot.TimeInterval) // Sort by StartTime
+                .OrderBy(slot => slot.TimeInterval.Start) // Sort by StartTime
                 .ToList();
 
             var busyIntervals = new List<SlotsDto>();
@@ -446,8 +439,8 @@ namespace MDBackoffice.Domain.OperationRequests
                 {
                     busyIntervals.Add(new SlotsDto(
                         targetDate, targetDate,
-                        currentSlotEnd.ToString("HH:mm"),
-                        nextSlotStart.ToString("HH:mm"),
+                        currentSlotEnd.ToString(),
+                        nextSlotStart.ToString(),
                         "Busy Interval"
                     ));
                 }
@@ -456,7 +449,7 @@ namespace MDBackoffice.Domain.OperationRequests
             return busyIntervals;
         }
 
-        public async void UpdateSchedules(IEnumerable<SchedulesDto> schedules)
+        public async Task UpdateSchedules(List<SchedulesDto> schedules)
         {
             // Process each schedule in the list
             foreach (var schedule in schedules)
@@ -469,7 +462,7 @@ namespace MDBackoffice.Domain.OperationRequests
                     // Replace staff's free time slots with updated free slots based on busy schedule
                     var freeSlots = CalculateFreeSlots(busySlots, 400, 1400);
                     // Update the staff's free time slots in the system (assuming a dictionary or similar structure exists)
-                    UpdateStaffSchedule(staffId, freeSlots);
+                    await UpdateStaffSchedule(staffId, freeSlots);
                 }
 
                 // Process room schedule (adding maintenance slots)
@@ -477,13 +470,32 @@ namespace MDBackoffice.Domain.OperationRequests
                 var roomBusySlots = schedule.RoomSchedule.ContainsKey(roomId)
                     ? schedule.RoomSchedule[roomId]
                     : new List<SlotsDto>();
-
-                // Add maintenance slots to the room's busy schedule
-                roomBusySlots.AddRange(await GetRoomMaintenanceSlots(roomId));
-
                 // Update the room's schedule in the system (assuming a dictionary or similar structure exists)
-                UpdateRoomSchedule(roomId, roomBusySlots);
+                await UpdateRoomSchedule(roomId, roomBusySlots);
             }
+            await _unitOfWork.CommitAsync();
+        }
+
+
+        private async Task<List<SlotsDto>> GetRoomMaintenanceSlots(string roomId)
+        {
+            var room = await _roomService.GetRoomDtoById(roomId);
+
+            return room.MaintenanceSlots;
+        }
+
+        private async Task UpdateStaffSchedule(string staffId, List<SlotsDto> freeSlots)
+        {
+            var staff = await _repoSta.GetStaffWithIdIncludingSlots(staffId);
+
+            staff.ChangeSlots(freeSlots);
+        }
+
+        private async Task UpdateRoomSchedule(string roomId, List<SlotsDto> roomSchedule)
+        {
+            var room = await _roomService.GetRoomById(roomId);
+
+            room.ChangeSlots(roomSchedule);
         }
 
         private List<SlotsDto> CalculateFreeSlots(List<SlotsDto> busySlots, int startOfDay, int endOfDay)
@@ -535,32 +547,6 @@ namespace MDBackoffice.Domain.OperationRequests
 
             return freeSlots;
         }
-
-        private async Task<List<SlotsDto>> GetRoomMaintenanceSlots(string roomId)
-        {
-            var room = await _roomService.GetRoomDtoById(roomId);
-
-            return room.MaintenanceSlots;
-        }
-
-        private async void UpdateStaffSchedule(string staffId, List<SlotsDto> freeSlots)
-        {
-            var staff = await _repoSta.GetStaffWithIdIncludingSlots(staffId);
-
-            staff.ChangeSlots(freeSlots);
-
-            await _unitOfWork.CommitAsync();
-        }
-
-        private async void UpdateRoomSchedule(string roomId, List<SlotsDto> roomSchedule)
-        {
-            var room = await _roomService.GetRoomById(roomId);
-
-            room.ChangeSlots(roomSchedule);
-
-            await _unitOfWork.CommitAsync();
-        }
-
 
     }
 }

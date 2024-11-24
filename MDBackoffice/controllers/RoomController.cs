@@ -40,6 +40,12 @@ namespace MDBackoffice.Controllers
             return await _service.GetAllAsync();
         }
 
+        [HttpGet]
+        [Route("Get-AllSchedules")]
+        public async Task<List<RoomScheduleDto>> GetAllSchedules(){
+            return await _service.GetAllSchedules();
+        }
+
     }
 
 }

@@ -40,6 +40,7 @@ describe('ListPatientProfiles', () => {
     const patientServiceMock = {
       getPatientsByFilters: jasmine.createSpy('getPatientsByFilters').and.returnValue(of(listPatient)),
       getPatientById: jasmine.createSpy('getPatientById').and.returnValue(of(p1)),
+      deactivatePatientProfile: jasmine.createSpy('deactivatePatientProfile').and.returnValue(of(null)),
     };
 
     const activatedRouteMock = {
@@ -106,5 +107,21 @@ describe('ListPatientProfiles', () => {
     component.detailsVisible = true;
     component.closeDetails();
     expect(component.detailsVisible).toBeFalse();
+  });
+
+
+  it('should delete patient profile', () => {
+    const patientToDelete = {
+      name: 'José Maria',
+      phone: '+123 098098098',
+      email: 'test@email.t',
+      address: 'Country, 1234-345, Street of tests',
+      dateBirth: '20/10/2000',
+      patientId: 'test-id'
+    } as PatientWithId;
+
+    component.deletePatientProfile(patientToDelete);
+
+    expect(patientService.deactivatePatientProfile).toHaveBeenCalledWith(patientToDelete.patientId);
   });
 });

@@ -139,7 +139,7 @@ export class OperationRequestService {
       });
   }
 
-  public removeOperationRequestToPatient(patientId: string, operationRequestId: string){
+  public removeOperationRequestToPatient(patientId: string, operationRequestId: string) {
     const url = `${this.theServerURL}/OperationRequest/Delete-OperationRequestFromPatient`;
 
     let opReqHis: AddOrRemoveFromPatient = {
@@ -155,34 +155,40 @@ export class OperationRequestService {
   }
 
 
-getAllOperationRequests() : Observable<OperationRequest[]> {
-  const url = `${this.theServerURL}/OperationRequest/Get-AllOpRequests`;
+  getAllOperationRequests(): Observable<OperationRequest[]> {
+    const url = `${this.theServerURL}/OperationRequest/Get-AllOpRequests`;
 
-  return this.http.get<OperationRequest[]>(url, this.httpOptions)
-    .pipe(
-      catchError((error) => {
-        this.handleError<OperationRequest[]>('Get all operation requests', error);
-        return [];
-    })
-  );
-}
-
-  scheduleOperationRequest(scheduleBackend : SchedulingBackend) {
-    const url = `${this.theServerURL}/OperationRequest/Schedule`;
-    console.log(scheduleBackend)
-
-    this.http
-      .post(url, scheduleBackend, this.httpOptions)
-      .pipe(catchError(this.handleError('Scheduling Operation Requests')))
-      .subscribe();
+    return this.http.get<OperationRequest[]>(url, this.httpOptions)
+      .pipe(
+        catchError((error) => {
+          this.handleError<OperationRequest[]>('Get all operation requests', error);
+          return [];
+        })
+      );
   }
+
+
+  public scheduleOperationRequest(scheduleBackend: SchedulingBackend) {
+    const url = `${this.theServerURL}/OperationRequest/Schedule`;
+    console.log('in service');
+    // Specify the response type as string
+    this.http.post<{ message: string }>(url, scheduleBackend, this.httpOptions).subscribe({
+      next: (message) => {
+        this.log(`Operation request success message: ${message.message}`); // Log the success message
+      },
+      error: (err) => {
+        this.handleError('Error in schedule operation request:', err);
+      }
+    });
+  }
+
 
   deleteOperationRequestById(id: string) {
     const url = `${this.theServerURL}/OperationRequest/${id}`;
 
-    return this.http.delete<{message : string}>(url, this.httpOptions)
+    return this.http.delete<{ message: string }>(url, this.httpOptions)
       .pipe(
-        catchError(this.handleError<{message : string}>('Remove Operation Type'))
+        catchError(this.handleError<{ message: string }>('Remove Operation Type'))
       ).subscribe({
         next: () => {
           this.log(`Operation request: ${id} was successfully removed.`);

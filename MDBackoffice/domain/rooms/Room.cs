@@ -55,12 +55,10 @@ namespace MDBackoffice.Domain.Rooms
 
         public void ChangeSlots(List<SlotsDto> slots)
         {
-            MaintenanceSlots = new List<Slot>();
-
+             MaintenanceSlots.Clear();
             foreach (SlotsDto slotDto in slots)
             {
                 this.MaintenanceSlots.Add(new Slot(slotDto.StartTime, slotDto.EndTime, slotDto.StartDate, slotDto.EndDate));
-
             }
         }
 

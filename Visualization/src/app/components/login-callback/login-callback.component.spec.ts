@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { LoginCallbackComponent } from './login-callback.component';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 describe('LoginCallbackComponent', () => {
   let component: LoginCallbackComponent;
@@ -8,7 +9,7 @@ describe('LoginCallbackComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [LoginCallbackComponent]
+      imports: [LoginCallbackComponent, HttpClientTestingModule]
     })
     .compileComponents();
 
