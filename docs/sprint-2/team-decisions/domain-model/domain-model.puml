@@ -81,7 +81,6 @@ package "<<aggregate Appointment>>"{
     entity Appointment <<entity>> <<root>> {}
     class AppointmentId <<(V,#FF8B40)value object>> <<identifier>> {}
     class   AppointmentStatus <<(V,#FF8B40)value object>>  {}
-    class AppointmentType <<(V,#FF8B40)value object>>  {}
 }
 
 
@@ -179,7 +178,7 @@ Appointment --> "1" OperationRequest
 Appointment --> "1" Slot
 Appointment --> "1" AppointmentId
 Appointment --> "1" AppointmentStatus
-Appointment --> "1" AppointmentType
+'Appointment --> "1" AppointmentType
 Appointment --> "1..*" Staff
 
 Patient -> "1" Status
