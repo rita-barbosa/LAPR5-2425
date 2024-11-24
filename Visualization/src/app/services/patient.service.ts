@@ -7,7 +7,7 @@ import { PatientQueryParameters } from '../domain/patient-query-parameters';
 import { PatientWithId } from '../domain/patient-with-id';
 import { EditPatientProfile } from '../domain/edit-patient-profile';
 import { IdPasser } from '../domain/IdPasser';
-import { Patient } from '../domain/patient';
+import { Patient } from '../domain/Patient';
 
 @Injectable({
   providedIn: 'root'

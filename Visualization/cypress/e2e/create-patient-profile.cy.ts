@@ -1,19 +1,24 @@
 describe('Create Patient Profile', () => {
   
   beforeEach(() => {
-    cy.intercept('POST', '/Patient/Create-PatientProfile', {
-      statusCode: 200,
-      body: {
-        message: 'Patient profile successfully created.'
-      }
+    cy.intercept('POST', '/api/Patient/Create-PatientProfile', (req) => {
+      req.reply ({
+        statusCode: 200,
+        body: {
+          firstName : 'John',
+          lastName : 'Doe',
+          phone : '+351 910001234',
+          email : 'john.doe@example.com',
+          address : 'Portugal, 4590-445, Rua da Sardinha',
+          emergencyContact : '+351 9100081234',
+          gender : 'Male',
+          dateBirth : '20/10/2004',
+        }
+      });
     }).as('createPatientProfile');
 
-    cy.visit('http://localhost:4200/login');
-        cy.get('input[name="email"]').type("matildexv.04@gmail.com");
-        cy.get('input[name="password"]').type("Abcde12345!");
-        cy.get('button.add-button-submit').click();
-        cy.wait(3000);
-        cy.visit('http://localhost:4200/create-patient-profile');
+
+    cy.visit('/create-patient-profile');
   });
 
   it('should load the correct title and input fields', () => {
@@ -60,7 +65,7 @@ describe('Create Patient Profile', () => {
     
     cy.get('button.add-button-submit').click();
 
-    cy.wait(5000)
+    cy.wait('@createPatientProfile');
 
     cy.get('app-message').should('contain', 'Patient profile: john.doe@example.com was successfully created.');
   });
@@ -92,14 +97,14 @@ describe('Create Patient Profile', () => {
     cy.get('input[name="lastName"]').type('Doe');
     cy.get('input[name="phone"]').type('+351 910051234');
     cy.get('input[name="emergencyContact"]').type('+351 9100581234');
-    cy.get('input[name="email"]').type('john.doe2@example.com');
+    cy.get('input[name="email"]').type('john.doe@example.com');
     cy.get('input[name="address"]').type('Portugal, 4590-445, Rua da Sardinha');
     cy.get('input[name="gender"]').type('Male');
     cy.get('input[name="dateBirth"]').type('20/09/2004');
 
     cy.get('button.add-button-submit').click();
 
-    cy.wait(5000);
+    cy.wait('@createPatientProfile');
 
     cy.get('input[name="firstName"]').should('be.disabled');
     cy.get('input[name="lastName"]').should('be.disabled');
