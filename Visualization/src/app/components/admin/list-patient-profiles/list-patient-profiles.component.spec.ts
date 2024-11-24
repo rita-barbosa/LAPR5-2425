@@ -4,7 +4,7 @@ import { PatientWithId } from 'src/app/domain/patient-with-id';
 import { SideBarAdminComponent } from '../sidebar-admin/side-bar-admin.component';
 import { CommonModule } from '@angular/common';
 import { TableModule } from 'primeng/table';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, NgForm } from '@angular/forms';
 import { MessageComponent } from '../../message/message.component';
 import { ListPatientProfiles } from './list-patient-profiles.component';
 import { ActivatedRoute } from '@angular/router';
@@ -41,6 +41,7 @@ describe('ListPatientProfiles', () => {
       getPatientsByFilters: jasmine.createSpy('getPatientsByFilters').and.returnValue(of(listPatient)),
       getPatientById: jasmine.createSpy('getPatientById').and.returnValue(of(p1)),
       deactivatePatientProfile: jasmine.createSpy('deactivatePatientProfile').and.returnValue(of(null)),
+      editPatientProfile: jasmine.createSpy('editPatientProfile'),
     };
 
     const activatedRouteMock = {
@@ -96,7 +97,7 @@ describe('ListPatientProfiles', () => {
       dateBirth: '20/10/2000',
       patientId: 'test-id'
     };
-    
+
     component.toggleDetails(patient);
     expect(patientService.getPatientById).toHaveBeenCalledWith(patient.patientId);
     expect(component.fullPatient).toEqual(patient);
@@ -109,6 +110,90 @@ describe('ListPatientProfiles', () => {
     expect(component.detailsVisible).toBeFalse();
   });
 
+  it('should set isEditing to true when editPatientProfile is called', () => {
+    const patient = {
+      name: 'José Maria',
+      phone: '+123 098098098',
+      email: 'test@email.t',
+      address: 'Country, 1234-345, Street of tests',
+      dateBirth: '20/10/2000',
+      patientId: 'test-id'
+    } as PatientWithId;
+
+    component.editPatientProfile(patient);
+
+    expect(component.isEditing).toBeTrue();
+  });
+
+
+  it('should submit the form when onSubmit is called with valid data', () => {
+    component.patient = {
+      id: 'test-id',
+      name: 'José Maria',
+      phone: '+123 098098098',
+      email: 'test@email.t',
+      address: 'Country, 1234-345, Street of tests',
+      dateBirth: '20/10/2000'
+    };
+
+    const form = {
+      valid: true
+    } as NgForm;
+
+    component.onSubmit(form);
+
+    expect(component.isSubmitted).toBeTrue();
+    expect(patientService.editPatientProfile).toHaveBeenCalledWith(
+      component.patient.id,
+      component.patient.name,
+      component.patient.phone,
+      component.patient.email,
+      component.patient.address,
+      component.patient.dateBirth
+    );
+  });
+
+  it('should not submit the form when onSubmit is called with invalid data', () => {
+    component.patient = {
+      id: '',
+      name: '',
+      phone: '',
+      email: '',
+      address: '',
+      dateBirth: ''
+    };
+
+    const form = {
+      valid: false
+    } as NgForm;
+
+    component.onSubmit(form);
+
+    expect(component.isSubmitted).toBeFalse();
+  });
+
+  it('should reset the form and clear patient data on clearForm', () => {
+    component.patient = {
+      id: 'test-id',
+      name: 'José Maria',
+      phone: '+123 098098098',
+      email: 'test@email.t',
+      address: 'Country, 1234-345, Street of tests',
+      dateBirth: '20/10/2000'
+    };
+
+    component.clearForm();
+
+    expect(component.isSubmitted).toBeFalse();
+    expect(component.patient).toEqual({
+      id: '',
+      name: '',
+      phone: '',
+      email: '',
+      address: '',
+      dateBirth: ''
+    });
+  });
 
   it('should delete patient profile', () => {
     const patientToDelete = {
