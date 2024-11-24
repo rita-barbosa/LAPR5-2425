@@ -6,7 +6,7 @@ import { StaffWithId } from 'src/app/domain/staff-with-id';
 import { SideBarAdminComponent } from '../sidebar-admin/side-bar-admin.component';
 import { CommonModule } from '@angular/common';
 import { TableModule } from 'primeng/table';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, NgForm } from '@angular/forms';
 import { MessageComponent } from '../../message/message.component';
 import { ActivatedRoute } from '@angular/router';
 
@@ -47,7 +47,8 @@ describe('ListStaffProfiles', () => {
       getAllSpecializationsAvailable: jasmine.createSpy('getAllSpecializationsAvailable').and.returnValue(of(listSpec)),
       getStaffByFilters: jasmine.createSpy('getStaffByFilters').and.returnValue(of(listStaff)),
       getStaffById: jasmine.createSpy('getStaffById').and.returnValue(of(listStaff[0])),
-      deactivateStaffProfile: jasmine.createSpy('deactivateStaffProfile').and.returnValue(of({}))
+      deactivateStaffProfile: jasmine.createSpy('deactivateStaffProfile').and.returnValue(of({})),
+      EditStaffProfile: jasmine.createSpy('EditPatientProfile'),
     };
 
     const activatedRouteMock = {
@@ -143,6 +144,79 @@ describe('ListStaffProfiles', () => {
     component.deactivateStaffProfile(staffToDeactivate);
 
     expect(staffService.deactivateStaffProfile).toHaveBeenCalledWith(staffToDeactivate.id, mockToken.token);
+  });
+
+
+  it('should enable editing when editStaffProfile is called', () => {
+    const staffToEdit: StaffWithId = {
+      id: 'test',
+      name: 'José Maria',
+      phone: '+123 098098098',
+      email: 'test@email.t',
+      address: 'Country, 1234-345, Street of tests',
+      specializationId: 'test1',
+      slots: [],
+      status: 'teststat',
+    };
+
+    component.editStaffProfile(staffToEdit);
+
+    expect(component.isEditing).toBeTrue();
+  });
+
+  it('should set isSubmitted to true and call service on valid form submission', () => {
+
+    component.staff = {
+      id: 'test',
+      phone: '+123 098098098',
+      email: 'test@email.t',
+      address: 'Country, 1234-345, Street of tests',
+      specializationId: 'test1',
+    };
+
+    const validForm: Partial<NgForm> = { valid: true } as NgForm;
+
+    component.onSubmit(validForm as NgForm);
+
+    expect(component.isSubmitted).toBeTrue();
+    expect(staffService.EditStaffProfile).toHaveBeenCalledWith(
+      'test',
+      '+123 098098098',
+      'test@email.t',
+      'Country, 1234-345, Street of tests',
+      'test1'
+    );
+  });
+
+  it('should not call service.EditStaffProfile on invalid form submission', () => {
+    const invalidForm: Partial<NgForm> = { valid: false } as NgForm;
+
+    component.onSubmit(invalidForm as NgForm);
+
+    expect(component.isSubmitted).toBeFalse();
+    expect(staffService.EditStaffProfile).not.toHaveBeenCalled();
+  });
+
+
+  it('should reset isSubmitted and staff form on clearForm', () => {
+    component.staff = {
+      id: 'test',
+      phone: '+123 098098098',
+      email: 'test@email.t',
+      address: 'Country, 1234-345, Street of tests',
+      specializationId: 'test1',
+    };
+
+    component.clearForm();
+
+    expect(component.isSubmitted).toBeFalse();
+    expect(component.staff).toEqual({
+      id: '',
+      phone: '',
+      email: '',
+      address: '',
+      specializationId: '',
+    });
   });
 
 
