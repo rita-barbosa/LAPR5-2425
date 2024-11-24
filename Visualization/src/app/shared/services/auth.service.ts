@@ -52,10 +52,10 @@ export class AuthService {
     };
   
     this.http.post<{message: string}>(url, userPatient, this.httpOptions)
-      .pipe(catchError(this.handleError<string>('Create user patient')) // Handle errors gracefully
+      .pipe(catchError(this.handleError<{message: string}>('Create user patient')) // Handle errors gracefully
       )
-      .subscribe(message => {
-          this.log(message.toString()); // Log the message from the server
+      .subscribe(data => {
+          this.log(data.message); // Log the message from the server
       });
   }
   
