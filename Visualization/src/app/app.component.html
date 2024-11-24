@@ -4,24 +4,11 @@
       <img src="/android-chrome-512x512.png" alt="Logo" class="title-logo">
       <h1 class="main-title">HEALTHCARE SYSTEM</h1>
       <!-- <div class="button-container"> -->
-        <button class="login-button" routerLink="/login">Login</button>
-        <button class="logout-button" (click)="logout()" routerLink="/login">Logout</button>
-        <button class="register-button" routerLink="/patient/registration">Register</button>
+        <button class="login-button" (click)="logout()" routerLink="">Main Page</button>
+        <button *ngIf="isAuthenticated" class="logout-button" (click)="logout()" routerLink="">Logout</button>
+        <button *ngIf="!isAuthenticated" class="register-button" routerLink="/patient/registration">Register</button>
       <!-- </div> -->
       
-    </div>
-  </div>
-
-  <!-- Menu com dropdown logo após o título principal -->
-  <!-- <app-menu></app-menu> -->
-  <div class="content">
-    <div class="centered-content">
-      <!-- <h1>{{ title }}</h1> -->
-      <!-- <button [style.height.px]="bHeight" [style.width.px]="bWidth" (click)="addProduct()">
-        Add Product
-      </button> -->
-      <!-- <app-curso-angular></app-curso-angular> -->
-      <!-- <app-cube></app-cube> -->
     </div>
   </div>
 

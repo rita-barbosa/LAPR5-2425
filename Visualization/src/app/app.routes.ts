@@ -35,7 +35,7 @@ import { AddTimeSlotsComponent } from './components/staff/add-time-slots/add-tim
 
 
 export const routes: Routes = [
-  { path: '', component: MenuComponent, pathMatch: 'full' },
+  { path: '', component: LoginComponent, pathMatch: 'full' },
   { path: 'login', component: LoginComponent },
   { path: 'login-callback', component: LoginCallbackComponent },
   { path: 'reset-password', component: ResetPasswordComponent },
