@@ -123,4 +123,17 @@ describe('ListOperationRequestComponent', () => {
     expect(operationRequestService.deleteOperationRequestById).toHaveBeenCalledWith('test-id1');
     expect(operationRequestService.getOperationRequestsByFilters).toHaveBeenCalled();
   });
+
+  it('should call service to delete an operation request', () => {
+    const opReqTest: ListOperationRequest = {
+      id: 'id',
+      patientName: 'name',
+      operationType: 'operationType',
+      status: 'status'
+    };
+
+    component.deleteOperationRequest(opReqTest);
+    expect(operationRequestService.deleteOperationRequestById).toHaveBeenCalledWith('id');
+  });
+
 });
