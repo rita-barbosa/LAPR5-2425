@@ -73,7 +73,29 @@ The Definition of Done (DoD) ensures that items are fully completed and meet qua
 
 ## Sprint Retrospective
 
-> To be done
+* **What Went Well:**
+  1. Teamwork Effectiveness:
+        * Our teamwork remains highly effective, enabling smooth collaboration and productivity.
+
+  2. Proactive Issue Resolution:
+        * We successfully implemented the suggestions from the previous retrospective. Issues were raised earlier, allowing for quicker resolutions and minimizing delays.
+
+  3. Adaptability:
+        * The team demonstrated impressive adaptability, adjusting swiftly and effectively to both the new work environment and the subject matter.
+
+* **Challenges Faced:**
+  1. Topic Complexity:
+        * The high complexity of certain topics hindered the continuous flow of work, causing delays.
+
+  2. Technology Integration:
+        * Integrating Angular with Three.js proved to be significantly more challenging than anticipated, resulting in considerable delays in our progress.
+
+  3. Impact of New Technologies:
+        * The additional technologies introduced as part of the requirements disrupted the timely completion of our tasks.
+
+* **Areas for Improvement:**
+  1. Prioritization of Course-Evaluated Work:
+        * We need to prioritize tasks directly tied to course assessments to better manage workloads and avoid becoming overwhelmed.
 
 ## [Self-Assessment](3dg-g38-autoavaliacao.pdf)
 
