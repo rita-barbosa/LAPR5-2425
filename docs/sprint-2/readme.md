@@ -73,6 +73,9 @@ The Definition of Done (DoD) ensures that items are fully completed and meet qua
 
 ## Sprint Retrospective
 
+* **Burndown Chart**
+![Burndown Chart](burndown-chart.png)
+
 * **What Went Well:**
   1. Teamwork Effectiveness:
         * Our teamwork remains highly effective, enabling smooth collaboration and productivity.
