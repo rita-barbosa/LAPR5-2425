@@ -74,3 +74,7 @@ The Definition of Done (DoD) ensures that items are fully completed and meet qua
 ## Sprint Retrospective
 
 > To be done
+
+## [Self-Assessment](3dg-g38-autoavaliacao.pdf)
+
+## [Honor Pledge](3dg-g38-compromisso-honra.pdf)
