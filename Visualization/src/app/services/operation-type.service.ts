@@ -109,7 +109,6 @@ export class OperationTypeService {
 
   public removeOperationType(name: string) {
     const url = `${this.theServerURL}/OperationTypes/${name}`;
-
     return this.http.delete<OperationType>(url, this.httpOptions)
       .pipe(
         catchError(this.handleError<OperationType>('Remove Operation Type'))
@@ -117,9 +116,6 @@ export class OperationTypeService {
         next: () => {
           this.log(`Operation type: ${name} was successfully removed.`);
         },
-        error: (err) => {
-          this.log(`Failed to remove operation type: ${name}. Error: ${err.message}`);
-        }
       });
 
   }

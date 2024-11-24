@@ -142,7 +142,6 @@ namespace MDBackoffice.Controllers
 
 
         [HttpDelete("{id}")]
-        /* [Authorize(Policy = "Admin")] */
         public async Task<ActionResult<OperationTypeDto>> RemoveOperationType(string id)
         {
             try

@@ -92,9 +92,7 @@ namespace MDBackoffice.Domain.OperationTypes
 
         public async Task<OperationTypeDto> InactivateAsync(string dto)
         {
-            var operationType = await this._repo.GetByIdAsync(new OperationTypeId(dto)) 
-                    ?? throw new BusinessRuleValidationException("Invalid operation type.");
-            
+            var operationType = await this._repo.GetByNameAsync(dto)?? throw new BusinessRuleValidationException("Invalid operation type.");
             operationType.Inactive();
             await this._unitOfWork.CommitAsync();
             return ToDto(operationType);
@@ -171,31 +169,31 @@ namespace MDBackoffice.Domain.OperationTypes
 
         }
 
-    private EditOpTypeDto ToDtoEdit(OperationType operationType)
-{
-    var requiredStaff = operationType.RequiredStaff.Count == 0 
-        ? new List<RequiredStaffDto>() 
-        : operationType.RequiredStaff.ConvertAll(staff => new RequiredStaffDto
+        private EditOpTypeDto ToDtoEdit(OperationType operationType)
         {
-            StaffQuantity = staff.StaffQuantity.NumberRequired,
-            Function = staff.Function.Description,
-            Specialization = staff.SpecializationId.Value
-        });
+            var requiredStaff = operationType.RequiredStaff.Count == 0
+                ? new List<RequiredStaffDto>()
+                : operationType.RequiredStaff.ConvertAll(staff => new RequiredStaffDto
+                {
+                    StaffQuantity = staff.StaffQuantity.NumberRequired,
+                    Function = staff.Function.Description,
+                    Specialization = staff.SpecializationId.Value
+                });
 
-    return new EditOpTypeDto
-    {
-        Id = operationType.Id.Value.ToString(),
-        Name = operationType.Name.OperationName,
-        EstimatedDuration = operationType.EstimatedDuration.TotalDurationMinutes,
-        Status = operationType.Status.Active,
-        RequiredStaff = requiredStaff,
-        Phases = operationType.Phases.ConvertAll(phase => new PhaseDto
-        {
-            Description = phase.Description.Description,
-            Duration = phase.Duration.DurationMinutes
-        })
-    };
-}
+            return new EditOpTypeDto
+            {
+                Id = operationType.Id.Value.ToString(),
+                Name = operationType.Name.OperationName,
+                EstimatedDuration = operationType.EstimatedDuration.TotalDurationMinutes,
+                Status = operationType.Status.Active,
+                RequiredStaff = requiredStaff,
+                Phases = operationType.Phases.ConvertAll(phase => new PhaseDto
+                {
+                    Description = phase.Description.Description,
+                    Duration = phase.Duration.DurationMinutes
+                })
+            };
+        }
 
 
         public async Task EditOperationType(EditOpTypeDto editOpTypeDto)
@@ -210,7 +208,7 @@ namespace MDBackoffice.Domain.OperationTypes
             {
                 operationType.ChangeEstimatedDuration(editOpTypeDto.EstimatedDuration);
             }
-            
+
             if (editOpTypeDto.Name != null)
             {
                 operationType.ChangeName(editOpTypeDto.Name);
