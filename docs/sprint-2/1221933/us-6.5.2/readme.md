@@ -44,7 +44,7 @@ To accomplish this user story, it's necessary to search for textures, suitable f
 ### 4.1. Realization
 
 To apply the textures in the necessary places, it's needed to have the correct texture files, that can be found in the
-text folder (COLOCAR O LINK PARA A PASTA DEPOIS!!!!). To load the texture, we will use TextureLoader to load an object 
+public folder. To load the texture, we will use TextureLoader to load an object 
 that come from an image that can be supported by the browser, such as:
 
   * PNG
@@ -58,7 +58,8 @@ if needed.
 Similarly, the walls will have a unified texture across all surfaces in the hospital model. This texture can also be 
 color-adjusted if necessary.
 
-For doors, a specific 3D door model will be used, and the chosen texture will be applied to it accordingly.
+For doors, a specific 3D door model will be used, and the chosen texture will be applied to it accordingly. As well as
+the others, the color can be adjusted.
 
 
 ## 5. References

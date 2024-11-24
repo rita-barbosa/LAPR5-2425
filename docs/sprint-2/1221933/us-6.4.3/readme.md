@@ -67,4 +67,6 @@ Then will be created a script "update_clients_ips.sh", were the following steps 
   1) Use the iptables -A, to add a new rule to the iptables, to accept connections with the IP from that line;
   2) Show a message on the command line to inform that the client was allowed. 
 
+
+
 Once all entries are processed, the list of authorized clients will be defined.

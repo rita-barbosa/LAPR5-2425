@@ -12,6 +12,9 @@
         * [Level 1](#level-1)
         * [Level 2](#level-2)
         * [Level 3](#level-3)
+          * [Level 3 - Visualization](#level-3---visualization)
+          * [Level 3 - MDBackoffice](#level-3---mdbackoffice)
+          * [Level 3 - Planning](#level-3---planning)
       * [Development View](#development-view)
       * [Physical View](#physical-view)
 <!-- TOC -->
@@ -42,7 +45,7 @@ including: room number, date, etc.
 
 **Dependencies/References:**
 
-**US 6.2.15 & 6.2.16:** The changes made to the operation requests should be notified to the Planing module.
+**US 6.2.15 & 6.2.16:** The changes made to the operation requests should be notified to the Planning module.
 
 **US 6.1.1:** There needs to exist an integrated UI to be able to obtain the better schedule.
 

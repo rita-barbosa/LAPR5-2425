@@ -70,6 +70,8 @@ time, with changes from the backoffice module being reflected in the planning mo
 If an error occurs during the synchronization process, such as a failure in API communication, the system will present a
 notification in the planning module to alert the Admin. This notification will describe the issue.
 
+This approach will be more effectively demonstrated through the process view diagrams in the user stories: 
+[us-6.3.1](../../us-6.3.1/readme.md) and [us-6.3.3](../../us-6.3.3/readme.md)
 
 The logical, physical, development and scenario views diagrams are generic for all the use cases of the backoffice component.
 
