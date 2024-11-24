@@ -76,7 +76,7 @@ namespace MDBackoffice.Domain.OperationRequests
             Patient patient = await this._repoPat.GetByIdAsync(new MedicalRecordNumber(dto.PatientId)) ??
                 throw new BusinessRuleValidationException("Patient is invalid.");
 
-            OperationType opType = await this._repoOpTy.GetByIdWithStaffAsync(new OperationTypeId(dto.OperationTypeId)) ??
+            OperationType opType = await this._repoOpTy.GetByNameAsync(dto.OperationTypeId) ??
                 throw new BusinessRuleValidationException("Operation Type is invalid.");
 
             CheckStaffFunctionAndSpecialization(opType, staff);

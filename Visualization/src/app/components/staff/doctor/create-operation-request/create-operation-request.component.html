@@ -51,8 +51,8 @@
         <span></span>
       </div>
       <div class="input-field">
-        <input name="staffId" #patientId="ngModel" [(ngModel)]="operationRequest.patientId" placeholder="PatientId"
-          [disabled]="isSubmitted" required [class.invalid-placeholder]="staffId.invalid && staffId.touched" />
+        <input name="patientId" #patientId="ngModel" [(ngModel)]="operationRequest.patientId" placeholder="PatientId"
+          [disabled]="isSubmitted" required [class.invalid-placeholder]="patientId.invalid && patientId.touched" />
         <span></span>
       </div>
 
@@ -91,7 +91,7 @@
       <p style="margin-left: 200px; margin-bottom: 30px;" font-family="'Poppins', monospace">Click on the button to submit to add the operation request created to the patient medical history!</p>
       <form #operationRequestToPatientForm="ngForm" (ngSubmit)="addToPatient(operationRequestToPatientForm)" novalidate>
         <div class="button">
-          <button type="submit" class="add-button-submit" [disabled]="operationRequestToPatientForm.invalid || isSubmittedToPatient">Submit</button>
+          <button type="submit" class="add-button-add-patient" [disabled]="operationRequestToPatientForm.invalid || isSubmittedToPatient">Submit</button>
         </div>
       </form>
     </div>
