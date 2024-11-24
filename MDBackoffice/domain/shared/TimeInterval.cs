@@ -3,13 +3,14 @@ using System;
 namespace MDBackoffice.Domain.Shared
 {
 
-    public class TimeInterval : IValueObject
+    public class TimeInterval : IValueObject, IComparable<TimeInterval>
     {
         public TimeSpan Start { get; }
         public TimeSpan End { get; }
         public bool Verification { get; }
 
         private TimeInterval() { }
+
         public TimeInterval(string startString, string endString, bool verification)
         {
             if (!TimeSpan.TryParse(startString, out TimeSpan start) || !TimeSpan.TryParse(endString, out TimeSpan end))
@@ -21,6 +22,14 @@ namespace MDBackoffice.Domain.Shared
             Start = start;
             End = end;
         }
+
+        // Implement IComparable<TimeInterval>
+        public int CompareTo(TimeInterval other)
+        {
+            if (other == null) return 1; // Consider null as greater (optional)
+            return Start.CompareTo(other.Start); // Compare based on the Start TimeSpan
+        }
+
         public override string ToString()
         {
             return $"{Start:HH}h{Start:mm}-{End:HH}h{End:mm}";
@@ -39,6 +48,6 @@ namespace MDBackoffice.Domain.Shared
         {
             return HashCode.Combine(Start, End, Verification);
         }
-
     }
+
 }

@@ -76,7 +76,7 @@ namespace MDBackoffice.Infrastructure.StaffProfiles
 
             }
 
-            if(combinedQuery.IsNullOrEmpty())
+            if (combinedQuery.IsNullOrEmpty())
                 return [];
 
             return [.. combinedQuery];
@@ -132,13 +132,14 @@ namespace MDBackoffice.Infrastructure.StaffProfiles
 
         public async Task<Staff> GetStaffWithIdIncludingSlots(string id)
         {
-            return await _context.StaffProfiles
+            var staffList = await _context.StaffProfiles
                 .Include(staff => staff.Slots)
-                .Where(staff =>
-                    staff.Id != null &&
-                    staff.Id.Value == id)
-                    .FirstOrDefaultAsync() ?? throw new NullReferenceException("Couldn't find the staff with the specified email.");
+                .ToListAsync(); // Asynchronously fetch all staff with slots
+
+            return staffList
+                .FirstOrDefault(staff => staff.Id.AsString() == id); // Perform client-side filtering
         }
+
     }
 }
 

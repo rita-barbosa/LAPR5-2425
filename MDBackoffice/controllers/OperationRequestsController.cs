@@ -299,7 +299,7 @@ namespace MDBackoffice.Controllers
                 var result = await _service.Schedule(operationRequestScheduleInfoDto);
                 if (!result.IsNullOrEmpty())
                 {
-                    return Ok(result);
+                    return Ok(new {message = result});
                 }
                 else
                 {
@@ -315,8 +315,6 @@ namespace MDBackoffice.Controllers
                 return StatusCode(500, new { ex.Message });
             }
         }
-
-    
 
     }
 }
