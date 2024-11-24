@@ -12,7 +12,13 @@ participant "XService" as XS <<service>>
 USER -> PPL : get all profiles
 activate PPL
 
-PPL -> XS : getAllXProfiles() 
+PPL -> XS : getXByFilters(queryParameters)
+note right
+if queryParameters is empty
+then no filters are applied
+and the whole list of profiles
+is retrieved from the backend
+end note
 activate XS
 
 XS ->o] : GET: /api/X/Get-XProfiles
@@ -25,24 +31,5 @@ deactivate XS
 
 PPL -> USER : X profiles list
 deactivate PPL
-
-
-USER -> PPL : filter list
-activate PPL
-
-PPL -> XS : GetFilteredXProfiles(queryParameters)
-activate XS
-
-XS ->o] : POST: /api/X/Filtered-List
-
-XS <--o] : Ok(filtered list)
-
-XS --> PPL : X profiles filtered list
-deactivate XS
-
-PPL -> USER : X profiles filtered list
-deactivate PPL
-
-
 
 @enduml

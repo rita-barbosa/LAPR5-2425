@@ -12,6 +12,8 @@
       * [Level 2](#level-2)
       * [Level 3](#level-3)
     * [4.3. Applied Patterns](#43-applied-patterns)
+      * [4.1.3 Development View](#413-development-view)
+      * [4.1.4 Physical View](#414-physical-view)
 <!-- TOC -->
 
 ## 1. Context
@@ -117,3 +119,11 @@ it's diagram was deemed irrelevant.
 >
 > These services act as a Facade to simplify interaction with lower-level components like repositories. The Controller
 > interacts with these service facades, keeping the complexity hidden from the higher layers.
+
+#### 4.1.3 Development View
+
+The diagrams can be found in the [team decision views folder](../../team-decisions/views/general-views.md#3-development-view).
+
+#### 4.1.4 Physical View
+
+The diagrams can be found in the [team decision views folder](../../team-decisions/views/general-views.md#4-physical-view).

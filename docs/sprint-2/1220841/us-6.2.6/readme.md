@@ -1,20 +1,20 @@
 # US 6.2.6
 
 <!-- TOC -->
-- [US 6.2.6](#us-626)
-  - [1. Context](#1-context)
-  - [2. Requirements](#2-requirements)
-  - [3. Analysis](#3-analysis)
-    - [Domain Model](#domain-model)
-  - [4. Design](#4-design)
-    - [4.1. Realization](#41-realization)
-      - [Logical View](#logical-view)
-      - [Process View](#process-view)
-        - [Level 1](#level-1)
-        - [Level 2](#level-2)
-        - [Level 3](#level-3)
-      - [Development View](#development-view)
-      - [Physical View](#physical-view)
+* [US 6.2.6](#us-626)
+  * [1. Context](#1-context)
+  * [2. Requirements](#2-requirements)
+  * [3. Analysis](#3-analysis)
+    * [Domain Model](#domain-model)
+  * [4. Design](#4-design)
+    * [4.1. Realization](#41-realization)
+      * [Logical View](#logical-view)
+      * [Process View](#process-view)
+        * [Level 1](#level-1)
+        * [Level 2](#level-2)
+        * [Level 3](#level-3)
+      * [Development View](#development-view)
+      * [Physical View](#physical-view)
 <!-- TOC -->
 
 ## 1. Context

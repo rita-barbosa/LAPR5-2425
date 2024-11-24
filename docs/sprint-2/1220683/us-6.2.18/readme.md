@@ -13,10 +13,8 @@
       * [Level 2](#level-2)
       * [Level 3](#level-3)
     * [4.3. Applied Patterns](#43-applied-patterns)
-    * [4.4. Tests](#44-tests)
-  * [5. Implementation](#5-implementation)
-  * [6. Integration/Demonstration](#6-integrationdemonstration)
-  * [7. Observations](#7-observations)
+      * [4.1.3 Development View](#413-development-view)
+      * [4.1.4 Physical View](#414-physical-view)
 <!-- TOC -->
 
 
@@ -200,110 +198,10 @@ The process view levels are here represented as they represent a process specifi
 > interacts with these service facades, keeping the complexity hidden from the higher layers.
 
 
-### 4.4. Tests
+#### 4.1.3 Development View
 
-_// To do - layout still in development //_ 
+The diagrams can be found in the [team decision views folder](../../team-decisions/views/general-views.md#3-development-view).
 
+#### 4.1.4 Physical View
 
-## 5. Implementation
-
-Method in the Controller
-
-```
-// POST: api/operationTypes
-[HttpPost]
-public async Task<ActionResult<OperationTypeDto>> Create(OperationTypeDto dto)
-{
-    var operationType = await _service.AddAsync(dto);
-    return CreatedAtAction(nameof(GetGetById), new { id = new OperationTypeId(operationType.Name) }, operationType);
-}
-```
-
-Creation of the new OperationType
-
-```
-public async Task<OperationTypeDto> AddAsync(OperationTypeDto dto)
-{
-    var operationType = new OperationType(
-        dto.Name,
-        dto.EstimatedDuration,
-        dto.Status,
-        dto.RequiredStaff,
-        dto.Phases
-    );
-
-    await _repo.AddAsync(operationType);
-    await _unitOfWork.CommitAsync();
-
-    await _logService.CreateCreationLog(operationType.Id.Value, operationType.GetType().Name, "New operation type added: " + operationType.Name.OperationName);
-
-    var operation = await _repo.GetByIdAsync(operationType.Id);
-
-    await __recordService.AddAsync(operation);
-
-    await _unitOfWork.CommitAsync();
-
-    return ToDto(operationType);
-}
-```
-
-Creation of a new OperationTypeRecord:
-
-```
-public async Task<OperationTypeRecordDto> AddAsync(OperationType operationType)
-{
-    var todayDate = new Date(DateTime.Now.ToString("yyyy-MM-dd"));
-    var operationRecord = new OperationTypeRecord(new Date(todayDate.Start.ToString(), todayDate.End.ToString()), 0, operationType.Id, operationType.Name, operationType.EstimatedDuration, operationType.Status, operationType.RequiredStaff, operationType.Phases);
-    await _repo.AddAsync(operationRecord);
-    await _unitOfWork.CommitAsync();
-
-    await _logService.CreateCreationLog(operationRecord.Id.Value, operationRecord.GetType().Name, "New operation type version record created.");
-
-    List<RequiredStaffDto> requiredStaffDtos = [];
-    foreach (RequiredStaffRecord requiredStaffRecord in operationRecord.RequiredStaffRecords){
-        requiredStaffDtos.Add(new RequiredStaffDto{StaffQuantity = requiredStaffRecord.StaffQuantity.NumberRequired,
-         Function = requiredStaffRecord.Function.Description, Specialization = requiredStaffRecord.SpecializationId.SpeciId});
-    }
-
-    List<PhaseDto> phaseDtos = [];
-    foreach (PhaseRecord phase in operationRecord.Phases){
-        phaseDtos.Add(new PhaseDto{Description = phase.Description.Description, Duration = phase.Duration.DurationMinutes});
-    }
-
-   return  new OperationTypeRecordDto(operationRecord.Id.Value.ToString(), operationRecord.Version.Version,
-     operationRecord.EffectiveDate.ToString(), operationRecord.OperationTypeId.OpID,
-      operationRecord.Name.OperationName, operationRecord.EstimatedDuration.TotalDurationMinutes,
-       operationRecord.Status.Active, requiredStaffDtos, phaseDtos);
-}
-```
-
-Log record of the creation of a new OperationType:
-
-```
-public async Task<bool> CreateCreationLog(string objectReference, string objectClass, string description)
-{
-    try
-    {
-        Log log = new Log(await getSequentialNumber(), objectClass, objectReference, 2, description);
-        
-        await _repo.AddAsync(log);
-        await _unitOfWork.CommitAsync();
-
-        return true;
-    }
-    catch (Exception ex)
-    {
-        return false;
-    }
-}
-```
-
-The number "2" refers to the creation type log record.
- 
-## 6. Integration/Demonstration
-
-// _To do_ //
-
-## 7. Observations
-
-No observations.
+The diagrams can be found in the [team decision views folder](../../team-decisions/views/general-views.md#4-physical-view).
