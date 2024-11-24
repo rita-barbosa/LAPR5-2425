@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { ListStaffProfiles } from './list-staff-profiles.component';
 import { StaffService } from 'src/app/services/staff.service';
 import { of } from 'rxjs';
@@ -42,11 +42,12 @@ describe('ListStaffProfiles', () => {
   const listSpec: string[] = ["test1", "test2"];
 
   beforeEach(async () => {
-
+    localStorage.clear();
      const staffServiceMock = {
       getAllSpecializationsAvailable: jasmine.createSpy('getAllSpecializationsAvailable').and.returnValue(of(listSpec)),
       getStaffByFilters: jasmine.createSpy('getStaffByFilters').and.returnValue(of(listStaff)),
       getStaffById: jasmine.createSpy('getStaffById').and.returnValue(of(listStaff[0])),
+      deactivateStaffProfile: jasmine.createSpy('deactivateStaffProfile').and.returnValue(of({}))
     };
 
     const activatedRouteMock = {
@@ -121,4 +122,46 @@ describe('ListStaffProfiles', () => {
     expect(tableRows[1].textContent).toContain(listStaff[1].name);
   });
 
+  it('should call deactivateStaffProfile when deactivating a staff', () => {
+    const staffToDeactivate: StaffWithId = {
+      id: 'test',
+      name: 'José Maria',
+      phone: '+123 098098098',
+      email: 'test@email.t',
+      address: 'Country, 1234-345, Street of tests',
+      specializationId: 'test1',
+      slots: [],
+      status: 'teststat',
+    };
+
+    const mockToken = { email: 'admin@admin.com', roles: ['admin'], token: 'valid-token' };
+
+    localStorage.setItem('user', JSON.stringify(mockToken));
+
+    component.storedToken = JSON.stringify(mockToken);
+
+    component.deactivateStaffProfile(staffToDeactivate);
+
+    expect(staffService.deactivateStaffProfile).toHaveBeenCalledWith(staffToDeactivate.id, mockToken.token);
+  });
+
+
+  it('should not call deactivateStaffProfile if no token is in localStorage',() => {
+    const staffToDeactivate: StaffWithId = {
+      id: 'test',
+      name: 'José Maria',
+      phone: '+123 098098098',
+      email: 'test@email.t',
+      address: 'Country, 1234-345, Street of tests',
+      specializationId: 'test1',
+      slots: [],
+      status: 'teststat',
+    };
+
+    localStorage.removeItem('user');
+
+    component.deactivateStaffProfile(staffToDeactivate);
+
+    expect(staffService.deactivateStaffProfile).not.toHaveBeenCalled();
+  });
 });
