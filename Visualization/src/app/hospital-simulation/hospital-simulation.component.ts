@@ -213,12 +213,10 @@ export class HospitalSimulationComponent implements AfterViewInit {
           intersectedObject = intersectedObject.parent;
         }
 
-
         if (intersectedObject !== this.INTERSECTED) {
             this.INTERSECTED = intersectedObject;
 
             if (this.INTERSECTED) {
-              console.log("INTERSECTED NAME " + this.INTERSECTED.name)
                 let message = this.getAppoitmentInfo(this.INTERSECTED.name);
                 if (message) {
                   this.showTooltip(message, intersectedObject.getWorldPosition(new THREE.Vector3()));
@@ -576,14 +574,6 @@ export class HospitalSimulationComponent implements AfterViewInit {
       } else {
           console.warn(`Could not determine cell for position: ${RoomPosition}`);
       }
-
-      // patient.name = `Patient-${room}`;
-
-      // const patientGroup = new THREE.Group();
-      // patientGroup.name = `Patient-${room}`;
-      // patientGroup.add(this.patientModel.clone());
-      // patientGroup.position.copy(RoomPosition);
-      // this.objectsToIntersect.push(patientGroup);
 
       this.objectsToIntersect.push(patientGroup);
       this.layout.add(patientGroup);

@@ -56,8 +56,7 @@ However, let's say that, while we have the 3D representation open, someone creat
 
 ## 3. Analysis
 
-After the planning module updates the database with the new appointments of the day for each surgical room, the 3D representation 
-must reflect such schedule.
+After the planning module updates the database with the new room schedules, the 3D representation must be in sync with the new data.
 
 ![operation_requests_scheduling.svg](operation_requests_scheduling.svg)
 
@@ -66,13 +65,15 @@ Each room must know its schedule and when It's available or not.
 When a surgery is happening, the 3D visualization must adequately represent its occupation by displaying a patient laid 
 down on the surgical table.
 
-Each room must have a tooltip with the indication of the room ID and, when a surgery is happening, with the operation type
-and request basic information. This tooltip should link to a more complex view of that surgery.
+Each room must have a sprite with the indication of the room ID and, when a surgery is happening, with the operation type
+and request basic information (Operation name, start time and end time).
+
+This tooltip should link to a more complex view of that surgery.
 
 This simulation must also contain a clock which the user can set its time, not making it dependent on a machine's clock.
 The rooms occupation must be represented accordingly.
 
-If the operation schedule is updated, then the 3D representation must be in-sync.
+If the operation schedule is updated, then the 3D representation must be in-sync (this can happen on a page reload).
 
 ## 4. Design
 

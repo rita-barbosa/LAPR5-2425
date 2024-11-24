@@ -4,89 +4,100 @@ title "US 6.1.3 - Process View [Level 3 | Visualization]"
 
 autonumber
 actor "Backoffice User" as USER
-participant "HospitalFloorSimulation" as UPP <<component>>
-participant "AppointmentService" as PS <<service>>
+participant "HospitalSimulationComponent" as UPP <<component>>
+participant "RoomService" as PS <<service>>
 
 USER -> UPP : wants to see hospital floor simulation
 activate UPP
 
-UPP -> PS : getTodaySchedule()
+UPP -> PS : getRoomsSchedule()
 activate PS
 
-PS ->o] : GET: api/appointment/GetTodaySchedule
+PS ->o] : GET: api/Room/Get-AllSchedules
 
 PS <--o] : Ok(schedule)
-
-PS -> PS : processData(schedule)
-activate PS
-deactivate PS
 
 PS --> UPP: scheduleData
 deactivate PS
 
-UPP -> UPP : initialization of sub elements\n (walls, surgical beds,\n doors, floor, light, camera)
+UPP -> UPP : backend data processing
+activate UPP
+deactivate UPP
+
+UPP -> UPP : createScene()
+activate UPP
+deactivate UPP
+
+UPP -> UPP : loadLayout(layoutData)
+note right
+layoutData is a json
+with the hospital floor
+elements and initial data
+end note
 activate UPP
 deactivate UPP
 
 UPP --> USER: shows 3D simulation canvas within webpage
 deactivate UPP
 
+USER -> UPP : changes the time and/or day in the simulation
+activate UPP
 
-USER -> UPP : changes the time in the simulation
-note left
-When  the time changes
-in the simulation's UI,
-onChange() is called
+
+UPP -> UPP : checkOccupancy()
+note right
+Checks which rooms
+are occupied or available
 end note
 activate UPP
 
-UPP -> UPP : onChange(time => timeCallback(time, roomsSchedule))
-activate UPP
-note left
-roomsSchedule is a map with
-[roomID][AppointmentsList]
-end note
+loop for each room
 
-loop for each room appointment entry
-UPP -> UPP : isRoomOccupied(time)
-activate UPP
 alt room is occupied
 
-UPP -> UPP : addPatientToRoom(roomID)
-note right
-The component knows to
-what positions the surgical
-tables in rooms are
-end note
+UPP -> UPP : loadPatient(roomID)
+UPP -> UPP : updateSprite(roomID, false)
 
-UPP -> UPP : updateTooltip(roomID, appointment)
+else room is available
+
+UPP -> UPP : removePatient(roomID)
+UPP -> UPP : updateSprite(roomID, false)
 end alt
+
+end loop
 
 UPP --> UPP
-deactivate UPP
-|||
-
-end alt
-UPP --> UPP :
 deactivate UPP
 
 UPP --> USER : shows the room with patients\n according to the time
 deactivate UPP
 
 
-USER -> UPP : clicks on a surgical bed
+USER -> UPP : mouse is on a patient model
 activate UPP
 
-UPP -> UPP : getRoomFromBedRaycasting()
+UPP -> UPP : raycaster.intersectObjects(objectsToIntersect)
+note left
+Raycaster is used to
+check which objects
+are being intersected
+by the mouse
 
-UPP -> UPP : isRoomOccupied(time)
-alt is occupied
+The only objects that
+can be identified by
+intersection are the
+patient models
+end note
 
-UPP -> UPP : showTooltip(roomID, appointment)
-else
+UPP -> UPP : raycasterIntersectedObjectTooltip(interceptedObject)
+activate UPP
 
-UPP -> UPP : showTooltip(roomID, unidentified)
-end alt
+UPP -> UPP : message = getAppoitmentInfo(interceptedObject.name)
+
+UPP -> UPP : showTooltip(message, intersectedObject.position)
+
+UPP --> UPP
+deactivate UPP
 
 UPP --> USER: shows tooltip with appointment information
 deactivate UPP
