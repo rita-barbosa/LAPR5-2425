@@ -19,6 +19,9 @@ interface ServerResponse {
   styleUrl: './verify-staff.component.css'
 })
 export class VerifyStaffComponent {
+  ngOnInit() {
+    throw new Error('Method not implemented.');
+  }
   @ViewChild('newPasswordForm') newPasswordForm!: NgForm;
   message = 'Processing activation...';
 

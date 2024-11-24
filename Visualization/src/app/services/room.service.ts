@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { MessageService } from './message.service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { catchError, Observable, of, tap } from 'rxjs';
-import { Router } from '@angular/router';
 import { Room } from '../domain/room';
 import { RoomSchedule } from '../domain/room-schedule';
 
@@ -18,7 +17,7 @@ export class RoomService {
     headers: new HttpHeaders({'Content-Type': 'application/json'})
   };
   
-  constructor(private messageService: MessageService, private http: HttpClient, private router : Router) { }
+  constructor(private messageService: MessageService, private http: HttpClient) { }
 
   getAllRooms() : Observable<Room[]>{
     const url = `${this.theServerURL}/Room/Get-All`;

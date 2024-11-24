@@ -1,5 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MessageComponent } from './message.component';
+import { CommonModule } from '@angular/common';
+import { RouterLink } from '@angular/router';
 
 describe('MessageComponent', () => {
   let component: MessageComponent;
@@ -7,7 +9,7 @@ describe('MessageComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [MessageComponent]
+      imports: [MessageComponent, CommonModule, RouterLink]
     });
     fixture = TestBed.createComponent(MessageComponent);
     component = fixture.componentInstance;
