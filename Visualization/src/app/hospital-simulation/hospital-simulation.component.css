@@ -1,27 +1,29 @@
+/* General Reset */
 :host {
     display: block;
     height: 110vh;
     width: 100vw;
-    /* overflow: hidden; */
-  }
-
-  body {
-    margin: 0;
-  }
-
-/* Ensure the parent container uses flexbox to align items horizontally */
-#parent {
-    display: flex;
-    align-items: center; /* Vertically aligns the items (title and subwindows) */
-    justify-content: center; /* Centers both elements horizontally */
-    position: absolute;
-    top: 0rem; /* Adds space from the top of the screen */
-    left: 50%; /* Centers the entire container horizontally */
-    transform: translateX(-50%); /* Perfectly centers the parent container */
-    width: 100%; /* Makes the parent container take the full width */
 }
 
-/* Style the title */
+/* Remove body margin */
+body {
+    margin: 0;
+}
+
+/* Parent container for centering canvas and other elements */
+#parent {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    z-index: 10;
+}
+
+/* Title Styles */
 .main-title {
     font-family: 'Poppins', monospace;
     font-size: 45px;
@@ -32,57 +34,38 @@
     border-radius: 8px;
     text-align: center;
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.192);
-    margin-right: 2rem; /* Adds space between title and interface */
-    margin-left: 45px ;
+    margin: 0 2rem; /* Horizontal margin around the title */
+    margin-left: 14%; /* Aligns title with canvas */
     max-width: 50%; /* Limits the title width */
 }
 
-/* Adjust the subwindows panel to sit next to the title */
+/* Subwindows Panel Styles */
 #subwindows-panel {
     position: relative;
     z-index: 1;
-    width: auto; /* Let the subwindows panel adjust width based on its content */
+    width: auto; /* Adjusts width to content */
 }
 
-/* Other styles remain the same */
-table {
-    margin-left: auto;
-    margin-right: auto;
-    border: 1px solid black;
-}
-
-table.views {
-    background-color: #70707070;
-    text-align: right;
-}
-
-table.help {
-    width: 50vmin;
-    background-color: #70707050;
-}
-
-table.subwindows {
-    position: absolute;
-    background-color: #70707070;
-    text-align: right;
-}
-
+/* Table Styles */
 th,
 td {
     overflow: hidden;
     border: 1px solid black;
 }
 
+/* Anchor Styles */
 a {
     color: white;
 }
 
+/* Input Fields for View and Projection */
 #view,
 #projection {
     width: 18ch;
     font-size: 1.5vmin;
 }
 
+/* Input Fields for Other Controls */
 #mousemove,
 #js,
 #vertical,
@@ -92,20 +75,18 @@ a {
     font-size: 1.5vmin;
 }
 
-#reset {
-    width: 16ch;
-    font-size: 1.5vmin;
-}
-
+/* Invalid Input Styles */
 input:invalid {
     background-color: pink;
 }
 
+/* Canvas Styling */
 canvas {
     position: relative;
     display: block;
     width: 100%;
     height: 100%;
-    margin-top: -600px;
+    margin-top: -650px;
+    margin-left: 14%;
     z-index: 0;
 }

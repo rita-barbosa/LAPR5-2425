@@ -4,6 +4,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { catchError, Observable, of, tap } from 'rxjs';
 import { Router } from '@angular/router';
 import { Room } from '../domain/room';
+import { RoomSchedule } from '../domain/room-schedule';
 
 
 @Injectable({
@@ -19,13 +20,23 @@ export class RoomService {
   
   constructor(private messageService: MessageService, private http: HttpClient, private router : Router) { }
 
-
   getAllRooms() : Observable<Room[]>{
     const url = `${this.theServerURL}/Room/Get-All`;
 
     return this.http.get<Room[]>(url).pipe(
         catchError((error) => {
             this.handleError<Room[]>('Get rooms', error);
+            return [];
+        })
+    );
+  }
+
+  getRoomsSchedule() {
+    const url = `${this.theServerURL}/Room/Get-AllSchedules`;
+
+    return this.http.get<RoomSchedule[]>(url).pipe(
+        catchError((error) => {
+            this.handleError<RoomSchedule[]>('Get rooms schedule', error);
             return [];
         })
     );

@@ -8,6 +8,11 @@ namespace MDBackoffice.Domain.Shared
         public string EndTime { get; set; }
         public string? Name { get; set; }
 
+        // Default Constructor
+        public SlotsDto()
+        {
+        }
+
         public SlotsDto(string startDate, string endDate, string startTime, string endTime)
         {
             StartDate = startDate;

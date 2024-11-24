@@ -1,10 +1,5 @@
 import * as THREE from "three";
 
-interface SpriteParameters {
-    [key: string]: any;
-    // You can add specific properties if you have them
-}
-
 interface TextSpriteParameters {
     fontsize?: number;
     fontface?: string;
@@ -16,33 +11,41 @@ interface TextSpriteParameters {
 export default class Sprite {
     object: THREE.Group;
     text: string;
+    available : boolean;
 
-    constructor(parameters: SpriteParameters = {}) {
-        // Check if parameters are defined and have properties
-        if (parameters && typeof parameters === 'object') {
-            for (const [key, value] of Object.entries(parameters)) {
-                (this as any)[key] = value;
-            }
-        }
-
+    constructor(roomID : string, occupied : boolean) {
         this.object = new THREE.Group();
-        this.text = "Room 4"; // Default text
+        this.text = roomID;
+        this.available = occupied;
 
-        // Create a text sprite
+        
+
         let spritey = this.makeTextSprite(this.text, {
             fontsize: 24,
             fontface: "Georgia",
-            borderColor: { r: 255, g: 0, b: 0, a: 1.0 },
-            backgroundColor: { r: 255, g: 100, b: 100, a: 0.8 }
-        });
+            borderColor: this.getBorderColorRegardingOccupancy(),
+            backgroundColor: this.getBaseColorRegardingOccupancy()
+        } );
+        spritey.name = "Sprite"
 
-        // Add the sprite to the object group
         this.object.add(spritey);
     }
 
-    // Function to create a text sprite
+    getBorderColorRegardingOccupancy() : any{
+        if (this.available) {
+            return { r: 0, g: 255, b: 0, a: 1.0 };
+        }
+        return { r: 255, g: 0, b: 0, a: 1.0 };
+    }
+
+    getBaseColorRegardingOccupancy() : any{
+        if (this.available) {
+            return { r: 100, g: 255, b: 100, a: 0.8 };
+        }
+        return { r: 255, g: 100, b: 100, a: 0.8 };
+    }
+
     makeTextSprite(message: string, parameters: TextSpriteParameters = {}): THREE.Sprite {
-        // Set default values for parameters if they are not provided
         const fontface = parameters.fontface || "Arial";
         const fontsize = parameters.fontsize || 18;
         const borderThickness = parameters.borderThickness || 4;
@@ -83,25 +86,57 @@ export default class Sprite {
         return sprite;
     }
 
-    updateText(text: string, parameters: TextSpriteParameters = {}): void {
-        const borderThickness = parameters.borderThickness || 4;
-        const fontsize = parameters.fontsize || 18;
-
-        // Measure the text width
+    updateColor(): void {
+        const borderColor = this.getBorderColorRegardingOccupancy();
+        const backgroundColor = this.getBaseColorRegardingOccupancy();
+    
+        // Get the text from the sprite
+        const textSprite = this.object.getObjectByName("Sprite") as THREE.Sprite;
+        if (!textSprite || !(textSprite.material instanceof THREE.SpriteMaterial)) {
+            console.warn("Text sprite or its material is not available.");
+            return;
+        }
+    
+        // Create a new canvas and redraw the texture
         const canvas = document.createElement('canvas');
         const context = canvas.getContext('2d')!;
-        const metrics = context.measureText(text);
+        context.font = "Bold 24px Georgia";
+    
+        // Measure text width
+        const metrics = context.measureText(this.text);
         const textWidth = metrics.width;
-
-        // Draw rounded rectangle with text
-        this.roundRect(context, borderThickness / 2, borderThickness / 2, textWidth + borderThickness, fontsize * 1.4 + borderThickness, 6);
-
-        // Set text color and draw text
+    
+        const borderThickness = 4; // Thickness of the border
+        const fontSize = 24; // Font size for the text
+    
+        // Draw background with rounded corners
+        context.fillStyle = `rgba(${backgroundColor.r},${backgroundColor.g},${backgroundColor.b},${backgroundColor.a})`;
+        context.strokeStyle = `rgba(${borderColor.r},${borderColor.g},${borderColor.b},${borderColor.a})`;
+        context.lineWidth = borderThickness;
+    
+        this.roundRect(
+            context,
+            borderThickness / 2,
+            borderThickness / 2,
+            textWidth + borderThickness,
+            fontSize * 1.4 + borderThickness,
+            6 // Corner radius
+        );
+    
+        // Draw text
         context.fillStyle = "rgba(0, 0, 0, 1.0)";
-        context.fillText(text, borderThickness, fontsize + borderThickness);
-
-        this.text = text;
-    }
+        context.fillText(this.text, borderThickness, fontSize + borderThickness);
+    
+        // Create a new texture from the canvas
+        const newTexture = new THREE.Texture(canvas);
+        newTexture.needsUpdate = true;
+    
+        // Update the sprite material's texture
+        textSprite.material.map = newTexture;
+        textSprite.material.needsUpdate = true;
+        }
+    
+    
 
     // Function to draw rounded rectangles
     roundRect(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, r: number): void {

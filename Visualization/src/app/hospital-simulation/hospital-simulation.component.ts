@@ -8,7 +8,10 @@ import Camera from './simulation_classes/camera_template';
 import Orientation from './simulation_classes/orientation';
 import UserInterface from './simulation_classes/user_interface_template';
 import Ground from './simulation_classes/ground_template';
-
+import { ScheduleSlot } from '../domain/shedule-slot';
+import { RoomService } from '../services/room.service';
+import { RoomSchedule } from '../domain/room-schedule';
+import { SideBarDoctorComponent } from '../components/staff/doctor/sidebar-doctor/side-bar-doctor.component';
 
 type CameraParameters = {
   view: string;
@@ -31,46 +34,46 @@ type CameraParameters = {
 @Component({
   selector: 'app-hospital-simulation',
   standalone: true,
-  imports: [],
+  imports: [SideBarDoctorComponent],
   templateUrl: './hospital-simulation.component.html',
   styleUrl: './hospital-simulation.component.css'
 })
 
 export class HospitalSimulationComponent implements AfterViewInit {
+
   @ViewChild('myCanvas') private canvasRef!: ElementRef<HTMLCanvasElement>;
+
+  constructor(private roomService: RoomService) {}
 
   private get canvas(): HTMLCanvasElement {
     return this.canvasRef.nativeElement;
   }
 
-  private renderer!: THREE.WebGLRenderer;
-  private camera!: THREE.PerspectiveCamera;
+  roomIDs !: string[];
+  roomSprites = new Map<string, Sprite>;
+  roomLoadedPatients = new Map<string, boolean>;
+  roomSchedule = new Map<string, Map<string, ScheduleSlot[]>>;
+  scheduleDays !: string[];
+  selectedDay : string = '';
+  workDayTime : number = 0;
+
+  private roomPositions = new Map<string, THREE.Vector3>;
+  patientModel !: THREE.Group;
+
+  private renderer!: THREE.WebGLRenderer | null;
+  private camera!: THREE.PerspectiveCamera | null;
   private controls!: OrbitControls;
-  private scene!: THREE.Scene;
-  private frustumSize = 20;
+  private scene!: THREE.Scene | null;
   private animationFrameId: number = 0;
 
-
-  viewsPanel!: HTMLElement;
   view!: HTMLSelectElement;
   projection!: HTMLSelectElement;
   horizontal!: HTMLInputElement;
   vertical!: HTMLInputElement;
   distance!: HTMLInputElement;
   zoom!: HTMLInputElement;
-  reset!: HTMLButtonElement;
-  resetAll!: HTMLButtonElement;
-  helpPanel!: HTMLElement;
-  subwindowsPanel!: HTMLElement;
-  multipleViewsCheckBox!: HTMLInputElement;
-  userInterfaceCheckBox!: HTMLInputElement;
-  helpCheckBox!: HTMLInputElement;
   mousemove!: HTMLElement | null;
-  activeElement!: Element | null;
-  userInterface!: UserInterface;
-  workDayTime!: number;
-  
-
+  userInterface!: UserInterface  | null;
 
   fixedViewCamera!: Camera;
   changeCameraDistance!: boolean;
@@ -79,11 +82,9 @@ export class HospitalSimulationComponent implements AfterViewInit {
   mousePosition!: THREE.Vector2;
   mouse !: THREE.Vector2;
   raycaster !: THREE.Raycaster;
-  INTERSECTED !: THREE.Object3D | null;
+  INTERSECTED !: THREE.Group | null;
   objectsToIntersect: THREE.Group[] = [];
 
-
-  // Tooltip elements
   private tooltipCanvas !: HTMLCanvasElement;
   private tooltipContext !: CanvasRenderingContext2D;
   private tooltipTexture !: THREE.Texture;
@@ -91,7 +92,6 @@ export class HospitalSimulationComponent implements AfterViewInit {
 
   private ground!: THREE.Mesh;
   private wall = new THREE.Group();
-  private patient = new THREE.Group();
   private surgical_bed = new THREE.Group();
   private door = new THREE.Group();
   private layout = new THREE.Group();
@@ -100,25 +100,16 @@ export class HospitalSimulationComponent implements AfterViewInit {
   private patientScale = new THREE.Vector3(0.005, 0.005, 0.005);
   private doorScale = new THREE.Vector3(0.4, 1, 0.6);
 
-  private roomPositions: THREE.Vector3[] = [];
-
-
-  private getAspectRatio(): number {
-    return this.canvas.clientWidth / this.canvas.clientHeight;
-  }
 
   private createScene(): void {
 
     this.scene = new THREE.Scene();
     this.scene.background = new THREE.Color(0xa0a0a0);
 
-    // Initialize the renderer
     this.renderer = new THREE.WebGLRenderer({ canvas: this.canvas });
     this.renderer.setSize(this.canvas.clientWidth, this.canvas.clientHeight);
     this.renderer.setPixelRatio(devicePixelRatio);
     document.body.appendChild(this.renderer.domElement);
-
-    const aspectRatio = this.getAspectRatio();
 
     this.camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 10000);
 
@@ -139,38 +130,15 @@ export class HospitalSimulationComponent implements AfterViewInit {
     this.camera.position.set(20, 30, 30); // Higher Y position to hover over.layout
     this.camera.lookAt(0, 0, 0); // Look down at the center of the scene
 
-    this.getElementsFromHtml();
-
-    // this.initializeFixedCamera();
+    this.mousemove = document.getElementById("mousemove");
 
     this.setupEventListeners();
 
-    this.activeElement = document.activeElement;
-
-    // create Work Day Time
-    this.workDayTime = 0;
-
-    // this.userInterface = new UserInterface(this.scene, this.renderer, this.lights);
-    this.userInterface = new UserInterface(this.scene, this.renderer, document);
-
-    // const canvasElement = document.getElementById('parent');
-    // if (canvasElement) {
-    //     canvasElement.appendChild(this.userInterface.domElement);
-    // } else {
-    //     console.error("Canvas element not found!");
-    // }
-
-    // const parentDiv = document.getElementById('parent');
-    // if (parentDiv != null){
-    //       parentDiv.appendChild(this.userInterface.domElement);
-    // }
-
-    this.workDayTime = this.userInterface.timeSettings.hours;
+    this.userInterface = new UserInterface(this.scene, this.renderer, document, this.scheduleDays);
 
     this.raycaster = new THREE.Raycaster();
     this.mouse = new THREE.Vector2();
 
-    // Create tooltip sprite canvas and context
     this.tooltipCanvas = document.createElement('canvas');
     const context = this.tooltipCanvas.getContext('2d');
     if (context === null) {
@@ -178,20 +146,19 @@ export class HospitalSimulationComponent implements AfterViewInit {
     }
     this.tooltipContext = context;
 
-    this.tooltipCanvas.width = 256;  // Set width
-    this.tooltipCanvas.height = 64;
-    this.tooltipContext.font = "Bold 20px Arial";
+    this.tooltipCanvas.width = 200;
+    this.tooltipCanvas.height = 80;
+    this.tooltipContext.font = "Bold 15px Arial";
     this.tooltipTexture = new THREE.Texture(this.tooltipCanvas);
     this.tooltipTexture.needsUpdate = true;
 
-    // Tooltip sprite material
     var spriteMaterial = new THREE.SpriteMaterial({
       map: this.tooltipTexture,
       transparent: true,
     });
 
     this.tooltipSprite = new THREE.Sprite(spriteMaterial);
-    this.tooltipSprite.visible = false; // Start with hidden tooltip
+    this.tooltipSprite.visible = false;
     this.tooltipSprite.scale.set(1.5, 0.7, 1);
     this.layout.add(this.tooltipSprite);
     this.scene.add(this.tooltipSprite);
@@ -222,31 +189,6 @@ export class HospitalSimulationComponent implements AfterViewInit {
     this.setActiveViewCamera(this.fixedViewCamera);
   }
 
-  getElementsFromHtml() {
-    // Get and configure the panel's <div> elements
-    // this.viewsPanel = document.getElementById("views-panel") as HTMLElement;
-    // this.view = document.getElementById("view") as HTMLSelectElement;
-    // this.projection = document.getElementById("projection") as HTMLSelectElement;
-    // this.horizontal = document.getElementById("horizontal") as HTMLInputElement;
-    // this.horizontal.step = "1";
-    // this.vertical = document.getElementById("vertical") as HTMLInputElement;
-    // this.vertical.step = "1";
-    // this.distance = document.getElementById("distance") as HTMLInputElement;
-    // this.distance.step = "0.1";
-    // this.zoom = document.getElementById("zoom") as HTMLInputElement;
-    // this.zoom.step = "0.1";
-    // this.reset = document.getElementById('reset') as HTMLButtonElement;
-    // this.helpPanel = document.getElementById("help-panel") as HTMLElement;
-    // this.helpPanel.style.visibility = "hidden";
-    this.subwindowsPanel = document.getElementById("subwindows-panel") as HTMLElement;
-    // this.userInterfaceCheckBox = document.getElementById("user-interface") as HTMLInputElement;
-    // this.userInterfaceCheckBox.checked = true;
-    // this.helpCheckBox = document.getElementById("help") as HTMLInputElement;
-    // this.helpCheckBox.checked = false;
-
-    this.mousemove = document.getElementById("mousemove");
-  }
-
   setActiveViewCamera(camera: any) {
     this.fixedViewCamera = camera;
     this.horizontal.min = this.fixedViewCamera.orientationMin.h.toFixed(0);
@@ -257,36 +199,60 @@ export class HospitalSimulationComponent implements AfterViewInit {
     this.distance.max = this.fixedViewCamera.distanceMax.toFixed(1);
     this.zoom.min = this.fixedViewCamera.zoomMin.toFixed(1);
     this.zoom.max = this.fixedViewCamera.zoomMax.toFixed(1);
-    this.displayPanel();
   }
 
   raycasterIntersectedObjectTooltip(intersects: any) {
+    if (intersects.length > 0) {
+        let intersectedObject = intersects[0].object;
 
-    if (intersects.length > 0 && intersects[0].object.name != "") {
-      const intersectedObject = intersects[0].object;
-      if (intersectedObject !== this.INTERSECTED) {
-        this.INTERSECTED = intersectedObject;
-        console.log("intersected: " + this.INTERSECTED?.name)
-        this.showTooltip(intersectedObject.name || "Unnamed Object", intersectedObject.getWorldPosition(new THREE.Vector3()));
-      }
+        while (intersectedObject.parent && !intersectedObject.parent.userData.isParentGroup) {
+            intersectedObject = intersectedObject.parent;
+        }
+
+        if (intersectedObject.parent) {
+          intersectedObject = intersectedObject.parent;
+        }
+
+
+        if (intersectedObject !== this.INTERSECTED) {
+            this.INTERSECTED = intersectedObject;
+
+            if (this.INTERSECTED) {
+              console.log("INTERSECTED NAME " + this.INTERSECTED.name)
+                let message = this.getAppoitmentInfo(this.INTERSECTED.name);
+                if (message) {
+                  this.showTooltip(message, intersectedObject.getWorldPosition(new THREE.Vector3()));
+                }
+            }
+        }
     } else {
-      if (this.INTERSECTED) {
-        this.hideTooltip();
-        this.INTERSECTED = null;
-      }
+        if (this.INTERSECTED) {
+            this.hideTooltip();
+            this.INTERSECTED = null;
+        }
     }
-  }
+}
 
   showTooltip(message: string, position: THREE.Vector3) {
     this.tooltipContext.clearRect(0, 0, this.tooltipCanvas.width, this.tooltipCanvas.height);
     this.tooltipContext.fillStyle = "rgba(255, 255, 255, 0.9)";
-    this.tooltipContext.fillRect(0, 0, 200, 40);
+    this.tooltipContext.fillRect(0, 0, 200, 250);
     this.tooltipContext.fillStyle = "black";
-    this.tooltipContext.fillText(message, 10, 30);
+
+    const lines = message.split("\n");
+
+    const lineHeight = 20;
+    let yPos = 30;
+
+    for (let line of lines) {
+        this.tooltipContext.fillText(line, 10, yPos);
+        yPos += lineHeight;
+    }
+
     this.tooltipTexture.needsUpdate = true;
 
     this.tooltipSprite.position.copy(position);
-    this.tooltipSprite.position.y += 1.5;
+    this.tooltipSprite.position.y += 4.5;
     this.tooltipSprite.visible = true;
   }
 
@@ -294,32 +260,57 @@ export class HospitalSimulationComponent implements AfterViewInit {
     this.tooltipSprite.visible = false;
   }
 
-  displayPanel() {
-    this.view.options.selectedIndex = ["fixed"].indexOf(this.fixedViewCamera.view);
-    this.projection.options.selectedIndex = ["perspective", "orthographic"].indexOf(this.fixedViewCamera.projection);
-    this.horizontal.value = this.fixedViewCamera.orientation.h.toFixed(0);
-    this.vertical.value = this.fixedViewCamera.orientation.v.toFixed(0);
-    this.distance.value = this.fixedViewCamera.distance.toFixed(1);
-    this.zoom.value = this.fixedViewCamera.zoom.toFixed(1);
+  getAppoitmentInfo(name : string) : string | null{
+    var roomID = name.split("-")[1];
+    var appointment = this.getRoomAppointment(roomID);
+
+    if (appointment){
+      var operation = appointment.name === '' ? "Occupied" : appointment.name;
+      console.log(`${operation}\nStart: ${appointment.startTime}\nEnd: ${appointment.endTime}`)
+      return `${operation}\nStart: ${appointment.startTime}\nEnd: ${appointment.endTime}`;
+    }
+    return null;
   }
 
+
+  getRoomAppointment(roomID: string): ScheduleSlot | null {
+    if (this.roomSchedule.has(roomID)) {
+        const roomScheduleMap = this.roomSchedule.get(roomID)!;
+
+        if (roomScheduleMap.has(this.selectedDay)) {
+            const scheduleSlots = roomScheduleMap.get(this.selectedDay)!;
+
+            for (let schedule of scheduleSlots) {
+                const startTime = this.convertTimeToDecimalHours(schedule.startTime);
+                const endTime = this.convertTimeToDecimalHours(schedule.endTime);
+
+                if (this.workDayTime >= startTime && this.workDayTime < endTime) {
+                    return schedule;
+                }
+            }
+        }
+    }
+
+    return null; 
+}
+
   private createModel(modelUrl: string, scale: any): Promise<THREE.Group> {
-    let model = new THREE.Group(); // Store the loaded model
+    let model = new THREE.Group();
     const loader = new GLTFLoader();
     return new Promise((resolve, reject) => {
       loader.load(
         modelUrl,
         (gltf) => {
-          model = gltf.scene; // Store the loaded model
-          model.scale.copy(scale); // Apply scaling
-          resolve(model); // Resolve the promise with the loaded model
+          model = gltf.scene;
+          model.scale.copy(scale);
+          resolve(model); 
         },
         (xhr) => {
           console.log((xhr.loaded / xhr.total) * 100 + '% loaded');
         },
         (error) => {
           console.error('An error occurred while loading the model:', error);
-          reject(error); // Reject the promise if an error occurs
+          reject(error);
         }
       );
     });
@@ -333,7 +324,7 @@ export class HospitalSimulationComponent implements AfterViewInit {
     this.wall = new Wall(data.wallTextureUrl).object;
 
     this.surgical_bed = await this.createModel(data.bedModel, this.bedScale);
-    this.patient = await this.createModel(data.patientModel, this.patientScale);
+    this.patientModel = await this.createModel(data.patientModel, this.patientScale);
     this.door = await this.createModel(data.doorModelUrl, this.doorScale);
 
     const textureLoader = new THREE.TextureLoader();
@@ -357,7 +348,6 @@ export class HospitalSimulationComponent implements AfterViewInit {
           wallObject.position.set(i - data.size.width / 2, 0.5, j - data.size.height / 2 - 0.5);
           wallObject.name = "Wall";
           this.layout.add(wallObject);
-          this.objectsToIntersect.push(wallObject);
         }
 
         // North wall
@@ -366,7 +356,6 @@ export class HospitalSimulationComponent implements AfterViewInit {
           wallObject.position.set(i - data.size.width / 2 + 0.5, 0.5, j - data.size.height / 2);
           wallObject.name = "Wall";
           this.layout.add(wallObject);
-          this.objectsToIntersect.push(wallObject);
         }
 
         //North Surgical bed
@@ -374,7 +363,7 @@ export class HospitalSimulationComponent implements AfterViewInit {
           const bedObject = this.surgical_bed.clone();
           bedObject.position.set(i - data.size.width / 2, - 0.8, j - data.size.height / 2 - 0.5);
           bedObject.scale.set(0.03, 0.03, 0.025);
-          bedObject.name = "North Surgical Bed";
+          bedObject.name = "Surgical_Bed";
           bedObject.rotation.y = Math.PI / 2;
           this.layout.add(bedObject);
           this.objectsToIntersect.push(bedObject);
@@ -383,33 +372,12 @@ export class HospitalSimulationComponent implements AfterViewInit {
         //North Door
         if (data.layout[j][i] === 5) {
           const doorObject = this.door.clone();
-          doorObject.position.set(i - data.size.width / 2, -1.25, j - data.size.height / 2 - 0.5);
+          doorObject.position.set(i - data.size.width / 2, -1.25, j - data.size.height / 2 - 0.4);
           doorObject.position.z -= 0.55;
           doorObject.scale.set(0.7, 1, 0.6);
+          doorObject.rotation.y = Math.PI;
           doorObject.name = "North Door";
           this.layout.add(doorObject);
-          this.objectsToIntersect.push(doorObject);
-        }
-
-        //North Surgical bed + Patient
-        if (data.layout[j][i] === 6) {
-          const bedObject = this.surgical_bed.clone();
-          bedObject.position.set(i - data.size.width / 2, -0.8, j - data.size.height / 2 - 0.5);
-          bedObject.scale.set(0.03, 0.03, 0.025);
-          bedObject.name = "Surgical Bed";
-          bedObject.rotation.y = Math.PI / 2;
-          this.layout.add(bedObject);
-          this.objectsToIntersect.push(bedObject);
-
-          const patientObject = this.patient.clone();
-          patientObject.position.set(i - data.size.width / 2, -0.8, j - data.size.height / 2 - 0.5);
-          patientObject.position.y += 0.2;
-          patientObject.position.z += 0.1 * 2;
-          patientObject.scale.set(0.007, 0.005, 0.007);
-          patientObject.name = "Patient";
-          patientObject.rotation.y = Math.PI;
-          this.layout.add(patientObject);
-          this.objectsToIntersect.push(patientObject);
         }
 
         //South Surgical bed
@@ -417,7 +385,7 @@ export class HospitalSimulationComponent implements AfterViewInit {
           const bedObject = this.surgical_bed.clone();
           bedObject.position.set(i - data.size.width / 2, -0.8, j - data.size.height / 2 - 0.5);
           bedObject.scale.set(0.03, 0.03, 0.025);
-          bedObject.name = "South Surgical Bed";
+          bedObject.name = "Surgical_Bed";
           bedObject.rotation.y = - Math.PI / 2;
           this.layout.add(bedObject);
           this.objectsToIntersect.push(bedObject);
@@ -432,132 +400,52 @@ export class HospitalSimulationComponent implements AfterViewInit {
           doorObject.name = "South Door";
           doorObject.rotation.y = Math.PI;
           this.layout.add(doorObject);
-          this.objectsToIntersect.push(doorObject);
         }
 
-
-        //South Surgical bed + Patient
-        if (data.layout[j][i] === 9) {
-          const bedObject = this.surgical_bed.clone();
-          bedObject.position.set(i - data.size.width / 2, -0.8, j - data.size.height / 2 - 0.5);
-          bedObject.scale.set(0.03, 0.03, 0.025);
-          bedObject.name = "Surgical Bed";
-          bedObject.rotation.y = - Math.PI / 2;
-          this.layout.add(bedObject);
-          this.objectsToIntersect.push(bedObject);
-
-          const patientObject = this.patient.clone();
-          patientObject.position.set(i - data.size.width / 2, -0.8, j - data.size.height / 2 - 0.9);
-          patientObject.position.y += 0.2;
-          patientObject.position.z += 0.1 * 2;
-          patientObject.scale.set(0.007, 0.005, 0.007);
-          patientObject.name = "Patient";
-          this.layout.add(patientObject);
-          this.objectsToIntersect.push(patientObject);
-        }
       }
     }
 
-    //Adding Room ID Sprites
-    for (let i = 0; i <= data.size.width; i++) {
+  let index = 0;
+
+  for (let i = 0; i <= data.size.width; i++) {
       for (let j = 0; j <= data.size.height; j++) {
-        if (data.layout[j][i] === 4 || data.layout[j][i] === 6 || data.layout[j][i] === 7 || data.layout[j][i] === 9 ) {
-          const position = this.cellToCartesian(data, [j, i]);
-          this.roomPositions.push(position);
+          if (data.layout[j][i] === 4 || data.layout[j][i] === 7) {
+            if (index < this.roomIDs.length) {  
+            
+                const position = this.cellToCartesian(data, [j, i]);
+                this.roomPositions.set(this.roomIDs[index], position)
 
-          const sprite = new Sprite();
-          sprite.object.position.copy(position);
-          sprite.object.position.y += 2.5;
-          sprite.object.position.z -= 1.5;
-          this.layout.add(sprite.object);
-        }
+                this.roomLoadedPatients.set(this.roomIDs[index], false);
+
+                const sprite = new Sprite("   " + this.roomIDs[index] + "   ", true);
+                sprite.object.position.copy(position);
+                sprite.object.position.y += 2.5;
+                sprite.object.position.x += 0.5;
+
+                this.roomSprites.set(this.roomIDs[index], sprite);
+                this.layout.add(sprite.object);
+
+                ++index;
+              } else {
+                  console.warn(`Not enough room IDs to assign to sprites. Current index: ${index}, roomIDs length: ${this.roomIDs.length}`);
+                  break;
+              }
+          }
       }
-    }
+  }
 
     this.layout.scale.set(this.scale.x, this.scale.y, this.scale.z);
-    this.scene.add(this.layout);
+    this.scene!.add(this.layout);
   }
 
   private setupEventListeners() {
-  //  window.addEventListener("resize", (event) => this.windowResize(event));
-   // this.renderer.domElement.addEventListener("mousedown", (event) => this.mouseDown(event));
-    this.renderer.domElement.addEventListener("mousemove", (event) => this.mouseMove(event));
-   // this.renderer.domElement.addEventListener("mouseup", (event) => this.mouseUp(event));
-    this.renderer.domElement.addEventListener("wheel", (event) => this.mouseWheel(event));
-    this.renderer.domElement.addEventListener("contextmenu", (event) => this.contextMenu(event));
-
-    // Register the event handler to be called on select, input number, or input checkbox change
-    // this.view.addEventListener("change", event => this.elementChange(event));
-    // this.projection.addEventListener("change", event => this.elementChange(event));
-    // this.horizontal.addEventListener("change", event => this.elementChange(event));
-    // this.vertical.addEventListener("change", event => this.elementChange(event));
-    // this.distance.addEventListener("change", event => this.elementChange(event));
-    // this.zoom.addEventListener("change", event => this.elementChange(event));
-    // this.userInterfaceCheckBox.addEventListener("change", event => this.elementChange(event));
-    // this.helpCheckBox.addEventListener("change", event => this.elementChange(event));
-    // Register the event handler to be called on input button click
-    // this.reset.addEventListener('click', event => this.buttonClick(event));
-
+  this.renderer!.domElement.addEventListener("wheel", (event) => this.mouseWheel(event));
     document.addEventListener("mousemove", event => {
       this.mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
       this.mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
     });
   }
 
-  private windowResize(event: any): void {
-    this.fixedViewCamera.updateWindowSize(window.innerWidth, window.innerHeight);
-  }
-
-  mouseDown(event: MouseEvent) {
-    if (event.buttons == 1 || event.buttons == 2) { // Primary or secondary button down
-      // Store current mouse position in window coordinates (mouse coordinate system: origin in the top-left corner; window coordinate system: origin in the bottom-left corner)
-      this.mousePosition = new THREE.Vector2(event.clientX, window.innerHeight - event.clientY - 1);
-      // Select the camera whose view is being pointed
-      const cameraView = this.getPointedViewport(this.mousePosition);
-      if (cameraView != "none") {
-        // One of the remaining cameras selected
-        const cameraIndex = ["fixed", "first-person", "third-person", "top"].indexOf(cameraView);
-        this.view.options.selectedIndex = cameraIndex;
-        this.setActiveViewCamera([this.fixedViewCamera][cameraIndex]);
-        if (event.buttons == 1) { // Primary button down
-          this.changeCameraDistance = true;
-        }
-        else { // Secondary button down
-          this.changeCameraOrientation = true;
-        }
-      }
-    }
-  }
-
-  mouseMove(event: MouseEvent) {
-    if (event.buttons == 1 || event.buttons == 2) { // Primary or secondary button down
-      if (this.changeCameraDistance || this.changeCameraOrientation) { // Mouse action in progress
-        // Compute mouse movement and update mouse position
-        const newMousePosition = new THREE.Vector2(event.clientX, window.innerHeight - event.clientY - 1);
-        const mouseIncrement = newMousePosition.clone().sub(this.mousePosition);
-        this.mousePosition = newMousePosition;
-        if (event.buttons == 1) { // Primary button down
-          if (this.changeCameraDistance) {
-            this.fixedViewCamera.updateDistance(-0.05 * (mouseIncrement.x + mouseIncrement.y));
-            this.displayPanel();
-          }
-        }
-        else { // Secondary button down
-          if (this.changeCameraOrientation) {
-            const newValue = mouseIncrement.multiply(new THREE.Vector2(-0.5, 0.5));
-            this.fixedViewCamera.updateOrientation(new Orientation(newValue.x, newValue.y));
-            this.displayPanel();
-          }
-        }
-      }
-    }
-  }
-
-  mouseUp(event: MouseEvent) {
-    // Reset mouse move action
-    this.changeCameraDistance = false;
-    this.changeCameraOrientation = false;
-  }
 
   mouseWheel(event: WheelEvent) {
     // Prevent the mouse wheel from scrolling the document's content
@@ -575,11 +463,6 @@ export class HospitalSimulationComponent implements AfterViewInit {
     }
   }
 
-  contextMenu(event: any) {
-    // Prevent the context menu from appearing when the secondary mouse button is clicked
-    event.preventDefault();
-  }
-
   pointerIsOverViewport(pointer: any, viewport: any) {
     return (
       pointer.x >= viewport.x &&
@@ -590,87 +473,20 @@ export class HospitalSimulationComponent implements AfterViewInit {
 
   getPointedViewport(pointer: any) {
     let viewport;
-    // Check if the pointer is over other camera viewports
-    let cameras;
-    cameras = [this.fixedViewCamera];
+    const cameras = [this.fixedViewCamera];
+
     for (const camera of cameras) {
-      viewport = camera.getViewport();
-      if (this.pointerIsOverViewport(pointer, viewport)) {
-        return camera.view;
-      }
-    }
-    // No camera viewport is being pointed
-    return "none";
-  }
-
-
-  elementChange(event: any) {
-    switch (event.target.id) {
-      case "view":
-        this.setActiveViewCamera([this.fixedViewCamera][this.view.options.selectedIndex]);
-        break;
-      case "projection":
-        this.fixedViewCamera.setActiveProjection(["perspective", "orthographic"][this.projection.options.selectedIndex]);
-        this.displayPanel();
-        break;
-      case "horizontal":
-      case "vertical":
-      case "distance":
-      case "zoom":
-        if (event.target.checkValidity()) {
-          switch (event.target.id) {
-            case "horizontal":
-            case "vertical":
-              this.fixedViewCamera.setOrientation(
-                new Orientation(Number(this.horizontal.value), Number(this.vertical.value))
-              );
-              break;
-            case "distance":
-              this.fixedViewCamera.setDistance(Number(this.distance.value));
-              break;
-            case "zoom":
-              this.fixedViewCamera.setZoom(Number(this.zoom.value));
-              break;
-          }
+        if (!camera || typeof camera.getViewport !== "function") {
+            console.warn("Camera or getViewport method is not defined:", camera);
+            continue;
         }
-        break;
-      case "user-interface":
-        this.setUserInterfaceVisibility(event.target.checked);
-        break;
-      case "help":
-        this.setHelpVisibility(event.target.checked);
-        break;
+        viewport = camera.getViewport();
+        if (this.pointerIsOverViewport(pointer, viewport)) {
+            return camera.view;
+        }
     }
-  }
-
-  setUserInterfaceVisibility(visible: boolean) {
-    this.userInterfaceCheckBox.checked = visible;
-    this.viewsPanel.style.visibility = visible ? "visible" : "hidden";
-    this.subwindowsPanel.style.visibility = visible ? "visible" : "hidden";
-    this.userInterface.setVisibility(visible);
-  }
-
-  setHelpVisibility(visible: boolean) { // Hidden: false; visible: true
-    this.helpCheckBox.checked = visible;
-    this.helpPanel.style.visibility = visible ? "visible" : "hidden";
-  }
-
-
-  buttonClick(event: MouseEvent) {
-    const target = event.target as HTMLElement | null;
-
-    if (target && target.id) { // Ensure target is not null and has an id
-      switch (target.id) {
-        case "reset":
-          this.fixedViewCamera.initialize();
-          break;
-      }
-      this.displayPanel();
-    } else {
-      console.warn("Event target is null or has no id.");
-    }
-  }
-
+    return "none";
+}
 
   cellToCartesian(data: any, cell: [number, number]): THREE.Vector3 {
     const [row, col] = cell;
@@ -681,21 +497,140 @@ export class HospitalSimulationComponent implements AfterViewInit {
     );
   }
 
+  cartesianToCell(data: any, position : THREE.Vector3) {
+    return [
+        Math.floor(position.z / this.scale.z + data.size!.height / 2.0),
+        Math.floor(position.x / this.scale.x + data.size!.width / 2.0)
+    ];
+}
+
+
+  checkOccupancy() {
+    for (let [roomName, roomScheduleMap] of this.roomSchedule) {
+        let isOccupied = false;
+
+
+        if (roomScheduleMap.has(this.selectedDay)) {
+            const scheduleSlots = roomScheduleMap.get(this.selectedDay)!;
+
+            for (let schedule of scheduleSlots) {
+                const startTime = this.convertTimeToDecimalHours(schedule.startTime);
+                const endTime = this.convertTimeToDecimalHours(schedule.endTime);
+
+                if (this.workDayTime >= startTime && this.workDayTime < endTime) {
+                    isOccupied = true;
+                    break;
+                }
+            }
+        }
+
+        if (isOccupied) {
+            if (!this.roomLoadedPatients.get(roomName)) {
+                this.loadPatient(roomName);
+                this.updateSprite(roomName, false);
+            }
+        } 
+        else if (this.roomLoadedPatients.get(roomName) == true) {
+                this.removePatient(roomName);
+                this.updateSprite(roomName, true);
+        }
+    }
+  }
+
+  convertTimeToDecimalHours(timeString: string): number {
+    const [hours, minutes] = timeString.split(':').map(Number);
+    return hours + minutes / 60;
+  }
+
+  loadPatient(room: string) {
+      const RoomPosition = this.roomPositions.get(room);
+      if (!RoomPosition) {
+          console.error(`Room position not found for room: ${room}`);
+          return;
+      }
+
+      const patientGroup = new THREE.Group();
+
+
+      const cell = this.cartesianToCell(layoutData, RoomPosition);
+      if (cell) {
+          const [j, i] = cell;
+          const cellType = layoutData.layout[j][i];
+
+          patientGroup.name = `Patient-${room}`;
+          patientGroup.add(this.patientModel.clone());
+          patientGroup.position.copy(RoomPosition);
+          patientGroup.position.y -= 0.5;
+          patientGroup.position.x -= 0.5;
+          patientGroup.scale.set(1.5, 1.5, 1.5);
+          patientGroup.userData['isParentGroup'] = true;
+
+
+          if (cellType === 4) {
+            patientGroup.rotation.y = - Math.PI;
+            patientGroup.position.z -= 0.7;
+          } else if (cellType === 7) {
+            patientGroup.rotation.y =  Math.PI * 2;
+            patientGroup.position.z -= 1.1;
+          }
+      } else {
+          console.warn(`Could not determine cell for position: ${RoomPosition}`);
+      }
+
+      // patient.name = `Patient-${room}`;
+
+      // const patientGroup = new THREE.Group();
+      // patientGroup.name = `Patient-${room}`;
+      // patientGroup.add(this.patientModel.clone());
+      // patientGroup.position.copy(RoomPosition);
+      // this.objectsToIntersect.push(patientGroup);
+
+      this.objectsToIntersect.push(patientGroup);
+      this.layout.add(patientGroup);
+
+      this.roomLoadedPatients.set(room, true);
+  }
+
+    removePatient(room: string) {
+      const patientName = `Patient-${room}`;
+      const patient = this.layout.getObjectByName(patientName);
+
+      if (patient) {
+          this.layout.remove(patient);
+          this.objectsToIntersect = this.objectsToIntersect.filter((obj) => obj !== patient);
+          this.roomLoadedPatients.set(room, false);
+      } else {
+          console.warn(`No patient found with name: ${patientName}`);
+      }
+  }
+
+  updateSprite(room: string, occupied: boolean) {
+      let sprite = this.roomSprites.get(room);
+
+      if (sprite) {
+          sprite.available = occupied;
+          sprite.updateColor();
+      }else {
+        console.warn(`No sprite associated with room id: ${room}`);
+      }
+  }
+
+ 
   startAnimationLoop() {
     const animate = () => {
-      // Update raycaster with mouse position
-      this.raycaster.setFromCamera(this.mouse, this.camera);
 
-      // Check for intersections
-      const intersects = this.raycaster.intersectObjects(this.layout.children);
+      this.raycaster.setFromCamera(this.mouse, this.camera!);
+
+      const intersects = this.raycaster.intersectObjects(this.objectsToIntersect);
       this.raycasterIntersectedObjectTooltip(intersects);
 
+      this.workDayTime = this.userInterface!.timeSettings.hours;
+      this.selectedDay = this.userInterface!.selectedDay.day;
 
+      this.checkOccupancy();
 
-      // Loop
       this.animationFrameId = requestAnimationFrame(animate);
-        // Render the scene
-        this.renderer.render(this.scene, this.camera);
+        this.renderer!.render(this.scene!, this.camera!);
         this.controls.update();
     };
 
@@ -703,18 +638,73 @@ export class HospitalSimulationComponent implements AfterViewInit {
   }
 
   ngOnDestroy(): void {
-    // Cleanup the animation loop
     if (this.animationFrameId) {
       cancelAnimationFrame(this.animationFrameId);
     }
+    this.cleanup();
   }
 
-  async ngAfterViewInit(): Promise<void> {
-    this.createScene();
-    this.loadLayout(layoutData);
-    document.body.appendChild(this.renderer.domElement);
-    this.startAnimationLoop();
+
+  cleanup() {
+    this.renderer!.dispose();
+    this.scene = null;
+    this.camera = null;
+
+    const canvas = document.getElementById('myCanvas');
+    if (canvas) {
+        canvas.remove();
+    }
+
+    const guiContainer = this.userInterface!.gui?.domElement;
+    if (guiContainer && guiContainer.parentNode) {
+        guiContainer.parentNode.removeChild(guiContainer);
+    }
+    this.userInterface = null;
+}
+
+
+  loadDataFromBackend(): void {
+    this.roomService.getRoomsSchedule().subscribe((scheduledBackend: RoomSchedule[]) => {
+  
+      this.roomIDs = scheduledBackend.map((roomSchedule) => roomSchedule.roomNumber);
+      this.roomSchedule = new Map<string, Map<string, ScheduleSlot[]>>();
+      this.scheduleDays = [];
+  
+      for (let room of scheduledBackend) {
+        const scheduleMap = new Map<string, ScheduleSlot[]>();
+  
+        room.schedule.forEach((slot) => {
+          if (!scheduleMap.has(slot.startDate.split(" ")[0])) {
+            scheduleMap.set(slot.startDate.split(" ")[0], []);
+          }
+          scheduleMap.get(slot.startDate.split(" ")[0])!.push(slot);
+        });
+  
+        this.roomSchedule.set(room.roomNumber, scheduleMap);
+      }
+  
+      this.roomSchedule.forEach((scheduleMap) => {
+        scheduleMap.forEach((slots, date) => {
+          if (!this.scheduleDays.includes(date)) {
+            this.scheduleDays.push(date.split(" ")[0]);
+          }
+        });
+      });
+  
+      this.scheduleDays.sort((a, b) => new Date(b).getTime() - new Date(a).getTime());
+  
+      this.createScene();
+      this.loadLayout(layoutData);
+      document.body.appendChild(this.renderer!.domElement);
+      this.startAnimationLoop();
+    }, (error) => {
+      console.error("Error loading data from backend:", error);
+    });
   }
+  
+  async ngAfterViewInit(): Promise<void> {
+    this.loadDataFromBackend();
+  }  
 
   @HostListener('window:resize', ['$event'])
   onResize(): void {
@@ -722,16 +712,7 @@ export class HospitalSimulationComponent implements AfterViewInit {
   }
 
   private resize(): void {
-    const aspectRatio = this.getAspectRatio();
-
-    // this.camera.left = (this.frustumSize * aspectRatio) / -2;
-    // this.camera.right = (this.frustumSize * aspectRatio) / 2;
-    // this.camera.top = this.frustumSize / 2;
-    // this.camera.bottom = this.frustumSize / -2;
-    // this.camera.updateProjectionMatrix();
-
-    this.renderer.setSize(this.canvas.clientWidth, this.canvas.clientHeight);
-    //this.render();
+    this.renderer!.setSize(this.canvas.clientWidth, this.canvas.clientHeight);
     this.startAnimationLoop();
   }
 }
