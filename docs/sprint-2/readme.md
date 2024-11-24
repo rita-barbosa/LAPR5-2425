@@ -15,7 +15,7 @@
 |----------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------|
 | Ana Guterres   | [us-6.1.1](./1221933/us-6.1.1/readme.md); [us-6.1.4](./1221933/us-6.1.4/readme.md); [us-5.1.2](1221933/us-5.1.2/readme.md); [us-6.2.7](1221933/us-6.2.7/readme.md); [us-6.2.11](1221933/us-6.2.11/readme.md); [us-6.2.14](1221933/us-6.2.14/readme.md); [us-6.2.21](1221933/us-6.2.21/readme.md);[us-6.3.1](./us-6.3.1/readme.md) [us-6.4.3](./1221933/us-6.4.3/readme.md); [us-6.4.7](./1221933/us-6.4.7/readme.md); [us-6.5.2](./1221933/us-6.5.2/readme.md);             | José                |
 | José Santos    | [us-6.1.2](./1220738/us-6.1.2/readme.md); [us-6.2.1](./1220738/us-6.2.1/readme.md); [us-5.1.1](1220738/us-5.1.1/readme.md); [us-6.2.8](./1220738/us-6.2.8/readme.md); [us-6.2.12](./1220738/us-6.2.12/readme.md); [us-6.2.16](./1220738/us-6.2.16/readme.md); [us-6.2.19](./1220738/us-6.2.19/readme.md); [us-6.3.1](./us-6.3.1/readme.md); [us-6.4.1](./1220738/us-6.4.1/readme.md); [us-6.4.4](./1220738/us-6.4.4/readme.md); [us-6.5.3](./1220738/us-6.5.3/readme.md);   | Ana                 |
-| Matilde Varela | [us-6.1.3](./1220683/us-6.1.3/readme.md); [us-6.2.3](1220683/us-6.2.3/readme.md); [us-6.2.4](1220683/us-6.2.4/readme.md); [us-6.2.9](1220683/us-6.2.9/readme.md); [us-6.2.13](1220683/us-6.2.13/readme.md); [us-6.2.15](1220683/us-6.2.15/readme.md); [us-6.2.18](1220683/us-6.2.18/readme.md); [us-6.3.3](./us-6.3.3/readme.md); [us-6.4.2](./1220683/us-6.4.2/readme.md); [us-6.4.5](./1220683/us-6.4.5/readme.md); [us-6.5.1](./1220683/us-6.5.1/readme.md);             | Rita                |
+| Matilde Varela | [us-6.1.3](./1220683/us-6.1.3/readme.md); [us-6.2.3](1220683/us-6.2.3/readme.md); [us-6.2.4](1220683/us-6.2.4/readme.md); [us-6.2.9](1220683/us-6.2.9/readme.md); [us-6.2.13](1220683/us-6.2.13/readme.md); [us-6.2.15](1220683/us-6.2.15/readme.md); [us-6.2.18](1220683/us-6.2.18/readme.md); [us-6.3.3](./us-6.3.3/readme.md); [us-6.4.2](./1220683/us-6.4.2/readme.md); [us-6.4.5](./1220683/us-6.4.5/readme.md); [us-6.5.1](./1220683/us-6.5.1/readme.md);             | Rita  [e2e : [us-6.2.4](1220683/us-6.2.4/readme.md) ]            |
 | Rita Barbosa   | [us-6.1.5](./1220841/us-6.1.5/readme.md); [us-6.2.2](./1220841/us-6.2.2/readme.md); [us-6.2.5](./1220841/us-6.2.5/readme.md); [us-6.2.6](./1220841/us-6.2.6/readme.md); [us-6.2.10](./1220841/us-6.2.10/readme.md); [us-6.2.17](./1220841/us-6.2.17/readme.md); [us-6.2.20](./1220841/us-6.2.20/readme.md); [us-6.3.3](./us-6.3.3/readme.md); [us-6.4.6](./1220841/us-6.4.6/readme.md); [us-6.4.8](./1220841/us-6.4.8/readme.md); [us-6.5.4](./1220841/us-6.5.4/readme.md); | Matilde             |
 
 **Note:** All team members will collaborate on developing the user
@@ -62,6 +62,14 @@ To ensure smooth project management and progress tracking, we've implemented the
 
 These practices have been put in place to enhance team collaboration, ensure timely delivery of tasks, and maintain
 high-quality standards throughout the project.
+
+#### DoR - Definition of Ready
+
+The Definition of Ready (DoR) ensures that backlog items are prepared before being included in a sprint. An item is ready when its requirements and acceptance criteria are clear, all dependencies are identified and resolved, and client clarifications are addressed. It must also be small enough to fit within a sprint, technically feasible, and prioritized with effort estimates provided. This ensures the team has all necessary information and resources to start work effectively.
+
+#### DoD - Definition of Done
+
+The Definition of Done (DoD) ensures that items are fully completed and meet quality standards. An item is done when all phases—requirements, design, implementation, and testing—are complete, with dependencies resolved and acceptance criteria met. Code must pass all tests, undergo review, and meet quality standards. Documentation and client sign-off are required. This guarantees the deliverable is ready for use or deployment.
 
 ## Sprint Retrospective
 
