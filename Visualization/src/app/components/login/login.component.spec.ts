@@ -27,10 +27,10 @@ describe('LoginComponent', () => {
     };
 
     await TestBed.configureTestingModule({
-      imports: [LoginComponent, MessageComponent, FormsModule, CommonModule, HttpClientTestingModule],
+      imports: [LoginComponent, MessageComponent, FormsModule, CommonModule],
       providers: [
         { provide: UserService, useValue: userServiceMock },
-        { provide: ActivatedRoute, useValue: activatedRouteMock },
+        { provide: ActivatedRoute, useValue: activatedRouteMock }
       ]
     }).compileComponents();
 
