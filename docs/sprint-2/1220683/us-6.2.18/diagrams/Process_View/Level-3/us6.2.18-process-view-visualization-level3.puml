@@ -4,13 +4,28 @@ title "US 6.2.18 - Process View [Level 3 | Visualization]"
 
 autonumber
 actor "Admin" as USER
-participant "AddOperationType" as AOT <<component>>
+participant "CreateOperationTypeComponent" as AOT <<component>>
 participant "OperationTypeService" as OTS <<service>>
 
-USER -> AOT : add a new operation type
+AOT -> OTS : getAllSpecializationsAvailable()
+activate AOT
+activate OTS
+
+OTS ->o] : GET : api/Specializations
+
+OTS <--o]  : specializations
+
+OTS --> AOT : specializations
+deactivate OTS
+
+AOT --> USER : specializations
+deactivate AOT
+
+
+USER -> AOT : create a new operation type
 activate AOT
 
-AOT -> OTS : Create(operationTypeDto)
+AOT -> OTS : createOperationType(operationType)
 activate OTS
 
 OTS ->o] : POST: api/OperationTypes

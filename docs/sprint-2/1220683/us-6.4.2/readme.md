@@ -7,6 +7,7 @@
   * [3. Analysis](#3-analysis)
   * [4. Design](#4-design)
     * [4.1. Realization](#41-realization)
+  * [5. Implementation](#5-implementation)
 <!-- TOC -->
 
 
@@ -84,3 +85,27 @@ The `-j` parameter indicates the existence of a target for said chain.
 The criteria `-p` refers to the protocol designation defined within the packet. It can be `tcp`, `udp`, `icmp` ou `icmpv6`.
 
 The criteria `--dport` refers to the packet's destination port.
+
+## 5. Implementation
+
+The solution implemented is the following one:
+
+```
+#!/bin/bash
+
+# Flush existing rules (and built-in ones too)
+iptables -F
+iptables -X
+
+# Allow loopback interface
+iptables -A INPUT -i lo -j ACCEPT
+
+# Allow established and related connections
+iptables -A INPUT -m state --state ESTABLISHED, RELATED -j ACCEPT
+
+# Allow SSH access from DEI VPN
+iptables -A INPUT -s 10.8.0.0/16 -p tcp --dport 22 -j ACCEPT
+
+# Block everything else
+iptables -A INPUT -j DROP
+```

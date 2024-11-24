@@ -8,15 +8,15 @@ title "US 6.2.3 - Process View [Level 3 | Visualization]"
 
 autonumber
 actor "Patient" as USER
-participant "Patient Account" as PA <<component>>
-participant "Patient Account Deletion" as UAD <<component>>
+participant "Patient PatientPreferences" as PA <<component>>
+participant "PatientAccountDeletionConfirm" as UAD <<component>>
 participant "UserService" as US <<service>>
 
 
 USER -> PA : clicks "Delete Profile" button
 activate PA
 
-PA -> US : DeletePatientAccountRequest()
+PA -> US : sendAccountDeleteRequest()
 activate US
 
 US ->o] : DELETE: /api/Delete-PatientAccountDeletionRequest
@@ -36,8 +36,7 @@ deactivate PA
 USER -> UAD : gets redirected from confirmation link
 activate UAD
 
-UAD -> US : ConfirmPatientAccountDeletionNotProfile(userId, token)
-activate US
+UAD ->o] : PUT(userId, token) : /api/Update-PatientAccountDeletionConfirmation?userId=VALUEtoken=VALUE
 note left
 Token and userID values
 are passed through the
@@ -45,12 +44,7 @@ confirmation link that
 was sent
 end note
 
-US ->o] : PUT(userId, token) : /api/Update-PatientAccountDeletionConfirmation?userId=VALUEtoken=VALUE
-
-US <--o] : Ok()
-
-US --> UAD: success
-deactivate US
+UAD <--o] : Ok()
 
 UAD --> USER: success
 deactivate UAD

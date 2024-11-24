@@ -13,10 +13,8 @@
       * [Level 2](#level-2)
       * [Level 3](#level-3)
     * [4.3. Applied Patterns](#43-applied-patterns)
-    * [4.4. Tests](#44-tests)
-  * [5. Implementation](#5-implementation)
-  * [6. Integration/Demonstration](#6-integrationdemonstration)
-  * [7. Observations](#7-observations)
+      * [4.1.3 Development View](#413-development-view)
+      * [4.1.4 Physical View](#414-physical-view)
 <!-- TOC -->
 
 
@@ -142,18 +140,10 @@ In the following diagrams, the listed variables represent the respective concept
 > interacts with these service facades, keeping the complexity hidden from the higher layers.
 
 
-### 4.4. Tests
+#### 4.1.3 Development View
 
-_// To do - layout still in development //_
+The diagrams can be found in the [team decision views folder](../../team-decisions/views/general-views.md#3-development-view).
 
-## 5. Implementation
+#### 4.1.4 Physical View
 
-_// To do //_
-
-## 6. Integration/Demonstration
-
-_// To do //_
-
-## 7. Observations
-
-_// To do //_
+The diagrams can be found in the [team decision views folder](../../team-decisions/views/general-views.md#4-physical-view).

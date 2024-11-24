@@ -14,10 +14,8 @@
       * [Level 2](#level-2)
       * [Level 3](#level-3)
     * [4.3. Applied Patterns](#43-applied-patterns)
-    * [4.4. Tests](#44-tests)
-  * [5. Implementation](#5-implementation)
-  * [6. Integration/Demonstration](#6-integrationdemonstration)
-  * [7. Observations](#7-observations)
+      * [4.1.3 Development View](#413-development-view)
+      * [4.1.4 Physical View](#414-physical-view)
 <!-- TOC -->
 
 
@@ -175,150 +173,10 @@ The process view levels are here represented as they represent a process specifi
 > These services act as a Facade to simplify interaction with lower-level components like repositories. The Controller
 > interacts with these service facades, keeping the complexity hidden from the higher layers.
 
+#### 4.1.3 Development View
 
-### 4.4. Tests
+The diagrams can be found in the [team decision views folder](../../team-decisions/views/general-views.md#3-development-view).
 
-_// To do //_ 
+#### 4.1.4 Physical View
 
-
-## 5. Implementation
-
-Method to update an Operation Request in the Controller:
-
-```
-// PUT: api/OperationRequest/Update
-[HttpPut("Update")]
-[Authorize(Policy = "Doctor")]
-public async Task<ActionResult<UpdateOperationRequestDto>> Update(UpdateOperationRequestDto dto)
-{
-  string? userEmail = User.FindFirstValue(ClaimTypes.Email);
-
-  if (!await _service.CheckDoctorIsRequestingDoctor(userEmail, dto.Id)){
-      return BadRequest("You are not the requesting doctor for the choosen operation request.");
-  }
-
-  try
-  {
-      var opr = await _service.UpdateAsync(dto);
-
-      if (opr == null)
-      {
-          return NotFound("An operation request with the provided ID does not exist.");
-      }
-      return Ok(opr);
-  }
-  catch (BusinessRuleValidationException ex)
-  {
-      return BadRequest(new { ex.Message });
-  }
-}
-```
-
-Method to check if the doctor accessing the operation request is the requesting doctor:
-
-```
-public async Task<bool> CheckDoctorIsRequestingDoctor(string? userEmail, string id)
-{
-
-    var request = await GetByIdAsync(new OperationRequestId(id));
-
-    var doctor = await _repoSta.GetStaffWithEmail(userEmail);
-
-    if (request.StaffId.Equals(doctor.Id.AsString())){
-        return true;
-    }
-
-    return false;            
-}
-```
-
-Method to update an Operation Request:
-
-```
-public async Task<OperationRequestDto> UpdateAsync(UpdateOperationRequestDto dto)
-{
-    var opRequest = await _repo.GetByIdAsync(new OperationRequestId(dto.Id));
-
-    if (opRequest == null)
-        return null;
-
-    if (!opRequest.DeadLineDate.Equals(dto.DeadLineDate)){
-        opRequest.ChangeDeadLineDate(dto.DeadLineDate);
-        await _logService.CreateEditLog(opRequest.Id.ToString(), opRequest.DeadLineDate.GetType().Name, "The operation request deadline date was altered.");
-    }
-
-    if (!opRequest.Priority.Equals(dto.Priority)){
-        opRequest.ChangePriority(dto.Priority);
-        await _logService.CreateEditLog(opRequest.Id.ToString(), opRequest.Priority.GetType().Name, "The operation request priority was altered.");
-    }
-
-    if (!opRequest.Description.Equals(dto.Description)){
-        opRequest.ChangeDescription(dto.Description);
-        await _logService.CreateEditLog(opRequest.Id.ToString(), opRequest.Description.GetType().Name, "The operation request description was altered.");
-    }
-
-    await _unitOfWork.CommitAsync();
-
-    return new OperationRequestDto(opRequest.Id.AsGuid(), opRequest.DeadLineDate.ToString(), opRequest.Priority.ToString(),
-         opRequest.DateOfRequest.ToString(), opRequest.Status.ToString(), opRequest.StaffId.AsString(), opRequest.Description.DescriptionText, opRequest.PatientId.AsString(), opRequest.OperationTypeId.AsString());
-}
-```
-
-Recording the changes in the system with logs:
-
-```
-public async Task<bool> CreateCreationLog(string objectReference, string objectClass, string description)
-{
-    try
-    {
-        Log log = new Log(await getSequentialNumber(), objectClass, objectReference, 2, description);
-        
-        await _repo.AddAsync(log);
-        await _unitOfWork.CommitAsync();
-
-        return true;
-    }
-    catch (Exception ex)
-    {
-        return false;
-    }
-}
-```
-
-## 6. Integration/Demonstration
-
-This demonstration happens in Postman, where a json is sent with the updated operation request data.
-
-Original Operation Request data:
-
-```
-{
-"deadLineDate": "2024-10-24",
-"priority": "Elective",
-"dateOfRequest": "2024-10-20",
-"status": "requested",
-"staffId": "D202400001",
-"description": "This patient needs to have a major surgery.",
-"patientId": "202411000001",
-"operationTypeId": "ACL Reconstruction Surgery"
-}
-```
-
-Updating the Operation Request:
-
-> INSERT PHOTO
-
-After the update, the information in the database is updated.
-
-> INSERT PHOTO
-
-
-As stated in the [requirements](#2-requirements), only the requesting doctor can access their operation requests.
-After registering and logging in as another doctor, by accessing an operation request that is not ours, the following
-response is obtained:
-
-> INSERT PHOTO
-
-## 7. Observations
-
-No observations.
+The diagrams can be found in the [team decision views folder](../../team-decisions/views/general-views.md#4-physical-view).
