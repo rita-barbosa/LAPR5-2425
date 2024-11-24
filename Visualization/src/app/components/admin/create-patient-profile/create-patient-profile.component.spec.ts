@@ -2,8 +2,6 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { CreatePatientProfileComponent } from './create-patient-profile.component';
 import { PatientService } from '../../../services/patient.service';
 import { ActivatedRoute } from '@angular/router';
-import { FormsModule } from '@angular/forms';
-import { CommonModule } from '@angular/common';
 import { NgForm } from '@angular/forms';
 import { of } from 'rxjs';
 

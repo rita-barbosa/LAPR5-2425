@@ -143,6 +143,23 @@
     width: 300px; /* Fixed width for uniformity */
 }
 
+/* Submit button styling */
+.add-button-add-patient {
+    background-color: #0074d9;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.add-button-add-patient {
+    background-color: #0056b3;
+    width: 300px; /* Fixed width for uniformity */
+}
+
 /* Clear button styling */
 .add-button-clear {
     background-color: #0074d9; /* Red color for 'Clear Input' button */
