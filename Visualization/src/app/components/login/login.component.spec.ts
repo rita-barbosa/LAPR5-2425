@@ -7,6 +7,8 @@ import { MessageComponent } from '../message/message.component';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { By } from '@angular/platform-browser';
+import { ActivatedRoute } from '@angular/router';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 describe('LoginComponent', () => {
   let component: LoginComponent;
@@ -14,14 +16,21 @@ describe('LoginComponent', () => {
   let userService: UserService;
 
   beforeEach(async () => {
-    const userServiceMock = {
-      login: jasmine.createSpy('login').and.returnValue(of(null)),
+    const userServiceMock = jasmine.createSpyObj('UserService', ['login', 'loginExternal']);
+
+    const activatedRouteMock = {
+      snapshot: {
+        paramMap: {
+          get: jasmine.createSpy('get').and.returnValue(null),
+        },
+      },
     };
 
     await TestBed.configureTestingModule({
-      imports: [LoginComponent, MessageComponent, FormsModule, CommonModule],
+      imports: [LoginComponent, MessageComponent, FormsModule, CommonModule, HttpClientTestingModule],
       providers: [
-        { provide: UserService, useValue: userServiceMock }
+        { provide: UserService, useValue: userServiceMock },
+        { provide: ActivatedRoute, useValue: activatedRouteMock },
       ]
     }).compileComponents();
 
@@ -110,5 +119,13 @@ describe('LoginComponent', () => {
 
     expect(emailInput.classList.contains('invalid-placeholder')).toBeTrue();
     expect(passwordInput.classList.contains('invalid-placeholder')).toBeTrue();
+  });
+
+  it('should call loginExternal when loginWithGoogle is called', () => {
+    userService.loginExternal();
+
+    component.loginWithGoogle();
+
+    expect(userService.loginExternal).toHaveBeenCalled();
   });
 });
