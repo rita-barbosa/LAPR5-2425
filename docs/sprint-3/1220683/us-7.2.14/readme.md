@@ -47,8 +47,10 @@ This feature is related to the existence of a patient profile (US 5.1.8).
 
 ## 3. Analysis
 
-> TBD
+The patient medical record has the patient's profile information, its appointment history and allergies. This profile
+should be accessible to doctors. This file can be edited but not removed unless the patient decided to delete its account.
 
+The [linked document](patient-record-example.txt) is an example of a patient medical record provided by the client.
 
 ### Domain Model
 
