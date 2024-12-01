@@ -131,7 +131,7 @@ public class PatientServiceTests
                   "2004-12-15");
 
             var patientMock = new Mock<Patient>("first", "last", "first last", "country, 12345, street test", "female", "+123", "12345678", "98765432", "email@email.com", "2000-10-10", "000001");
-            var id = "202411000001";
+            var id = "202412000001";
             
             var dtoResult = new PatientDto("Rita Barbosa", "+351 910000000", "ritabarbosa@email.com", "Test, 1234-234, Test Test", "2004-12-15",id);
   
@@ -257,7 +257,7 @@ public class PatientServiceTests
             userMock.Setup(u => u.PasswordHash).Returns(password);
 
             var token = "test-token";
-            var idPatient = "202411000001";
+            var idPatient = "202412000001";
 
             var dtoResult = new PatientDto("Rita Barbosa", "+351 910000000", newEmail, "Test, 1234-234, Test Test", "2000-10-10", idPatient);
 

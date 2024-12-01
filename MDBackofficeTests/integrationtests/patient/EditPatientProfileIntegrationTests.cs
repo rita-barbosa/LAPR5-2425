@@ -95,7 +95,7 @@ namespace MDBackofficeTests.integrationtests.patient
             userMock.Setup(u => u.PasswordHash).Returns(password);
 
             var token = "test-token";
-            var idPatient = "202411000001";
+            var idPatient = "202412000001";
 
             var dtoResult = new PatientDto("Rita Barbosa", "+351 910000000", newEmail, "Test, 1234-234, Test Test", "2000-10-10", idPatient);
 
@@ -161,7 +161,7 @@ namespace MDBackofficeTests.integrationtests.patient
             user.PasswordHash = password;
 
             var token = "test-token";
-            var idPatient = "202411000001";
+            var idPatient = "202412000001";
 
             var dtoResult = new PatientDto("Rita Barbosa", "+351 910000000", newEmail, "Test, 1234-234, Test Test", "2000-10-10", idPatient);
 
