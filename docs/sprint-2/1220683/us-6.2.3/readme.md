@@ -1,7 +1,7 @@
-# US 6.2.3
+# US 7.2.11
 
 <!-- TOC -->
-* [US 6.2.3](#us-623)
+* [US 7.2.11](#us-7211)
   * [1. Context](#1-context)
   * [2. Requirements](#2-requirements)
   * [3. Analysis](#3-analysis)
@@ -32,19 +32,19 @@ individuals more control over their personal data and to streamline privacy regu
 
 ## 2. Requirements
 
-**US 6.2.3:** As a Patient, I want to delete my account and all associated data, so that I can exercise my right to be forgotten as per GDPR.
+**US 7.2.11:** As a Patient, I want to delete my account and all associated data, so that I can exercise my right to be forgotten as per GDPR.
 
 **Acceptance Criteria:**
 
-- **6.2.3.1.** | Patients can request to delete their account through the profile settings.
+- **7.2.11.1.** | Patients can request to delete their account through the profile settings.
 
-- **6.2.3.2.** | The system sends a confirmation email to the patient before proceeding with account deletion.
+- **7.2.11.2.** | The system sends a confirmation email to the patient before proceeding with account deletion.
 
-- **6.2.3.3.** | Upon confirmation, all personal data is permanently deleted from the system within the legally required time frame (30 days).
+- **7.2.11.3.** | Upon confirmation, all personal data is permanently deleted from the system within the legally required time frame (30 days).
 
-- **6.2.3.4.** | Patients are notified once the deletion is complete, and the system logs the action for GDPR compliance.
+- **7.2.11.4.** | Patients are notified once the deletion is complete, and the system logs the action for GDPR compliance.
 
-- **6.2.3.5.** | Some anonymized data may be retained for legal or research purposes, but all identifiable information is erased.
+- **7.2.11.5.** | Some anonymized data may be retained for legal or research purposes, but all identifiable information is erased.
 
 
 **Dependencies/References:**
@@ -130,7 +130,7 @@ The process view levels are here presented as they represent a process specific 
 
 #### Level 1
 
-![us5-process-view-level1.svg](diagrams/Process_View/Level-1/us6.2.3-process-view-lvl1.svg)
+![us5-process-view-level1.svg](diagrams/Process_View/Level-1/us7.2.11-process-view-lvl1.svg)
 
 #### Level 2
 
@@ -140,10 +140,10 @@ it's diagram was deemed irrelevant.
 #### Level 3
 
 - _Visualization_<br>
-  ![us6.2.3-process-view-visualization-lvl3.svg](diagrams/Process_View/Level-3/us6.2.3-process-view-visualization-lvl3.svg)
+  ![us7.2.11-process-view-visualization-lvl3.svg](diagrams/Process_View/Level-3/us7.2.11-process-view-visualization-lvl3.svg)
 
 - _MDBackoffice_
-  ![us6.2.3-process-view-level3.svg](diagrams/Process_View/Level-3/us6.2.3-process-view-lvl3.svg)
+  ![us7.2.11-process-view-level3.svg](diagrams/Process_View/Level-3/us7.2.11-process-view-lvl3.svg)
 
   
 ### 4.3. Applied Patterns
