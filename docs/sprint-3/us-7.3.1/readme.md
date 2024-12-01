@@ -59,7 +59,7 @@ This feature is related to the existence of operation rooms (US 5.1.16) and oper
 ### 4.1. Realization
 
 The logical, physical, development and scenario views diagrams are generic for all the use cases of the backoffice component.
-These diagrams can be found in the [generic views diagrams compilation file](../../team-decisions/views/general-views.md).
+These diagrams can be found in the [generic views diagrams compilation file](../team-decisions/views/general-views.md).
 
 The process view levels are here presented as they represent a process specific to each user story.
 
@@ -85,11 +85,11 @@ it's diagram was deemed irrelevant.
 
 #### 4.1.3 Development View
 
-The diagrams can be found in the [team decision views folder](../../team-decisions/views/general-views.md#3-development-view).
+The diagrams can be found in the [team decision views folder](../team-decisions/views/general-views.md#3-development-view).
 
 #### 4.1.4 Physical View
 
-The diagrams can be found in the [team decision views folder](../../team-decisions/views/general-views.md#4-physical-view).
+The diagrams can be found in the [team decision views folder](../team-decisions/views/general-views.md#4-physical-view).
   
 ### 4.2. Applied Patterns
 
