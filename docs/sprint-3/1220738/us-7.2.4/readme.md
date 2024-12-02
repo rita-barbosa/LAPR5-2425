@@ -49,9 +49,9 @@ It relates to the Admin.
 
 **Client Clarifications:**
 
->Question: None Yet.
+>**Question:** The medical condition consist in what? Just a name or are there more fields?
 >
->Answer: None Yet.
+>**Answer:** It consists of a code (for example following ICD (International Classification of Diseases)), a designation and a longer description as well a list of common symptoms.
 
 ## 3. Analysis
 

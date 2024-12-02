@@ -49,9 +49,33 @@ It relates to the Doctor.
 
 **Client Clarifications:**
 
->Question: None Yet.
+>**Question:** Gostariamos de lhe perguntar se existe alguma lista de alergias que prefere que utilizemos no sistema por default,  se sim, quais? Também gostariamos de perguntar se quando diz "I want to search for Allergies, so that I can use it to update the Patient Medical Record" o que é que implica a ultima parte? Que a procura é feita para adicionar imediatamente ao perfil de paciente ou se é apenas uma procura feita para ir buscar a informação sobre uma alergia por exemplo?
 >
->Answer: None Yet.
+>**Answer**: Considerem a seguinte lista exemplo de alergias:
+>1. Peanut Allergy
+>2. Shellfish Allergy (e.g., shrimp, lobster)
+>3. Milk Allergy (Dairy products)
+>4. Egg Allergy
+>5. Tree Nut Allergy (e.g., almonds, walnuts)
+>6. Wheat Allergy
+>7. Penicillin Allergy
+>8. Sulfa Drugs Allergy (e.g., sulfamethoxazole)
+>9. Aspirin Allergy
+>10. Local Anesthetics Allergy (e.g., Lidocaine)
+>11. Pollen Allergy (e.g., grass, ragweed)
+>12. Dust Mite Allergy
+>13. Mold Allergy
+>14. Cat Dander Allergy
+>15. Dog Dander Allergy
+>16. Latex Allergy
+>17. Nickel Allergy (common in jewelry or metal objects)
+>18. Bee Sting Allergy
+>19. Fire Ant Sting Allergy
+>20. Perfume Allergy (fragrance sensitivity)
+
+>**Question:** Gostariamos de lhe perguntar se existe alguma lista de alergias que prefere que utilizemos no sistema por default,  se sim, quais? Também gostariamos de perguntar se quando diz "I want to search for Allergies, so that I can use it to update the Patient Medical Record" o que é que implica a ultima parte? Que a procura é feita para adicionar imediatamente ao perfil de paciente ou se é apenas uma procura feita para ir buscar a informação sobre uma alergia por exemplo?
+>
+>**Answer**: Em relação à segunda parte da pergunta, o que se pretende é que o médico possa indicar quais as alergias que o paciente tem seleccionando-as da lista de alergias existentes no sistema. notem que um paciente pode ter mais que uma alergia.
 
 ## 3. Analysis
 
