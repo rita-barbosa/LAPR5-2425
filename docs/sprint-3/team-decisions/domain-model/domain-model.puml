@@ -24,10 +24,12 @@ package "<<aggregate>> Patient" {
     class Gender <<(V,#FF8B40)value object>> {}
     class EmergencyContact <<(V,#FF8B40)value object>> {}
     class MRN <<(V,#FF8B40)value object>> <<identifier>> {}
+    class MedicalRecord <<(V,#FF8B40)value object>> {}
+    class Allergy <<(V,#FF8B40)value object>> {}
     class MedicalCondition <<(V,#FF8B40)value object>> {}
-    class AppoitmentHistory <<(V,#FF8B40)value object>> {}
-    class AppoitmentHistoryStatus <<(V,#FF8B40)value object>> {}
-    class AppoitmentHistoryType <<(V,#FF8B40)value object>> {}
+    class AppointmentHistory <<(V,#FF8B40)value object>> {}
+    class AppointmentHistoryStatus <<(V,#FF8B40)value object>> {}
+    class AppointmentHistoryType <<(V,#FF8B40)value object>> {}
     class CreatedAt <<(V,#FF8B40)value object>> {}
 }
 
@@ -80,7 +82,7 @@ package "<<aggregate OperationTypeHistory>>"{
 package "<<aggregate Appointment>>"{
     entity Appointment <<entity>> <<root>> {}
     class AppointmentId <<(V,#FF8B40)value object>> <<identifier>> {}
-    class   AppointmentStatus <<(V,#FF8B40)value object>>  {}
+    class AppointmentStatus <<(V,#FF8B40)value object>>  {}
 }
 
 
@@ -187,17 +189,20 @@ Patient --> "1" DateBirth
 Patient --> "1" Gender
 Patient ---> "1" EmergencyContact
 Patient --> "1" MRN
-Patient --> "0..1" MedicalCondition
-Patient --> "0..*" AppoitmentHistory
+Patient --> "1" MedicalRecord
+MedicalRecord --> "0..*" MedicalCondition
+MedicalRecord --> "0..*" Allergy
+MedicalRecord --> "1" AppointmentHistory
+Patient --> "0..*" AppointmentHistory
 Patient --> "1" Email
 Patient --> "1" Phone
 Patient --> "1" Address
 Patient---> "0..1" User
 EmergencyContact --> "1" Phone
 
-AppoitmentHistory --> "1" AppoitmentHistoryStatus
-AppoitmentHistory --> "1" AppoitmentHistoryType
-AppoitmentHistory --> "1" CreatedAt
+AppointmentHistory --> "1" AppointmentHistoryStatus
+AppointmentHistory --> "1" AppointmentHistoryType
+AppointmentHistory --> "1" CreatedAt
 
 
 Staff --> "1" Status
