@@ -1,7 +1,7 @@
-# US <US-NUMBER>
+# US 7.2.3
 
 <!-- TOC -->
-- [US <US-NUMBER>](#us-<US-NUMBER>)
+- [US 7.2.3](#us-7.2.3)
   - [1. Context](#1-context)
   - [2. Requirements](#2-requirements)
   - [3. Analysis](#3-analysis)
@@ -20,27 +20,50 @@
 
 ## 1. Context
 
-//TO BE DONE
+This is the first time this US is being worked on.
+It relates to the Doctor.
 
 ## 2. Requirements
 
-**US <US-NUMBER>:** //TO BE DONE
+**US 7.2.3:** As a Doctor, I want to search for Allergies, so that I can use it to update the Patient Medical Record.
 
 **Acceptance Criteria:**
 
-//TO BE DONE
+**US 7.2.3.1:** The functionality must have a Angular UI to comply with the specifications of the US 7.1.1.
+
+**US 7.2.3.2:** The functionality must have an implementation on the .NET server in oder to function correctly.
+
+**US 7.2.3.3:** The functionality must be related to the patient's medical record as it needs to eventually add the searched allergy to the referred document.
+
+**US 7.2.3.4:** The functionality must have a way to cancel the search when the doctor changes their mind, effectively dividing this US's functionality into 2, searching and then possibly adding.
+
+**US 7.2.3.5:** The functionality must implement a rudimentary search system to show the allergies that can be added.
+
+**US 7.2.3.6:** The functionality must not show the already added allergies OR inform the user they already have been added.
 
 **Dependencies/References:**
 
-//TO BE DONE
+**US 7.1.#:** Is dependent on all these US as they pertain to integrating different modules of the system.
+
+**US 7.2.1:** Is dependent on this US because it has the database that will hold all allergies that will be used to search for the desired one.
 
 **Client Clarifications:**
 
-//TO BE DONE
+>Question: None Yet.
+>
+>Answer: None Yet.
 
 ## 3. Analysis
 
-//TO BE DONE
+This User Story asks to implement: 
+
+- Firstly, the back-end implementation of a request that returns a list of allergies from the new MongoDB database that is implemented by the US 7.2.1. 
+
+- Secondly, to implement the front end part of this US, in order to comply with the US's 7.2.3.1 acceptance criteria.  
+
+- Thirdly, to add the possibility to add new allergies and also add them to a patient's medical records.
+
+This User Story will follow the same system as previous USs with the objective to list certain objects.
 
 ## 4. Design
 
