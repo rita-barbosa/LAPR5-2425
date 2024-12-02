@@ -1,0 +1,18 @@
+@startuml
+skinparam classAttributeIconSize 0
+hide empty attributes
+skinparam classBackgroundColor beige
+skinparam ArrowColor #222222
+
+package "<<aggregate Specialization>>"{
+    entity Specialization <<entity>> <<root>> {}
+    class SpecializationDenomination <<(V,#FF8B40)value object>> <<identifier>> {}
+}
+
+RequiredStaff --> "1" Specialization
+
+Staff --> "1" Specialization
+
+Specialization --> "1" SpecializationDenomination
+
+@enduml
