@@ -11,12 +11,13 @@ import { EditStaffProfile } from '../domain/edit-staff';
 import { StaffWithFunction } from '../domain/staff-with-function';
 import { AddTimeSlotsComponent } from '../components/staff/add-time-slots/add-time-slots.component';
 import { AddTimeSlot } from '../domain/add-time-slots';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class StaffService {
-  theServerURL = 'https://localhost:5001/api';
+  theServerURL = environment;
   token = localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')!).token : null;
   httpOptions = {
     headers: new HttpHeaders({

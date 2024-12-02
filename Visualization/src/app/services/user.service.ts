@@ -5,6 +5,7 @@ import { catchError, Observable, of, tap } from 'rxjs';
 import { Router } from '@angular/router';
 import { UserInfo } from '../domain/user-info';
 import { NewPass } from '../domain/NewPass';
+import { environment } from 'src/environments/environment';
 
 interface UserLogin {
   email: string;
@@ -42,7 +43,7 @@ interface ServerResponse {
 })
 
 export class UserService {
-  theServerURL = 'https://localhost:5001/api';
+  theServerURL = environment;
   token = localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')!).token : null;
   httpOptions = {
     headers: new HttpHeaders({

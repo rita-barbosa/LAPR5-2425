@@ -12,7 +12,7 @@ import { RoomSchedule } from '../domain/room-schedule';
 
 export class RoomService {
 
-  theServerURL = 'https://localhost:5001/api';
+  theServerURL = 'environment';
   httpOptions = {
     headers: new HttpHeaders({'Content-Type': 'application/json'})
   };

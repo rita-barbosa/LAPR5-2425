@@ -8,13 +8,14 @@ import { PatientWithId } from '../domain/patient-with-id';
 import { EditPatientProfile } from '../domain/edit-patient-profile';
 import { IdPasser } from '../domain/IdPasser';
 import { Patient } from '../domain/Patient';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class PatientService {
 
-  theServerURL = 'https://localhost:5001/api/Patient';
+  theServerURL = environment + "/Patient"
   token = localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')!).token : null;
   httpOptions = {
     headers: new HttpHeaders({

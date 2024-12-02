@@ -1,7 +1,7 @@
-# US <US-NUMBER>
+# US 7.2.4
 
 <!-- TOC -->
-- [US <US-NUMBER>](#us-<US-NUMBER>)
+- [US 7.2.4](#us-7.2.4)
   - [1. Context](#1-context)
   - [2. Requirements](#2-requirements)
   - [3. Analysis](#3-analysis)
@@ -20,27 +20,48 @@
 
 ## 1. Context
 
-//TO BE DONE
+This is the first time this US is being worked on.
+It relates to the Admin.
 
 ## 2. Requirements
 
-**US <US-NUMBER>:** //TO BE DONE
+**US 7.2.4:** As an Admin, I want to add new Medical Condition, so that the Doctors can use it to update the Patient Medical Record.
 
 **Acceptance Criteria:**
 
-//TO BE DONE
+**US 7.2.4.1:** The functionality must have a Angular UI to comply with the specifications of the US 7.1.1.
+
+**US 7.2.4.2:** The functionality must have an implementation on the .NET server in oder to function correctly.
+
+**US 7.2.4.3:** The functionality must be related to the patient's medical record as it needs to eventually add the searched allergy to the referred document.
+
+**US 7.2.4.4:** The functionality must add the medical condition to the patient's medical record and then inform the user of it's success/failure.
+
+**US 7.2.4.5:** The functionality must not be allowed to add the already added medical conditions. 
 
 **Dependencies/References:**
 
-//TO BE DONE
+**US 7.1.#:** Is dependent on all these US as they pertain to integrating different modules of the system.
+
+**US 7.2.1:** Is dependent on this US because it has the database that will hold all the medical conditions that will be used to search for the desired one.
+
+**US 7.2.5:** Is dependent on this US because it will have the list of medical conditions that can be added. 
 
 **Client Clarifications:**
 
-//TO BE DONE
+>**Question:** The medical condition consist in what? Just a name or are there more fields?
+>
+>**Answer:** It consists of a code (for example following ICD (International Classification of Diseases)), a designation and a longer description as well a list of common symptoms.
 
 ## 3. Analysis
 
-//TO BE DONE
+This User Story asks to implement: 
+
+- Firstly, the back-end implementation of a request that returns a list of medical conditions from the new MongoDB database that is implemented by the US 7.2.1. 
+
+- Secondly, to implement the front end part of this US, in order to comply with the US's 7.2.4.1 acceptance criteria.  
+
+This User Story will follow the same system as previous USs with the objective to add certain objects to the database.
 
 ## 4. Design
 

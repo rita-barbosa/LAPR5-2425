@@ -6,6 +6,7 @@ import { FormsModule, NgForm } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { param } from 'jquery';
 import { NewPass } from '../../../domain/NewPass';
+import { environment } from 'src/environments/environment';
 
 interface ServerResponse {
   message: string;
@@ -39,7 +40,7 @@ export class VerifyStaffComponent {
       const token = this.route.snapshot.queryParamMap.get('token');
 
       if (userId && token) {
-        const url = `https://localhost:5001/api/activate-staff?userId=${encodeURIComponent(userId)}&token=${encodeURIComponent(token)}`;
+        const url = environment + '/activate-staff?userId=${encodeURIComponent(userId)}&token=${encodeURIComponent(token)}';
 
         let newPass: NewPass = {
           newPassword : this.form.newPassword

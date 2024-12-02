@@ -44,7 +44,7 @@ export class AuthService {
     }
 
   CreateUserPatient(email: string, password: string, phoneNumber: string) {
-    const url = 'https://localhost:5001/api/create-patient';
+    const url = environment + '/create-patient';
     let userPatient: UserPatient = {
       email: email,
       password: password,

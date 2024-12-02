@@ -4,6 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { MessageComponent } from '../../message/message.component';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { environment } from 'src/environments/environment';
 
 
 @Component({
@@ -23,7 +24,7 @@ export class PatientAccountDeletionConfirm implements OnInit {
     const token = this.route.snapshot.queryParamMap.get('token');
 
     if (userId && token) {
-      const url = `https://localhost:5001/api/Update-PatientAccountDeletionConfirmation?userId=${encodeURIComponent(userId)}&token=${encodeURIComponent(token)}`;
+      const url = environment + '/Update-PatientAccountDeletionConfirmation?userId=${encodeURIComponent(userId)}&token=${encodeURIComponent(token)}';
 
       this.http.put<{ message: string }>(url, {}).subscribe({
         next: (response) => {
