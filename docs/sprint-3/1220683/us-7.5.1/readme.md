@@ -30,7 +30,8 @@ The camera should instantly move horizontally so that it targets the room center
 
 **Acceptance Criteria:**
 
-- **7.5.1.1.** | ????????????????????????
+- **7.5.1.1.** | This component can be implemented in WebGL, or in a higher-level API such as three.js or Babylon.js.
+- **7.5.1.2.** | The graphical user interface and animations may rely on dedicated APIs such as lil-gui and tween.js, respectively.
 
 **Dependencies/References:**
 
@@ -46,7 +47,7 @@ This feature is related to the existence of a 3D simulation with models (US 6.5.
 ## 3. Analysis
 
 The selection of the room and the response from the simulation is done through Three.js's raycaster (object picking),
-allowing for the intersection of objects. The mouse position is obtained through a event listener, and the camara animation 
+allowing for the intersection of objects. The mouse position is obtained through an event listener, and the camara animation 
 is done using tween.js.
 
 
