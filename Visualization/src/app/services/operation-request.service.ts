@@ -8,6 +8,7 @@ import { ListOperationRequest } from '../domain/list-operation-request';
 import { AddOrRemoveFromPatient } from '../domain/add-or-remove-from-patient';
 import { StaffWithFunction } from '../domain/staff-with-function';
 import { SchedulingBackend } from '../domain/scheduling-backend';
+import { environment } from 'src/environments/environment';
 
 interface UpdateOperationRequest {
   id: string,
@@ -21,7 +22,7 @@ interface UpdateOperationRequest {
   providedIn: 'root'
 })
 export class OperationRequestService {
-  theServerURL = 'https://localhost:5001/api';
+  theServerURL = environment;
   token = localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')!).token : null;
   httpOptions = {
     headers: new HttpHeaders({

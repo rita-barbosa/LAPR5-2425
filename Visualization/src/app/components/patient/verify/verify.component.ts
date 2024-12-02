@@ -5,6 +5,7 @@ import { MessageComponent } from '../../message/message.component';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { param } from 'jquery';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-verify',
@@ -23,7 +24,7 @@ export class ActivationComponent implements OnInit {
     const token = this.route.snapshot.queryParamMap.get('token');
 
     if (userId && token) {
-      const url = `https://localhost:5001/api/activate-patient?userId=${encodeURIComponent(userId)}&token=${encodeURIComponent(token)}`;
+      const url = environment + '/activate-patient?userId=${encodeURIComponent(userId)}&token=${encodeURIComponent(token)}';
 
 
       this.http.put<{ message: string }>(url, {}).subscribe({

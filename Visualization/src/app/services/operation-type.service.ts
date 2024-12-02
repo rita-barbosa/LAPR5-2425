@@ -6,6 +6,7 @@ import { Specialization } from '../domain/specialization';
 import { OperationType } from '../domain/OperationType';
 import { ListOperationType } from '../domain/list-operation-type';
 import { OperationTypeEditEntity } from '../domain/OperationTypeEdit';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +14,7 @@ import { OperationTypeEditEntity } from '../domain/OperationTypeEdit';
 export class OperationTypeService {
   // Proceed with the PUT request to edit the operation type
 
-  theServerURL = 'https://localhost:5001/api';
+  theServerURL = environment;
   token = localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')!).token : null;
   httpOptions = {
     headers: new HttpHeaders({
