@@ -1,7 +1,7 @@
-# US <US-NUMBER>
+# US 7.4.11
 
 <!-- TOC -->
-- [US <US-NUMBER>](#us-<US-NUMBER>)
+- [US 7.4.11](#us-7.4.11)
   - [1. Context](#1-context)
   - [2. Requirements](#2-requirements)
   - [3. Analysis](#3-analysis)
@@ -20,27 +20,43 @@
 
 ## 1. Context
 
-//TO BE DONE
+This is the first time this US is being worked on.
+It relates to the System Administrator.
 
 ## 2. Requirements
 
-**US <US-NUMBER>:** //TO BE DONE
+**US 7.4.11:** As a system administrator, I would like to create a public file share, in SMB/CIFS or NFS format, to speed things up between the various teams.
 
 **Acceptance Criteria:**
 
-//TO BE DONE
+**US 7.4.11.1:** A designated directory on the VM must serve as the shared file location.
+
+**US 7.4.11.2:** The shared directory must have appropriate ownership and permissions to allow team access.
+
+**US 7.4.11.3:** The file share must be accessible to internal network users without requiring credentials for basic access.
+
+**US 7.4.11.4:** Protocol configurations must follow best practices to prevent unauthorized access or data breaches.
 
 **Dependencies/References:**
 
-//TO BE DONE
+**US 7.4.9 and 7.4.10:** They depend on this US as it creates the new type of access to the virtual machine.
 
 **Client Clarifications:**
 
-//TO BE DONE
+>**Question:** None yet.
+>
+>**Answer:** None yet.
 
 ## 3. Analysis
 
-//TO BE DONE
+This User Story will touch topics like:
+
+1. **SMB/CIFS:** Commonly used for file sharing in Windows environments, but also supported on Linux through Samba.
+2. **NFS:** Typically used in Linux and UNIX environments for network file sharing.
+
+As the VM is a Linux system we will use **NFS**.
+
+Although the file share is public, access should be limited to internal networks to prevent unauthorized external access.
 
 ## 4. Design
 
