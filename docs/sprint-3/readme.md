@@ -15,19 +15,19 @@ Here is the updated table with the new data:
 
 | US                                    | Assigned member | Testing member |
 |---------------------------------------|-----------------|----------------|
-| 7.1.1                                 | Ana             | Matilde        |
+| [7.1.1](1221933/us-7.1.1/readme.md)   | Ana             | Matilde        |
 | 7.1.2                                 | Afonso          | Rita           |
 | [7.1.3](1220683/us-7.1.3/readme.md)   | Matilde         | Ana            |
-| 7.1.4                                 | Ana             | Matilde        |
+| [7.1.4](1221933/us-7.1.4/readme.md)   | Ana             | Matilde        |
 | 7.1.5                                 | Todos           | --             |
 | 7.2.1                                 | Rita            | Afonso         |
 | [7.2.2](1220683/us-7.2.2/readme.md)   | Matilde         | Ana            |
 | 7.2.3                                 | Afonso          | Rita           |
 | 7.2.4                                 | Afonso          | Rita           |
 | [7.2.5](1220683/us-7.2.5/readme.md)   | Matilde         | Ana            |
-| 7.2.6                                 | Ana             | Matilde        |
-| 7.2.7                                 | Ana             | Matilde        |
-| 7.2.8                                 | Ana             | Matilde        |
+| [7.2.6](1221933/us-7.2.6/readme.md)   | Ana             | Matilde        |
+| [7.2.7](1221933/us-7.2.7/readme.md)   | Ana             | Matilde        |
+| [7.2.8](1221933/us-7.2.8/readme.md)   | Ana             | Matilde        |
 | 7.2.9                                 | Afonso          | Rita           |
 | 7.2.10                                | Rita            | Afonso         |
 | [7.2.11](1220683/us-7.2.11/readme.md) | Matilde         | Ana            |
@@ -39,19 +39,19 @@ Here is the updated table with the new data:
 | [7.3.2](us-7.3.2/readme.md)           | Afonso/Rita     | Afonso         |
 | 7.3.3                                 | Todos           | --             |
 | [7.4.1](1220683/us-7.4.1/readme.md)   | Matilde         | Ana            |
-| 7.4.2                                 | Ana             | Matilde        |
+| [7.4.2](1221933/us-7.4.2/readme.md)   | Ana             | Matilde        |
 | 7.4.3                                 | Afonso          | Rita           |
 | 7.4.4                                 | Rita            | Afonso         |
 | 7.4.5                                 | Rita            | Afonso         |
 | [7.4.6](1220683/us-7.4.6/readme.md)   | Matilde         | Ana            |
-| 7.4.7                                 | Ana             | Matilde        |
-| 7.4.8                                 | Ana             | Matilde        |
+| [7.4.7](1221933/us-7.4.7/readme.md)   | Ana             | Matilde        |
+| [7.4.8](1221933/us-7.4.8/readme.md)   | Ana             | Matilde        |
 | 7.4.9                                 | Rita            | Afonso         |
 | 7.4.10                                | Afonso          | Rita           |
 | 7.4.11                                | Afonso          | Rita           |
 | [7.4.12](1220683/us-7.4.12/readme.md) | Matilde         | Ana            |
 | [7.5.1](1220683/us-7.5.1/readme.md)   | Matilde         | Ana            |
-| 7.5.2                                 | Ana             | Matilde        |
+| [7.5.2](1221933/us-7.5.2/readme.md)   | Ana             | Matilde        |
 | [7.5.4](us-7.5.4/readme.md)           | Afonso/Rita     | Rita           |
 | 7.6.1                                 | Todos           | --             |
 | 7.6.2                                 | Todos           | --             |
