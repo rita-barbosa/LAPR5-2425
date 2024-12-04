@@ -21,31 +21,28 @@ This is the first time this US is being worked on.
 
 ## 2. Requirements
 
-**US 7.4.8:**
+**US 7.4.8:** As the organisation's administrator, I want access management to be implemented that meets the appropriate
+security criteria
 
 **Acceptance Criteria:**
 
-**US 7.4.8.1:**
+**US 7.4.8.1:** Access management must ensure that only authorized users can access the system based on their roles and permissions.
 
-**US 7.4.8.2:**
-
-**US 7.4.8.3:**
+**US 7.4.8.2:** The solution must comply with the organization's security policies and industry standards.
 
 
 **Dependencies/References:**
 
-**US 7.1.#:**
-
-**Client Clarifications:**
-
->**Question:**
->
->**Answer**:
+This user story does not have dependencies.
 
 
 ## 3. Analysis
 
-//TO BE DONE
+This user story aims to implement robust access management to secure the system. The solution must enforce role-based access 
+control (RBAC), ensuring users can only access what their roles permit.
+
+Some important considerations include defining roles and permissions, preventing unauthorized access, and ensuring 
+compliance with relevant security criteria.
 
 ## 4. Design
 
