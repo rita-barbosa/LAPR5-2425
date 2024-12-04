@@ -14,7 +14,7 @@ import { environment } from 'src/environments/environment';
 export class OperationTypeService {
   // Proceed with the PUT request to edit the operation type
 
-  theServerURL = environment;
+  theServerURL = environment.serverBaseUrl;
   token = localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')!).token : null;
   httpOptions = {
     headers: new HttpHeaders({

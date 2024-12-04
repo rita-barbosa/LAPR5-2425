@@ -15,7 +15,7 @@ import { environment } from 'src/environments/environment';
 })
 export class PatientService {
 
-  theServerURL = environment + "/Patient"
+  theServerURL = environment.serverBaseUrl + "/Patient"
   token = localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')!).token : null;
   httpOptions = {
     headers: new HttpHeaders({

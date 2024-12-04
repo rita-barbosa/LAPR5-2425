@@ -17,7 +17,7 @@ import { environment } from 'src/environments/environment';
   providedIn: 'root'
 })
 export class StaffService {
-  theServerURL = environment;
+  theServerURL = environment.serverBaseUrl;
   token = localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')!).token : null;
   httpOptions = {
     headers: new HttpHeaders({

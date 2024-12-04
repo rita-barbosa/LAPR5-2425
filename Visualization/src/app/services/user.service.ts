@@ -43,7 +43,7 @@ interface ServerResponse {
 })
 
 export class UserService {
-  theServerURL = environment;
+  theServerURL = environment.serverBaseUrl;
   token = localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')!).token : null;
   httpOptions = {
     headers: new HttpHeaders({

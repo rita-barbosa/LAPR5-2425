@@ -4,6 +4,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { catchError, Observable, of, tap } from 'rxjs';
 import { Room } from '../domain/room';
 import { RoomSchedule } from '../domain/room-schedule';
+import { environment } from 'src/environments/environment';
 
 
 @Injectable({
@@ -12,7 +13,7 @@ import { RoomSchedule } from '../domain/room-schedule';
 
 export class RoomService {
 
-  theServerURL = 'environment';
+  theServerURL = environment.serverBaseUrl;
   httpOptions = {
     headers: new HttpHeaders({'Content-Type': 'application/json'})
   };

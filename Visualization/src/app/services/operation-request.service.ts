@@ -22,7 +22,7 @@ interface UpdateOperationRequest {
   providedIn: 'root'
 })
 export class OperationRequestService {
-  theServerURL = environment;
+  theServerURL = environment.serverBaseUrl;
   token = localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')!).token : null;
   httpOptions = {
     headers: new HttpHeaders({
