@@ -35,20 +35,18 @@ package "<<aggregate MedicalRecord>>" {
     class MedicalRecordDescription <<(V,#FF8B40)value object>> <<identifier>> {}
 }
 
-
-
 package "<<aggregate MedicalCondition>>" {
     entity MedicalCondition <<entity>><<root>>{}
-    class MedicalConditionDesignation <<(V,#FF8B40)value object>> <<identifier>> {}
+    class MedicalConditionDesignation <<(V,#FF8B40)value object>>  {}
     class MedicalConditionCode <<(V,#FF8B40)value object>> <<identifier>> {}
-    class MedicalConditionDescription <<(V,#FF8B40)value object>> <<identifier>> {}
+    class MedicalConditionDescription <<(V,#FF8B40)value object>>  {}
 }
 
 package "<<aggregate Allergy>>" {
     entity Allergy <<entity>><<root>>{}
-    class AllergyDesignation <<(V,#FF8B40)value object>> <<identifier>> {}
+    class AllergyDesignation <<(V,#FF8B40)value object>> {}
     class AllergyCode <<(V,#FF8B40)value object>> <<identifier>> {}
-    class AllergyDescription <<(V,#FF8B40)value object>> <<identifier>> {}
+    class AllergyDescription <<(V,#FF8B40)value object>>  {}
 }
 
 package "<<aggregate Staff>>" {
@@ -106,18 +104,24 @@ package "<<aggregate Appointment>>"{
 
 package "<<aggregate Specialization>>"{
     entity Specialization <<entity>> <<root>> {}
-    class SpecializationDenomination <<(V,#FF8B40)value object>> <<identifier>> {}
+    class SpecializationDenomination <<(V,#FF8B40)value object>> {}
     class SpecializationCode <<(V,#FF8B40)value object>> <<identifier>> {}
-    class SpecializationDescription <<(V,#FF8B40)value object>> <<identifier>> {}
+    class SpecializationDescription <<(V,#FF8B40)value object>>  {}
 }
 
 package "<<aggregate Room>>"{
     entity Room <<entity>> <<root>> {}
     class RoomNumber <<(V,#FF8B40)value object>> <<identifier>> {}
-    class RoomType <<(V,#FF8B40)value object>>  {}
     class Capacity <<(V,#FF8B40)value object>>  {}
     class CurrentStatus <<(V,#FF8B40)value object>>  {}
     class AvailableEquipment <<(V,#FF8B40)value object>>  {}
+}
+
+package "<<aggregate RoomType>>" {
+    entity RoomType <<entity>> <<root>> {}
+    class RoomTypeCode <<(V,#FF8B40)value object>> <<identifier>> {}
+    class RoomTypeDesignation <<(V,#FF8B40)value object>>  {}
+    class RoomTypeDescription <<(V,#FF8B40)value object>>  {}
 }
 
 package "<<aggregate>> User" {
@@ -152,6 +156,10 @@ Room --> "1" Capacity
 Room --> "1" CurrentStatus
 Room --> "1" AvailableEquipment
 Room --> "0..*" Slot
+
+RoomType --> "1" RoomTypeCode
+RoomType --> "1" RoomTypeDesignation
+RoomType --> "0..1" RoomTypeDescription
 
 Appointment -> "1" Room
 
@@ -242,7 +250,7 @@ Slot --> "1" Date
 Slot --> "1" TimeInterval
 
 MedicalRecord --> "0..*" MedicalCondition
-MedicalRecord --> "0..*" Allergy
+MedicalRecord ---> "0..*" Allergy
 MedicalRecord -> MedicalRecordDescription
 Doctor ---> "0..*" MedicalRecord
 
