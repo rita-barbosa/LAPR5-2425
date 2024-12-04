@@ -21,31 +21,31 @@ This is the first time this US is being worked on.
 
 ## 2. Requirements
 
-**US 7.4.2:**
+**US 7.4.2:** As the organisation's administrator, I want to be presented with a justification for the change(s) to be 
+made to the infrastructure in order to ensure a MTD(Maximum Tolerable Downtime) of 20 minutes.
 
 **Acceptance Criteria:**
 
-**US 7.4.2.1:**
+**US 7.4.2.1:** The justification must outline the specific infrastructure changes required to achieve an MTD of 20 minutes.
 
-**US 7.4.2.2:**
+**US 7.4.2.2:** The justification must include technical, operational, and cost considerations for the proposed changes.
 
-**US 7.4.2.3:**
+**US 7.4.2.3:** The document must provide evidence or analysis demonstrating how the proposed changes will meet the MTD 
+requirement.
 
 
 **Dependencies/References:**
 
-**US 7.1.#:**
-
-**Client Clarifications:**
-
->**Question:**
->
->**Answer**:
-
+This user story does not have dependencies.
 
 ## 3. Analysis
 
-//TO BE DONE
+The main objective of this user story is to ensure the organization’s infrastructure changes align with achieving an MTD
+of 20 minutes. This requires identifying weaknesses in the current setup, proposing targeted solutions, and providing 
+clear justifications for these changes.
+
+Key considerations include evaluating system reliability, redundancy, and recovery mechanisms. Cost, resource impact, 
+and operational feasibility must also be addressed to ensure the proposal is actionable and aligns with organizational goals.
 
 ## 4. Design
 
