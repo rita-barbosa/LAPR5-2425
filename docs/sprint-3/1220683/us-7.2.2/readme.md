@@ -32,7 +32,7 @@
 
 **Acceptance Criteria:**
 
-- **7.2.2.1.** | ????????????????????????
+- **7.2.2.1.** | The code identifying the Allergy must follow SNOMED CT or ICD-11 formats.
 
 **Dependencies/References:**
 
@@ -40,19 +40,25 @@ This feature is related to the existence of a patient profile (US 5.1.8) and a p
 
 **Client Clarifications:**
 
-> **Question:** 
+> **Question:** What information is to be known in an Allergy? Like designation, and anything more?
 >
-> **Answer:** 
-
+> **Answer:** It consists of a code (for instance, SNOMED CT (Systematized Nomenclature of Medicine - Clinical Terms) or ICD-11 (International Classification of Diseases, 11th Revision)), a designation and an optional longer description.
 
 ## 3. Analysis
 
-> TBD
+Allergies are conditions that a patient has, and those must be registered in the Patient Medical Record. The following
+information must be given to register an allergy into the system:
+
+* Code (SNOMED CT or ICD-11)
+* Designation
+* Description (optional)
 
 
 ### Domain Model
 
-> TBD
+![domain-model.svg](domain-model.svg)
+
+**Observation:** MRN refers to the medical record number.
 
 ## 4. Design
 

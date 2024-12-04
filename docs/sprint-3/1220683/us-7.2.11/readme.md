@@ -32,7 +32,7 @@
 
 **Acceptance Criteria:**
 
-No criteria.
+- **7.2.11.1.** | The code identifying the Allergy must follow SNOMED CT formats.
 
 **Dependencies/References:**
 
