@@ -24,13 +24,31 @@ package "<<aggregate>> Patient" {
     class Gender <<(V,#FF8B40)value object>> {}
     class EmergencyContact <<(V,#FF8B40)value object>> {}
     class MRN <<(V,#FF8B40)value object>> <<identifier>> {}
-    class MedicalRecord <<(V,#FF8B40)value object>> {}
-    class Allergy <<(V,#FF8B40)value object>> {}
-    class MedicalCondition <<(V,#FF8B40)value object>> {}
     class AppointmentHistory <<(V,#FF8B40)value object>> {}
     class AppointmentHistoryStatus <<(V,#FF8B40)value object>> {}
     class AppointmentHistoryType <<(V,#FF8B40)value object>> {}
     class CreatedAt <<(V,#FF8B40)value object>> {}
+}
+
+package "<<aggregate MedicalRecord>>" {
+    entity MedicalRecord <<entity>><<root>>{}
+    class MedicalRecordDescription <<(V,#FF8B40)value object>> <<identifier>> {}
+}
+
+
+
+package "<<aggregate MedicalCondition>>" {
+    entity MedicalCondition <<entity>><<root>>{}
+    class MedicalConditionDesignation <<(V,#FF8B40)value object>> <<identifier>> {}
+    class MedicalConditionCode <<(V,#FF8B40)value object>> <<identifier>> {}
+    class MedicalConditionDescription <<(V,#FF8B40)value object>> <<identifier>> {}
+}
+
+package "<<aggregate Allergy>>" {
+    entity Allergy <<entity>><<root>>{}
+    class AllergyDesignation <<(V,#FF8B40)value object>> <<identifier>> {}
+    class AllergyCode <<(V,#FF8B40)value object>> <<identifier>> {}
+    class AllergyDescription <<(V,#FF8B40)value object>> <<identifier>> {}
 }
 
 package "<<aggregate Staff>>" {
@@ -89,6 +107,8 @@ package "<<aggregate Appointment>>"{
 package "<<aggregate Specialization>>"{
     entity Specialization <<entity>> <<root>> {}
     class SpecializationDenomination <<(V,#FF8B40)value object>> <<identifier>> {}
+    class SpecializationCode <<(V,#FF8B40)value object>> <<identifier>> {}
+    class SpecializationDescription <<(V,#FF8B40)value object>> <<identifier>> {}
 }
 
 package "<<aggregate Room>>"{
@@ -189,9 +209,7 @@ Patient --> "1" DateBirth
 Patient --> "1" Gender
 Patient ---> "1" EmergencyContact
 Patient --> "1" MRN
-Patient --> "1" MedicalRecord
-MedicalRecord --> "0..*" MedicalCondition
-MedicalRecord --> "0..*" Allergy
+Patient -> "1" MedicalRecord
 MedicalRecord --> "1" AppointmentHistory
 Patient --> "0..*" AppointmentHistory
 Patient --> "1" Email
@@ -217,7 +235,23 @@ Staff --> "1" Specialization
 Staff -> "1" User
 
 Specialization --> "1" SpecializationDenomination
+Specialization --> "1" SpecializationCode
+Specialization --> "0..1" SpecializationDescription
+
 Slot --> "1" Date
 Slot --> "1" TimeInterval
+
+MedicalRecord --> "0..*" MedicalCondition
+MedicalRecord --> "0..*" Allergy
+MedicalRecord -> MedicalRecordDescription
+Doctor ---> "0..*" MedicalRecord
+
+Allergy --> "1" AllergyCode
+Allergy --> "0..1" AllergyDescription
+Allergy --> "1" AllergyDesignation
+
+MedicalCondition --> "1" MedicalConditionCode
+MedicalCondition --> "0..1" MedicalConditionDescription
+MedicalCondition --> "1" MedicalConditionDesignation
 
 @enduml
