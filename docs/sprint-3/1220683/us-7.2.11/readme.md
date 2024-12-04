@@ -32,7 +32,7 @@
 
 **Acceptance Criteria:**
 
-- **7.2.11.1.** | ????????????????????????
+No criteria.
 
 **Dependencies/References:**
 
@@ -40,19 +40,26 @@ This feature is related to the existence of an operation type (US 5.1.20).
 
 **Client Clarifications:**
 
-> **Question:** 
+> **Question:** The Specialization consist in what? Just a name or are there more fields?
 >
-> **Answer:** 
+> **Answer:** A specialization has a code (for example, based on SNOMED CT (Systematized Nomenclature of Medicine - Clinical Terms)), a designation and an optional longer description.
 
 
 ## 3. Analysis
 
-> TBD
+Specializations define the area of which a staff is the most proficient in. Through specialization, one can understand what
+staff is required for an operation type, so when scheduling one operation/assigning staff, that factor must be taken into
+consideration.
 
+What defines a specialization is:
+
+* Code (can be based on SNOMED CT (Systematized Nomenclature of Medicine - Clinical Terms))
+* Denomination
+* Description (optional)
 
 ### Domain Model
 
-> TBD
+![domain-model.svg](domain-model.svg)
 
 ## 4. Design
 

@@ -32,7 +32,7 @@
 
 **Acceptance Criteria:**
 
-- **7.2.14.1.** | ????????????????????????
+> No criteria.
 
 **Dependencies/References:**
 
@@ -40,21 +40,38 @@ This feature is related to the existence of a patient profile (US 5.1.8).
 
 **Client Clarifications:**
 
-> **Question:** 
+> **Question:** Can you give an example of a Patient's medical record?
 >
-> **Answer:** 
+> **Answer:** Since this system is mostly concerned with surgery, the medical record information is mostly free text. (see: [patient medical record example](patient-record-example.md))
+
+> **Question:** "As a Doctor, I want to include the access of the Patient Medical Record during the patient profile visualization and management, so that I manage it in that context." This US implies that the Doctor has access to the patient profile management functionalities, but those functionalities are assigned to the Admin according to the previous Sprint. Should we give the Doctor those permissions too?
+>
+> **Answer:** For clarification, the Admin will be able to manage the user profile (as of sprint A) while the doctor will be able to manage the medical history/medical record. Treat those as two separate responsibilities by two different user roles. Keep in mind that during Sprint A, the medical record was a free text field, and now we are adding a "full-fledged" medical record management feature.
 
 
 ## 3. Analysis
 
 The patient medical record has the patient's profile information, its appointment history and allergies. This profile
-should be accessible to doctors. This file can be edited but not removed unless the patient decided to delete its account.
+should be accessible to doctors through a list with each entry referring to a patient. This file can be edited but not 
+removed unless the patient decided to delete its account.
 
-The [linked document](patient-record-example.txt) is an example of a patient medical record provided by the client.
+The [linked document](patient-record-example.md) is an example of a patient medical record provided by the client.
+Another [file](medical-record-conditions-example.md) acts as a reference for the patient medical record medical conditions.
+
+Taking this into consideration, the following points define the new structure of the Patient Medical Record:
+
+> * Patient Information
+> * Medical History
+>   * Allergies
+>   * Medical Conditions
+> * Appointment History
+> * Additional space for observations (free text)
 
 ### Domain Model
 
-> TBD
+![domain-model.svg](domain-model.svg)
+
+**Observation:** MRN refers to the medical record number.
 
 ## 4. Design
 
