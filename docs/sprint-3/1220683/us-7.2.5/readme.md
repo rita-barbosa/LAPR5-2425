@@ -32,7 +32,12 @@
 
 **Acceptance Criteria:**
 
-- **7.2.5.1.** | ????????????????????????
+**US 7.2.5.1:** The functionality must have a way to cancel the search when the doctor changes their mind, effectively
+dividing this US's functionality into 2, searching and then possibly adding.
+
+**US 7.2.5.2:** The functionality must implement a rudimentary search system to show the medical conditions that can be added.
+
+**US 7.2.5.3:** The functionality must not show the already added medical conditions OR inform the user they already have been added.
 
 **Dependencies/References:**
 
@@ -40,19 +45,24 @@ This feature is related to the existence of a patient profile (US 5.1.8) and a p
 
 **Client Clarifications:**
 
-> **Question:** 
+> **Question:** What do you define as Medical Condition? Is it an allergy?
 >
-> **Answer:** 
+> **Answer:** They are two different things. A Medical Condition represents a diagnosed health issue or disease. Examples: Diabetes, Hypertension, Asthma, etc.
 
 
 ## 3. Analysis
 
-> TBD
+When a doctor is looking through a patient's medical record, he has the possibility of updating it. One of the areas that
+is subject to change is the one regarding medical conditions.
 
+The search for medical conditions will be integrated in the patient medical record update. This search will be used to add
+medical conditions to the medical record.
+
+Regarding backend, a method will be needed to retrieve all the medical conditions that are persisted within the database.
 
 ### Domain Model
 
-> TBD
+![domain-model.svg](domain-model.svg)
 
 ## 4. Design
 
