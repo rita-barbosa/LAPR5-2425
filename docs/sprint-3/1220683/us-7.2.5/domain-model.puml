@@ -1,7 +1,8 @@
 @startuml
-'https://plantuml.com/class-diagram
-
-title "US 7.2.6 - Domain Model"
+skinparam classAttributeIconSize 0
+hide empty attributes
+skinparam classBackgroundColor beige
+skinparam ArrowColor #222222
 
 package "<<aggregate>> Patient" {
     entity Patient <<entity>> <<root>> {}
@@ -28,20 +29,11 @@ package "<<aggregate MedicalRecord>>" {
     class MedicalRecordDescription <<(V,#FF8B40)value object>> <<identifier>> {}
 }
 
-
-
 package "<<aggregate MedicalCondition>>" {
     entity MedicalCondition <<entity>><<root>>{}
-    class MedicalConditionDesignation <<(V,#FF8B40)value object>> <<identifier>> {}
+    class MedicalConditionDesignation <<(V,#FF8B40)value object>>  {}
     class MedicalConditionCode <<(V,#FF8B40)value object>> <<identifier>> {}
-    class MedicalConditionDescription <<(V,#FF8B40)value object>> <<identifier>> {}
-}
-
-package "<<aggregate Allergy>>" {
-    entity Allergy <<entity>><<root>>{}
-    class AllergyDesignation <<(V,#FF8B40)value object>> <<identifier>> {}
-    class AllergyCode <<(V,#FF8B40)value object>> <<identifier>> {}
-    class AllergyDescription <<(V,#FF8B40)value object>> <<identifier>> {}
+    class MedicalConditionDescription <<(V,#FF8B40)value object>>  {}
 }
 
 package "<<aggregate Doctor>>" {
@@ -54,34 +46,26 @@ Name -> LastName
 Name --> FullName
 
 Patient -> "1" Status
-Patient ---> "1" Name
+Patient -> "1" Name
 Patient --> "1" DateBirth
 Patient --> "1" Gender
-Patient --> "1" EmergencyContact
+Patient ---> "1" EmergencyContact
 Patient --> "1" MRN
-Patient --> "1" MedicalRecord
-MedicalRecord --> "0..*" MedicalCondition
-MedicalRecord --> "0..*" Allergy
+Patient -> "1" MedicalRecord
 MedicalRecord --> "1" AppointmentHistory
 Patient --> "0..*" AppointmentHistory
-Patient --> "0..1" MedicalCondition
 Patient --> "1" Email
-Patient -> "1" Phone
+Patient --> "1" Phone
 Patient --> "1" Address
-EmergencyContact -> "1" Phone
+EmergencyContact --> "1" Phone
 
 AppointmentHistory --> "1" AppointmentHistoryStatus
 AppointmentHistory --> "1" AppointmentHistoryType
 AppointmentHistory --> "1" CreatedAt
 
 MedicalRecord --> "0..*" MedicalCondition
-MedicalRecord --> "0..*" Allergy
 MedicalRecord -> MedicalRecordDescription
 Doctor ---> "0..*" MedicalRecord
-
-Allergy --> "1" AllergyCode
-Allergy --> "0..1" AllergyDescription
-Allergy --> "1" AllergyDesignation
 
 MedicalCondition --> "1" MedicalConditionCode
 MedicalCondition --> "0..1" MedicalConditionDescription

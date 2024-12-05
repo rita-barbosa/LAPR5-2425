@@ -1,8 +1,7 @@
 @startuml
-skinparam classAttributeIconSize 0
-hide empty attributes
-skinparam classBackgroundColor beige
-skinparam ArrowColor #222222
+'https://plantuml.com/class-diagram
+
+title "US 7.3.1 - Domain Model"
 
 class Name <<(V,#FF8B40)value object>> {}
 
@@ -17,6 +16,7 @@ class Date <<(V,#FF8B40)value object>> {}
 class TimeInterval <<(V,#FF8B40)value object>> {}
 class Function <<(V,#FF8B40)value object>>  {}
 class Status <<(V,#FF8B40)value object>> {}
+
 
 package "<<aggregate>> Patient" {
     entity Patient <<entity>> <<root>> {}
@@ -74,26 +74,16 @@ package "<<aggregate OperationType>>"{
     entity OperationType <<entity>> <<root>> {}
     class OperationTypeId <<(V,#FF8B40)value object>> <<identifier>> {}
     class RequiredStaff <<entity>>  {}
+    class EstimatedDuration <<(V,#FF8B40)value object>>  {}
+    class Phase <<(V,#FF8B40)value object>>  {}
+    class PhaseDuration <<(V,#FF8B40)value object>>  {}
+    class PhaseDescription <<(V,#FF8B40)value object>> {}
+    class OperationTypeStatus <<(V,#FF8B40)value object>> {}
+    class OperationTypeName <<(V,#FF8B40)value object>>  {}
+    class NumberStaff <<(V,#FF8B40)value object>>  {}
 }
 
-' Shared Value Objects with Operation Type Record
-class EstimatedDuration <<(V,#FF8B40)value object>>  {}
-class Phase <<(V,#FF8B40)value object>>  {}
-class PhaseDuration <<(V,#FF8B40)value object>>  {}
-class PhaseDescription <<(V,#FF8B40)value object>> {}
-class OperationTypeStatus <<(V,#FF8B40)value object>> {}
-class OperationTypeName <<(V,#FF8B40)value object>>  {}
-class NumberStaff <<(V,#FF8B40)value object>>  {}
 
-
-
-package "<<aggregate OperationTypeHistory>>"{
-    entity OperationTypeRecord <<entity>> <<root>> {}
-    class OperationTypeRecordId <<(V,#FF8B40)value object>> <<identifier>> {}
-    class EffectiveDate <<(V,#FF8B40)value object>>  {}
-    class OperationTypeRecordVersion <<(V,#FF8B40)value object>>  {}
-    class RequiredStaffRecord <<(V,#FF8B40)value object>>   {}
-}
 
 package "<<aggregate Appointment>>"{
     entity Appointment <<entity>> <<root>> {}
@@ -104,45 +94,18 @@ package "<<aggregate Appointment>>"{
 
 package "<<aggregate Specialization>>"{
     entity Specialization <<entity>> <<root>> {}
-    class SpecializationDenomination <<(V,#FF8B40)value object>> {}
-    class SpecializationCode <<(V,#FF8B40)value object>> <<identifier>> {}
-    class SpecializationDescription <<(V,#FF8B40)value object>>  {}
+    class SpecializationDenomination <<(V,#FF8B40)value object>> <<identifier>> {}
 }
 
 package "<<aggregate Room>>"{
     entity Room <<entity>> <<root>> {}
     class RoomNumber <<(V,#FF8B40)value object>> <<identifier>> {}
+    class RoomType <<(V,#FF8B40)value object>>  {}
     class Capacity <<(V,#FF8B40)value object>>  {}
     class CurrentStatus <<(V,#FF8B40)value object>>  {}
     class AvailableEquipment <<(V,#FF8B40)value object>>  {}
 }
 
-package "<<aggregate RoomType>>" {
-    entity RoomType <<entity>> <<root>> {}
-    class RoomTypeCode <<(V,#FF8B40)value object>> <<identifier>> {}
-    class RoomTypeDesignation <<(V,#FF8B40)value object>>  {}
-    class RoomTypeDescription <<(V,#FF8B40)value object>>  {}
-}
-
-package "<<aggregate>> User" {
-    entity User <<entity>> <<root>>
-    class Username <<(V,#FF8B40) value object>> <<identifier>>
-    class Role <<(V,#FF8B40) value object>>
-}
-
-package "<<aggregate>> Log" {
-    entity Log <<entity>> <<root>>
-    class Change <<(V,#FF8B40) value object>>
-}
-
-Log ---> "1" Date
-Log ---> "1" Change
-Log ---> "1" User
-
-User -> "1" Status
-User --> Username
-User ----> Email
-User --> Role
 
 Doctor -> "1" Staff
 
@@ -157,10 +120,6 @@ Room --> "1" CurrentStatus
 Room --> "1" AvailableEquipment
 Room --> "0..*" Slot
 
-RoomType --> "1" RoomTypeCode
-RoomType --> "1" RoomTypeDesignation
-RoomType --> "0..1" RoomTypeDescription
-
 Appointment -> "1" Room
 
 OperationType --> "1" OperationTypeId
@@ -174,23 +133,6 @@ OperationType ---> "1" EstimatedDuration
 OperationType ---> "3" Phase
 Phase --> "1" PhaseDuration
 Phase --> "1" PhaseDescription
-
-
-OperationTypeRecord --> "1" OperationType
-OperationTypeRecord --> "1" OperationTypeRecordId
-OperationTypeRecord --> "1" OperationTypeRecordVersion
-OperationTypeRecord --> "1" EffectiveDate
-OperationTypeRecord --> "1" OperationTypeStatus
-OperationTypeRecord --> "1" OperationTypeName
-OperationTypeRecord --> "1..*" RequiredStaffRecord
-OperationTypeRecord --> "1" EstimatedDuration
-OperationTypeRecord --> "3" Phase
-OperationTypeRecord --> "1" PhaseDuration
-OperationTypeRecord --> "1" PhaseDescription
-OperationTypeRecord --> "1" RequiredStaffRecord
-RequiredStaffRecord --> "1" NumberStaff
-RequiredStaffRecord --> "1" Function
-RequiredStaffRecord --> "1" SpecializationDenomination
 
 
 
@@ -217,13 +159,14 @@ Patient --> "1" DateBirth
 Patient --> "1" Gender
 Patient ---> "1" EmergencyContact
 Patient --> "1" MRN
-Patient -> "1" MedicalRecord
+Patient --> "1" MedicalRecord
+MedicalRecord --> "0..*" MedicalCondition
+MedicalRecord --> "0..*" Allergy
 MedicalRecord --> "1" AppointmentHistory
 Patient --> "0..*" AppointmentHistory
 Patient --> "1" Email
 Patient --> "1" Phone
 Patient --> "1" Address
-Patient---> "0..1" User
 EmergencyContact --> "1" Phone
 
 AppointmentHistory --> "1" AppointmentHistoryStatus
@@ -240,12 +183,8 @@ Staff --> "1" Address
 Staff --> "1" LicenseNumber
 Staff ---> "0..*" Slot
 Staff --> "1" Specialization
-Staff -> "1" User
 
 Specialization --> "1" SpecializationDenomination
-Specialization --> "1" SpecializationCode
-Specialization --> "0..1" SpecializationDescription
-
 Slot --> "1" Date
 Slot --> "1" TimeInterval
 

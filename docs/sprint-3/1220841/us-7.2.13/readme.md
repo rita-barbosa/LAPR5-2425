@@ -22,33 +22,34 @@
 
 ## 1. Context
 
-//TO BE DONE
+This user story is being implemented for the first time.
 
 ## 2. Requirements
 
-**US 7.2.13:** //TO BE DONE
+**US 7.2.13:** As an Admin, I want to edit Specializations, so that I can update or correct information about the staff and operation type (procedure).
 
 **Acceptance Criteria:**
 
-- 7.2.13.1: //todo 
+- 7.2.13.1: Only the designation and description can be edited, still following the requirements.
 
 **Dependencies/References:**
 
-//TO BE DONE
-
-**Client Clarifications:**
-
-> **Question:** 
->
-> **Answer:** 
+This user story depends on [7.2.11](../../1220683/us-7.2.11/readme.md), as that user story is responsible for creating specializations.
 
 ## 3. Analysis
 
-//TO BE DONE
+This functionality allows the admin to edit the available specializations, with only the following fields being editable:  
+
+- Designation  
+- Description  
+
+To achieve this, all specializations must be listed, allowing the admin to select one. Once a specialization is chosen, the edit option becomes available, enabling the admin to input updated information.  
+
+Afterward, the system will update the details for the selected specialization. Notably, updating both attributes is optional.
 
 ### Domain Model
 
-![Domain Model]()
+![Domain Model](diagrams/domain-model.svg)
 
 ## 4. Design
 

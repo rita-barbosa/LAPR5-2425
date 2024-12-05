@@ -5,7 +5,6 @@
   - [1. Context](#1-context)
   - [2. Requirements](#2-requirements)
   - [3. Analysis](#3-analysis)
-    - [Domain Model](#domain-model)
   - [4. Design](#4-design)
     - [4.1. Realization](#41-realization)
       - [Logical View](#logical-view)
@@ -22,33 +21,29 @@
 
 ## 1. Context
 
-//TO BE DONE
+This user story is being implemented for the first time.
 
 ## 2. Requirements
 
-**US 7.2.15:** //TO BE DONE
+**US 7.2.15:** As an Admin, I want to list/search Specializations, so that I can see the details, and edit and remove Specializations.
 
 **Acceptance Criteria:**
 
-- 7.2.15.1: //todo 
+- 7.2.15.1: All the specializations must be listed.
+- 7.2.15.2: All the information of the specializations must be shown.
 
 **Dependencies/References:**
 
-//TO BE DONE
-
-**Client Clarifications:**
-
-> **Question:** 
->
-> **Answer:** 
+This user story depends on [7.2.11](../../1220683/us-7.2.11/readme.md), as that user story is responsible for creating specializations, and [7.2.13](../us-7.2.13/readme.md) where the specializations can be edited.
 
 ## 3. Analysis
 
-//TO BE DONE
+In this user story, the admin can view a list of specializations available in the system and choose one to either edit or remove.
+While listing, they will be able to view all the details of each specialization.
 
 ### Domain Model
 
-![Domain Model]()
+![Domain Model](diagrams/domain-model.svg)
 
 ## 4. Design
 

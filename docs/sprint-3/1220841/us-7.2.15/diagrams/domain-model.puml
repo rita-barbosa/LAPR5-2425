@@ -4,6 +4,7 @@ hide empty attributes
 skinparam classBackgroundColor beige
 skinparam ArrowColor #222222
 
+
 package "<<aggregate Specialization>>"{
     entity Specialization <<entity>> <<root>> {}
     class SpecializationDenomination <<(V,#FF8B40)value object>> {}

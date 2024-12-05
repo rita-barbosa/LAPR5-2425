@@ -53,7 +53,6 @@ information must be given to register an allergy into the system:
 * Designation
 * Description (optional)
 
-
 ### Domain Model
 
 ![domain-model.svg](domain-model.svg)

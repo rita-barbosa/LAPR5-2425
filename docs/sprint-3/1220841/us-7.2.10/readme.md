@@ -19,36 +19,50 @@
   - [6. Testing](#6-testing)
 <!-- TOC -->
 
-
 ## 1. Context
 
 //TO BE DONE
 
 ## 2. Requirements
 
-**US 7.2.10:** //TO BE DONE
+**US 7.2.10:** As an Admin, I want to add new types of rooms, so that I can reflect on the available medical procedures in the system.
 
 **Acceptance Criteria:**
 
-- 7.2.10.1: //todo 
+- 7.2.10.1: A room type must have an internal code, a designation, an optional longer description and an indicator if the room is suitable for surgeries.
+- 7.2.10.2: The code is entered by the admin.
+- 7.2.10.2: The code must be unique.
+- 7.2.10.3: The code must be 8 characters long, with only letters, numbers and dashes ("-"), spaces are not allowed.
+- 7.2.10.4: The designation must be a free text field, with 100 characters maximum.
 
 **Dependencies/References:**
 
-//TO BE DONE
+This user story doesn't have dependencies.
 
 **Client Clarifications:**
 
-> **Question:** 
+> **Question:** What will be the Room Type fields to input when adding?
 >
-> **Answer:** 
+> **Answer:** A room type is characterized by an internal code, a designation and an optional longer description. it also indicates if it the room type is suitable for surgeries or not
+
+> **Question:** With the characterization of the room type, the internal code must have a format? If so, what will be the format? For the designation, exists any restrition (max number of characters, is unique, etc.)? If so, what restrition?
+>
+> **Answer:** Code is a text entered by the Admin. it must be 8 characters long, no spaces, only letters, numbers, and dashes ("-") are allowed. it must be unique.
+designation. free text, alphanumeric, 100 characters max.
 
 ## 3. Analysis
 
-//TO BE DONE
+This feature enables the admin to create new room types by providing the following information:
+
+- **Internal Code:** Must be unique, containing only letters, numbers, and dashes ("-"). Spaces are not allowed.
+- **Designation:** A required field, with a maximum of 100 characters.
+- **Description:** An optional field.
+
+Once the information is entered, the system validates that the code is both unique and adheres to the specified rules. If all requirements are met, the system registers the new room type.
 
 ### Domain Model
 
-![Domain Model]()
+![Domain Model](diagrams/domain-model.svg)
 
 ## 4. Design
 
@@ -78,7 +92,6 @@ The diagrams can be found in the [team decision views folder](../../team-decisio
 - _MDBackoffice_<br>
 ![Process View - Level 3](diagrams/level-3-process-view-mdbackoffice.svg)
 
-
 #### Development View
 
 The diagrams can be found in the [team decision views folder](../../team-decisions/views/general-views.md#3-development-view).
@@ -86,7 +99,6 @@ The diagrams can be found in the [team decision views folder](../../team-decisio
 #### Physical View
 
 The diagrams can be found in the [team decision views folder](../../team-decisions/views/general-views.md#4-physical-view).
-
 
 ## 5. Implementation
 

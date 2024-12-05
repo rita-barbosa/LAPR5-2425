@@ -9,9 +9,6 @@ package "<<aggregate>> Patient" {
     class Gender <<(V,#FF8B40)value object>> {}
     class EmergencyContact <<(V,#FF8B40)value object>> {}
     class MRN <<(V,#FF8B40)value object>> <<identifier>> {}
-    class MedicalRecord <<(V,#FF8B40)value object>> {}
-    class Allergy <<(V,#FF8B40)value object>> {}
-    class MedicalCondition <<(V,#FF8B40)value object>> {}
     class AppointmentHistory <<(V,#FF8B40)value object>> {}
     class AppointmentHistoryStatus <<(V,#FF8B40)value object>> {}
     class AppointmentHistoryType <<(V,#FF8B40)value object>> {}
@@ -24,6 +21,27 @@ package "<<aggregate>> Patient" {
     class Email <<(V,#FF8B40)value object>> {}
     class Address <<(V,#FF8B40)value object>> {}
     class Status <<(V,#FF8B40)value object>> {}
+}
+
+package "<<aggregate MedicalRecord>>" {
+    entity MedicalRecord <<entity>><<root>>{}
+    class MedicalRecordDescription <<(V,#FF8B40)value object>> <<identifier>> {}
+}
+
+
+
+package "<<aggregate MedicalCondition>>" {
+    entity MedicalCondition <<entity>><<root>>{}
+    class MedicalConditionDesignation <<(V,#FF8B40)value object>> <<identifier>> {}
+    class MedicalConditionCode <<(V,#FF8B40)value object>> <<identifier>> {}
+    class MedicalConditionDescription <<(V,#FF8B40)value object>> <<identifier>> {}
+}
+
+package "<<aggregate Allergy>>" {
+    entity Allergy <<entity>><<root>>{}
+    class AllergyDesignation <<(V,#FF8B40)value object>> <<identifier>> {}
+    class AllergyCode <<(V,#FF8B40)value object>> <<identifier>> {}
+    class AllergyDescription <<(V,#FF8B40)value object>> <<identifier>> {}
 }
 
 package "<<aggregate Doctor>>" {
@@ -55,5 +73,18 @@ EmergencyContact -> "1" Phone
 AppointmentHistory --> "1" AppointmentHistoryStatus
 AppointmentHistory --> "1" AppointmentHistoryType
 AppointmentHistory --> "1" CreatedAt
+
+MedicalRecord --> "0..*" MedicalCondition
+MedicalRecord --> "0..*" Allergy
+MedicalRecord -> MedicalRecordDescription
+Doctor ---> "0..*" MedicalRecord
+
+Allergy --> "1" AllergyCode
+Allergy --> "0..1" AllergyDescription
+Allergy --> "1" AllergyDesignation
+
+MedicalCondition --> "1" MedicalConditionCode
+MedicalCondition --> "0..1" MedicalConditionDescription
+MedicalCondition --> "1" MedicalConditionDesignation
 
 @enduml
