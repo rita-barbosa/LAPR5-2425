@@ -20,11 +20,9 @@ interface ServerResponse {
   styleUrl: './verify-staff.component.css'
 })
 export class VerifyStaffComponent {
-  ngOnInit() {
-    throw new Error('Method not implemented.');
-  }
+
   @ViewChild('newPasswordForm') newPasswordForm!: NgForm;
-  message = 'Processing activation...';
+  message = '';
 
   isSubmitted = false;
   form = {
@@ -35,12 +33,13 @@ export class VerifyStaffComponent {
 
   onSubmit(form: NgForm): void {
     if (form.valid) {
+
       this.isSubmitted = true;
       const userId = this.route.snapshot.queryParamMap.get('userId');
       const token = this.route.snapshot.queryParamMap.get('token');
 
       if (userId && token) {
-        const url = environment + '/activate-staff?userId=${encodeURIComponent(userId)}&token=${encodeURIComponent(token)}';
+        const url = environment.serverBaseUrl + '/activate-staff?userId='+encodeURIComponent(userId)+'&token='+encodeURIComponent(token);
 
         let newPass: NewPass = {
           newPassword : this.form.newPassword

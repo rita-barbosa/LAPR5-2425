@@ -24,7 +24,7 @@ export class PatientAccountDeletionConfirm implements OnInit {
     const token = this.route.snapshot.queryParamMap.get('token');
 
     if (userId && token) {
-      const url = environment + '/Update-PatientAccountDeletionConfirmation?userId=${encodeURIComponent(userId)}&token=${encodeURIComponent(token)}';
+      const url = environment.serverBaseUrl + '/Update-PatientAccountDeletionConfirmation?userId='+encodeURIComponent(userId)+'&token='+encodeURIComponent(token);
 
       this.http.put<{ message: string }>(url, {}).subscribe({
         next: (response) => {

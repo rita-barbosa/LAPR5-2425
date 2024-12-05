@@ -24,7 +24,7 @@ export class ActivationComponent implements OnInit {
     const token = this.route.snapshot.queryParamMap.get('token');
 
     if (userId && token) {
-      const url = environment + '/activate-patient?userId=${encodeURIComponent(userId)}&token=${encodeURIComponent(token)}';
+      const url = environment.serverBaseUrl + '/activate-patient?userId='+encodeURIComponent(userId)+'&token='+encodeURIComponent(token);
 
 
       this.http.put<{ message: string }>(url, {}).subscribe({
