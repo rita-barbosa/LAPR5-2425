@@ -61,15 +61,17 @@ namespace MDBackoffice
             services.AddControllers().AddNewtonsoftJson();
             services.AddCors(options =>
             {
-                options.AddPolicy("AllowAll",
-                    builder => builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
+                options.AddPolicy("AllowFrontEnd",
+                    builder => builder
+                        .WithOrigins("http://localhost:4200") // Allow only this origin
+                        .AllowAnyHeader()                     // Allow any headers
+                        .AllowAnyMethod());                   // Allow any HTTP methods
             });
-
             services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-                
+
             })
             .AddJwtBearer(options =>
             {
@@ -136,12 +138,12 @@ namespace MDBackoffice
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseSwagger();
-                app.UseSwaggerUI(c =>
-                {
-                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "MDBackoffice API V1");
-                    c.RoutePrefix = string.Empty; // Makes Swagger available at root (https://localhost:5001/)
-                });
+                // app.UseSwagger();
+                // app.UseSwaggerUI(c =>
+                // {
+                //     c.SwaggerEndpoint("/swagger/v1/swagger.json", "MDBackoffice API V1");
+                //     c.RoutePrefix = string.Empty; // Makes Swagger available at root (https://localhost:5001/)
+                // });
 
             }
             else
@@ -151,7 +153,7 @@ namespace MDBackoffice
             app.UseHttpsRedirection();
             app.UseRouting();
 
-            app.UseCors("AllowAll");
+            app.UseCors("AllowFrontEnd");
             app.UseAuthentication();
             app.UseAuthorization();
 
