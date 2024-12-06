@@ -26,6 +26,7 @@ export class AppComponent implements OnInit {
 
   logout() {
     localStorage.removeItem('user');
+    localStorage.clear();
     this.isAuthenticated = false;
   }
 }
