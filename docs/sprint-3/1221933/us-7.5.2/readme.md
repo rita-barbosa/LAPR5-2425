@@ -7,9 +7,6 @@
   * [3. Analysis](#3-analysis)
   * [4. Design](#4-design)
     * [4.1. Realization](#41-realization)
-      * [Views](#views)
-    * [4.2. Domain Model Excerpt](#42-domain-model-excerpt)
-    * [4.3. Applied Patterns](#43-applied-patterns)
   * [5. Implementation](#5-implementation)
   * [6. Testing](#6-testing)
 <!-- TOC -->
@@ -32,13 +29,6 @@ updated information about the selected room.
 
 **US 6.5.1:** The 3D model should be created.
 
-**Client Clarifications:**
-
->**Question:**
->
->**Answer**:
-
-
 ## 3. Analysis
 
 The main objective is to enable healthcare staff to quickly view or hide updated information about a selected room using
@@ -54,19 +44,19 @@ Main points to address are:
 
 ### 4.1. Realization
 
-//TO BE DONE
+In this functionality, pressing the "i" key toggles the display of an overlay that shows updated information about the 
+currently selected room.
 
-#### Views
+If a room is selected, the overlay provides real-time data such as:
+* the room number
+* status
+* assigned staff
+* appointments
 
-//TO BE DONE
+If no room is selected, the overlay displays a message prompting the user to select a room. The information 
+updates dynamically to ensure accuracy, and the overlay integrates seamlessly with the 3D model, reflecting any changes 
+in selection.
 
-### 4.2. Domain Model Excerpt
-
-//TO BE DONE
-
-### 4.3. Applied Patterns
-
-//TO BE DONE
 
 ## 5. Implementation
 
