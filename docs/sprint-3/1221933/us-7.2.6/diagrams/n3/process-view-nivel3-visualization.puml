@@ -1,0 +1,50 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+title "US 7.2.6. Process View (Level 3 | Visualization)"
+
+autonumber
+actor "Doctor" as USER
+participant "EditMedicalRecord" as UPP <<component>>
+participant "PatientService" as PS <<service>>
+
+activate USER
+USER -> UPP : asks to edit patient medical profile
+activate UPP
+
+UPP -> PS : getPatientProfiles()
+activate PS
+
+PS ->o] : GET: api/get-patients
+
+PS <--o] : Ok(token)
+
+PS --> UPP: success
+deactivate PS
+
+UPP --> USER: shows list of patient profiles
+deactivate UPP
+
+USER-> UPP : selects a patient profile
+activate UPP
+
+USER <-- UPP : shows the patient medical record
+deactivate UPP
+
+USER -> UPP : asks to edit patient medical record\n (medical conditions and allergies)
+activate UPP
+
+UPP -> PS : editPatientMedicalRecord(json)
+activate PS
+
+PS ->o] : PUT: api/edit-patient-medical-record
+
+PS <--o] : Accepted(MedicalRecordDto)
+
+PS --> UPP: success
+deactivate PS
+
+UPP --> USER: success
+deactivate UPP
+
+@enduml

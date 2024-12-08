@@ -1,0 +1,104 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+title "US 7.2.6. Process View (Level 3 | MDPatientManagement)"
+
+autonumber
+
+participant "route:\nEditPatientMedicalRecordRoute" as ROUTE
+participant "dto:\nEditMedicalRecordDTO" as UpdateDTO
+participant "controller:\nPatientController" as CTRL
+
+participant "service:\nMedicalRecordService" as MEDSER
+participant "repository:\nMedicalRecordRepo" as MEDREPO
+participant "dto:\nMedicalRecordDTO" as MEDDTO
+participant "domain:\nMedicalRecord" as MEDREC
+
+participant "service:\nPatientService" as SER
+participant "repository:\nPatientRepo" as REPO
+participant "dto:\nPatientDTO" as DTO
+'participant "domain:\nPatient" as Patient
+
+[o-> ROUTE : GET()
+activate ROUTE
+
+ROUTE -> CTRL : getPatientProfiles()
+activate CTRL
+
+CTRL -> SER : getPatientProfiles()
+activate SER
+
+SER -> REPO : findAll()
+activate REPO
+
+REPO --> SER : PatientProfilesList
+deactivate REPO
+
+loop for all the profiles in the list
+SER -> DTO ** : toDTO(PatientProfile)
+
+
+end loop
+
+SER --> CTRL : patientProfileDTOList
+deactivate SER
+
+CTRL --> ROUTE : patientProfileDTOList
+deactivate CTRL
+
+<- ROUTE : ok(patientProfileDTOList)
+deactivate ROUTE
+
+|||
+
+[o-> ROUTE : PUT(json)
+activate ROUTE
+
+ROUTE -> UpdateDTO ** : toDTO(json)
+
+
+ROUTE -> CTRL : editPatientMedicalRecord(id, editMedicalRecordDto)
+activate CTRL
+
+CTRL -> MEDSER : UpdateAsync(id, editMedicalRecordDto)
+activate MEDSER
+
+MEDSER -> REPO : GetByIdAsync(id)
+activate REPO
+
+REPO --> MEDSER : patient
+deactivate REPO
+
+opt Check and update Medical Record fields
+MEDSER -> MEDREC : ChangeMedicalCondition(medicalCondition)
+activate MEDREC
+deactivate MEDREC
+
+MEDSER -> MEDREC : ChangeAllergy(Allergy)
+activate MEDREC
+deactivate MEDREC
+
+end opt
+
+MEDSER -> MEDDTO : toDTO(medicalRecord)
+activate MEDDTO
+deactivate MEDDTO
+
+
+MEDSER --> CTRL : medicalRecordDto
+deactivate MEDSER
+
+
+CTRL --> ROUTE : medicalRecordDto
+deactivate CTRL
+
+alt success
+[o<-- ROUTE : 200 OK
+
+else failure
+
+[o<-- ROUTE : 400 Bad Request
+deactivate ROUTE
+end alt
+
+@enduml
