@@ -62,7 +62,11 @@ Although the file share is public, access should be limited to internal networks
 
 ### 4.1. Realization
 
-//TO BE DONE
+The design for this user story involves setting up a public file share accessible via SMB/CIFS or NFS protocols to facilitate faster collaboration between teams. The file share will be created on a designated server with sufficient storage capacity and configured to support either protocol based on the teams' needs and compatibility with their operating systems.
+
+For SMB/CIFS, a Samba server will be configured with a public share definition, ensuring appropriate permissions to allow seamless access without the need for individual user credentials. For NFS, an export will be created in the NFS server configuration file, specifying the shared directory and access rules, such as IP-based restrictions.
+
+Permissions on the shared directory will be configured to allow read/write access for all teams, with options for advanced access controls if necessary. Network security will be ensured by restricting access to specific subnets or IP ranges and enabling firewall rules to allow only the relevant protocols. Logs and monitoring will be implemented to track file share usage and identify any unauthorized activities.
 
 #### Views
 
