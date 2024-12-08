@@ -61,7 +61,6 @@ It relates to the Doctor.
 >
 > After the appointment is planned, it is possible to update the team, room and date. the system must ensure all the resources and personnel is available at the selected time according to the operation type duration.
 
-
 >**Question:** According to a previous answer about this requirement, when the doctor attempts the creation of an appointment, they specify room, date and team. But do they also specify the time in which the surgery should start?
 >
 >**Answer:** Yes.
@@ -69,6 +68,10 @@ It relates to the Doctor.
 >**Question:** Regarding the team selected by the doctor when creating the appointment, does this team include only doctors, doctors and anesthetists, or doctors, anesthetists and cleaners?
 >
 >**Answer:** It must include the whole team that conforms to the team composition according to the operation type specification.
+
+>**Question:** When the doctor selects the team for the Appointment, that includes doctors and nurses. Regarding cleaners, which staff (doctors, nurses, interns) can be selected for that role? And is there any criteria for that selection?
+>
+>**Answer:** The doctor only selects the medical team.
 
 ## 3. Analysis
 
@@ -86,19 +89,76 @@ This User Story will follow the same system as previous USs with the objective t
 
 ### 4.1. Realization
 
-//TO BE DONE
+We will have a default number of medical conditions that will be used by the doctor to add them to a patient's medical record.
+
+**The functionality in itself will be follow the following workflow:**
+
+&emsp;**1.** The Doctor will be met with a form that they will need to fill with the ideal information:
+
+- **1.1** The new time.
+- **1.2** The new team.
+- **1.3** The new date.
+- **1.4** The new room.
+
+In case one of the form's fields is left empty, it will be considered null and will not change that field.
+
+After a succefull, or not, request, it will return a message informing that.
 
 #### Views
 
-//TO BE DONE
+The logical, physical, development and scenario views diagrams are generic for all the use cases of the backoffice component.
+These diagrams can be found in the [generic views diagrams compilation file](../../team-decisions/views/general-views.md).
+
+The process view levels are here represented as they represent a process specific to each user story.
+
+##### Process View
+
+The level 1 and 2 of this view was considered not to add more information in addition to the SSD shown above.
+However level 3 is shown below.
+
+###### Process View - Level 1
+
+![Process View Level 1](diagrams\views\process-view-level-1.svg)
+
+###### Process View - Level 2
+
+![Process View Level 2](diagrams\views\process-view-level-2.svg)
+
+###### Process View - Level 3
+
+![Process View Level 3 - Visualization](diagrams\views\process-view-level-3-visualization.svg)
+
+![Process View Level 3 - MDBackoffice](diagrams\views\process-view-level-3-mdpatientmanagement.svg)
 
 ### 4.2. Domain Model Excerpt
 
-//TO BE DONE
+![Domain Model Excerpt](diagrams\domain-model\domain-model-simplification.svg)
 
 ### 4.3. Applied Patterns
 
-//TO BE DONE
+> #### **Repository Pattern**
+>
+>* **Components:** MedicalConditionRepository
+>
+> The repositories handle data access and retrieval, isolating the database interaction logic from services and other
+> layers. This approach abstracts the persistence logic, promoting separation of concerns.
+
+
+> #### **DTO (Data Transfer Object) Pattern**
+>
+>* **Components:** MedicalConditionDTO
+>
+> DTOs are utilized to transfer data between layers, particularly from the controller layer to the service layer and
+> vice versa. Their main purpose is to convey data in a structured and decoupled manner without revealing the internal
+> representations of entities. Additionally, this pattern is not required to adhere to business rules.
+
+
+> #### **Facade Pattern**
+>
+>* **Components:** MedicalConditionService
+>
+> These services function as a facade, simplifying the interaction with lower-level components such as repositories.
+> The controller communicates with these service facades, concealing the complexity from the upper layers.
 
 ## 5. Implementation
 
