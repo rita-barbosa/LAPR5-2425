@@ -41,19 +41,11 @@ Useful links: [Tween.js User Guide](https://tweenjs.github.io/tween.js/docs/user
 
 ### 4.1. Realization
 
-//TO BE DONE
+The design section for the smooth camera and spotlight transition begins with defining the core functionality: when a **user selects a different room, the camera and spotlight should move to predefined positions and orientations smoothly, rather than instantly.**
 
-#### Views
+The implementation involves **setting up an animation system**, such as using tween.js, to **interpolate** both the camera's position and rotation, as well as the spotlight's position if applicable. **Each room will have predefined coordinates and settings for the camera and spotlight.**
 
-//TO BE DONE
-
-### 4.2. Domain Model Excerpt
-
-//TO BE DONE
-
-### 4.3. Applied Patterns
-
-//TO BE DONE
+When the user selects a room, this triggers the animation process, ensuring the transition feels natural and immersive. The transition duration, easing functions, and the synchronization between the camera and spotlight movement are crucial for creating a polished effect. The animation system will be integrated into the render loop to update continuously until the transition is complete, at which point the camera and spotlight will settle into their final positions for the selected room.
 
 ## 5. Implementation
 
