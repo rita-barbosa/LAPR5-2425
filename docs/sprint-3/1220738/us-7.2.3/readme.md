@@ -77,6 +77,10 @@ It relates to the Doctor.
 >
 >**Answer**: Em relação à segunda parte da pergunta, o que se pretende é que o médico possa indicar quais as alergias que o paciente tem seleccionando-as da lista de alergias existentes no sistema. notem que um paciente pode ter mais que uma alergia.
 
+>**Question:** Qual seria o tamanho máximo de uma designação e descrição de uma alergia? 
+>
+>**Answer**: Designação, max 100 caracteres; descrição, máximo 2048 caracteres
+
 ## 3. Analysis
 
 This User Story asks to implement: 
@@ -93,19 +97,79 @@ This User Story will follow the same system as previous USs with the objective t
 
 ### 4.1. Realization
 
-//TO BE DONE
+**The allergy will be described as an object with two attributes:**
+
+&emsp;**1.** A name, limited to a maximum of 100 characters;
+
+&emsp;**2.** A description, also limited to a maximum of 2048 characters;
+
+We will have a default number of allergies that will be used by the doctor to add them to a patient's medical record.
+
+**The functionality in itself will be follow the following workflow:**
+
+&emsp;**1.** The Doctor will be met with a list of the current existing allergies in the system when they get into the functionality. The list will show the allergy's ID and their name.
+
+&emsp;**2.** The Doctor will have the following actions available to him:
+
+&emsp;&emsp;**2.1.** **To add an allergy to the system.** (**US 7.2.2**)
+
+&emsp;&emsp;**2.2.** **To search allergies in the system using their designation/name.**
 
 #### Views
 
-//TO BE DONE
+The logical, physical, development and scenario views diagrams are generic for all the use cases of the backoffice component.
+These diagrams can be found in the [generic views diagrams compilation file](../../team-decisions/views/general-views.md).
+
+The process view levels are here represented as they represent a process specific to each user story.
+
+##### Process View
+
+The level 1 and 2 of this view was considered not to add more information in addition to the SSD shown above.
+However level 3 is shown below.
+
+###### Process View - Level 1
+
+![Process View Level 1](diagrams\views\process-view-level-1.svg)
+
+###### Process View - Level 2
+
+![Process View Level 2](diagrams\views\process-view-level-2.svg)
+
+###### Process View - Level 3
+
+![Process View Level 3 - Visualization](diagrams\views\process-view-level-3-visualization.svg)
+
+![Process View Level 3 - MDBackoffice](diagrams\views\process-view-level-3-mdpatientmanagement.svg)
 
 ### 4.2. Domain Model Excerpt
 
-//TO BE DONE
+![Domain Model Excerpt](diagrams\domain-model\domain-model-simplification.svg)
 
 ### 4.3. Applied Patterns
 
-//TO BE DONE
+> #### **Repository Pattern**
+>
+>* **Components:** AllergyRepository
+>
+> The repositories handle data access and retrieval, isolating the database interaction logic from services and other
+> layers. This approach abstracts the persistence logic, promoting separation of concerns.
+
+
+> #### **DTO (Data Transfer Object) Pattern**
+>
+>* **Components:** AllergyListDTO
+>
+> DTOs are utilized to transfer data between layers, particularly from the controller layer to the service layer and
+> vice versa. Their main purpose is to convey data in a structured and decoupled manner without revealing the internal
+> representations of entities. Additionally, this pattern is not required to adhere to business rules.
+
+
+> #### **Facade Pattern**
+>
+>* **Components:** AllergyService
+>
+> These services function as a facade, simplifying the interaction with lower-level components such as repositories.
+> The controller communicates with these service facades, concealing the complexity from the upper layers.
 
 ## 5. Implementation
 
