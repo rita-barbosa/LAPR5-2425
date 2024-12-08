@@ -65,7 +65,11 @@ All SSH login attempts will be logged in **/var/log/auth.log** or an equivalent 
 
 ### 4.1. Realization
 
-//TO BE DONE
+The design for this user story involves configuring the virtual machine to allow SSH access exclusively via certificate-based authentication, disabling password authentication entirely. The administrator will generate a public-private key pair, with the private key securely stored on their local machine and the public key added to the VM's authorized_keys file in the SSH configuration directory.
+
+The SSH server on the VM will be configured to disable password authentication by modifying the SSH daemon configuration file (sshd_config) and setting PasswordAuthentication to no. After making this change, the SSH service will be restarted to apply the configuration.
+
+Security will be ensured by using a strong key pair with a recommended algorithm (such as RSA or ED25519) and enforcing strict permissions on the authorized_keys file. Regular audits will confirm that no unauthorized keys are present, and key rotation policies can be established as needed for additional security.
 
 #### Views
 
