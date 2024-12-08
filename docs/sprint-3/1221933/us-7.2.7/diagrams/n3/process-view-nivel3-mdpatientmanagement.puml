@@ -1,0 +1,83 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+title "US 7.2.7. Process View (Level 3 | MDPatientManagement)"
+
+autonumber
+
+participant "route:\nMedicalRecordRoute" as ROUTE
+participant "controller:\nMedicalRecordController" as CTRL
+participant "query:\nMedicalRecordQueryParametersDto" as QueryDTO
+
+participant "service:\nMedicalRecordService" as SER
+participant "repository:\nMedicalRecordRepo" as REPO
+participant "dto:\nMedicalRecordDTO" as DTO
+participant "domain:\nMedicalRecord" as MEDREC
+
+
+[o-> ROUTE : GET()
+activate ROUTE
+
+ROUTE -> CTRL : getAllMedicalRecords()
+activate CTRL
+
+CTRL -> SER : getAllMedicalRecords()
+activate SER
+
+SER -> REPO : findAll()
+activate REPO
+
+REPO --> SER : medicalRecordsList
+deactivate REPO
+
+loop for all the medical records in the list
+    SER -> DTO ** : toDTO(medicalRecord)
+end loop
+
+SER --> CTRL : medicalRecordDTOList
+deactivate SER
+
+CTRL --> ROUTE : medicalRecordDTOList
+deactivate CTRL
+
+<- ROUTE : ok(medicalRecordDTOList)
+deactivate ROUTE
+
+|||
+
+[o-> ROUTE : POST(json)
+activate ROUTE
+
+ROUTE -> CTRL : GetFilteredMedicalRecords(json)
+activate CTRL
+
+CTRL -> QueryDTO ** : toDTO(json)
+
+CTRL -> SER : FilterMedicalRecords(queryParametersDTO)
+activate SER
+
+
+SER -> REPO : FilterMedicalRecords(queryParametersDTO)
+activate REPO
+
+REPO --> SER : medicalRecordsList
+deactivate REPO
+
+    loop for all the medical records in the list
+        SER -> DTO ** : toDTO(operationType)
+    end loop
+
+SER --> CTRL : filterMedicalRecordsDTOList
+deactivate SER
+
+CTRL -> CTRL : json(MedicalRecordsDTOList)
+activate CTRL
+deactivate CTRL
+
+CTRL --> ROUTE : json
+deactivate CTRL
+
+<-- ROUTE : ok(json)
+deactivate ROUTE
+
+@enduml
