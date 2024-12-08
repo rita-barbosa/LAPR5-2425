@@ -8,9 +8,14 @@
     * [Domain Model](#domain-model)
   * [4. Design](#4-design)
     * [4.1. Realization](#41-realization)
-      * [Views](#views)
-    * [4.2. Domain Model Excerpt](#42-domain-model-excerpt)
-    * [4.3. Applied Patterns](#43-applied-patterns)
+      * [Logical View](#logical-view)
+      * [Process View](#process-view)
+        * [Level 1](#level-1)
+        * [Level 2](#level-2)
+        * [Level 3](#level-3)
+      * [Development View](#development-view)
+      * [Physical View](#physical-view)
+    * [4.2. Applied Patterns](#42-applied-patterns)
   * [5. Implementation](#5-implementation)
   * [6. Testing](#6-testing)
 <!-- TOC -->
@@ -75,7 +80,7 @@ medical history.
 >**Question:** When the doctor selects the team for the Appointment, that includes doctors and nurses. Regarding cleaners,
 > which staff (doctors, nurses, interns) can be selected for that role? And is there any criteria for that selection?
 >
->**Answer**:
+>**Answer**: the doctor only selects the medical team.
 
 ## 3. Analysis
 
@@ -109,19 +114,66 @@ patient’s medical history.
 
 ### 4.1. Realization
 
-//TO BE DONE
+The logical, physical, development and scenario views diagrams are generic for all the use cases of the backoffice component.
 
-#### Views
+#### Logical View
 
-//TO BE DONE
+The diagrams are available in the [team decision views folder](../../team-decisions/views/general-views.md#1-logical-view).
 
-### 4.2. Domain Model Excerpt
+#### Process View
 
-//TO BE DONE
+##### Level 1
 
-### 4.3. Applied Patterns
+![Process View - Level 1](diagrams/n1/process-view-nivel1.svg)
 
-//TO BE DONE
+##### Level 2
+
+![Process View - Level 2](diagrams/n2/process-view-nivel2.svg)
+
+##### Level 3
+
+- _Visualization_<br>
+  ![Process View - Level 3](diagrams/n3/process-view-nivel3-visualization.svg)
+
+
+- _MDBackoffice_<br>
+  ![Process View - Level 3](diagrams/n3/process-view-nivel3-mdbackoffice.svg)
+
+#### Development View
+
+The diagrams are available in the [team decision views folder](../../team-decisions/views/general-views.md#3-development-view).
+
+#### Physical View
+
+The diagrams are available in the [team decision views folder](../../team-decisions/views/general-views.md#4-physical-view).
+
+
+### 4.2. Applied Patterns
+
+> #### **Repository Pattern**
+>
+>* **Components:** AppointmentRepository, OperationRequestRepository, RoomRepository, StaffRepository
+>
+> The repositories handle data access and retrieval, isolating the database interaction logic from services and other
+> layers. This approach abstracts the persistence logic, promoting separation of concerns.
+
+
+> #### **DTO (Data Transfer Object) Pattern**
+>
+>* **Components:** AppointmentDTO
+>
+> DTOs are utilized to transfer data between layers, particularly from the controller layer to the service layer and
+> vice versa. Their main purpose is to convey data in a structured and decoupled manner without revealing the internal
+> representations of entities. Additionally, this pattern is not required to adhere to business rules.
+
+
+> #### **Facade Pattern**
+>
+>* **Components:** AppointmentService
+>
+> These services function as a facade, simplifying the interaction with lower-level components such as repositories.
+> The controller communicates with these service facades, concealing the complexity from the upper layers.
+
 
 ## 5. Implementation
 
