@@ -72,7 +72,7 @@ The process view levels are here presented as they represent a process specific 
 
 #### Level 1
 
-> TBD
+![us7.2.2-process-view-lvl1.svg](Process_View/Level-1/us7.2.2-process-view-lvl1.svg)
 
 #### Level 2
 
@@ -82,11 +82,11 @@ it's diagram was deemed irrelevant.
 #### Level 3
 
 - _Visualization_<br>
-> TBD
+![us7.2.2-process-view-visualization-lvl3.svg](Process_View/Level-3/us7.2.2-process-view-visualization-lvl3.svg)
 
 
 - _MDBackoffice_
-> TBD
+![us7.2.2-process-view-lvl3.svg](Process_View/Level-3/us7.2.2-process-view-lvl3.svg)
 
 #### 4.1.3 Development View
 
@@ -98,7 +98,30 @@ The diagrams can be found in the [team decision views folder](../../team-decisio
   
 ### 4.2. Applied Patterns
 
-> TBD
+> #### **Repository Pattern**
+>
+>* **Components:** AllergyRepository, LogRepository
+>
+> The repositories are responsible for data access and retrieval, separating the logic for interacting with the database
+> from the services and other layers. This pattern helps in abstracting the persistence logic.
+
+
+> #### **DTO (Data Transfer Object) Pattern**
+>
+>* **Components:** CreateAllergyDto
+>
+> DTOs are used to transfer data between layers, especially from the controller layer to the service layer or vice versa.
+> The purpose is to carry data in a structured and decoupled way without exposing internal entity representations directly.
+> This pattern does not need to follow business rules.
+
+
+> #### **Facade Pattern**
+>
+>* **Components:** LogService, AllergyService
+>
+> These services act as a Facade to simplify interaction with lower-level components like repositories. The Controller
+> interacts with these service facades, keeping the complexity hidden from the higher layers.
+
 
 
 ### 4.2. Tests

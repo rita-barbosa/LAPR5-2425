@@ -1,0 +1,74 @@
+@startuml
+
+title "US 7.2.2 - Process View [Level 3]"
+
+autonumber
+participant "Routing" as ROUTE <<route>>
+participant "CreateAllergyDto" as DTO <<dto>>
+participant "AllergyController" as CTRL <<controller>>
+participant "AllergyService" as SVC <<service>>
+participant "Allergy" as ALL <<domain>>
+participant "AllergyRepository" as REPO <<repository>>
+
+participant "<<service>>\n LogService" as LogServ
+participant "<<domain>>\n Log" as Log
+participant "<<repository>>\n LogRepository" as LogRepo
+
+
+[o-> ROUTE: POST(json) /api/create-Allergy
+activate ROUTE
+
+ROUTE -> DTO **: create(json)
+
+ROUTE -> CTRL: create(allergyDto)
+activate CTRL
+
+CTRL ->  SVC: AddAsync(allergyDto)
+activate SVC
+
+SVC -> ALL ** : Allergy(code, designation, description)
+
+SVC -> REPO : AddAsync(allergy)
+activate REPO
+
+REPO --> SVC : allergy
+deactivate REPO
+
+|||
+
+SVC -> LogServ : CreateCreateLog(allergyCode, allergyClass, logDescription)
+activate LogServ
+
+LogServ -> Log ** : Log(getSequentialNumber(), objectClass, objectReference, 1, description)
+note right
+1 represents the
+Log type - Creation
+end note
+
+LogServ -> LogRepo : AddAsync(log)
+activate LogRepo
+
+LogRepo --> LogServ : log
+deactivate LogRepo
+
+LogServ --> SVC : log
+deactivate LogServ
+
+
+SVC --> CTRL: allergy
+deactivate SVC
+
+CTRL --> ROUTE: allergy
+deactivate CTRL
+
+alt 
+[o<-- ROUTE : 200 OK
+
+else
+
+[o<-- ROUTE : 400 BAD REQUEST
+deactivate ROUTE
+end alt
+
+
+@enduml
