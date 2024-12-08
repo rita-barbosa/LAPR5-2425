@@ -138,7 +138,7 @@ However level 3 is shown below.
 
 > #### **Repository Pattern**
 >
->* **Components:** MedicalConditionRepository
+>* **Components:** AppointmentRepository
 >
 > The repositories handle data access and retrieval, isolating the database interaction logic from services and other
 > layers. This approach abstracts the persistence logic, promoting separation of concerns.
@@ -146,7 +146,7 @@ However level 3 is shown below.
 
 > #### **DTO (Data Transfer Object) Pattern**
 >
->* **Components:** MedicalConditionDTO
+>* **Components:** EditAppointmentDTO
 >
 > DTOs are utilized to transfer data between layers, particularly from the controller layer to the service layer and
 > vice versa. Their main purpose is to convey data in a structured and decoupled manner without revealing the internal
@@ -155,7 +155,7 @@ However level 3 is shown below.
 
 > #### **Facade Pattern**
 >
->* **Components:** MedicalConditionService
+>* **Components:** AppointmentService
 >
 > These services function as a facade, simplifying the interaction with lower-level components such as repositories.
 > The controller communicates with these service facades, concealing the complexity from the upper layers.
