@@ -108,7 +108,7 @@ The diagrams can be found in the [team decision views folder](../../team-decisio
 
 > #### **DTO (Data Transfer Object) Pattern**
 >
->* **Components:** CreateAllergyDto
+>* **Components:** MedicalConditionDto
 >
 > DTOs are used to transfer data between layers, especially from the controller layer to the service layer or vice versa.
 > The purpose is to carry data in a structured and decoupled way without exposing internal entity representations directly.
@@ -121,8 +121,6 @@ The diagrams can be found in the [team decision views folder](../../team-decisio
 >
 > These services act as a Facade to simplify interaction with lower-level components like repositories. The Controller
 > interacts with these service facades, keeping the complexity hidden from the higher layers.
-
-
 
 ### 4.2. Tests
 

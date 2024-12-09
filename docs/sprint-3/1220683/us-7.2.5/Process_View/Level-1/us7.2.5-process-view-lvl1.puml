@@ -1,0 +1,17 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+title "US 7.2.5 Process View (Level 1)"
+
+autonumber
+
+actor "Doctor" as BACK
+participant "<<system (C4)>>\n Healthcare System" as SYS
+
+BACK -> SYS : wants search for a medical condition
+activate SYS
+
+SYS --> BACK : presents a list of medical conditions in the system
+deactivate SYS
+
+@enduml
