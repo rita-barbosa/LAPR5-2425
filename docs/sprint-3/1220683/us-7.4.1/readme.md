@@ -31,9 +31,10 @@ The MBCO specifies the minimum operability level to maintain during disruptions,
 - Related to MBCO proposal (**US 6.4.5**).
 
 **Client Clarifications:**
-> **Question:** 
+
+> **Question:** Should the disaster recovery plan account for both natural disasters and cybersecurity incidents? What types of disruptions/topics should be focused on?
 > 
-> **Answer:** 
+> **Answer:** The DRP should cover all catastrophes that may occur, provided they are adequately included. Disruptions/topics are those that are thought likely to occur, jeopardising the company's normal behaviour and business.
 
 ## 3. Analysis
 

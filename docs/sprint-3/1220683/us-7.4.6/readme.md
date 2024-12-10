@@ -9,7 +9,6 @@
   * [5. Observations](#5-observations)
 <!-- TOC -->
 
-
 ## 1. Context
 
 * This is the first time this user story is being requested.
@@ -31,9 +30,7 @@
 
 **Client Clarifications:**
 
-> **Question:** 
->
-> **Answer:**
+> No clarifications.
 
 ## 3. Analysis
 
@@ -41,11 +38,22 @@ To implement this user story, the system requires functionality to:
 
 1. Identify and categorize backups (daily, monthly, yearly) based on creation timestamps or naming conventions.
 2. Automatically delete backups exceeding their retention period, ensuring no overlap with long-term backups.
-3. Allow configuration of retention policies through environment variables or a dedicated management interface.
-4. Log all backup retention actions for auditing purposes.
 
 ## 4. Design
 
-> TBD
+To implement this functionality, we use a script that will firstly categorize the backups by inserting them into folders.
+The execution of this script can be scheduled every day as task in cron.
+
+**Daily backups**, performed at 2 a.m. on weekdays, with more than 7 days will be erased.
+
+The last full/integral backup,scheduled every Sunday at 2 a.m, will be moved to a "**Monthly**" folder. These backup files
+have the validity of one year, after that they too will be erased. To better identify them, a nomenclature must be in place,
+such as `backup-YYYY-MM.tar.gz`.
+
+Lastly, the "**Yearly**" backups are essentially the last monthly backup, which should have the latest version of the data
+in the system. These files should also have a nomenclature, such as `backup-YYYY.tar.gz`, and can only be deleted manually
+by the administrator.
 
 ## 5. Observations
+
+No observations.
