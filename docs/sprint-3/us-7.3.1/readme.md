@@ -66,14 +66,14 @@ of staff availability and consideration of staff involvement in other rooms to m
 >
 > One that is very simple is to sort operations by time (preparation+surgery+cleaning) and start to assign the first 
 > operation to room1, the second to room2, the third to room3, the fourth to room1, the fifth to room2, the sixth to 
-> room3, the seventh to room1,.....the thirty sixth to room3. This will give a balanced assignment of operations 
+> room3, the seventh to room1,.....the thirty-sixth to room3. This will give a balanced assignment of operations 
 > (12 operations in each room). After that you call the Genetic Algorithm (GA) for room1, then the GA for room2, and 
 > finally the GA for room3. Notice that things will work better for room1 and worst to room3, since when you call the 
-> GA for room2 some staff has their agenda more busy due to the scheduling of staff involved in room1, for room3 is 
+> GA for room2 some staff members has their agenda more busy due to the scheduling of staff involved in room1, for room3 is 
 > still more complicated. But if it works it's well!.
 >
-> Note1: it is good that staff is involved in several rooms (notice that after a surgery the doctor will wait the 
-> cleaning time and the preparation time before entering in another surgery, but if the surgery is in another room we 
+> Note1: it is good that staff is involved in several rooms. Notice that after a surgery the doctor will wait the 
+> cleaning time and the preparation time before entering another surgery, but if the surgery is in another room we 
 > can reduce this time. So in the assignment of operations to rooms you may consider that "assign to the room in which 
 > the staff is less involved".
 >
@@ -84,10 +84,10 @@ of staff availability and consideration of staff involvement in other rooms to m
 > the best" is feasible while for other dimensions it is not possible to go in this wy and the GA is adequate, even 
 > without the guarantee to generate the best.
 >
-> Finally suggestion of approach for 7.3.1+7.3.2:
+> Finally, suggestion of approach for 7.3.1+7.3.2:
 > - start with 7.3.2 (understand the given GA; improve according the required in the ALGAV TP even for the problem of 
 > minimizing the tardiness in a manufacturing machine; then adapt for your problem still considering 1 room)
-> - start 7.3.1 with the operations' assignment method nad then change the GA adapted for your problem to ensure N rooms
+> - start 7.3.1 with the operations' assignment method and then change the GA adapted for your problem to ensure N rooms
 
 
 ## 3. Analysis
@@ -98,7 +98,6 @@ initially sorted by their duration and distributed to rooms in a manner that ens
 
 To optimize, we will change the Genetic Algorithms (GA), which will allow to have in mind the overlapping staff schedules
 and emergency accommodations.
-
 
 ### Domain Model
 
