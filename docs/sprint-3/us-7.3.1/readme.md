@@ -14,7 +14,6 @@
       * [Level 3](#level-3)
       * [4.1.3 Development View](#413-development-view)
       * [4.1.4 Physical View](#414-physical-view)
-    * [4.2. Applied Patterns](#42-applied-patterns)
     * [4.2. Tests](#42-tests)
   * [5. Implementation](#5-implementation)
   * [6. Integration/Demonstration](#6-integrationdemonstration)
@@ -65,30 +64,30 @@ of staff availability and consideration of staff involvement in other rooms to m
 >
 > There are different possibilities to schedule.
 >
-> One that is very simple is to sort operations by time (preparation+surgery+cleaning) and start to assing the first 
+> One that is very simple is to sort operations by time (preparation+surgery+cleaning) and start to assign the first 
 > operation to room1, the second to room2, the third to room3, the fourth to room1, the fifth to room2, the sixth to 
-> room3, the seventh to room1,.....the thirty sixth to room3. This will give a balanced assignement of operations 
+> room3, the seventh to room1,.....the thirty sixth to room3. This will give a balanced assignment of operations 
 > (12 operations in each room). After that you call the Genetic Algorithm (GA) for room1, then the GA for room2, and 
 > finally the GA for room3. Notice that things will work better for room1 and worst to room3, since when you call the 
-> GA for room2 some staff has their agenda more busy due to the schedullings of staff involved in room1, for room3 is 
+> GA for room2 some staff has their agenda more busy due to the scheduling of staff involved in room1, for room3 is 
 > still more complicated. But if it works it's well!.
 >
 > Note1: it is good that staff is involved in several rooms (notice that after a surgery the doctor will wait the 
 > cleaning time and the preparation time before entering in another surgery, but if the surgery is in another room we 
-> can reduce this time. So in the assignement of operations to rooms you may consider that "assign to the room in which 
+> can reduce this time. So in the assignment of operations to rooms you may consider that "assign to the room in which 
 > the staff is less involved".
 >
 > Note 2: depending on the number of operations the balancing may not be adequate. For example, if we just have 8 
 > surgeries maybe 1 room will be sufficient, and the others are free for some urgency that appears.
 >
 > Note 3: considering your complexity study of sprint2 notice that for reduced dimensions the "generate all and select 
-> the best" is feasable while for other dimensions it is not possible to go in this wy and the GA is adequate, even 
+> the best" is feasible while for other dimensions it is not possible to go in this wy and the GA is adequate, even 
 > without the guarantee to generate the best.
 >
 > Finally suggestion of approach for 7.3.1+7.3.2:
 > - start with 7.3.2 (understand the given GA; improve according the required in the ALGAV TP even for the problem of 
 > minimizing the tardiness in a manufacturing machine; then adapt for your problem still considering 1 room)
-> - start 7.3.1 with the operations' assignement method nad then change the GA adapted for your problem to ensure N rooms
+> - start 7.3.1 with the operations' assignment method nad then change the GA adapted for your problem to ensure N rooms
 
 
 ## 3. Analysis
@@ -118,7 +117,7 @@ The process view levels are here presented as they represent a process specific 
 
 #### Level 1
 
-> TBD
+![level 1](./Process_View/Level-1/us7.3.1-process-view-lvl1.svg)
 
 #### Level 2
 
@@ -127,12 +126,14 @@ it's diagram was deemed irrelevant.
 
 #### Level 3
 
-- _Visualization_<br>
-> TBD
-
+- _Visualization_
+![level 3 visualization](./Process_View/Level-3/us7.3.1-process-view-visualization-lvl3.svg)
 
 - _MDBackoffice_
-> TBD
+![level 3 backoffice](./Process_View/Level-3/us7.3.1-process-view-lvl3.svg)
+
+- _Planning_
+![level 3 planning](./Process_View/Level-3/us7.3.1-process-view-planning-lvl3.svg)
 
 #### 4.1.3 Development View
 
@@ -141,10 +142,6 @@ The diagrams can be found in the [team decision views folder](../team-decisions/
 #### 4.1.4 Physical View
 
 The diagrams can be found in the [team decision views folder](../team-decisions/views/general-views.md#4-physical-view).
-  
-### 4.2. Applied Patterns
-
-> TBD
 
 
 ### 4.2. Tests
