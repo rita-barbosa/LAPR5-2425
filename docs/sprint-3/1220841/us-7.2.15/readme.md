@@ -5,6 +5,7 @@
   - [1. Context](#1-context)
   - [2. Requirements](#2-requirements)
   - [3. Analysis](#3-analysis)
+    - [Domain Model](#domain-model)
   - [4. Design](#4-design)
     - [4.1. Realization](#41-realization)
       - [Logical View](#logical-view)
@@ -31,6 +32,12 @@ This user story is being implemented for the first time.
 
 - 7.2.15.1: All the specializations must be listed.
 - 7.2.15.2: All the information of the specializations must be shown.
+
+**Client Clarifications:**
+
+> **Question:** Which filters can be applied?
+>
+> **Answer:** You can filter by code (exact match), name (partial match), or description (partial match). A partial match means the search term appears within the corresponding attribute. For instance, searching for "ortho" would return all specialties with "ortho" in their name or description.
 
 **Dependencies/References:**
 
