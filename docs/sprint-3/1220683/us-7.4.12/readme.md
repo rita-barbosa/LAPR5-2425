@@ -32,9 +32,9 @@ To do this, we must automate their recovery, validating that the system is worki
 
 **Client Clarifications:**
 
-> **Question:** 
+> **Question:** Should the recovery validation process be scheduled, on-demand, or both?
 >
-> **Answer:** 
+> **Answer:** Recovery should only be performed when needed. As so, on-demand is likely to be the best approach.
 
 
 ## 3. Analysis
@@ -50,6 +50,19 @@ Recovery operations must be isolated to prevent disruption in active systems.
 
 ## 4. Design
 
-> TBD
+To validate the integrity of database backups, a script is used to automate the recovery validation process. This script
+begins by restoring the latest database backup to a test or staging server, ensuring the backup is usable and effective 
+for disaster recovery scenarios.
+
+Once the restoration is complete, the script runs a series of SQL validation queries to check critical aspects of the data.
+These include comparing record counts across important tables, verifying key configuration or metadata values, and ensuring
+the most recent transaction or update timestamp aligns with expectations. These checks help confirm that no data is missing
+and that the restored database is consistent with the original system.
+
+Finally, the results of these validation queries are logged into a file. This log serves as an audit trail and provides 
+clarity on whether each validation test passed or failed, offering actionable insights to system administrators. This 
+process ensures that backups are not only stored but are also reliable and ready to support recovery when needed.
 
 ## 5. Observations
+
+No observations.
