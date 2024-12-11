@@ -3,26 +3,51 @@ using MDBackoffice.Domain.Shared;
 
 namespace MDBackoffice.Domain.Specializations
 {
-    public class SpecializationDenomination : EntityId
+    public class SpecializationDenomination : IValueObject
     {
-
-        public SpecializationDenomination(string denomination) : base(denomination)
+        public string Denomination { get; }
+        private static int MAX_LENG_DENOMINATION = 100;
+        public SpecializationDenomination(string denomination)
         {
-            if (string.IsNullOrEmpty(denomination) || string.IsNullOrWhiteSpace(denomination))
+            if (string.IsNullOrEmpty(denomination))
             {
-                throw new BusinessRuleValidationException("Specializations must have a denomination");
+                throw new BusinessRuleValidationException("Specialization denomination cannot be null or empty.");
             }
+            if (denomination.Length > MAX_LENG_DENOMINATION)
+            {
+                throw new BusinessRuleValidationException("Specialization denomination cannot have more than 100 characters");
+            }
+            this.Denomination = denomination;
         }
 
-        protected override object createFromString(string text)
+        public override bool Equals(object obj)
         {
-            return text;
+            if (obj == null || GetType() != obj.GetType())
+            {
+                return false;
+            }
+
+            var other = (SpecializationDenomination)obj;
+            return Denomination == other.Denomination;
         }
-        
-        public override string AsString()
+
+        public override int GetHashCode()
         {
-            // Return the value as a string
-            return Value;
+            return HashCode.Combine(Denomination);
+        }
+
+        public override string ToString()
+        {
+            return Denomination;
+        }
+        public bool Contains(string value)
+        {
+            if (string.IsNullOrEmpty(value))
+            {
+                throw new ArgumentException("Value cannot be null or empty.", nameof(value));
+            }
+
+            return Denomination.Contains(value, StringComparison.OrdinalIgnoreCase);
         }
     }
 }

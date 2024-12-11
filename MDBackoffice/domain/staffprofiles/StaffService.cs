@@ -51,7 +51,7 @@ namespace MDBackoffice.Domain.StaffProfiles
                 throw new BusinessRuleValidationException("There already exists a staff member with that email or phone.");
             }
 
-            Specialization spec = await _repoSpec.GetByIdAsync(new SpecializationDenomination(dto.SpecializationId)) ??
+            Specialization spec = await _repoSpec.GetByIdAsync(new SpecializationCode(dto.SpecializationId)) ??
                 throw new BusinessRuleValidationException("Invalid specialization.");
 
             var seqNumber = await getSequentialNumber();

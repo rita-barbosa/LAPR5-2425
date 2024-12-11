@@ -82,9 +82,9 @@ namespace MDBackofficeTests.controllertests
                 specializationId
                 );
 
-            var specializationMock = new Mock<Specialization>("Ortopethics");
+            var specializationMock = new Mock<Specialization>("ortho-1","denom","descript");
 
-            _repoSpecMock.Setup(_repoSpecMock => _repoSpecMock.GetByIdAsync(It.IsAny<SpecializationDenomination>()))
+            _repoSpecMock.Setup(_repoSpecMock => _repoSpecMock.GetByIdAsync(It.IsAny<SpecializationCode>()))
                 .ReturnsAsync(specializationMock.Object);
             var context = new DefaultHttpContext();
             context.Request.Headers["Authorization"] = "Bearer valid-token";

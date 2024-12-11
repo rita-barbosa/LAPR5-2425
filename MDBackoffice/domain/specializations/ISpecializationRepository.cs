@@ -3,7 +3,7 @@ using MDBackoffice.Domain.Shared;
 
 namespace MDBackoffice.Domain.Specializations
 {
-    public interface ISpecializationRepository:IRepository<Specialization,SpecializationDenomination>
+    public interface ISpecializationRepository:IRepository<Specialization,SpecializationCode>
     {
 
     }

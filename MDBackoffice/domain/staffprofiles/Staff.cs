@@ -15,13 +15,13 @@ namespace MDBackoffice.Domain.StaffProfiles
         public List<Slot> Slots { get; set; }
         public Function Function { get; private set; }
         public ResidentialAddress Address { get; private set; }
-        public SpecializationDenomination SpecializationId { get; private set; }
+        public SpecializationCode SpecializationId { get; private set; }
         public string? UserReference { get; set; }
         public bool Status { get; set; }
 
 
         private Staff() { }
-        public Staff(string seqNumber, string address, string licenseNumber, string firstName, string lastName, string email, string phoneNumber, Function function, SpecializationDenomination specializationId)
+        public Staff(string seqNumber, string address, string licenseNumber, string firstName, string lastName, string email, string phoneNumber, Function function, SpecializationCode specializationId)
         {
             this.Id = new StaffId(function.GetCorrespondingChar(), seqNumber);
             Address = new ResidentialAddress(address);
@@ -45,7 +45,7 @@ namespace MDBackoffice.Domain.StaffProfiles
             Function = Function.GetFunctionByDescription(function);
             this.Id = new StaffId(Function.GetCorrespondingChar(), seqNumber);
             Status = true;
-            SpecializationId = new SpecializationDenomination(specializationId) ?? throw new BusinessRuleValidationException("Staff members must have a specialization.");
+            SpecializationId = new SpecializationCode(specializationId) ?? throw new BusinessRuleValidationException("Staff members must have a specialization.");
         }
 
         public void AddSlot(string startTime, string endTime, string startDate, string endDate = null)
@@ -85,8 +85,8 @@ namespace MDBackoffice.Domain.StaffProfiles
         }
 
         public void ChangeSpecialization(string specialization){
-            if(SpecializationId.Equals(new SpecializationDenomination(specialization))) throw new BusinessRuleValidationException("The new specialization is identical to the existing one.");
-            this.SpecializationId = new SpecializationDenomination(specialization);
+            if(SpecializationId.Equals(new SpecializationCode(specialization))) throw new BusinessRuleValidationException("The new specialization is identical to the existing one.");
+            this.SpecializationId = new SpecializationCode(specialization);
         }
 
         public void ChangeSlots(List<SlotsDto> slots)

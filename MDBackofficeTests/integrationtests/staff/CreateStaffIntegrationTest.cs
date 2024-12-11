@@ -71,7 +71,7 @@ namespace MDBackofficeTests.integrationtests.staff
                                             _userServiceMock.Object);
 
             var controller = new StaffController(_service,_userServiceMock.Object);
-            var specializationId = "Ortopethics";
+            var specializationId = "ortho-2";
 
             var dtoMock = new CreatingStaffDto
             ("12345",
@@ -84,7 +84,7 @@ namespace MDBackofficeTests.integrationtests.staff
                 specializationId
                 );
 
-            var specializationMock = new Mock<Specialization>("Ortopethics");
+            var specializationMock = new Mock<Specialization>("ortho-2","denom","descrip");
             var context = new DefaultHttpContext();
             context.Request.Headers["Authorization"] = "Bearer valid-token";
             controller.ControllerContext = new ControllerContext
@@ -94,7 +94,7 @@ namespace MDBackofficeTests.integrationtests.staff
             _userServiceMock.Setup(_userService => _userService.CheckUserRole("valid-token", "Admin")).Returns(false);
 
 
-            _repoSpecMock.Setup(_repoSpecMock => _repoSpecMock.GetByIdAsync(It.IsAny<SpecializationDenomination>()))
+            _repoSpecMock.Setup(_repoSpecMock => _repoSpecMock.GetByIdAsync(It.IsAny<SpecializationCode>()))
                 .ReturnsAsync(specializationMock.Object);
 
             _unitOfWorkMock.Setup(u => u.CommitAsync()).ReturnsAsync(1);
@@ -114,7 +114,7 @@ namespace MDBackofficeTests.integrationtests.staff
         public async Task CreateStaffProfile_ReturnsOkResult_IntegrationServiceDomain()
         {
             // Pass mocked dependencies to StaffService
-            var specializationId = "Ortopethics";
+            var specializationId = "ortho-2";
 
             var dtoMock = new CreatingStaffDto
             ("12345",
@@ -127,9 +127,9 @@ namespace MDBackofficeTests.integrationtests.staff
                 specializationId
                 );
 
-            var specializationMock = new Mock<Specialization>("Ortopethics");
+            var specializationMock = new Mock<Specialization>("ortho-2", "denom", "descrip");
 
-            _repoSpecMock.Setup(_repoSpecMock => _repoSpecMock.GetByIdAsync(It.IsAny<SpecializationDenomination>()))
+            _repoSpecMock.Setup(_repoSpecMock => _repoSpecMock.GetByIdAsync(It.IsAny<SpecializationCode>()))
                 .ReturnsAsync(specializationMock.Object);
 
             _unitOfWorkMock.Setup(u => u.CommitAsync()).ReturnsAsync(1);

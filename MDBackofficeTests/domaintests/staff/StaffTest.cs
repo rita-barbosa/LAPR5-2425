@@ -289,7 +289,7 @@ public class StaffTests
         entity.ChangeSpecialization(newSpecialization);
 
         // Assert
-        Assert.Equal(new SpecializationDenomination(newSpecialization), entity.SpecializationId);
+        Assert.Equal(new SpecializationCode(newSpecialization), entity.SpecializationId);
     }
 
     [Fact]

@@ -8,11 +8,11 @@ namespace MDBackoffice.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class SpecializationsController : ControllerBase
+    public class SpecializationController : ControllerBase
     {
         private readonly SpecializationService _service;
 
-        public SpecializationsController(SpecializationService service)
+    public SpecializationController(SpecializationService service)
         {
             _service = service;
         }
@@ -21,7 +21,7 @@ namespace MDBackoffice.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<SpecializationDto>> GetGetById(string id)
         {
-            var Specialization = await _service.GetByIdAsync(new SpecializationDenomination(id));
+            var Specialization = await _service.GetByIdAsync(new SpecializationCode(id));
 
             if (Specialization == null)
             {
@@ -52,7 +52,7 @@ namespace MDBackoffice.Controllers
         {
             var Specialization = await _service.AddAsync(dto);
 
-            return CreatedAtAction(nameof(GetGetById), new { id = new SpecializationDenomination(Specialization.Denomination) }, Specialization);
+            return CreatedAtAction(nameof(GetGetById), new { id = new SpecializationCode(Specialization.Denomination) }, Specialization);
         }
 
 

@@ -9,12 +9,24 @@ namespace MDBackoffice.Infrastructure.Specializations
         public void Configure(EntityTypeBuilder<Specialization> builder)
         {
             builder.HasKey(s => s.Id);
+            builder.OwnsOne(s => s.Denomination, n =>
+            {
+                n.Property(denomination => denomination.Denomination)
+                .IsRequired()
+                .HasColumnName("Denomination");
+            });
 
-            builder.HasMany(s => s.RequiredStaff)
-            .WithOne()
-            .HasForeignKey(s => s.SpecializationId)
-            .IsRequired()
-            .OnDelete(DeleteBehavior.Restrict);;
+            builder.OwnsOne(s => s.Description, n =>
+           {
+               n.Property(description => description.Description)
+               .IsRequired()
+               .HasColumnName("Description");
+           });
+            // builder.HasMany(s => s.RequiredStaff)
+            // .WithOne()
+            // .HasForeignKey(s => s.SpecializationId)
+            // .IsRequired()
+            // .OnDelete(DeleteBehavior.Restrict);;
 
             builder.ToTable("Specialization");
         }

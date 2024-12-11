@@ -93,7 +93,7 @@ public class StaffServiceTest
         public async Task CreateStaffProfile_ReturnsOkResult()
         {
             // Arrange
-            var specializationId = "Ortopethics";
+            var specializationId = "ortho-2";
             var dtoMock = new CreatingStaffDto
             ("12345",
                 "Portugal, 4590-850, Rua da Sardinha",
@@ -105,9 +105,9 @@ public class StaffServiceTest
                 specializationId
                 );
 
-            var specializationMock = new Mock<Specialization>("Ortopethics");
+        var specializationMock = new Mock<Specialization>("ortho-2", "denom", "descrip");
 
-            _repoSpecMock.Setup(_repoSpecMock => _repoSpecMock.GetByIdAsync(It.IsAny<SpecializationDenomination>()))
+        _repoSpecMock.Setup(_repoSpecMock => _repoSpecMock.GetByIdAsync(It.IsAny<SpecializationCode>()))
                 .ReturnsAsync(specializationMock.Object);
 
             // Act

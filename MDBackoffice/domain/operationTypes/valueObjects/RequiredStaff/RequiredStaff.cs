@@ -10,7 +10,7 @@ namespace MDBackoffice.Domain.OperationTypes.ValueObjects.RequiredStaff
         public OperationTypeId OperationTypeId { get; set; }
         public NumberStaff StaffQuantity { get;  private set; }
         public Function Function { get;  private set; }
-        public SpecializationDenomination SpecializationId { get;  private set; }
+        public SpecializationCode SpecializationId { get;  private set; }
 
 
         public RequiredStaff(){
@@ -21,7 +21,7 @@ namespace MDBackoffice.Domain.OperationTypes.ValueObjects.RequiredStaff
         {
             this.Id = new RequiredStaffId(RandomSequenceGenerator.GenerateUniqueRandomSequence(5));
             this.StaffQuantity = new NumberStaff(staffneeded);
-            this.SpecializationId = new SpecializationDenomination(specialization);
+            this.SpecializationId = new SpecializationCode(specialization);
             this.Function = Function.GetFunctionByDescription(function);
         }
 
@@ -51,7 +51,7 @@ namespace MDBackoffice.Domain.OperationTypes.ValueObjects.RequiredStaff
         
         public void ChangeSpecialization(string specialization)
         {
-            this.SpecializationId = new SpecializationDenomination(specialization);
+            this.SpecializationId = new SpecializationCode(specialization);
         }
 
     
