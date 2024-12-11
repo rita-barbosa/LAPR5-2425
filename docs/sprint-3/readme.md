@@ -30,7 +30,7 @@ Here is the updated table with the new data:
 | [7.2.8](1221933/us-7.2.8/readme.md)   | Ana             | Matilde        |
 | [7.2.9](1220738/us-7.2.9/readme.md)   | Afonso          | Rita           |
 | [7.2.10](1220841/us-7.2.10/readme.md) | Rita            | Afonso         |
-| [7.2.11](1220683/us-7.2.11/readme.md) | Matilde         | Ana            |
+| [7.2.11](1220841/us-7.2.11/readme.md) | Rita            | Afonso         |
 | [7.2.12](1220841/us-7.2.12/readme.md) | Rita            | Afonso         |
 | [7.2.13](1220841/us-7.2.13/readme.md) | Rita            | Afonso         |
 | [7.2.14](1220683/us-7.2.14/readme.md) | Matilde         | Ana            |
