@@ -152,6 +152,10 @@ namespace MDBackoffice.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "varchar(255)", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Denomination = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Description = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4")
                 },
                 constraints: table =>
@@ -381,6 +385,32 @@ namespace MDBackoffice.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
+                name: "RequiredStaff",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "varchar(255)", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    OperationTypeId = table.Column<string>(type: "varchar(255)", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    StaffQuantity_NumberRequired = table.Column<int>(type: "int", nullable: false),
+                    Function = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    SpecializationId = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_RequiredStaff", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_RequiredStaff_OperationType_OperationTypeId",
+                        column: x => x.OperationTypeId,
+                        principalTable: "OperationType",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
                 name: "PhaseRecord",
                 columns: table => new
                 {
@@ -476,38 +506,6 @@ namespace MDBackoffice.Migrations
                         principalTable: "Rooms",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                })
-                .Annotation("MySql:CharSet", "utf8mb4");
-
-            migrationBuilder.CreateTable(
-                name: "RequiredStaff",
-                columns: table => new
-                {
-                    Id = table.Column<string>(type: "varchar(255)", nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    OperationTypeId = table.Column<string>(type: "varchar(255)", nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    StaffQuantity_NumberRequired = table.Column<int>(type: "int", nullable: false),
-                    Function = table.Column<string>(type: "longtext", nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    SpecializationId = table.Column<string>(type: "varchar(255)", nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4")
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_RequiredStaff", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_RequiredStaff_OperationType_OperationTypeId",
-                        column: x => x.OperationTypeId,
-                        principalTable: "OperationType",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_RequiredStaff_Specialization_SpecializationId",
-                        column: x => x.SpecializationId,
-                        principalTable: "Specialization",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
@@ -783,11 +781,6 @@ namespace MDBackoffice.Migrations
                 name: "IX_RequiredStaff_OperationTypeId",
                 table: "RequiredStaff",
                 column: "OperationTypeId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_RequiredStaff_SpecializationId",
-                table: "RequiredStaff",
-                column: "SpecializationId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_RequiredStaffRecords_OperationTypeRecordId",

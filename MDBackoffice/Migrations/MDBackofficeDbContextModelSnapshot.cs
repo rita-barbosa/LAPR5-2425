@@ -140,13 +140,11 @@ namespace MDBackoffice.Migrations
 
                     b.Property<string>("SpecializationId")
                         .IsRequired()
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("longtext");
 
                     b.HasKey("Id");
 
                     b.HasIndex("OperationTypeId");
-
-                    b.HasIndex("SpecializationId");
 
                     b.ToTable("RequiredStaff", (string)null);
                 });
@@ -905,12 +903,6 @@ namespace MDBackoffice.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("MDBackoffice.Domain.Specializations.Specialization", null)
-                        .WithMany("RequiredStaff")
-                        .HasForeignKey("SpecializationId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
                     b.OwnsOne("MDBackoffice.Domain.Shared.Function", "Function", b1 =>
                         {
                             b1.Property<string>("RequiredStaffId")
@@ -1559,6 +1551,51 @@ namespace MDBackoffice.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("MDBackoffice.Domain.Specializations.Specialization", b =>
+                {
+                    b.OwnsOne("MDBackoffice.Domain.Specializations.SpecializationDenomination", "Denomination", b1 =>
+                        {
+                            b1.Property<string>("SpecializationId")
+                                .HasColumnType("varchar(255)");
+
+                            b1.Property<string>("Denomination")
+                                .IsRequired()
+                                .HasColumnType("longtext")
+                                .HasColumnName("Denomination");
+
+                            b1.HasKey("SpecializationId");
+
+                            b1.ToTable("Specialization");
+
+                            b1.WithOwner()
+                                .HasForeignKey("SpecializationId");
+                        });
+
+                    b.OwnsOne("MDBackoffice.Domain.Specializations.SpecializationDescription", "Description", b1 =>
+                        {
+                            b1.Property<string>("SpecializationId")
+                                .HasColumnType("varchar(255)");
+
+                            b1.Property<string>("Description")
+                                .IsRequired()
+                                .HasColumnType("longtext")
+                                .HasColumnName("Description");
+
+                            b1.HasKey("SpecializationId");
+
+                            b1.ToTable("Specialization");
+
+                            b1.WithOwner()
+                                .HasForeignKey("SpecializationId");
+                        });
+
+                    b.Navigation("Denomination")
+                        .IsRequired();
+
+                    b.Navigation("Description")
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("MDBackoffice.Domain.StaffProfiles.Staff", b =>
                 {
                     b.HasOne("MDBackoffice.Domain.Specializations.Specialization", null)
@@ -1921,11 +1958,6 @@ namespace MDBackoffice.Migrations
             modelBuilder.Entity("MDBackoffice.Domain.Patients.Patient", b =>
                 {
                     b.Navigation("AppointmentList");
-                });
-
-            modelBuilder.Entity("MDBackoffice.Domain.Specializations.Specialization", b =>
-                {
-                    b.Navigation("RequiredStaff");
                 });
 #pragma warning restore 612, 618
         }
