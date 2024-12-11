@@ -7,11 +7,6 @@
   * [3. Analysis](#3-analysis)
   * [4. Design](#4-design)
     * [4.1. Realization](#41-realization)
-      * [Views](#views)
-    * [4.2. Domain Model Excerpt](#42-domain-model-excerpt)
-    * [4.3. Applied Patterns](#43-applied-patterns)
-  * [5. Implementation](#5-implementation)
-  * [6. Testing](#6-testing)
 <!-- TOC -->
 
 
@@ -51,24 +46,13 @@ The main points are:
 
 ### 4.1. Realization
 
-//TO BE DONE
+In the previous sprint, there were identified 4 types of risks:
 
-#### Views
+* Security risks --> improper access, data breaches, ddos attacks, hacking, operation system vulnerabilities, social engineering
+* Operational risks --> service downtime, backup failures, physical damage to servers, failed or unplanned updates, communication failures between components
+* Legal risks --> non-compliance with GDPR
+* Third-Party Dependency risks --> ASP.NET service disruption
 
-//TO BE DONE
-
-### 4.2. Domain Model Excerpt
-
-//TO BE DONE
-
-### 4.3. Applied Patterns
-
-//TO BE DONE
-
-## 5. Implementation
-
-//TO BE DONE
-
-## 6. Testing
-
-//TO BE DONE
+The Business Impact Analysis (BIA) will focus on summarizing these risks, evaluating their potential impact on the 
+final solution, and presenting clear adaptation or mitigation strategies. Each risk category will be addressed with 
+its associated likelihood, impact, and overall risk level, ensuring a structured approach to risk management.
