@@ -59,7 +59,7 @@ What defines a specialization is:
 
 ### Domain Model
 
-![domain-model.svg](domain-model.svg)
+![domain-model.svg](diagrams/domain-model.svg)
 
 ## 4. Design
 
@@ -74,7 +74,7 @@ The process view levels are here presented as they represent a process specific 
 
 #### Level 1
 
-![us7.2.11-process-view-lvl1.svg](Process_View/Level-1/us7.2.11-process-view-lvl1.svg)
+![us7.2.11-process-view-lvl1.svg](diagrams/Level-1/us7.2.11-process-view-lvl1.svg)
 
 #### Level 2
 
@@ -84,10 +84,10 @@ it's diagram was deemed irrelevant.
 #### Level 3
 
 - _Visualization_<br>
-![us7.2.11-process-view-visualization-lvl3.svg](Process_View/Level-3/us7.2.11-process-view-visualization-lvl3.svg)
+![us7.2.11-process-view-visualization-lvl3.svg](diagrams/Level-3/us7.2.11-process-view-visualization-lvl3.svg)
 
 - _MDBackoffice_
-![us7.2.11-process-view-lvl3.svg](Process_View/Level-3/us7.2.11-process-view-lvl3.svg)
+![us7.2.11-process-view-lvl3.svg](diagrams/Level-3/us7.2.11-process-view-lvl3.svg)
 
 #### 4.1.3 Development View
 
