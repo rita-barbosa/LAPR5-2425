@@ -22,12 +22,6 @@ namespace MDBackoffice.Infrastructure.Specializations
                .IsRequired()
                .HasColumnName("Description");
            });
-            // builder.HasMany(s => s.RequiredStaff)
-            // .WithOne()
-            // .HasForeignKey(s => s.SpecializationId)
-            // .IsRequired()
-            // .OnDelete(DeleteBehavior.Restrict);;
-
             builder.ToTable("Specialization");
         }
     }

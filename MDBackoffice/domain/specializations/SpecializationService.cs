@@ -2,6 +2,7 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using MDBackoffice.Domain.Shared;
 using System;
+using System.Linq;
 
 namespace MDBackoffice.Domain.Specializations
 {
@@ -72,8 +73,20 @@ namespace MDBackoffice.Domain.Specializations
                 spec.ChangeDescription(dto.Description);
             }
             await _unitOfWork.CommitAsync();
-            
+
             return new SpecializationDto { Code = spec.Id.Value, Denomination = spec.Denomination.ToString(), Description = spec.Description.ToString() };
+        }
+
+        public async Task<List<SpecializationDto>> GetSpecializationsByFiltersAsync(string? code, string? denomination, string? description)
+        {
+            var specs = await _repo.FindAllConditioned(code, denomination, description);
+
+            return specs.Select(spec => new SpecializationDto
+            {
+                Code = spec.Id.Value,
+                Denomination = spec.Denomination.ToString(),
+                Description = spec.Description.ToString()
+            }).ToList();
         }
     }
 }

@@ -34,17 +34,26 @@ namespace MDBackoffice.Controllers
             return Specialization;
         }
 
-        [HttpGet()]
-        public async Task<ActionResult<List<SpecializationDto>>> GetAllAvailable()
+        [HttpGet("filtered")]
+        public async Task<ActionResult<List<SpecializationDto>>> GetSpecializationsByFilters([FromQuery] string? code = null,
+                                                                                             [FromQuery] string? denomination = null,
+                                                                                             [FromQuery] string? description = null)
         {
             try
             {
-                var Specialization = await _service.GetAllAsync();
+                var token = HttpContext.Request.Headers.Authorization.ToString()?.Split(' ')[1];
+
+                if (string.IsNullOrWhiteSpace(token) || _userSvc.CheckUserRole(token, "Admin"))
+                {
+                    return BadRequest("Invalid authorization or user role.");
+                }
+
+                var Specialization = await _service.GetSpecializationsByFiltersAsync(code, denomination, description);
                 return Ok(Specialization);
             }
             catch (Exception ex)
             {
-                return BadRequest(new { V = $"An unexpected error occurred: {ex.Message}" });
+                return BadRequest($"An unexpected error occurred ({ex.ToString()})");
             }
         }
         [HttpPost]
@@ -58,9 +67,9 @@ namespace MDBackoffice.Controllers
                 {
                     return BadRequest("Invalid authorization or user role.");
                 }
-                var Specialization = await _service.AddAsync(dto);
+                var specialization = await _service.AddAsync(dto);
 
-                return CreatedAtAction(nameof(GetGetById), new { id = new SpecializationCode(Specialization.Code) }, Specialization);
+                return CreatedAtAction(nameof(GetGetById), new { id = new SpecializationCode(specialization.Code) }, specialization);
             }
             catch (BusinessRuleValidationException ex)
             {
@@ -83,9 +92,9 @@ namespace MDBackoffice.Controllers
                 {
                     return BadRequest("Invalid authorization or user role.");
                 }
-                var Specialization = await _service.EditSpecialization(dto);
+                var specialization = await _service.EditSpecialization(dto);
 
-                return CreatedAtAction(nameof(GetGetById), new { id = new SpecializationCode(Specialization.Code) }, Specialization);
+                return Accepted(specialization);
             }
             catch (BusinessRuleValidationException ex)
             {
@@ -96,6 +105,5 @@ namespace MDBackoffice.Controllers
                 return BadRequest($"An unexpected error occurred ({ex.ToString()})");
             }
         }
-
     }
 }
