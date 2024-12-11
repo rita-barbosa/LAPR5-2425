@@ -7,11 +7,12 @@
   * [3. Analysis](#3-analysis)
   * [4. Design](#4-design)
     * [4.1. Realization](#41-realization)
-      * [Views](#views)
-    * [4.2. Domain Model Excerpt](#42-domain-model-excerpt)
-    * [4.3. Applied Patterns](#43-applied-patterns)
-  * [5. Implementation](#5-implementation)
-  * [6. Testing](#6-testing)
+      * [4.1.1. Roles and Permissions:](#411-roles-and-permissions)
+      * [4.1.2. Authentication:](#412-authentication)
+      * [4.1.3. Authorization and Access Control:](#413-authorization-and-access-control)
+      * [4.1.4. Compliance:](#414-compliance)
+      * [4.1.5. Implementation Plan:](#415-implementation-plan)
+      * [4.1.6. Testing and Validation:](#416-testing-and-validation)
 <!-- TOC -->
 
 
@@ -48,24 +49,29 @@ compliance with relevant security criteria.
 
 ### 4.1. Realization
 
-//TO BE DONE
+The access management system will implement role-based access control (RBAC) to ensure users access only the resources 
+and actions permitted based on their roles. The design will focus on user authentication, role assignment, and permissions
+enforcement while adhering to industry security standards.
 
-#### Views
+#### 4.1.1. Roles and Permissions:
+* Roles (e.g., Admin, Doctor, Staff, Patient) will define access levels.
+* Permissions will control actions like viewing, editing, and deleting records.
 
-//TO BE DONE
+#### 4.1.2. Authentication:
+* Users will authenticate via Single Sign-On (SSO), username/password.
+* Tokens will be used for API authentication.
 
-### 4.2. Domain Model Excerpt
+#### 4.1.3. Authorization and Access Control:
+* Users will be assigned roles based on their job function.
+* Permissions will be enforced before granting access to resources.
 
-//TO BE DONE
+#### 4.1.4. Compliance:
+* Audit logging will track access and unauthorized attempts.
+* Access reviews will ensure compliance with security policies.
 
-### 4.3. Applied Patterns
+#### 4.1.5. Implementation Plan:
+* Define roles, map permissions, set up authentication, develop access control logic, and integrate logging and monitoring.
 
-//TO BE DONE
-
-## 5. Implementation
-
-//TO BE DONE
-
-## 6. Testing
-
-//TO BE DONE
+#### 4.1.6. Testing and Validation:
+* Access control tests will ensure users only access authorized resources.
+* Security audits will ensure compliance with standards like GDPR.
