@@ -7,11 +7,6 @@
   * [3. Analysis](#3-analysis)
   * [4. Design](#4-design)
     * [4.1. Realization](#41-realization)
-      * [Views](#views)
-    * [4.2. Domain Model Excerpt](#42-domain-model-excerpt)
-    * [4.3. Applied Patterns](#43-applied-patterns)
-  * [5. Implementation](#5-implementation)
-  * [6. Testing](#6-testing)
 <!-- TOC -->
 
 
@@ -51,24 +46,16 @@ and operational feasibility must also be addressed to ensure the proposal is act
 
 ### 4.1. Realization
 
-//TO BE DONE
+To achieve an MTD(Maximum Tolerable Downtime) of 20 minutes it is important to make the follow changes:
 
-#### Views
-
-//TO BE DONE
-
-### 4.2. Domain Model Excerpt
-
-//TO BE DONE
-
-### 4.3. Applied Patterns
-
-//TO BE DONE
-
-## 5. Implementation
-
-//TO BE DONE
-
-## 6. Testing
-
-//TO BE DONE
+* **Assess Current Infrastructure:** Conduct a thorough review of the existing system to identify vulnerabilities, such as 
+single points of failure or inadequate backup strategies.
+* **Backup Systems:** Automate backups to occur at short intervals, ensuring recent data is always available for quick recovery.
+* **Strengthen Disaster Recovery Protocols:** Establish geographically distributed data centers to prevent service disruptions
+in case of regional failures. Implement automated failover systems to switch operations to backup sites with minimal delay.
+* **Monitoring and Alerting Systems:** Introduce 24/7 monitoring tools to track system performance, resource utilization, 
+and health status of all critical components. Set up automated alerts to notify administrators of potential issues before they lead to failures.
+* **Perform Regular DR Drills:** Schedule regular testing of the disaster recovery process and simulate various failure 
+scenarios to ensure the system can recover within the 20-minute window.
+* **Optimize System Performance:** Identify and eliminate any performance bottlenecks in the system, including slow database
+queries, inadequate server resources, or network congestion, to ensure that recovery processes are not delayed.

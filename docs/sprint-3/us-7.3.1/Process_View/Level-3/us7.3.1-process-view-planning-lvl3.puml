@@ -15,7 +15,7 @@ activate DistributeOperations
 DistributeOperations -> InitializeRoomSchedules: initialize_room_schedules(Rooms, Day, InitialSchedules)
 activate InitializeRoomSchedules
 InitializeRoomSchedules -> InitializeRoomSchedules: Fetch agenda for each room
-deactivate InitializeRoomSchedules
+
 InitializeRoomSchedules --> DistributeOperations: Return InitialSchedules
 deactivate InitializeRoomSchedules
 
