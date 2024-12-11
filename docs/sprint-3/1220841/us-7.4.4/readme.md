@@ -7,7 +7,6 @@
   - [3. Analysis](#3-analysis)
   - [4. Design](#4-design)
     - [4.1. Realization](#41-realization)
-  - [5. Implementation](#5-implementation)
 <!-- TOC -->
 
 ## 1. Context
@@ -40,8 +39,4 @@ For this functionality a script will be developed in order to manage the backup 
 
 ## 4. Design
 
-### 4.1. Realization
-
-//Todo
-
-## 5. Implementation
+//TO BE DONE

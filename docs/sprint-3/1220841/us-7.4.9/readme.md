@@ -6,8 +6,6 @@
   - [2. Requirements](#2-requirements)
   - [3. Analysis](#3-analysis)
   - [4. Design](#4-design)
-  - [5. Implementation](#5-implementation)
-  - [6. Testing](#6-testing)
 <!-- TOC -->
 
 
@@ -27,10 +25,3 @@ To implement a clustering system for the SPA, we need to configure load balancin
 
 //TO BE DONE
 
-## 5. Implementation
-
-//TO BE DONE
-
-## 6. Testing
-
-//TO BE DONE
