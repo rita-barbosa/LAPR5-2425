@@ -1,0 +1,101 @@
+using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Threading.Tasks;
+using MDBackoffice.Domain.Specializations;
+using System.Collections.Generic;
+using MDBackoffice.Domain.Users;
+using MDBackoffice.Domain.Shared;
+
+namespace MDBackoffice.Controllers
+{
+    [Route("api/[controller]")]
+    [ApiController]
+    public class SpecializationController : ControllerBase
+    {
+        private readonly SpecializationService _service;
+        private readonly UserService _userSvc;
+        public SpecializationController(SpecializationService service, UserService svc)
+        {
+            _service = service;
+            _userSvc = svc;
+        }
+
+        // GET: api/Specializations/5
+        [HttpGet("{id}")]
+        public async Task<ActionResult<SpecializationDto>> GetGetById(string id)
+        {
+            var Specialization = await _service.GetByIdAsync(new SpecializationCode(id));
+
+            if (Specialization == null)
+            {
+                return NotFound();
+            }
+
+            return Specialization;
+        }
+
+        [HttpGet()]
+        public async Task<ActionResult<List<SpecializationDto>>> GetAllAvailable()
+        {
+            try
+            {
+                var Specialization = await _service.GetAllAsync();
+                return Ok(Specialization);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { V = $"An unexpected error occurred: {ex.Message}" });
+            }
+        }
+        [HttpPost]
+        public async Task<ActionResult<SpecializationDto>> Create(SpecializationDto dto)
+        {
+            try
+            {
+                var token = HttpContext.Request.Headers.Authorization.ToString()?.Split(' ')[1];
+
+                if (string.IsNullOrWhiteSpace(token) || _userSvc.CheckUserRole(token, "Admin"))
+                {
+                    return BadRequest("Invalid authorization or user role.");
+                }
+                var Specialization = await _service.AddAsync(dto);
+
+                return CreatedAtAction(nameof(GetGetById), new { id = new SpecializationCode(Specialization.Code) }, Specialization);
+            }
+            catch (BusinessRuleValidationException ex)
+            {
+                return BadRequest(ex.ToString());
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"An unexpected error occurred ({ex.ToString()})");
+            }
+        }
+
+        [HttpPut]
+        public async Task<ActionResult<SpecializationDto>> EditSpecialization(EditSpecializationDto dto)
+        {
+            try
+            {
+                var token = HttpContext.Request.Headers.Authorization.ToString()?.Split(' ')[1];
+
+                if (string.IsNullOrWhiteSpace(token) || _userSvc.CheckUserRole(token, "Admin"))
+                {
+                    return BadRequest("Invalid authorization or user role.");
+                }
+                var Specialization = await _service.EditSpecialization(dto);
+
+                return CreatedAtAction(nameof(GetGetById), new { id = new SpecializationCode(Specialization.Code) }, Specialization);
+            }
+            catch (BusinessRuleValidationException ex)
+            {
+                return BadRequest(ex.ToString());
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"An unexpected error occurred ({ex.ToString()})");
+            }
+        }
+
+    }
+}
