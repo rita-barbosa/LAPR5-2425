@@ -80,7 +80,7 @@ namespace MDBackofficeTests.controllertests
                     new OperationTypeListingFilterParametersDto
                     {
                         Name = "test type 1",
-                        Specialization = "ortho",
+                        Specialization = "25841809",
                         Status = "Active"
                     }
                 }
@@ -107,7 +107,7 @@ namespace MDBackofficeTests.controllertests
                 new RequiredStaffDto{
                     StaffQuantity = 1,
                     Function = "doctor",
-                    Specialization = "ortho"
+                    Specialization = "25841809"
                 }
             };
 
@@ -182,7 +182,7 @@ namespace MDBackofficeTests.controllertests
                 new RequiredStaffDto{
                     StaffQuantity = 1,
                     Function = "doctor",
-                    Specialization = "ortho"
+                    Specialization = "25841809"
                 }
             };
 
@@ -239,7 +239,7 @@ namespace MDBackofficeTests.controllertests
                 new RequiredStaffDto{
                     StaffQuantity = 1,
                     Function = "doctor",
-                    Specialization = "ortho"
+                    Specialization = "25841809"
                 }
             };
 
@@ -308,7 +308,7 @@ namespace MDBackofficeTests.controllertests
                 new RequiredStaffDto{
                     StaffQuantity = 1,
                     Function = "doctor",
-                    Specialization = "ortho"
+                    Specialization = "25841809"
                 }
             };
 

@@ -70,7 +70,7 @@ namespace MDBackofficeTests.controllertests
             // Arrange
             
 
-            var specializationId = "Ortopethics";
+            var specializationId = "25841809";
             var dtoMock = new CreatingStaffDto
             ("12345",
                 "Portugal, 4590-850, Rua da Sardinha",
@@ -82,7 +82,7 @@ namespace MDBackofficeTests.controllertests
                 specializationId
                 );
 
-            var specializationMock = new Mock<Specialization>("ortho-1","denom","descript");
+            var specializationMock = new Mock<Specialization>("25841809","denom","descript");
 
             _repoSpecMock.Setup(_repoSpecMock => _repoSpecMock.GetByIdAsync(It.IsAny<SpecializationCode>()))
                 .ReturnsAsync(specializationMock.Object);
@@ -114,7 +114,7 @@ namespace MDBackofficeTests.controllertests
             ("+351 910000011",
               "test@email.com",
               "New, 1234-234, Updated",
-              "cardiology");
+              "25841209");
 
             var email = "ritabarbosa@email.com";
             var userid = "testid";
@@ -125,10 +125,10 @@ namespace MDBackofficeTests.controllertests
             userMock.Setup(u => u.Email).Returns(email);
             userMock.Setup(u => u.Status).Returns(true);
 
-            var staffMock = new Mock<Staff>("00001", "Portugal, 4570-860, Rua das Oliveiras", "12345", "Rita", "Barbosa", "Rita Barbosa", email, "+351", "987654321", "Doctor", "Orthopedics");
+            var staffMock = new Mock<Staff>("00001", "Portugal, 4570-860, Rua das Oliveiras", "12345", "Rita", "Barbosa", "Rita Barbosa", email, "+351", "987654321", "Doctor", "25841809");
             var id = "D202400001";
 
-            var dtoResult = new StaffDto("Rita Barbosa", "+351 910000011", "test@email.com", "New, 1234-234, Updated", id, "cardiology");
+            var dtoResult = new StaffDto("Rita Barbosa", "+351 910000011", "test@email.com", "New, 1234-234, Updated", id, "25841209");
 
             _repoMock.Setup(_repoPatMock => _repoPatMock.GetByIdAsync(It.IsAny<StaffId>()))
                 .ReturnsAsync(staffMock.Object);
@@ -232,11 +232,11 @@ namespace MDBackofficeTests.controllertests
             // Arrange
             string email = "exampleemail@gmail.com";
 
-            var staffMock = new Mock<Staff>("00001", "Portugal, 4570-860, Rua das Oliveiras", "12345", "Rita", "Barbosa", "Rita Barbosa", email, "+351", "987654321", "Doctor", "Orthopedics");
+            var staffMock = new Mock<Staff>("00001", "Portugal, 4570-860, Rua das Oliveiras", "12345", "Rita", "Barbosa", "Rita Barbosa", email, "+351", "987654321", "Doctor", "25841809");
             var id = "D202400001";
             
 
-            var specializationMock = new Mock<Specialization>("Ortopethics");
+            var specializationMock = new Mock<Specialization>("25841809");
             var context = new DefaultHttpContext();
             context.Request.Headers["Authorization"] = "Bearer valid-token";
             _controller.ControllerContext = new ControllerContext
@@ -265,7 +265,7 @@ namespace MDBackofficeTests.controllertests
             var staffId = "D202400001";
             var email = "ritabarbosa@email.com";
 
-            var staffMock = new Mock<Staff>("00001", "Portugal, 4570-860, Rua das Oliveiras", "12345", "Rita", "Barbosa", "Rita Barbosa", email, "+351", "987654321", "Doctor", "Orthopedics");
+            var staffMock = new Mock<Staff>("00001", "Portugal, 4570-860, Rua das Oliveiras", "12345", "Rita", "Barbosa", "Rita Barbosa", email, "+351", "987654321", "Doctor", "25841809");
 
             _service.Setup(service => service.ConfirmEmailStaff(userId,staffId, token))
                             .Returns(Task.CompletedTask);

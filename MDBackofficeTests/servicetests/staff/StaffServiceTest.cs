@@ -93,7 +93,7 @@ public class StaffServiceTest
         public async Task CreateStaffProfile_ReturnsOkResult()
         {
             // Arrange
-            var specializationId = "ortho-2";
+            var specializationId = "25841809";
             var dtoMock = new CreatingStaffDto
             ("12345",
                 "Portugal, 4590-850, Rua da Sardinha",
@@ -105,7 +105,7 @@ public class StaffServiceTest
                 specializationId
                 );
 
-        var specializationMock = new Mock<Specialization>("ortho-2", "denom", "descrip");
+        var specializationMock = new Mock<Specialization>("25841809", "denom", "descrip");
 
         _repoSpecMock.Setup(_repoSpecMock => _repoSpecMock.GetByIdAsync(It.IsAny<SpecializationCode>()))
                 .ReturnsAsync(specializationMock.Object);
@@ -132,7 +132,7 @@ public class StaffServiceTest
             ("+351 910000011",
               "test@email.com",
               "New, 1234-234, Updated",
-              "cardiology");
+              "25841201");
 
             var email = "ritabarbosa@email.com";
             var userid = "testid";
@@ -143,10 +143,10 @@ public class StaffServiceTest
             userMock.Setup(u => u.Email).Returns(email);
             userMock.Setup(u => u.Status).Returns(true);
 
-            var staffMock = new Mock<Staff>("00001", "Portugal, 4570-860, Rua das Oliveiras", "12345", "Rita", "Barbosa", "Rita Barbosa",email, "+351", "987654321", "Doctor", "Orthopedics");
+            var staffMock = new Mock<Staff>("00001", "Portugal, 4570-860, Rua das Oliveiras", "12345", "Rita", "Barbosa", "Rita Barbosa",email, "+351", "987654321", "Doctor", "251010300");
             var id = "D202400001";
 
-            var dtoResult = new StaffDto("Rita Barbosa", "+351 910000011", "test@email.com", "New, 1234-234, Updated", id, "cardiology");
+            var dtoResult = new StaffDto("Rita Barbosa", "+351 910000011", "test@email.com", "New, 1234-234, Updated", id, "25841201");
 
             _repoMock.Setup(_repoPatMock => _repoPatMock.GetByIdAsync(It.IsAny<StaffId>()))
                 .ReturnsAsync(staffMock.Object);
@@ -176,7 +176,7 @@ public class StaffServiceTest
     {
         // Arrange
         var email = "ritabarbosa@email.com";
-        var staffMock = new Mock<Staff>("00001", "Portugal, 4570-860, Rua das Oliveiras", "12345", "Rita", "Barbosa", "Rita Barbosa", email, "+351", "987654321", "Doctor", "Orthopedics");
+        var staffMock = new Mock<Staff>("00001", "Portugal, 4570-860, Rua das Oliveiras", "12345", "Rita", "Barbosa", "Rita Barbosa", email, "+351", "987654321", "Doctor", "251010300");
 
         List<Staff> result = new List<Staff> { staffMock.Object };
 
@@ -198,7 +198,7 @@ public class StaffServiceTest
         string firstName = "Duarte";
         string lastName = "Matos";
         string email = "exampleemail@gmail.com";
-        string specialization = "Cardiology";
+        string specialization = "25841201";
 
         StaffListingFilterParametersDto listingFilterParametersDto
             = new StaffListingFilterParametersDto(
@@ -216,7 +216,7 @@ public class StaffServiceTest
         StaffQueryParametersDto dto = new StaffQueryParametersDto(listingFilterParametersDtosList);
         var id = "202410000001";
 
-        var staffMock = new Mock<Staff>("00001", "Portugal, 4570-860, Rua das Oliveiras", "12345", "Rita", "Barbosa", "Rita Barbosa", email, "+351", "987654321", "Doctor", "Orthopedics");
+        var staffMock = new Mock<Staff>("00001", "Portugal, 4570-860, Rua das Oliveiras", "12345", "Rita", "Barbosa", "Rita Barbosa", email, "+351", "987654321", "Doctor", "251010300");
 
         List<Staff> result = new List<Staff> { staffMock.Object };
 
@@ -237,7 +237,7 @@ public class StaffServiceTest
         // Arrange
         string email = "exampleemail@gmail.com";
 
-        var staffMock = new Mock<Staff>("00001", "Portugal, 4570-860, Rua das Oliveiras", "12345", "Rita", "Barbosa", "Rita Barbosa", email, "+351", "987654321", "Doctor", "Orthopedics");
+        var staffMock = new Mock<Staff>("00001", "Portugal, 4570-860, Rua das Oliveiras", "12345", "Rita", "Barbosa", "Rita Barbosa", email, "+351", "987654321", "Doctor", "251010300");
         var id = "D202400001";
         
 
@@ -271,7 +271,7 @@ public class StaffServiceTest
 
         var staffId = "D202400001";
 
-        var staffMock = new Mock<Staff>("00001", "Portugal, 4570-860, Rua das Oliveiras", "12345", "Rita", "Barbosa", "Rita Barbosa", email, "+351", "987654321", "Doctor", "Orthopedics");
+        var staffMock = new Mock<Staff>("00001", "Portugal, 4570-860, Rua das Oliveiras", "12345", "Rita", "Barbosa", "Rita Barbosa", email, "+351", "987654321", "Doctor", "251010300");
 
         _userManagerMock.Setup(repo => repo.FindByIdAsync(userId)).ReturnsAsync(userMock.Object);
         _userManagerMock.Setup(repo => repo.UpdateAsync(It.IsAny<User>())).Returns(Task.FromResult(IdentityResult.Success));

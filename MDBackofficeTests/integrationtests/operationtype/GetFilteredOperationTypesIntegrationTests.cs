@@ -80,7 +80,7 @@ namespace MDBackofficeTests.integrationtests.operationtype
                     new OperationTypeListingFilterParametersDto
                     {
                         Name = "test type 1",
-                        Specialization = "ortho",
+                        Specialization = "25001907",
                         Status = "Active"
                     }
                 }
@@ -107,7 +107,7 @@ namespace MDBackofficeTests.integrationtests.operationtype
                 new RequiredStaffDto{
                     StaffQuantity = 1,
                     Function = "doctor",
-                    Specialization = "ortho"
+                    Specialization = "25001907"
                 }
             };
 
@@ -164,7 +164,7 @@ namespace MDBackofficeTests.integrationtests.operationtype
                     new OperationTypeListingFilterParametersDto
                     {
                         Name = "test type 1",
-                        Specialization = "ortho",
+                        Specialization = "25001907",
                         Status = "Active"
                     }
                 }
@@ -189,7 +189,7 @@ namespace MDBackofficeTests.integrationtests.operationtype
                 new RequiredStaffDto{
                     StaffQuantity = 1,
                     Function = "doctor",
-                    Specialization = "ortho"
+                    Specialization = "25001907"
                 }
             };
             var operationTypes = new List<OperationType>

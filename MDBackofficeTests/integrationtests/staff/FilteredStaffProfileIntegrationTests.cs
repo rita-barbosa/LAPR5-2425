@@ -107,7 +107,7 @@ namespace MDBackofficeTests.integrationtests.patient
 
             result.Add(dtoResult);
 
-            var staffMock = new Mock<Staff>("00001", "Portugal, 4570-860, Rua das Oliveiras", "12345", "Rita", "Barbosa", "Rita Barbosa", email, "+351", "987654321", "Doctor", "Orthopedics");
+            var staffMock = new Mock<Staff>("00001", "Portugal, 4570-860, Rua das Oliveiras", "12345", "Rita", "Barbosa", "Rita Barbosa", email, "+351", "987654321", "Doctor", "251010299");
 
             List<Staff> resultList = new List<Staff> { staffMock.Object };
 
@@ -159,7 +159,7 @@ namespace MDBackofficeTests.integrationtests.patient
             StaffQueryParametersDto dto = new StaffQueryParametersDto(listingFilterParametersDtosList);
             var id = "202410000001";
 
-            var staffMock = new Staff("00001", "Portugal, 4570-860, Rua das Oliveiras", "12345", "Rita", "Barbosa", "Rita Barbosa", email, "+351", "987654321", "Doctor", "Orthopedics");
+            var staffMock = new Staff("00001", "Portugal, 4570-860, Rua das Oliveiras", "12345", "Rita", "Barbosa", "Rita Barbosa", email, "+351", "987654321", "Doctor", "251010299");
 
             List<Staff> result = new List<Staff> { staffMock };
 

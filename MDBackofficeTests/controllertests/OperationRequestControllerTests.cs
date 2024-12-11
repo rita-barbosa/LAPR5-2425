@@ -114,7 +114,7 @@ namespace MDBackofficeTests.controllertests
                 opTyId
                 );
 
-            var staffMock = new Mock<Staff>("00001", "country, 12345, street test", "12345", "first", "last", "first last", "email@email.com", "+123", "12345678", "doctor", "ortho");
+            var staffMock = new Mock<Staff>("00001", "country, 12345, street test", "12345", "first", "last", "first last", "email@email.com", "+123", "12345678", "doctor", "25841809");
             var patientMock = new Mock<Patient>("first", "last", "first last", "country, 12345, street test", "female", "+123", "12345678", "98765432", "email@email.com", "2000-10-10", "000001");
             var phases = new List<PhaseDto>
             {
@@ -137,7 +137,7 @@ namespace MDBackofficeTests.controllertests
                 new RequiredStaffDto{
                     StaffQuantity = 1,
                     Function = "doctor",
-                    Specialization = "ortho"
+                    Specialization = "25841809"
                 }
             };
 
@@ -179,7 +179,7 @@ namespace MDBackofficeTests.controllertests
             var dateOfRequest = "2024-10-25";
             var deadLineDate = "2024-12-31";
 
-            var staffMock = new Staff("00001", "country, 12345, street test", "12345", "first", "last", "first last", "email@email.com", "+123", "12345678", "doctor", "ortho");
+            var staffMock = new Staff("00001", "country, 12345, street test", "12345", "first", "last", "first last", "email@email.com", "+123", "12345678", "doctor", "25841809");
             var patientMock = new Mock<Patient>("first", "last", "first last", "country, 12345, street test", "female", "+123", "12345678", "98765432", "email@email.com", "2000-10-10", "000001");
             var phases = new List<PhaseDto>
             {
@@ -202,7 +202,7 @@ namespace MDBackofficeTests.controllertests
                 new RequiredStaffDto{
                     StaffQuantity = 1,
                     Function = "doctor",
-                    Specialization = "ortho"
+                    Specialization = "25841809"
                 }
             };
 
@@ -281,7 +281,7 @@ namespace MDBackofficeTests.controllertests
             var dateOfRequest = "2024-10-25";
             var deadLineDate = "2024-12-31";
 
-            var staffMock = new Staff("00001", "country, 12345, street test", "12345", "first", "last", "first last", "email@email.com", "+123", "12345678", "doctor", "ortho");
+            var staffMock = new Staff("00001", "country, 12345, street test", "12345", "first", "last", "first last", "email@email.com", "+123", "12345678", "doctor", "25841809");
             var patientMock = new Mock<Patient>("first", "last", "first last", "country, 12345, street test", "female", "+123", "12345678", "98765432", "email@email.com", "2000-10-10", "000001");
             var phases = new List<PhaseDto>
             {
@@ -304,7 +304,7 @@ namespace MDBackofficeTests.controllertests
                 new RequiredStaffDto{
                     StaffQuantity = 1,
                     Function = "doctor",
-                    Specialization = "ortho"
+                    Specialization = "25841809"
                 }
             };
 
@@ -352,7 +352,7 @@ namespace MDBackofficeTests.controllertests
             var dateOfRequest = "2024-10-25";
             var deadLineDate = "2024-12-31";
 
-            var staffMock = new Staff("00001", "country, 12345, street test", "12345", "first", "last", "first last", "email@email.com", "+123", "12345678", "doctor", "ortho");
+            var staffMock = new Staff("00001", "country, 12345, street test", "12345", "first", "last", "first last", "email@email.com", "+123", "12345678", "doctor", "25841809");
             var patientMock = new Mock<Patient>("first", "last", "first last", "country, 12345, street test", "female", "+123", "12345678", "98765432", "email@email.com", "2000-10-10", "000001");
             var phases = new List<PhaseDto>
             {
@@ -375,7 +375,7 @@ namespace MDBackofficeTests.controllertests
                 new RequiredStaffDto{
                     StaffQuantity = 1,
                     Function = "doctor",
-                    Specialization = "ortho"
+                    Specialization = "25841809"
                 }
             };
 
@@ -418,7 +418,7 @@ namespace MDBackofficeTests.controllertests
             var password = "NewPass00_d";
 
 
-            var staffMock = new Mock<Staff>("00001", "country, 12345, street test", "12345", "first", "last", "first last", "email@email.com", "+123", "12345678", "doctor", "ortho");
+            var staffMock = new Mock<Staff>("00001", "country, 12345, street test", "12345", "first", "last", "first last", "email@email.com", "+123", "12345678", "doctor", "25841809");
             var patientMock = new Mock<Patient>("first", "last", "first last", "country, 12345, street test", "female", "+123", "12345678", "98765432", "email@email.com", "2000-10-10", "000001");
             var phases = new List<PhaseDto>
             {
@@ -441,7 +441,7 @@ namespace MDBackofficeTests.controllertests
                 new RequiredStaffDto{
                     StaffQuantity = 1,
                     Function = "doctor",
-                    Specialization = "ortho"
+                    Specialization = "25841809"
                 }
             };
 
@@ -500,7 +500,7 @@ namespace MDBackofficeTests.controllertests
             var password = "NewPass00_d";
 
 
-            var staffMock = new Mock<Staff>("00001", "country, 12345, street test", "12345", "first", "last", "first last", "email@email.com", "+123", "12345678", "doctor", "ortho");
+            var staffMock = new Mock<Staff>("00001", "country, 12345, street test", "12345", "first", "last", "first last", "email@email.com", "+123", "12345678", "doctor", "25841809");
             var patientMock = new Mock<Patient>("first", "last", "first last", "country, 12345, street test", "female", "+123", "12345678", "98765432", "email@email.com", "2000-10-10", "000001");
             var phases = new List<PhaseDto>
             {
@@ -523,7 +523,7 @@ namespace MDBackofficeTests.controllertests
                 new RequiredStaffDto{
                     StaffQuantity = 1,
                     Function = "doctor",
-                    Specialization = "ortho"
+                    Specialization = "25841809"
                 }
             };
 

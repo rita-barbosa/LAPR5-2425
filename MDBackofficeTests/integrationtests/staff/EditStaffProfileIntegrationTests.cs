@@ -80,7 +80,7 @@ namespace MDBackofficeTests.integrationtests.staff
             ("+351 910000011",
               "test@email.com",
               "New, 1234-234, Updated",
-              "cardiology");
+              "25841300");
 
             var email = "ritabarbosa@email.com";
             var userid = "testid";
@@ -91,10 +91,10 @@ namespace MDBackofficeTests.integrationtests.staff
             userMock.Setup(u => u.Email).Returns(email);
             userMock.Setup(u => u.Status).Returns(true);
 
-            var staffMock = new Mock<Staff>("00001", "Portugal, 4570-860, Rua das Oliveiras", "12345", "Rita", "Barbosa", "Rita Barbosa", email, "+351", "987654321", "Doctor", "Orthopedics");
+            var staffMock = new Mock<Staff>("00001", "Portugal, 4570-860, Rua das Oliveiras", "12345", "Rita", "Barbosa", "Rita Barbosa", email, "+351", "987654321", "Doctor", "25841209");
             var id = "D202400001";
 
-            var dtoResult = new StaffDto("Rita Barbosa", "+351 910000011", "test@email.com", "New, 1234-234, Updated", id, "cardiology");
+            var dtoResult = new StaffDto("Rita Barbosa", "+351 910000011", "test@email.com", "New, 1234-234, Updated", id, "25841300");
 
             var context = new DefaultHttpContext();
             context.Request.Headers["Authorization"] = "Bearer valid-token";
@@ -138,7 +138,7 @@ namespace MDBackofficeTests.integrationtests.staff
             ("+351 910000011",
               "test@email.com",
               "New, 1234-234, Updated",
-              "cardiology");
+              "25841300");
 
             var email = "ritabarbosa@email.com";
   
@@ -148,10 +148,10 @@ namespace MDBackofficeTests.integrationtests.staff
             user.Email = email;
             user.Status = true;
 
-            var staff= new Staff("00001", "Portugal, 4570-860, Rua das Oliveiras", "12345", "Rita", "Barbosa", "Rita Barbosa", email, "+351", "987654321", "Doctor", "Orthopedics");
+            var staff= new Staff("00001", "Portugal, 4570-860, Rua das Oliveiras", "12345", "Rita", "Barbosa", "Rita Barbosa", email, "+351", "987654321", "Doctor", "25841209");
             var id = "D202400001";
 
-            var dtoResult = new StaffDto("Rita Barbosa", "+351 910000011", "test@email.com", "New, 1234-234, Updated", id, "cardiology");
+            var dtoResult = new StaffDto("Rita Barbosa", "+351 910000011", "test@email.com", "New, 1234-234, Updated", id, "25841300");
 
             _repoMock.Setup(_repoPatMock => _repoPatMock.GetByIdAsync(It.IsAny<StaffId>()))
                 .ReturnsAsync(staff);
@@ -192,7 +192,7 @@ namespace MDBackofficeTests.integrationtests.staff
             userMock.Setup(u => u.Email).Returns(email);
             userMock.Setup(u => u.Status).Returns(true);
 
-            var staffMock = new Mock<Staff>("00001", "Portugal, 4570-860, Rua das Oliveiras", "12345", "Rita", "Barbosa", "Rita Barbosa", email, "+351", "987654321", "Doctor", "Orthopedics");
+            var staffMock = new Mock<Staff>("00001", "Portugal, 4570-860, Rua das Oliveiras", "12345", "Rita", "Barbosa", "Rita Barbosa", email, "+351", "987654321", "Doctor", "25841209");
             _userManagerMock.Setup(repo => repo.FindByIdAsync(userId)).ReturnsAsync(userMock.Object);
             _userManagerMock.Setup(repo => repo.UpdateAsync(It.IsAny<User>())).Returns(Task.FromResult(IdentityResult.Success));
             tokenServiceMock.Setup(t => t.ConfirmEmailToken(userId, token)).ReturnsAsync(true);
@@ -220,7 +220,7 @@ namespace MDBackofficeTests.integrationtests.staff
 
             var staffId = "D202400001";
 
-            var staff = new Staff("00001", "Portugal, 4570-860, Rua das Oliveiras", "12345", "Rita", "Barbosa", "Rita Barbosa", email, "+351", "987654321", "Doctor", "Orthopedics");
+            var staff = new Staff("00001", "Portugal, 4570-860, Rua das Oliveiras", "12345", "Rita", "Barbosa", "Rita Barbosa", email, "+351", "987654321", "Doctor", "25841209");
 
             _userManagerMock.Setup(repo => repo.FindByIdAsync(userId)).ReturnsAsync(user);
             _userManagerMock.Setup(repo => repo.UpdateAsync(It.IsAny<User>())).Returns(Task.FromResult(IdentityResult.Success));

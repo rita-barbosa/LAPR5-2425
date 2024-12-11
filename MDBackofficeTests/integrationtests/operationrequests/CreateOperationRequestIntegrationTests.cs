@@ -95,7 +95,7 @@ namespace MDBackofficeTests.integrationtests.operationrequests
                 patientId,
                 opTyId
             );
-            var staffMock = new Mock<Staff>("00001", "country, 12345, street test", "12345", "first", "last", "first last", "email@email.com", "+123", "12345678", "doctor", "ortho");
+            var staffMock = new Mock<Staff>("00001", "country, 12345, street test", "12345", "first", "last", "first last", "email@email.com", "+123", "12345678", "doctor", "25001907");
             var patientMock = new Mock<Patient>("first", "last", "first last", "country, 12345, street test", "female", "+123", "12345678", "98765432", "email@email.com", "2000-10-10", "000001");
             var phases = new List<PhaseDto>
             {
@@ -117,7 +117,7 @@ namespace MDBackofficeTests.integrationtests.operationrequests
                 new RequiredStaffDto{
                     StaffQuantity = 1,
                     Function = "doctor",
-                    Specialization = "ortho"
+                    Specialization = "25001907"
                 }
             };
 
@@ -163,7 +163,7 @@ namespace MDBackofficeTests.integrationtests.operationrequests
                 patientId,
                 opTyId
             );
-            var staff = new Staff("00001", "country, 12345, street test", "12345", "first", "last", "first last", "email@email.com", "+123", "12345678", "doctor", "ortho");
+            var staff = new Staff("00001", "country, 12345, street test", "12345", "first", "last", "first last", "email@email.com", "+123", "12345678", "doctor", "25001907");
             var patient = new Patient("first", "last", "first last", "country, 12345, street test", "female", "+123", "12345678", "98765432", "email@email.com", "2000-10-10", "000001");
             var phases = new List<PhaseDto>
             {
@@ -185,7 +185,7 @@ namespace MDBackofficeTests.integrationtests.operationrequests
                 new RequiredStaffDto{
                     StaffQuantity = 1,
                     Function = "doctor",
-                    Specialization = "ortho"
+                    Specialization = "25001907"
                 }
             };
             var operationType = new OperationType(opTyId, 100, true, reqStaff, phases);

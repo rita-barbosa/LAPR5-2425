@@ -103,7 +103,7 @@ namespace MDBackofficeTests.integrationtests.operationtype
                 new RequiredStaffDto{
                     StaffQuantity = 1,
                     Function = "doctor",
-                    Specialization = "ortho"
+                    Specialization = "25001907"
                 }
             };
 
@@ -160,7 +160,7 @@ namespace MDBackofficeTests.integrationtests.operationtype
                 new RequiredStaffDto{
                     StaffQuantity = 1,
                     Function = "doctor",
-                    Specialization = "ortho"
+                    Specialization = "25001907"
                 }
             };
 

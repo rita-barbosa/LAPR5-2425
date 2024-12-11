@@ -73,7 +73,7 @@ namespace MDBackofficeTests.integrationtests.staff
              // Arrange
             string email = "exampleemail@gmail.com";
 
-            var staffMock = new Mock<Staff>("00001", "Portugal, 4570-860, Rua das Oliveiras", "12345", "Rita", "Barbosa", "Rita Barbosa", email, "+351", "987654321", "Doctor", "Orthopedics");
+            var staffMock = new Mock<Staff>("00001", "Portugal, 4570-860, Rua das Oliveiras", "12345", "Rita", "Barbosa", "Rita Barbosa", email, "+351", "987654321", "Doctor", "25841209");
             var id = "D202400001";
 
             var context = new DefaultHttpContext();
@@ -108,11 +108,11 @@ namespace MDBackofficeTests.integrationtests.staff
                                             _userServiceMock.Object);
             string email = "exampleemail@gmail.com";
 
-            var staff = new Staff("00001", "Portugal, 4570-860, Rua das Oliveiras", "12345", "Rita", "Barbosa", "Rita Barbosa", email, "+351", "987654321", "Doctor", "Orthopedics");
+            var staff = new Staff("00001", "Portugal, 4570-860, Rua das Oliveiras", "12345", "Rita", "Barbosa", "Rita Barbosa", email, "+351", "987654321", "Doctor", "25841209");
             var id = "D202400001";
             
 
-            var specializationMock = new Mock<Specialization>("Ortopethics");
+            var specializationMock = new Mock<Specialization>("251010300");
 
             _repoMock.Setup(_repoPatMock => _repoPatMock.GetByIdAsync(It.IsAny<StaffId>()))
                 .ReturnsAsync(staff);

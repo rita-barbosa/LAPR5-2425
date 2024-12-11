@@ -315,7 +315,7 @@ namespace MDBackofficeTests.controllertests
             
             var resultMock = IdentityResult.Success;
             var address = "Portugal, 4570-860, Rua das Oliveiras";
-            var specialization = "Orthopedics";
+            var specialization = "25841209";
             var seqNumber = "00001";
 
             var specMock = new Mock<Specialization>(specialization);

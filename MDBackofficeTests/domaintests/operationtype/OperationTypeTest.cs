@@ -200,8 +200,8 @@ public class OperationTypeTests
         true,
         new List<RequiredStaffDto>
         {
-            new RequiredStaffDto { StaffQuantity = 1, Function = "doctor", Specialization = "Orthopedics" },
-            new RequiredStaffDto { StaffQuantity = 2, Function = "nurse", Specialization = "General" }
+            new RequiredStaffDto { StaffQuantity = 1, Function = "doctor", Specialization = "25841209" },
+            new RequiredStaffDto { StaffQuantity = 2, Function = "nurse", Specialization = "25784120" }
         },
         new List<PhaseDto>
         {
@@ -218,8 +218,8 @@ public class OperationTypeTests
         true,
         new List<RequiredStaffDto>
         {
-            new RequiredStaffDto { StaffQuantity = 1, Function = "doctor", Specialization = "Orthopedics" },
-            new RequiredStaffDto { StaffQuantity = 1, Function = "assistant", Specialization = "Orthopedics" }
+            new RequiredStaffDto { StaffQuantity = 1, Function = "doctor", Specialization = "25841209" },
+            new RequiredStaffDto { StaffQuantity = 1, Function = "assistant", Specialization = "25841209" }
         },
         new List<PhaseDto>
         {
@@ -236,8 +236,8 @@ public class OperationTypeTests
         true,
         new List<RequiredStaffDto>
         {
-            new RequiredStaffDto { StaffQuantity = 2, Function = "doctor", Specialization = "Cardiology" },
-            new RequiredStaffDto { StaffQuantity = 3, Function = "assistant", Specialization = "Cardiology" }
+            new RequiredStaffDto { StaffQuantity = 2, Function = "doctor", Specialization = "25841209" },
+            new RequiredStaffDto { StaffQuantity = 3, Function = "assistant", Specialization = "25841209" }
         },
         new List<PhaseDto>
         {
@@ -256,8 +256,8 @@ public class OperationTypeTests
         true,
         new List<RequiredStaffDto>
         {
-            new RequiredStaffDto { StaffQuantity = 1, Function = "doctor", Specialization = "Orthopedics" },
-            new RequiredStaffDto { StaffQuantity = 2, Function = "nurse", Specialization = "General" }
+            new RequiredStaffDto { StaffQuantity = 1, Function = "doctor", Specialization = "25841202" },
+            new RequiredStaffDto { StaffQuantity = 2, Function = "nurse", Specialization = "25841202" }
         },
         new List<PhaseDto>
         {
@@ -274,8 +274,8 @@ public class OperationTypeTests
         true,
         new List<RequiredStaffDto>
         {
-            new RequiredStaffDto { StaffQuantity = 1, Function = "doctor", Specialization = "Orthopedics" },
-            new RequiredStaffDto { StaffQuantity = 1, Function = "assistant", Specialization = "Orthopedics" }
+            new RequiredStaffDto { StaffQuantity = 1, Function = "doctor", Specialization = "25841209" },
+            new RequiredStaffDto { StaffQuantity = 1, Function = "assistant", Specialization = "25841209" }
         },
         new List<PhaseDto>
         {
@@ -294,8 +294,8 @@ public class OperationTypeTests
         true,
         new List<RequiredStaffDto>
         {
-            new RequiredStaffDto { StaffQuantity = 1, Function = "doctor", Specialization = "Orthopedics" },
-            new RequiredStaffDto { StaffQuantity = 2, Function = "nurse", Specialization = "General" }
+            new RequiredStaffDto { StaffQuantity = 1, Function = "doctor", Specialization = "25841209" },
+            new RequiredStaffDto { StaffQuantity = 2, Function = "nurse", Specialization = "2584120" }
         },
         new List<PhaseDto>
         {
@@ -312,8 +312,8 @@ public class OperationTypeTests
         true,
         new List<RequiredStaffDto>
         {
-            new RequiredStaffDto { StaffQuantity = 1, Function = "doctor", Specialization = "Orthopedics" },
-            new RequiredStaffDto { StaffQuantity = 1, Function = "assistant", Specialization = "Orthopedics" }
+            new RequiredStaffDto { StaffQuantity = 1, Function = "doctor", Specialization = "25841209" },
+            new RequiredStaffDto { StaffQuantity = 1, Function = "assistant", Specialization = "25841209" }
         },
         new List<PhaseDto>
         {
@@ -332,8 +332,8 @@ public class OperationTypeTests
         true,
         new List<RequiredStaffDto>
         {
-            new RequiredStaffDto { StaffQuantity = 1, Function = "doctor", Specialization = "Orthopedics" },
-            new RequiredStaffDto { StaffQuantity = 2, Function = "nurse", Specialization = "General" }
+            new RequiredStaffDto { StaffQuantity = 1, Function = "doctor", Specialization = "25841209" },
+            new RequiredStaffDto { StaffQuantity = 2, Function = "nurse", Specialization = "25841209" }
         },
         new List<PhaseDto>
         {
@@ -350,8 +350,8 @@ public class OperationTypeTests
         true,
         new List<RequiredStaffDto>
         {
-            new RequiredStaffDto { StaffQuantity = 1, Function = "doctor", Specialization = "Orthopedics" },
-            new RequiredStaffDto { StaffQuantity = 1, Function = "assistant", Specialization = "Orthopedics" }
+            new RequiredStaffDto { StaffQuantity = 1, Function = "doctor", Specialization = "25841209" },
+            new RequiredStaffDto { StaffQuantity = 1, Function = "assistant", Specialization = "25841209" }
         },
         new List<PhaseDto>
         {
@@ -370,8 +370,8 @@ public class OperationTypeTests
         false,
         new List<RequiredStaffDto>
         {
-            new RequiredStaffDto { StaffQuantity = 1, Function = "doctor", Specialization = "Orthopedics" },
-            new RequiredStaffDto { StaffQuantity = 2, Function = "nurse", Specialization = "General" }
+            new RequiredStaffDto { StaffQuantity = 1, Function = "doctor", Specialization = "25841209" },
+            new RequiredStaffDto { StaffQuantity = 2, Function = "nurse", Specialization = "25841209" }
         },
         new List<PhaseDto>
         {
@@ -388,8 +388,8 @@ public class OperationTypeTests
         false,
         new List<RequiredStaffDto>
         {
-            new RequiredStaffDto { StaffQuantity = 1, Function = "doctor", Specialization = "Orthopedics" },
-            new RequiredStaffDto { StaffQuantity = 1, Function = "assistant", Specialization = "Orthopedics" }
+            new RequiredStaffDto { StaffQuantity = 1, Function = "doctor", Specialization = "25841209" },
+            new RequiredStaffDto { StaffQuantity = 1, Function = "assistant", Specialization = "25841209" }
         },
         new List<PhaseDto>
         {
@@ -408,8 +408,8 @@ public class OperationTypeTests
         true,
         new List<RequiredStaffDto>
         {
-            new RequiredStaffDto { StaffQuantity = -1, Function = "doctor", Specialization = "Orthopedics" },
-            new RequiredStaffDto { StaffQuantity = -2, Function = "nurse", Specialization = "General" }
+            new RequiredStaffDto { StaffQuantity = -1, Function = "doctor", Specialization = "25841209" },
+            new RequiredStaffDto { StaffQuantity = -2, Function = "nurse", Specialization = "25841209" }
         },
         new List<PhaseDto>
         {
@@ -426,8 +426,8 @@ public class OperationTypeTests
         true,
         new List<RequiredStaffDto>
         {
-            new RequiredStaffDto { StaffQuantity = 0, Function = "doctor", Specialization = "Orthopedics" },
-            new RequiredStaffDto { StaffQuantity = 0, Function = "assistant", Specialization = "Orthopedics" }
+            new RequiredStaffDto { StaffQuantity = 0, Function = "doctor", Specialization = "25841209" },
+            new RequiredStaffDto { StaffQuantity = 0, Function = "assistant", Specialization = "25841209" }
         },
         new List<PhaseDto>
         {
@@ -444,8 +444,8 @@ public class OperationTypeTests
         true,
         new List<RequiredStaffDto>
         {
-            new RequiredStaffDto { StaffQuantity = -2, Function = "doctor", Specialization = "Cardiology" },
-            new RequiredStaffDto { StaffQuantity = 0, Function = "nurse", Specialization = "Cardiology" }
+            new RequiredStaffDto { StaffQuantity = -2, Function = "doctor", Specialization = "25841209" },
+            new RequiredStaffDto { StaffQuantity = 0, Function = "nurse", Specialization = "25841209" }
         },
         new List<PhaseDto>
         {
@@ -464,8 +464,8 @@ public class OperationTypeTests
         true,
         new List<RequiredStaffDto>
         {
-            new RequiredStaffDto { StaffQuantity = 1, Function = "", Specialization = "Orthopedics" },
-            new RequiredStaffDto { StaffQuantity = 2, Function = "", Specialization = "General" }
+            new RequiredStaffDto { StaffQuantity = 1, Function = "", Specialization = "25841209" },
+            new RequiredStaffDto { StaffQuantity = 2, Function = "", Specialization = "25841209" }
         },
         new List<PhaseDto>
         {
@@ -482,8 +482,8 @@ public class OperationTypeTests
         true,
         new List<RequiredStaffDto>
         {
-            new RequiredStaffDto { StaffQuantity = 1, Function = null, Specialization = "Orthopedics" },
-            new RequiredStaffDto { StaffQuantity = 1, Function = null, Specialization = "Orthopedics" }
+            new RequiredStaffDto { StaffQuantity = 1, Function = null, Specialization = "25841209" },
+            new RequiredStaffDto { StaffQuantity = 1, Function = null, Specialization = "25841209" }
         },
         new List<PhaseDto>
         {
@@ -500,8 +500,8 @@ public class OperationTypeTests
         true,
         new List<RequiredStaffDto>
         {
-            new RequiredStaffDto { StaffQuantity = 2, Function = "Sun", Specialization = "Cardiology" },
-            new RequiredStaffDto { StaffQuantity = 3, Function = "re", Specialization = "Cardiology" }
+            new RequiredStaffDto { StaffQuantity = 2, Function = "Sun", Specialization = "25841209" },
+            new RequiredStaffDto { StaffQuantity = 3, Function = "re", Specialization = "25841209" }
         },
         new List<PhaseDto>
         {
@@ -596,8 +596,8 @@ public class OperationTypeTests
         true,
         new List<RequiredStaffDto>
         {
-            new RequiredStaffDto { StaffQuantity = 1, Function = "doctor", Specialization = "Orthopedics" },
-            new RequiredStaffDto { StaffQuantity = 2, Function = "nurse", Specialization = "General" }
+            new RequiredStaffDto { StaffQuantity = 1, Function = "doctor", Specialization = "25841209" },
+            new RequiredStaffDto { StaffQuantity = 2, Function = "nurse", Specialization = "25841209" }
         },
         new List<PhaseDto>
         {
@@ -614,8 +614,8 @@ public class OperationTypeTests
         true,
         new List<RequiredStaffDto>
         {
-            new RequiredStaffDto { StaffQuantity = 1, Function = "doctor", Specialization = "Orthopedics" },
-            new RequiredStaffDto { StaffQuantity = 1, Function = "assistant", Specialization = "Orthopedics" }
+            new RequiredStaffDto { StaffQuantity = 1, Function = "doctor", Specialization = "25841209" },
+            new RequiredStaffDto { StaffQuantity = 1, Function = "assistant", Specialization = "25841209" }
         },
         new List<PhaseDto>
         {
@@ -632,8 +632,8 @@ public class OperationTypeTests
         true,
         new List<RequiredStaffDto>
         {
-            new RequiredStaffDto { StaffQuantity = 2, Function = "doctor", Specialization = "Cardiology" },
-            new RequiredStaffDto { StaffQuantity = 3, Function = "nurse", Specialization = "Cardiology" }
+            new RequiredStaffDto { StaffQuantity = 2, Function = "doctor", Specialization = "25841209" },
+            new RequiredStaffDto { StaffQuantity = 3, Function = "nurse", Specialization = "25841209" }
         },
         new List<PhaseDto>
         {
@@ -652,8 +652,8 @@ public class OperationTypeTests
         true,
         new List<RequiredStaffDto>
         {
-            new RequiredStaffDto { StaffQuantity = 1, Function = "doctor", Specialization = "Orthopedics" },
-            new RequiredStaffDto { StaffQuantity = 2, Function = "nurse", Specialization = "General" }
+            new RequiredStaffDto { StaffQuantity = 1, Function = "doctor", Specialization = "25841209" },
+            new RequiredStaffDto { StaffQuantity = 2, Function = "nurse", Specialization = "25841209" }
         },
         new List<PhaseDto>
         {
@@ -670,8 +670,8 @@ public class OperationTypeTests
         true,
         new List<RequiredStaffDto>
         {
-            new RequiredStaffDto { StaffQuantity = 1, Function = "doctor", Specialization = "Orthopedics" },
-            new RequiredStaffDto { StaffQuantity = 1, Function = "assistant", Specialization = "Orthopedics" }
+            new RequiredStaffDto { StaffQuantity = 1, Function = "doctor", Specialization = "25841209" },
+            new RequiredStaffDto { StaffQuantity = 1, Function = "assistant", Specialization = "25841209" }
         },
         new List<PhaseDto>
         {
@@ -688,8 +688,8 @@ public class OperationTypeTests
         true,
         new List<RequiredStaffDto>
         {
-            new RequiredStaffDto { StaffQuantity = 2, Function = "doctor", Specialization = "Cardiology" },
-            new RequiredStaffDto { StaffQuantity = 3, Function = "nurse", Specialization = "Cardiology" }
+            new RequiredStaffDto { StaffQuantity = 2, Function = "doctor", Specialization = "25841209" },
+            new RequiredStaffDto { StaffQuantity = 3, Function = "nurse", Specialization = "25841209" }
         },
         new List<PhaseDto>
         {

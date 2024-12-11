@@ -71,7 +71,7 @@ namespace MDBackofficeTests.integrationtests.staff
                                             _userServiceMock.Object);
 
             var controller = new StaffController(_service,_userServiceMock.Object);
-            var specializationId = "ortho-2";
+            var specializationId = "25841809";
 
             var dtoMock = new CreatingStaffDto
             ("12345",
@@ -84,7 +84,7 @@ namespace MDBackofficeTests.integrationtests.staff
                 specializationId
                 );
 
-            var specializationMock = new Mock<Specialization>("ortho-2","denom","descrip");
+            var specializationMock = new Mock<Specialization>("25841809","denom","descrip");
             var context = new DefaultHttpContext();
             context.Request.Headers["Authorization"] = "Bearer valid-token";
             controller.ControllerContext = new ControllerContext
@@ -114,7 +114,7 @@ namespace MDBackofficeTests.integrationtests.staff
         public async Task CreateStaffProfile_ReturnsOkResult_IntegrationServiceDomain()
         {
             // Pass mocked dependencies to StaffService
-            var specializationId = "ortho-2";
+            var specializationId = "25841809";
 
             var dtoMock = new CreatingStaffDto
             ("12345",
@@ -127,7 +127,7 @@ namespace MDBackofficeTests.integrationtests.staff
                 specializationId
                 );
 
-            var specializationMock = new Mock<Specialization>("ortho-2", "denom", "descrip");
+            var specializationMock = new Mock<Specialization>("25841809", "denom", "descrip");
 
             _repoSpecMock.Setup(_repoSpecMock => _repoSpecMock.GetByIdAsync(It.IsAny<SpecializationCode>()))
                 .ReturnsAsync(specializationMock.Object);
