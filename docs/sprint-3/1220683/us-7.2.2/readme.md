@@ -81,11 +81,11 @@ it's diagram was deemed irrelevant.
 
 #### Level 3
 
-- _Visualization_<br>
+- _Visualization_
 ![us7.2.2-process-view-visualization-lvl3.svg](Process_View/Level-3/us7.2.2-process-view-visualization-lvl3.svg)
 
 
-- _MDBackoffice_
+- _MDPatientManagement_
 ![us7.2.2-process-view-lvl3.svg](Process_View/Level-3/us7.2.2-process-view-lvl3.svg)
 
 #### 4.1.3 Development View
