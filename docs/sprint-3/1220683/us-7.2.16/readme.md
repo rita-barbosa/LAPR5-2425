@@ -1,7 +1,7 @@
-# US 7.2.2
+# US 7.2.16
 
 <!-- TOC -->
-* [US 7.2.2](#us-722)
+* [US 7.2.16](#us-7216)
   * [1. Context](#1-context)
   * [2. Requirements](#2-requirements)
   * [3. Analysis](#3-analysis)
@@ -28,30 +28,24 @@
 
 ## 2. Requirements
 
-**US 7.2.2:** As an Admin, I want to add new Allergy, so that the Doctors can use it to update the Patient Medical Record.
+**US 7.2.14:** As Admin, I want to update an allergy.
 
 **Acceptance Criteria:**
 
-- **7.2.2.1.** | The code identifying the Allergy must follow SNOMED CT or ICD-11 formats.
+> No criteria.
 
 **Dependencies/References:**
 
-This feature is related to the existence of a patient profile (US 5.1.8) and a patient medical record (US 7.2.14).
+This feature is related to the existence of an allergy (US 7.2.2).
 
 **Client Clarifications:**
 
-> **Question:** What information is to be known in an Allergy? Like designation, and anything more?
->
-> **Answer:** It consists of a code (for instance, SNOMED CT (Systematized Nomenclature of Medicine - Clinical Terms) or ICD-11 (International Classification of Diseases, 11th Revision)), a designation and an optional longer description.
+> No questions.
 
 ## 3. Analysis
 
-Allergies are conditions that a patient has, and those must be registered in the Patient Medical Record. The following
-information must be given to register an allergy into the system:
-
-* Code (SNOMED CT or ICD-11)
-* Designation
-* Description (optional)
+After an allergy is registered in the system, then it can be edited.
+The only field that can be edited is the description, which is optional.
 
 ### Domain Model
 
@@ -72,7 +66,7 @@ The process view levels are here presented as they represent a process specific 
 
 #### Level 1
 
-![us7.2.2-process-view-lvl1.svg](Process_View/Level-1/us7.2.2-process-view-lvl1.svg)
+![us7.2.16-process-view-lvl1.svg](Process_View/Level-1/us7.2.16-process-view-lvl1.svg)
 
 #### Level 2
 
@@ -82,11 +76,11 @@ it's diagram was deemed irrelevant.
 #### Level 3
 
 - _Visualization_
-![us7.2.2-process-view-visualization-lvl3.svg](Process_View/Level-3/us7.2.2-process-view-visualization-lvl3.svg)
+![us7.2.16-process-view-visualization-lvl3.svg](Process_View/Level-3/us7.2.16-process-view-visualization-lvl3.svg)
 
 
 - _MDPatientManagement_
-![us7.2.2-process-view-lvl3.svg](Process_View/Level-3/us7.2.2-process-view-lvl3.svg)
+![us7.2.16-process-view-lvl3.svg](Process_View/Level-3/us7.2.16-process-view-lvl3.svg)
 
 #### 4.1.3 Development View
 
@@ -100,7 +94,7 @@ The diagrams can be found in the [team decision views folder](../../team-decisio
 
 > #### **Repository Pattern**
 >
->* **Components:** AllergyRepository, LogRepository
+>* **Components:** AllergyRepository
 >
 > The repositories are responsible for data access and retrieval, separating the logic for interacting with the database
 > from the services and other layers. This pattern helps in abstracting the persistence logic.
@@ -108,7 +102,7 @@ The diagrams can be found in the [team decision views folder](../../team-decisio
 
 > #### **DTO (Data Transfer Object) Pattern**
 >
->* **Components:** MedicalConditionDto
+>* **Components:** AllergyUpdateDto, AllergyDto
 >
 > DTOs are used to transfer data between layers, especially from the controller layer to the service layer or vice versa.
 > The purpose is to carry data in a structured and decoupled way without exposing internal entity representations directly.
@@ -117,10 +111,11 @@ The diagrams can be found in the [team decision views folder](../../team-decisio
 
 > #### **Facade Pattern**
 >
->* **Components:** LogService, AllergyService
+>* **Components:** AllergyService
 >
 > These services act as a Facade to simplify interaction with lower-level components like repositories. The Controller
 > interacts with these service facades, keeping the complexity hidden from the higher layers.
+
 
 ### 4.2. Tests
 

@@ -1,6 +1,6 @@
 @startuml
 
-title "US 7.2.5 - Process View [Level 3]"
+title "US 7.2.5 - Process View [Level 3] MDPatientManagement"
 
 autonumber
 participant "Routing" as ROUTE <<route>>

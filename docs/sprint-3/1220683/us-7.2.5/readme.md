@@ -86,10 +86,10 @@ it's diagram was deemed irrelevant.
 
 #### Level 3
 
-- _Visualization_<br>
+- _Visualization_
 ![process view level 3 - visualization](./Process_View/Level-3/us7.2.5-process-view-visualization-lvl3.svg)
 
-- _MDBackoffice_
+- _MDPatientManagement_
   ![process view level 3 - backoffice](./Process_View/Level-3/us7.2.5-process-view-lvl3.svg)
 
 #### 4.1.3 Development View
