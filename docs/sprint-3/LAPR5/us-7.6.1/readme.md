@@ -1,17 +1,21 @@
 # US 7.6.1
 
 <!-- TOC -->
-* [US 7.6.1](#us-761)
-  * [1. Context](#1-context)
-  * [2. Requirements](#2-requirements)
-  * [3. Analysis](#3-analysis)
-  * [4. Design](#4-design)
-    * [4.1. Realization](#41-realization)
-      * [Views](#views)
-    * [4.2. Domain Model Excerpt](#42-domain-model-excerpt)
-    * [4.3. Applied Patterns](#43-applied-patterns)
-  * [5. Implementation](#5-implementation)
-  * [6. Testing](#6-testing)
+- [US 7.6.1](#us-761)
+  - [1. Context](#1-context)
+  - [2. Requirements](#2-requirements)
+  - [3. Analysis](#3-analysis)
+  - [4. Design](#4-design)
+    - [4.1. Realization](#41-realization)
+      - [Logical View](#logical-view)
+      - [Process View](#process-view)
+        - [Level 1](#level-1)
+        - [Level 2](#level-2)
+        - [Level 3](#level-3)
+      - [Development View](#development-view)
+      - [Physical View](#physical-view)
+  - [5. Implementation](#5-implementation)
+  - [6. Testing](#6-testing)
 <!-- TOC -->
 
 
@@ -53,30 +57,50 @@ to another healthcare provider by the patient.
 
 The file should consist of the following data:
 
-> Basic patient information
 > Medical History
 >   * Allergies
 >   * Medical Conditions
->   * Appointment History
+>   * Free Text Field - regarding the other information.
 
 ## 4. Design
 
 ### 4.1. Realization
 
-//TO BE DONE
+The logical, physical, development and scenario views diagrams are generic.
 
-#### Views
+#### Logical View
 
-//TO BE DONE
+The diagrams can be found in the [team decision views folder](../../team-decisions/views/general-views.md#1-logical-view).
 
-### 4.2. Domain Model Excerpt
+#### Process View
 
-//TO BE DONE
+##### Level 1
 
-### 4.3. Applied Patterns
+![Process View - Level 1](diagrams/level-1-process-view.svg)
 
-//TO BE DONE
+##### Level 2
 
+![Process View - Level 2](diagrams/level-2-process-view.svg)
+
+##### Level 3
+
+- _Visualization_<br>
+![Process View - Level 3](diagrams/level-3-process-view-visualization.svg)
+
+- _MDBackoffice_<br>
+![Process View - Level 3](diagrams/level-3-process-view-mdbackoffice.svg)
+- _MDPatientManagement_<br>
+![Process View - Level 3](diagrams/level-3-process-view-mdpatientmanagement.svg)
+
+**Note:**  The file format will remain as a .pdf, but it will require a password for access. We will use `iText7` to generate a password-protected PDF, secured using the patient's password.
+
+#### Development View
+
+The diagrams can be found in the [team decision views folder](../../team-decisions/views/general-views.md#3-development-view).
+
+#### Physical View
+
+The diagrams can be found in the [team decision views folder](../../team-decisions/views/general-views.md#4-physical-view).
 ## 5. Implementation
 
 //TO BE DONE
