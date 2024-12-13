@@ -2,23 +2,21 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using MDBackoffice.Domain.Rooms;
 using System;
+using MDBackoffice.Domain.RoomTypes;
 
 namespace MDBackoffice.Infrastructure.Rooms
 {
-    internal class RoomTypeConfiguration : IEntityTypeConfiguration<Room>
+    internal class RoomConfiguration : IEntityTypeConfiguration<Room>
     {
         public void Configure(EntityTypeBuilder<Room> builder)
         {
             // Primary key
             builder.HasKey(r => r.Id);
-
-            // RoomType as value object
-            builder.OwnsOne(r => r.Type, typeBuilder =>
-            {
-                typeBuilder.Property(t => t.RoomTypeName)
-                    .IsRequired()
-                    .HasColumnName("RoomType");
-            });
+            
+            builder.HasOne<RoomType>()
+                .WithMany()
+                .HasForeignKey(b => b.Type)
+                .IsRequired();
 
             // Capacity as value object
             builder.OwnsOne(r => r.Capacity, capacityBuilder =>

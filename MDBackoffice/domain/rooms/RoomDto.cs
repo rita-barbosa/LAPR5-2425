@@ -23,5 +23,4 @@ namespace MDBackoffice.Domain.Rooms
             MaintenanceSlots = maintenanceSlots ?? new List<SlotsDto>();
         }
     }
-
 }

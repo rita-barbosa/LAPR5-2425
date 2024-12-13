@@ -23,6 +23,8 @@ using MDBackoffice.Domain.Appointments;
 using MDBackoffice.Domain.Rooms;
 using MDBackoffice.Infrastructure.Appointments;
 using MDBackoffice.Infrastructure.Rooms;
+using MDBackoffice.Domain.RoomTypes;
+using MDBackoffice.Infrastructure.RoomTypes;
 
 
 namespace MDBackoffice.Infrastructure
@@ -38,11 +40,11 @@ namespace MDBackoffice.Infrastructure
         public DbSet<OperationRequest> OperationRequests { get; set; }
         public DbSet<OperationTypeRecord> OperationTypeRecords { get; set; }
         public DbSet<RequiredStaffRecord> RequiredStaffRecords { get; set; }
-
         public DbSet<Log> Logs { get; set; }
         public DbSet<AppointmentHistory> appointmentHistories { get; set; }
         public DbSet<Appointment> Appointments { get; set; }
         public DbSet<Room> Rooms { get; set; }
+        public DbSet<RoomType> RoomTypes { get; set; }
         public MDBackofficeDbContext(DbContextOptions options) : base(options)
         {
 
@@ -63,6 +65,7 @@ namespace MDBackoffice.Infrastructure
             modelBuilder.ApplyConfiguration(new RequiredStaffRecordEntityTypeConfiguration());
             modelBuilder.ApplyConfiguration(new AppointmentHistoryConfiguration());
             modelBuilder.ApplyConfiguration(new AppointmentTypeConfiguration());
+            modelBuilder.ApplyConfiguration(new RoomConfiguration());
             modelBuilder.ApplyConfiguration(new RoomTypeConfiguration());
         }
     }

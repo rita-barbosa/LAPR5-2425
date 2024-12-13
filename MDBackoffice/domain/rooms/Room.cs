@@ -1,12 +1,13 @@
 using System;
 using System.Collections.Generic;
+using MDBackoffice.Domain.RoomTypes;
 using MDBackoffice.Domain.Shared;
 
 namespace MDBackoffice.Domain.Rooms
 {
     public class Room : Entity<RoomNumber>, IAggregateRoot
     {
-        public RoomType Type { get; private set; }
+        public RoomTypeCode Type { get; private set; }
 
         public Capacity Capacity { get; private set; }
 
@@ -22,8 +23,7 @@ namespace MDBackoffice.Domain.Rooms
             MaintenanceSlots = new List<Slot>();
         }
 
-
-        public Room(RoomNumber roomNumber, RoomType roomType, Capacity capacity, List<Equipment> equipment, CurrentStatus currentStatus, List<Slot> slots)
+        public Room(RoomNumber roomNumber, RoomTypeCode roomType, Capacity capacity, List<Equipment> equipment, CurrentStatus currentStatus, List<Slot> slots)
         {
             this.Id = roomNumber;
             Type = roomType;
@@ -33,17 +33,8 @@ namespace MDBackoffice.Domain.Rooms
             MaintenanceSlots = slots;
         }
 
-        public Room(string roomNumber, string roomType, int capacity, string status)
+        public void AddEquipment(string equipment)
         {
-            this.Id = new RoomNumber(roomNumber);
-            this.Type = new RoomType(roomType);
-            this.Capacity = new Capacity(capacity);
-            AvailableEquipment = new List<Equipment>();
-            this.CurrentStatus = CurrentStatus.GetStatusByDescription(status);
-            MaintenanceSlots = new List<Slot>();
-        }
-
-        public void AddEquipment(string equipment){
             AvailableEquipment.Add(new Equipment(equipment));
         }
 
@@ -55,7 +46,7 @@ namespace MDBackoffice.Domain.Rooms
 
         public void ChangeSlots(List<SlotsDto> slots)
         {
-             MaintenanceSlots.Clear();
+            MaintenanceSlots.Clear();
             foreach (SlotsDto slotDto in slots)
             {
                 this.MaintenanceSlots.Add(new Slot(slotDto.StartTime, slotDto.EndTime, slotDto.StartDate, slotDto.EndDate));
@@ -66,7 +57,7 @@ namespace MDBackoffice.Domain.Rooms
         {
             return new RoomDto(
                 roomNumber: this.Id.Value,
-                type: this.Type.RoomTypeName,
+                type: this.Type.Value,
                 capacity: Capacity.CapcityNumber,
                 availableEquipment: AvailableEquipment?.ConvertAll(equipment => equipment.EquipmentName),
                 currentStatus: CurrentStatus.Description,

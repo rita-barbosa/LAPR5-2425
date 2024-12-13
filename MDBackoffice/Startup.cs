@@ -43,6 +43,8 @@ using MDBackoffice.Domain.Rooms;
 using MDBackoffice.Infrastructure.Rooms;
 using MDBackoffice.Domain.Appointments;
 using MDBackoffice.Infrastructure.Appointments;
+using MDBackoffice.Domain.RoomTypes;
+using MDBackoffice.Infrastructure.RoomTypes;
 
 namespace MDBackoffice
 {
@@ -138,13 +140,6 @@ namespace MDBackoffice
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                // app.UseSwagger();
-                // app.UseSwaggerUI(c =>
-                // {
-                //     c.SwaggerEndpoint("/swagger/v1/swagger.json", "MDBackoffice API V1");
-                //     c.RoutePrefix = string.Empty; // Makes Swagger available at root (https://localhost:5001/)
-                // });
-
             }
             else
             {
@@ -219,6 +214,9 @@ namespace MDBackoffice
 
             services.AddTransient<IRoomRepository, RoomRepository>();
             services.AddTransient<RoomService>();
+
+            services.AddTransient<IRoomTypeRepository, RoomTypeRepository>();
+            services.AddTransient<RoomTypeService>();
 
             services.AddTransient<IAppointmentRepository, AppointmentRepository>();
             services.AddTransient<AppointmentService>();
