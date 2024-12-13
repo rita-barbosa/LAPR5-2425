@@ -69,6 +69,8 @@ heuristic_occupancy_handler(Request) :-
 
 %%% REQUEST - HEURISTIC FIRST AVAILABLE
 :- http_handler('/api/p/heuristic-first-available', heuristic_available_handler, []).
+
+:- debug(heuristic_available_handler).
 heuristic_available_handler(Request) :-  
     http_read_json_dict(Request,Dict,[]),
     process_json(Dict),
@@ -286,7 +288,9 @@ obtain_heuristic_solution1(Room,Day):-
     findall(_,(agenda_staff(D,Day,Agenda),assertz(agenda_staff1(D,Day,Agenda))),_),
     agenda_operation_room(Room,Day,Agenda),assert(agenda_operation_room1(Room,Day,Agenda)),
     findall(_,(agenda_staff1(D,Day,L),free_agenda0(L,LFA),adapt_timetable(D,Day,LFA,LFA2),assertz(availability(D,Day,LFA2))),_),
+    debug(heuristic_available_handler, 'GOT HERE',[]),
     availability_early_surgeries(LOC, Room, Day),
+    debug(heuristic_available_handler, 'PASSED',[]),
     retract(final_time_heuristics(TFinOp)),
     agenda_operation_room1(Room,Day,AgendaR),
     findall(Doctor,assignment_surgery(_,Doctor),LDoctors1),
@@ -555,10 +559,14 @@ availability_operation_changed2(OpCode, Room, Day, LPossibilities, LParticipants
     intersect_all_agendas(LSurgeons, Day, LFreeSurgeons),
     intersect_all_agendas(LAnesth, Day, LFreeAnesth),
     intersect_all_agendas(LCleaners, Day, LFreeCleaners),
+
     agenda_operation_room1(Room, Day, LRoomAgenda),
+    
     free_agenda0(LRoomAgenda, LFreeRoom),
     TotalTime is TAnesthesia + TSurgery + TCleaning,
+
     filter_full_intervals1(LFreeRoom, TotalTime, FullIntervals),
+    
     TimeAnesthSurgery is TAnesthesia + TSurgery,
     filter_by_availability(FullIntervals, LFreeAnesth, TimeAnesthSurgery, IntervalsAnesth),
     filter_by_surgery_availability(IntervalsAnesth, LFreeSurgeons, TAnesthesia, TSurgery, IntervalsSurgeons),
