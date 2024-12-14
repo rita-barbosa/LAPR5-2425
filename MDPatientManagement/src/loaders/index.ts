@@ -21,10 +21,22 @@ export default async ({ expressApp }) => {
     schema: '../persistence/schemas/roleSchema',
   };
 
+  const allergySchema = {
+    // compare with the approach followed in repos and services
+    name: 'allergySchema',
+    schema: '../persistence/schemas/allergySchema',
+  };
+
+  const allergyController = {
+    name: config.controllers.allergy.name,
+    path: config.controllers.allergy.path
+  }
+
   const roleController = {
     name: config.controllers.role.name,
     path: config.controllers.role.path
   }
+
 
   const roleRepo = {
     name: config.repos.role.name,
@@ -36,6 +48,16 @@ export default async ({ expressApp }) => {
     path: config.repos.user.path
   }
 
+  const allergyRepo = {
+    name: config.repos.allergy.name,
+    path: config.repos.allergy.path
+  }
+
+  const allergyService = {
+    name: config.services.allergy.name,
+    path: config.services.allergy.path
+  }
+
   const roleService = {
     name: config.services.role.name,
     path: config.services.role.path
@@ -45,17 +67,21 @@ export default async ({ expressApp }) => {
     mongoConnection,
     schemas: [
       userSchema,
-      roleSchema
+      roleSchema,
+      allergySchema
     ],
     controllers: [
-      roleController
+      roleController,
+      allergyController
     ],
     repos: [
       roleRepo,
-      userRepo
+      userRepo,
+      allergyRepo
     ],
     services: [
-      roleService
+      roleService,
+      allergyService
     ]
   });
   Logger.info('✌️ Schemas, Controllers, Repositories, Services, etc. loaded');

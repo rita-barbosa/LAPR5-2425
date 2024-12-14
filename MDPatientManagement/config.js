@@ -44,6 +44,10 @@ export default {
     role: {
       name: "RoleController",
       path: "../controllers/roleController"
+    },
+    allergy: {
+      name: "AllergyController",
+      path: "../controllers/allergyController"
     }
   },
 
@@ -55,6 +59,10 @@ export default {
     user: {
       name: "UserRepo",
       path: "../repos/userRepo"
+    },
+    allergy: {
+      name: "AllergyRepo",
+      path: "../repos/allergyRepo"
     }
   },
 
@@ -62,6 +70,10 @@ export default {
     role: {
       name: "RoleService",
       path: "../services/roleService"
+    },
+    allergy: {
+      name: "AllergyService",
+      path: "../services/allergyService"
     }
   },
 };
