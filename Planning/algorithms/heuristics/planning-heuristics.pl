@@ -38,6 +38,7 @@ surgery_id(so100003,so4).
 %surgery_id(so100012,so2).
 %surgery_id(so100013,so2).
 
+
 assignment_surgery(so100001,d001).
 assignment_surgery(so100002,d002).
 assignment_surgery(so100003,d003).
