@@ -35,6 +35,7 @@ import { AddTimeSlotsComponent } from './components/staff/add-time-slots/add-tim
 import { CreateAllergyComponent } from './components/admin/create-allergy/create-allergy.component';
 import { EditAllergyComponent } from './components/admin/edit-allergy/edit-allergy.component';
 import { CreateMedicalConditionComponent } from './components/admin/create-medical-condition/create-medical-condition.component';
+import { CreateRoomTypeComponent } from './components/admin/create-room-type/create-room-type.component';
 
 
 export const routes: Routes = [
@@ -75,6 +76,7 @@ export const routes: Routes = [
   { path: 'create-allergy', component: CreateAllergyComponent },
   { path: 'edit-allergy', component: EditAllergyComponent },
   { path: 'create-medical-condition', component: CreateMedicalConditionComponent },
+  { path: 'create-room-type', component: CreateRoomTypeComponent },
   { path: '**', redirectTo: '' }
 ];
 

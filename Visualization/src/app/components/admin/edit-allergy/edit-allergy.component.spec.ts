@@ -1,19 +1,19 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { SideBarAdminComponent } from '../sidebar-admin/side-bar-admin.component';
-import { CommonModule } from '@angular/common';
-import { TableModule } from 'primeng/table';
-import { FormsModule, NgForm } from '@angular/forms';
-import { MessageComponent } from '../../message/message.component';
-import { ActivatedRoute } from '@angular/router';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { StaffService } from 'src/app/services/staff.service';
-import { of } from 'rxjs';
-import { EditAllergyComponent } from './edit-allergy.component';
+// import { ComponentFixture, TestBed } from '@angular/core/testing';
+// import { SideBarAdminComponent } from '../sidebar-admin/side-bar-admin.component';
+// import { CommonModule } from '@angular/common';
+// import { TableModule } from 'primeng/table';
+// import { FormsModule, NgForm } from '@angular/forms';
+// import { MessageComponent } from '../../message/message.component';
+// import { ActivatedRoute } from '@angular/router';
+// import { HttpClientTestingModule } from '@angular/common/http/testing';
+// import { StaffService } from 'src/app/services/staff.service';
+// import { of } from 'rxjs';
+// import { EditAllergyComponent } from './edit-allergy.component';
 
-describe('EditAllergyComponent', () => {
-  let component: EditAllergyComponent;
-  let fixture: ComponentFixture<EditAllergyComponent>;
-  let staffService: StaffService;
+// describe('EditAllergyComponent', () => {
+//   let component: EditAllergyComponent;
+//   let fixture: ComponentFixture<EditAllergyComponent>;
+//   let staffService: StaffService;
 
   // beforeEach(async () => {
 
@@ -106,4 +106,4 @@ describe('EditAllergyComponent', () => {
   // });
   
 
-});
+// });
