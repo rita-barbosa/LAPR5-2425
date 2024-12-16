@@ -68,7 +68,7 @@ It relates to the Admin.
 >**Question:** Gostaria de lhe perguntar se existe alguma lista de medical conditions que prefere que utilizemos no sistema por default, se sim, quais? Também gostariamos de perguntar se quando diz "I want to search for Medical Conditions, so that I can use it to update the Patient Medical Record" o que é que implica a ultima parte? Que a procura é feita para adicionar imediatamente ao perfil de paciente ou se é apenas uma procura feita para ir buscar a informação sobre uma medical condition por exemplo?
 >
 >**Answer:** default medical conditions (ICD-11):
-A04.0 Cholera
+A04.0: Cholera
 A08.0: Rotavirus enteritis
 B20: Human Immunodeficiency Virus (HIV) disease
 B50: Plasmodium falciparum malaria
@@ -183,7 +183,21 @@ However level 3 is shown below.
 
 ## 5. Implementation
 
-//TO BE DONE
+The implementation followed the design.
+
+To fully expirience the implementation, the user must first login with an admin account since it's the only role allowed to do such a request:
+
+![alt text](image-1.png)
+
+After doing so, the user must choose the Medical Condition segment of the sidebar and choose "Create Medical Condition":
+
+![alt text](image-2.png)
+
+After that, the admin must put the correct code, name, description and symptoms that are to be stored in the database:
+
+![alt text](image.png)
+
+![alt text](image-3.png)
 
 ## 6. Testing
 

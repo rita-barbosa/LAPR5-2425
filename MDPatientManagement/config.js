@@ -44,6 +44,14 @@ export default {
     role: {
       name: "RoleController",
       path: "../controllers/roleController"
+    },
+    medicalCondition: {
+      name: "MedicalConditionController",
+      path: "../controllers/medicalConditionController"
+    },
+    allergy: {
+      name: "AllergyController",
+      path: "../controllers/allergyController"
     }
   },
 
@@ -55,6 +63,14 @@ export default {
     user: {
       name: "UserRepo",
       path: "../repos/userRepo"
+    },
+    medicalCondition: {
+      name: "MedicalConditionRepo",
+      path: "../repos/medicalConditionRepo"
+    },
+    allergy: {
+      name: "AllergyRepo",
+      path: "../repos/allergyRepo"
     }
   },
 
@@ -62,6 +78,14 @@ export default {
     role: {
       name: "RoleService",
       path: "../services/roleService"
+    },
+    medicalCondition: {
+      name: "MedicalConditionService",
+      path: "../services/medicalConditionService"
+    },
+    allergy: {
+      name: "AllergyService",
+      path: "../services/allergyService"
     }
   },
 };
