@@ -1,3 +1,5 @@
 export interface Specialization {
-    denomination:string
+    code : string;
+    denomination : string;
+    description? : string;
 }

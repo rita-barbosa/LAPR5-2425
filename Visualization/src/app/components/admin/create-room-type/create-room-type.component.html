@@ -3,7 +3,7 @@
         <app-side-bar-admin></app-side-bar-admin>
     </div>
     <header>
-        <h1 class="main-title">Create an Room Type</h1>
+        <h1 class="main-title">Create a Room Type</h1>
     </header>
 
     <br>
@@ -14,7 +14,6 @@
 
         <form #roomtypeForm="ngForm" (ngSubmit)="onSubmit(roomtypeForm)" novalidate>
             <!-- Room Type Code -->
-            <label><strong>Room Type Code</strong></label>
             <div class="input-field">
                 <input name="code" #code="ngModel" [(ngModel)]="roomtype.code" placeholder="Room Type Code"
                     [disabled]="isSubmitted" required [class.invalid-placeholder]="code.invalid && code.touched" />
@@ -22,7 +21,6 @@
             </div>
 
             <!-- Room Type Designation -->
-            <label><strong>Room Type Designation</strong></label>
             <div class="input-field">
                 <input name="designation" #designation="ngModel" [(ngModel)]="roomtype.designation"
                     placeholder="Room Type Designation" [disabled]="isSubmitted" required
@@ -31,7 +29,6 @@
             </div>
 
             <!-- Room Type Description -->
-            <label><strong>Room Type Description</strong></label>
             <div class="input-field">
                 <input name="description" #description="ngModel" [(ngModel)]="roomtype.description"
                     placeholder="Room Type Description" [disabled]="isSubmitted" />
