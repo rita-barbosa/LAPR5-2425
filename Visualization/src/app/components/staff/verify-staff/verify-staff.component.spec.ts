@@ -18,9 +18,6 @@ describe('VerifyStaffComponent', () => {
       },
     };
 
-    // Mock ngOnInit method to prevent error
-    const ngOnInitSpy = spyOn(VerifyStaffComponent.prototype, 'ngOnInit').and.callFake(() => {});
-
     await TestBed.configureTestingModule({
       imports: [VerifyStaffComponent, HttpClientModule],
       providers: [

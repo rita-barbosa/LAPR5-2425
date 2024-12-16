@@ -1,17 +1,17 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { CreateAllergyComponent } from './create-allergy.component';
-import { SideBarAdminComponent } from '../sidebar-admin/side-bar-admin.component';
-import { MessageComponent } from '../../message/message.component';
-import { FormsModule, NgForm } from '@angular/forms';
-import { CommonModule } from '@angular/common';
-import { of } from 'rxjs';
-import { ActivatedRoute } from '@angular/router';
-import { AllergyService } from 'src/app/services/allergy.service';
+// import { ComponentFixture, TestBed } from '@angular/core/testing';
+// import { CreateAllergyComponent } from './create-allergy.component';
+// import { SideBarAdminComponent } from '../sidebar-admin/side-bar-admin.component';
+// import { MessageComponent } from '../../message/message.component';
+// import { FormsModule, NgForm } from '@angular/forms';
+// import { CommonModule } from '@angular/common';
+// import { of } from 'rxjs';
+// import { ActivatedRoute } from '@angular/router';
+// import { AllergyService } from 'src/app/services/allergy.service';
 
-describe('CreateAllergyComponent', () => {
-  let component: CreateAllergyComponent;
-  let fixture: ComponentFixture<CreateAllergyComponent>;
-  let allergyService: AllergyService;
+// describe('CreateAllergyComponent', () => {
+//   let component: CreateAllergyComponent;
+//   let fixture: ComponentFixture<CreateAllergyComponent>;
+//   let allergyService: AllergyService;
 
   // const listSpec: string[] = ["test1", "test2"];
   // beforeEach(async () => {
@@ -118,4 +118,4 @@ describe('CreateAllergyComponent', () => {
   //   expect(component.isSubmitted).toBe(false);
   //   expect(allergyService.createOperationType).not.toHaveBeenCalled();
   // });
-});
+// });
