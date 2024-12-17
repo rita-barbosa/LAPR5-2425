@@ -47,28 +47,22 @@ namespace MDBackoffice.Domain.Specializations
             return new SpecializationDto { Code = specialization.Id.Value, Denomination = specialization.Denomination.ToString(), Description = specialization.Description.ToString() };
         }
 
-        public async Task<SpecializationDto> DeleteAsync(SpecializationCode id)
+        public async Task DeleteAsync(string id)
         {
-            var specialization = await this._repo.GetByIdAsync(id);
-
-            if (specialization == null)
-                return null;
-
+            var specialization = await this._repo.GetByIdAsync(new SpecializationCode(id)) ?? throw new BusinessRuleValidationException("No specialization was found for the given code.");
             this._repo.Remove(specialization);
             await this._unitOfWork.CommitAsync();
-
-            return new SpecializationDto { Code = specialization.Id.Value };
         }
 
         public async Task<SpecializationDto> EditSpecialization(EditSpecializationDto dto)
         {
             var spec = await _repo.GetByIdAsync(new SpecializationCode(dto.Code)) ?? throw new BusinessRuleValidationException("No specialization was found for the given code.");
 
-            if (dto.Denomination != null)
+            if (!string.IsNullOrEmpty(dto.Denomination))
             {
                 spec.ChangeDenomination(dto.Denomination);
             }
-            if (dto.Description != null)
+            if (!string.IsNullOrEmpty(dto.Description))
             {
                 spec.ChangeDescription(dto.Description);
             }

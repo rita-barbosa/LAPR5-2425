@@ -24,6 +24,13 @@ namespace MDBackoffice.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<SpecializationDto>> GetGetById(string id)
         {
+            var token = HttpContext.Request.Headers.Authorization.ToString()?.Split(' ')[1];
+
+            if (string.IsNullOrWhiteSpace(token) || _userSvc.CheckUserRole(token, "Admin"))
+            {
+                return BadRequest("Invalid authorization or user role.");
+            }
+
             var Specialization = await _service.GetByIdAsync(new SpecializationCode(id));
 
             if (Specialization == null)
@@ -53,7 +60,7 @@ namespace MDBackoffice.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest($"An unexpected error occurred ({ex.ToString()})");
+                return BadRequest($"An unexpected error occurred ({ex.Message})");
             }
         }
         [HttpPost]
@@ -77,7 +84,7 @@ namespace MDBackoffice.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest($"An unexpected error occurred ({ex.ToString()})");
+                return BadRequest($"An unexpected error occurred ({ex.Message})");
             }
         }
 
@@ -102,7 +109,27 @@ namespace MDBackoffice.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest($"An unexpected error occurred ({ex.ToString()})");
+                return BadRequest($"An unexpected error occurred ({ex.Message})");
+            }
+        }
+        [HttpDelete("{id}")]
+        public async Task<ActionResult<SpecializationDto>> DeleteSpecialization(string id)
+        {
+            try
+            {
+                var token = HttpContext.Request.Headers.Authorization.ToString()?.Split(' ')[1];
+
+                if (string.IsNullOrWhiteSpace(token) || _userSvc.CheckUserRole(token, "Admin"))
+                {
+                    return BadRequest("Invalid authorization or user role.");
+                }
+
+                await _service.DeleteAsync(id);
+                return Ok(new { message = "Specialization was successfully deleted." });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"An unexpected error occurred ({ex.Message})");
             }
         }
     }
