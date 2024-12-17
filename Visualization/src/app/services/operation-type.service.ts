@@ -26,7 +26,7 @@ export class OperationTypeService {
   constructor(private messageService: MessageService, private http: HttpClient) { }
 
   public getAllSpecializationsAvailable(): Observable<string[]> {
-    const url = `${this.theServerURL}/Specializations`;
+    const url = `${this.theServerURL}/Specialization/filtered`;
 
     console.log(url)
 

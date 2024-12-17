@@ -29,7 +29,7 @@ export class StaffService {
   constructor(private messageService: MessageService, private http: HttpClient) { }
 
   public getAllSpecializationsAvailable(): Observable<string[]> {
-    const url = `${this.theServerURL}/Specializations`;
+    const url = `${this.theServerURL}/Specialization/filtered`;
 
     return this.http.get<Specialization[]>(url, this.httpOptions)
                     .pipe(

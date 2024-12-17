@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace MDBackoffice.Domain.Appointments
 {
@@ -20,8 +21,10 @@ namespace MDBackoffice.Domain.Appointments
 
         public string EndDate { get; set; } 
 
+        public List<string> Staffs { get; set; }
 
-        public AppointmentDto(Guid id, string status, string operationRequestId, string roomNumber, string startTime, string endTime, string startDate, string endDate)
+
+        public AppointmentDto(Guid id, string status, string operationRequestId, string roomNumber, string startTime, string endTime, string startDate, string endDate, List<string> staffList)
         {
             Id = id;
             Status = status;
@@ -31,6 +34,7 @@ namespace MDBackoffice.Domain.Appointments
             EndTime = endTime;
             StartDate = startDate;
             EndDate = endDate;
+            Staffs = staffList;
         }
         
     }

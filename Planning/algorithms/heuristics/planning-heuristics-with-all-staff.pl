@@ -55,10 +55,10 @@ assignment_surgery(so100002,d002).
 assignment_surgery(so100002,d004).
 assignment_surgery(so100002,n002).
 assignment_surgery(so100002,a001).
-%assignment_surgery(so100003,d003).
-%assignment_surgery(so100003,d004).
-%assignment_surgery(so100003,n003).
-%assignment_surgery(so100003,a001).
+assignment_surgery(so100003,d003).
+assignment_surgery(so100003,d004).
+assignment_surgery(so100003,n003).
+assignment_surgery(so100003,a001).
 %assignment_surgery(so100004,d001).
 %assignment_surgery(so100004,d002).
 %assignment_surgery(so100005,d002).
@@ -149,8 +149,6 @@ availability_all_surgeries([OpCode|LOpCode],Room,Day):-
     retract(agenda_operation_room1(Room,Day,Agenda)),
     insert_agenda((TinS,TfinS,OpCode),Agenda,Agenda1),
     assertz(agenda_operation_room1(Room,Day,Agenda1)),
-    surgery_id(OpCode, OpType),
-    surgery(OpType, TAnesthesia, TSurgery, TCleaning),
     include(is_doctor, LStaff, LSurgeons),
     include(is_anaesthetist, LStaff, LAnesth),
     include(is_assistant, LStaff, LCleaners),   

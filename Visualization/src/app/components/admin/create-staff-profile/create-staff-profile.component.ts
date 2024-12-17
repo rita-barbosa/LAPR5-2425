@@ -37,8 +37,10 @@ export class CreateStaffProfileComponent {
     this.service.getAllSpecializationsAvailable().subscribe({
       next: data => {
         this.specializations = data;
+        console.log(data);
       }
     });
+    
   }
 
 

@@ -5,26 +5,39 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using MDBackoffice.Domain.Appointments;
 using MDBackoffice.Domain.Shared;
+using MDBackoffice.Domain.Users;
 
 namespace MDBackoffice.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AppointmentController : ControllerBase{
+    public class AppointmentController : ControllerBase
+    {
         private readonly AppointmentService _service;
+        private readonly UserService _userSvc;
 
-        public AppointmentController(AppointmentService service){
+        public AppointmentController(AppointmentService service, UserService svc)
+        {
             _service = service;
+            _userSvc = svc;
         }
 
         // POST: api/Appointment
         [HttpPost]
-        public async Task<ActionResult<AppointmentDto>> Create(CreatingAppointmentDto dto){
+        public async Task<ActionResult<AppointmentDto>> Create(CreatingAppointmentDto dto)
+        {
             try
             {
-            var appointment = await _service.AddAsync(dto);
-            return Ok(appointment);
-             }
+                var token = HttpContext.Request.Headers.Authorization.ToString()?.Split(' ')[1];
+
+                if (string.IsNullOrWhiteSpace(token) || _userSvc.CheckUserRole(token, "Doctor"))
+                {
+                    return BadRequest(new { message = "Invalid authorization or user role." });
+                }
+
+                var appointment = await _service.AddAsync(dto);
+                return Ok(appointment);
+            }
             catch (BusinessRuleValidationException ex)
             {
                 return BadRequest(new { ex.Message });

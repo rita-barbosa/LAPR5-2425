@@ -61,6 +61,57 @@ namespace MDBackoffice.Infrastructure.Appointments
                      .HasColumnName("Description");
             });
 
+            // Staff List as a value object
+            // builder.HasMany(a => a.StaffsList)
+            //    .WithOne()
+            //    .HasForeignKey("AppointmentId")
+            //    .IsRequired();
+
+            //    builder.HasMany(a => a.StaffsList)
+            //     .WithMany(s => s.Appointments)
+            //     .UsingEntity<AppointmentStaff>(
+            //          j =>
+            // {
+            //     j.HasKey(e => new { e.AppointmentId, e.StaffId }); // Define a chave primária composta
+            //     j.ToTable("AppointmentStaff"); // Nome da tabela intermediária
+            // });
+                 // Nome da tabela intermediária
+
+        // Relacionamento Many-to-Many com Staff
+        // builder.HasMany(a => a.StaffsList)
+        //     .WithMany(s => s.Appointments)
+        //     .UsingEntity(
+        //     "StaffAppointment",
+        //     l => l.HasOne(typeof(Staff)).WithMany().HasForeignKey("StaffId").HasPrincipalKey(nameof(Staff.Id)),
+        //     r => r.HasOne(typeof(Appointment)).WithMany().HasForeignKey("AppointmentId").HasPrincipalKey(nameof(Appointment.Id)),
+        //     j => j.HasKey("AppointmentId", "StaffId"));
+
+            // .UsingEntity(j => j.ToTable("StaffAppointment"));
+
+            // builder.HasMany(a => a.StaffsList)
+            //     .WithMany(s => s.Appointments)
+            //     .UsingEntity<Dictionary<string, object>>(
+            //         j => j.HasOne<Staff>().WithMany().HasForeignKey("StaffId"),  // Chave estrangeira para Staff
+            //         j => j.HasOne<Appointment>().WithMany().HasForeignKey("AppointmentId")  // Chave estrangeira para Appointment
+            // )
+            // .ToTable("AppointmentStaff");  // Nome da tabela intermediária
+
+            // Relacionamento Many-to-Many com Staff usando uma tabela intermediária explícita
+            // builder.HasMany(a => a.StaffsList)
+            //    .WithMany(s => s.Appointments)
+            //    .UsingEntity<AppointmentStaff>(
+            //         j => j.HasOne<Staff>().WithMany().HasForeignKey(a => a.StaffId),
+            //         j => j.HasOne<Appointment>().WithMany().HasForeignKey(a => a.AppointmentId)
+            //    )
+            //    .ToTable("AppointmentStaff");
+
+
+            // AppointmentStaff as a value object
+             builder.HasMany(b => b.AppointmentStaffs)
+                .WithOne(b => b.Appointment)
+                .HasForeignKey("AppointmentId")
+                .OnDelete(DeleteBehavior.Cascade);
+
             // Configure the table name for Appointment
             builder.ToTable("Appointment");
         }

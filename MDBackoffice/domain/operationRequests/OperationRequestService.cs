@@ -30,6 +30,7 @@ namespace MDBackoffice.Domain.OperationRequests
         private readonly UserService _userService;
         private readonly IOperationSchedulerAdapter _planningAdapter;
         private readonly RoomService _roomService;
+        private readonly AppointmentService _appointService;
 
         public OperationRequestService(IUnitOfWork unitOfWork, IOperationRequestRepository repo, IStaffRepository repoSta, LogService logService, PatientService patientService, IPatientRepository repoPat, IOperationTypeRepository repoOpTy, UserService userService,
                                             IOperationSchedulerAdapter adapter, RoomService room)
@@ -312,6 +313,7 @@ namespace MDBackoffice.Domain.OperationRequests
 
         public async Task<string> Schedule(OperationRequestScheduleInfoDto scheduleInfoDto)
         {
+
             if (scheduleInfoDto == null)
             {
                 throw new ArgumentNullException(nameof(scheduleInfoDto));
@@ -472,6 +474,21 @@ namespace MDBackoffice.Domain.OperationRequests
                     : new List<SlotsDto>();
                 // Update the room's schedule in the system (assuming a dictionary or similar structure exists)
                 await UpdateRoomSchedule(roomId, roomBusySlots);
+
+                 // Process each slot in the room schedule to update the operation request
+                foreach (var roomEntry in schedule.RoomSchedule)
+                {
+                    var slots = roomEntry.Value;
+
+                    foreach (var slot in slots)
+                    {
+                        if (!string.IsNullOrEmpty(slot.Name))
+                        {
+                            await CreateSurgeryAppointment(slot.Name, roomId, slot, schedule.StaffSchedule.Keys.ToList());
+                            await UpdateOperationRequest(slot.Name); 
+                        }
+                    }
+                }
             }
             await _unitOfWork.CommitAsync();
         }
@@ -496,6 +513,22 @@ namespace MDBackoffice.Domain.OperationRequests
             var room = await _roomService.GetRoomById(roomId);
 
             room.ChangeSlots(roomSchedule);
+        }
+        
+
+        private async Task UpdateOperationRequest(string opRequestId)
+        {
+            var opRequest = await _repo.GetByIdAsync(new OperationRequestId(opRequestId));
+
+            opRequest.ChangeStatus("Planned");
+        } 
+
+        private async Task CreateSurgeryAppointment(string opRequestId, string roomNumber, SlotsDto slot, List<string> staffList)
+        {
+         var appointmentDto = new CreatingAppointmentDto(opRequestId, roomNumber, slot.StartTime,
+            slot.EndTime, slot.StartDate, slot.EndDate, staffList);
+
+           await _appointService.AddAsync(appointmentDto);
         }
 
         private List<SlotsDto> CalculateFreeSlots(List<SlotsDto> busySlots, int startOfDay, int endOfDay)

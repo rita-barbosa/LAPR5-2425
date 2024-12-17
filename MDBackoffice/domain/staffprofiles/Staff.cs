@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using MDBackoffice.Domain.Appointments;
+using MDBackoffice.Domain.AppointmentStaffs;
 using MDBackoffice.Domain.Shared;
 using MDBackoffice.Domain.Specializations;
 using MDBackoffice.Domain.Users;
@@ -18,7 +20,7 @@ namespace MDBackoffice.Domain.StaffProfiles
         public SpecializationCode SpecializationId { get; private set; }
         public string? UserReference { get; set; }
         public bool Status { get; set; }
-
+        public ICollection<AppointmentStaff> AppointmentStaffs {get; private set;} = new List<AppointmentStaff>();
 
         private Staff() { }
         public Staff(string seqNumber, string address, string licenseNumber, string firstName, string lastName, string email, string phoneNumber, Function function, SpecializationCode specializationId)

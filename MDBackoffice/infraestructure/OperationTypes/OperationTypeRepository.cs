@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using MDBackoffice.Domain.OperationTypes;
 using MDBackoffice.Domain.OperationTypes.ValueObjects;
+using MDBackoffice.Domain.OperationTypes.ValueObjects.RequiredStaff;
 using MDBackoffice.Infrastructure.Shared;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -75,6 +76,20 @@ namespace MDBackoffice.Infrastructure.OperationTypes
             .Include(p => p.RequiredStaff)
             .Include(p => p.Phases)
             .FirstOrDefaultAsync(p => p.Name.OperationName == name); // Compare the primitive property
+    }
+
+    public async Task<List<RequiredStaff>> GetRequiredStaffByOperationTypeIdAsync(OperationTypeId operationTypeId)
+    {
+        var operationType = await _context.OperationTypes
+            .Include(o => o.RequiredStaff) 
+            .FirstOrDefaultAsync(o => o.Id.Equals(operationTypeId));
+
+        if (operationType == null)
+        {
+            throw new KeyNotFoundException("Operation Type not found.");
+        }
+
+        return operationType.RequiredStaff; 
     }
     }
 }

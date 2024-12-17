@@ -35,6 +35,10 @@ import { AddTimeSlotsComponent } from './components/staff/add-time-slots/add-tim
 import { CreateAllergyComponent } from './components/admin/create-allergy/create-allergy.component';
 import { EditAllergyComponent } from './components/admin/edit-allergy/edit-allergy.component';
 import { CreateMedicalConditionComponent } from './components/admin/create-medical-condition/create-medical-condition.component';
+import { CreateRoomTypeComponent } from './components/admin/create-room-type/create-room-type.component';
+import { CreateSpecializationComponent } from './components/admin/create-specialization/create-specialization.component';
+import { CreateSurgeryAppointmentComponent } from './components/staff/doctor/create-surgery-appointment/create-surgery-appointment.component';
+
 import { ListAllergies } from './components/admin/list-allergies/list-allergies.component';
 
 
@@ -76,6 +80,9 @@ export const routes: Routes = [
   { path: 'create-allergy', component: CreateAllergyComponent },
   { path: 'edit-allergy', component: EditAllergyComponent },
   { path: 'create-medical-condition', component: CreateMedicalConditionComponent },
+  { path: 'create-room-type', component: CreateRoomTypeComponent },
+  { path: 'create-specialization', component: CreateSpecializationComponent},
+  { path: 'create-surgery-appointment', component: CreateSurgeryAppointmentComponent},
   { path: 'list-allergies', component: ListAllergies },
   { path: '**', redirectTo: '' }
 ];
