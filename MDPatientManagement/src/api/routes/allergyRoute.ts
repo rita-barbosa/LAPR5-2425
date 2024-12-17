@@ -33,8 +33,11 @@ export default (app: Router) => {
     }),
     (req, res, next) => ctrl.updateAllergy(req, res, next) );
 
-    route.get('/get-all-allegies',
+    route.get('/get-all-allergies',
       (req, res, next) => ctrl.getAllAllergies(req, res, next) );
+
+    route.post('/get-allergies-filtered',
+      (req, res, next) => ctrl.getAllergiesByFilter(req, res, next) );
 
     route.get('/get-allergy-by-code',
       celebrate({

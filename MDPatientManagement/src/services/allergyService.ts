@@ -10,6 +10,8 @@ import IAllergyRepo from './IRepos/IAllergyRepo';
 import { Allergy } from '../domain/allergy';
 
 import { Result } from "../core/logic/Result";
+import { IAllergyQueryFilterParameters } from '../dto/IAllergyQueryFilterParameters';
+import { forEach } from 'lodash';
 
 @Service()
 export default class AllergyService implements IAllergyService{
@@ -18,6 +20,25 @@ export default class AllergyService implements IAllergyService{
       @Inject('logger') private logger,
   ) {}
 
+  async getAllergiesByFilters(arg0: IAllergyQueryFilterParameters): Promise<Result<IAllergyDTO[]>> {
+    try {
+      const allergies = await this.allergyRepo.findAllByParameters(arg0);
+      if (allergies.length == 0) {
+        return Result.fail<IAllergyDTO[]>("Allergy not found");
+      }
+
+      let allergyDtoList: IAllergyDTO[] = [];
+
+      for(var i = 0; i < allergies.length; i++){
+        const allergyDTO = AllergyMap.toDTO(allergies.at(i)) as IAllergyDTO;
+        allergyDtoList.push(allergyDTO);
+      }
+
+      return Result.ok<IAllergyDTO[]>(allergyDtoList);
+    } catch (error) {
+      throw new Error(`Failed to fetch allergy: ${error.message}`);
+    }
+  }
 
   async createAllergy(allergyDTO: IAllergyDTO): Promise<Result<IAllergyDTO>> {
     try {

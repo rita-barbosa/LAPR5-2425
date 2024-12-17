@@ -9,6 +9,7 @@ import IAllergyController from './IControllers/IAllergyController';
 import IAllergyService from '../services/IServices/IAllergyService';
 import { IAllergyDTO } from '../dto/IAllergyDTO';
 import { IAllergyUpdateDTO } from '../dto/IAllergyUpdateDTO';
+import { IAllergyQueryFilterParameters } from '../dto/IAllergyQueryFilterParameters';
 
 @Service()
 export default class AllergyController /*extends BaseController*/ implements IAllergyController  {
@@ -21,6 +22,22 @@ export default class AllergyController /*extends BaseController*/ implements IAl
       @Inject(config.services.allergy.name) private allergyServiceInstance : IAllergyService
   ) {
     //super();
+  }
+
+  async getAllergiesByFilter(req: Request, res: Response, next: NextFunction) {
+    try {
+      const allergyOrError = await this.allergyServiceInstance.getAllergiesByFilters(req.body as IAllergyQueryFilterParameters) as Result<IAllergyDTO[]>;
+
+      if (allergyOrError.isFailure) {
+        return res.status(404).send();
+      }
+
+      const allergyDTO = allergyOrError.getValue();
+      return res.status(201).json( allergyDTO );
+    }
+    catch (e) {
+      return next(e);
+    }
   }
 
   public async createAllergy(req: Request, res: Response, next: NextFunction) {
@@ -88,5 +105,7 @@ export default class AllergyController /*extends BaseController*/ implements IAl
       return next(e);
     }
   }
+
+  
 
 }
