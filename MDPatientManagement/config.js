@@ -14,7 +14,7 @@ export default {
   /**
    * Your favorite port : optional change to 4000 by JRT
    */
-  port: parseInt(process.env.PORT, 10) || 4000, 
+  port: parseInt(process.env.PORT, 10) || 4000,
 
   /**
    * That long string from mlab
@@ -24,14 +24,14 @@ export default {
   /**
    * Your secret sauce
    */
-  jwtSecret: process.env.JWT_SECRET || "my sakdfho2390asjod$%jl)!sdjas0i secret",
+  jwtSecret: process.env.JWT_SECRET || "SHUDFVSDO7Rjhbsdf8B87gSB87Bkbisdf87BibiuIBibi98nO8_SDFSDIG8B",
 
   /**
    * Used by winston logger
    */
   logs: {
     level: process.env.LOG_LEVEL || 'info',
-  },  
+  },
 
   /**
    * API configs
