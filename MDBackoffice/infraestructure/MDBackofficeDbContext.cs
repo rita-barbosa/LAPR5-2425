@@ -25,6 +25,7 @@ using MDBackoffice.Infrastructure.Appointments;
 using MDBackoffice.Infrastructure.Rooms;
 using MDBackoffice.Domain.RoomTypes;
 using MDBackoffice.Infrastructure.RoomTypes;
+using MDBackoffice.Domain.AppointmentStaffs;
 
 
 namespace MDBackoffice.Infrastructure
@@ -43,6 +44,7 @@ namespace MDBackoffice.Infrastructure
         public DbSet<Log> Logs { get; set; }
         public DbSet<AppointmentHistory> appointmentHistories { get; set; }
         public DbSet<Appointment> Appointments { get; set; }
+        public DbSet<AppointmentStaff> AppointmentStaffs { get; set;}
         public DbSet<Room> Rooms { get; set; }
         public DbSet<RoomType> RoomTypes { get; set; }
         public MDBackofficeDbContext(DbContextOptions options) : base(options)

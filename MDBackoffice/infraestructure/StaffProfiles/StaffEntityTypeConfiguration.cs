@@ -1,4 +1,5 @@
 using System;
+using MDBackoffice.Domain.Appointments;
 using MDBackoffice.Domain.Specializations;
 using MDBackoffice.Domain.StaffProfiles;
 using MDBackoffice.Domain.Users;
@@ -122,6 +123,12 @@ namespace MDBackoffice.Infrastructure.StaffProfiles
                         .HasColumnName("Description");
                 slotBuilder.ToTable("StaffSlots");
             });
+
+            builder.HasMany(b => b.AppointmentStaffs)
+                .WithOne(b => b.Staff)
+                .HasForeignKey("StaffId")
+                .OnDelete(DeleteBehavior.Cascade);
+
 
             // Configure the table name for Staff
             builder.ToTable("Staff");

@@ -5,5 +5,6 @@ export default interface IAllergyController  {
   updateAllergy(req: Request, res: Response, next: NextFunction);
   getAllergyByCode(req: Request, res: Response, next: NextFunction);
   getAllAllergies(req: Request, res: Response, next: NextFunction);
+  getAllergiesByFilter(req: Request, res: Response, next: NextFunction);
   
 }

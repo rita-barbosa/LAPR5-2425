@@ -45,6 +45,9 @@ using MDBackoffice.Domain.Appointments;
 using MDBackoffice.Infrastructure.Appointments;
 using MDBackoffice.Domain.RoomTypes;
 using MDBackoffice.Infrastructure.RoomTypes;
+using MDBackoffice.Domain.OperationTypes.ValueObjects.RequiredStaff;
+using MDBackoffice.Domain.AppointmentStaffs;
+using MDBackoffice.Infrastructure.AppointmentStaffs;
 
 namespace MDBackoffice
 {
@@ -223,6 +226,10 @@ namespace MDBackoffice
 
             services.AddTransient<IOperationSchedulerAdapter, PlanningSchedulerAdapter>();
             services.AddTransient<PlanningSchedulerAdapter>();
+
+            services.AddTransient<IAppointmentStaffRepository, AppointmentStaffRepository>();
+
+            services.AddTransient<IRequiredStaffRepository, RequiredStaffRepository>();
         }
 
 

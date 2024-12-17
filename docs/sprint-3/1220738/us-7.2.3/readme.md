@@ -173,7 +173,27 @@ However level 3 is shown below.
 
 ## 5. Implementation
 
-//TO BE DONE
+The implementation followed the design.
+
+To fully experience the implementation, the user must first login with an admin account since it's the only role allowed to do such a request:
+
+![alt text](/sem5pi-2425-dg38/docs/sprint-3/1220738/us-7.2.3/diagrams/implementation/image-0.png)
+
+After doing so, the user must choose the Allergy segment of the sidebar and choose "List Allergies":
+
+![alt text](/sem5pi-2425-dg38/docs/sprint-3/1220738/us-7.2.3/diagrams/implementation/image.png)
+
+After that, the admin will be presented with all the allergies available, or it can also search for specific allergies using filters, like code or designation:
+
+![alt text](/sem5pi-2425-dg38/docs/sprint-3/1220738/us-7.2.3/diagrams/implementation/image-1.png)
+
+One filter:
+
+![alt text](/sem5pi-2425-dg38/docs/sprint-3/1220738/us-7.2.3/diagrams/implementation/image-2.png)
+
+Multiple filters:
+
+![alt text](/sem5pi-2425-dg38/docs/sprint-3/1220738/us-7.2.3/diagrams/implementation/image-3.png)
 
 ## 6. Testing
 

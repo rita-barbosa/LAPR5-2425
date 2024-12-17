@@ -185,19 +185,19 @@ However level 3 is shown below.
 
 The implementation followed the design.
 
-To fully expirience the implementation, the user must first login with an admin account since it's the only role allowed to do such a request:
+To fully experience the implementation, the user must first login with an admin account since it's the only role allowed to do such a request:
 
-![alt text](image-1.png)
+![alt text](/sem5pi-2425-dg38/docs/sprint-3/1220738/us-7.2.4/diagrams/implementation/image-1.png)
 
 After doing so, the user must choose the Medical Condition segment of the sidebar and choose "Create Medical Condition":
 
-![alt text](image-2.png)
+![alt text](/sem5pi-2425-dg38/docs/sprint-3/1220738/us-7.2.4/diagrams/implementation/image-2.png)
 
 After that, the admin must put the correct code, name, description and symptoms that are to be stored in the database:
 
-![alt text](image.png)
+![alt text](/sem5pi-2425-dg38/docs/sprint-3/1220738/us-7.2.4/diagrams/implementation/image.png)
 
-![alt text](image-3.png)
+![alt text](/sem5pi-2425-dg38/docs/sprint-3/1220738/us-7.2.4/diagrams/implementation/image-3.png)
 
 ## 6. Testing
 

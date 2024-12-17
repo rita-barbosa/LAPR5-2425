@@ -5,6 +5,7 @@ import { catchError, map, Observable, of } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { Allergy } from '../domain/Allergy';
 import { AllergyUpdate } from '../domain/edit-allergy';
+import { AllergyQueryParameters } from '../domain/allergy-query-parameters';
 
 @Injectable({
   providedIn: 'root'
@@ -22,7 +23,7 @@ export class AllergyService {
   constructor(private messageService: MessageService, private http: HttpClient) { }
 
   public getAllAllergies(): Observable<Allergy[]> {
-    const url = `${this.theServerURL}/Allergy/get-all-allegies`;
+    const url = `${this.theServerURL}/Allergy/get-all-allergies`;
   
     return this.http.get<Allergy[]>(url, this.httpOptions)
       .pipe(
@@ -40,7 +41,36 @@ export class AllergyService {
         catchError(this.handleError<Allergy>('Get allergy'))
       );
   }
+
+  getAllergiesByFilters(allergiesQueryParameters: AllergyQueryParameters): Observable<Allergy[]> {
+      const url = `${this.theServerURL}/Allergy/get-allergies-filtered`;
   
+      return this.http.post<Allergy[]>(url, allergiesQueryParameters, this.httpOptions).pipe(
+          catchError((error) => {
+            if (error.status = 404) {
+  
+              const queryParameters: AllergyQueryParameters = {
+                queryfilters: []
+              };
+  
+              queryParameters.queryfilters.push(
+                {
+                  code : '',
+                  designation : '',
+                  description : ''
+                }
+              )
+  
+              this.log('No allergies were found with the chosen criteria.')
+              return this.http.post<Allergy[]>(url, queryParameters, this.httpOptions)
+            }else {
+              this.handleError<Allergy[]>('Get allergies filtered list', error);
+              return of([]);
+            }
+          })
+      );
+    }
+
 
   public createAllergy(code : string, designation : string, description : string) {
     const url = `${this.theServerURL}/Allergy/create-allergy`;
