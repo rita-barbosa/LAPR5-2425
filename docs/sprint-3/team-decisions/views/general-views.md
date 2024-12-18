@@ -1,24 +1,26 @@
 # Generic System View Diagrams
 
 <!-- TOC -->
-* [Generic System View Diagrams](#generic-system-view-diagrams)
-  * [Introduction](#introduction)
-  * [1. Logical View](#1-logical-view)
-    * [1.1. Level 1](#11-level-1)
-    * [1.2. Level 2](#12-level-2)
-    * [1.3. Level 3](#13-level-3)
-      * [1.3.1 Backoffice](#131-backoffice)
-      * [1.3.2 Visualization](#132-visualization)
-  * [2. Process View](#2-process-view)
-  * [3. Development View](#3-development-view)
-    * [3.2. Level 2](#32-level-2)
-    * [3.3. Level 3](#33-level-3)
-    * [3.3.1 Backoffice](#331-backoffice)
-    * [3.3.2 Visualization](#332-visualization)
-  * [4. Physical View](#4-physical-view)
-    * [4.2. Level 2](#42-level-2)
-  * [5. Scenario View](#5-scenario-view)
-    * [5.1. Level 1](#51-level-1)
+- [Generic System View Diagrams](#generic-system-view-diagrams)
+  - [Introduction](#introduction)
+  - [1. Logical View](#1-logical-view)
+    - [1.1. Level 1](#11-level-1)
+    - [1.2. Level 2](#12-level-2)
+    - [1.3. Level 3](#13-level-3)
+      - [1.3.1 Backoffice](#131-backoffice)
+      - [1.3.2 Visualization](#132-visualization)
+      - [1.3.3 PatientManagement](#133-patientmanagement)
+  - [2. Process View](#2-process-view)
+  - [3. Development View](#3-development-view)
+    - [3.2. Level 2](#32-level-2)
+    - [3.3. Level 3](#33-level-3)
+    - [3.3.1 Backoffice](#331-backoffice)
+    - [3.3.2 Visualization](#332-visualization)
+    - [3.3.3 PatientManagement](#333-patientmanagement)
+  - [4. Physical View](#4-physical-view)
+    - [4.2. Level 2](#42-level-2)
+  - [5. Scenario View](#5-scenario-view)
+    - [5.1. Level 1](#51-level-1)
 <!-- TOC -->
 
 
@@ -93,6 +95,10 @@ system, as it communicates inside and outside of it with other applications, so 
 
 ![visualization_vl3.drawio.svg](logical-view/visualization_vl3.svg)
 
+#### 1.3.3 PatientManagement
+
+![md-patient-management_vl3.svg](logical-view/md-patient-management_vl3.svg)
+
 ---
 
 ## 2. Process View
@@ -116,6 +122,10 @@ Process views and their respective levels will be represented in each user story
 ### 3.3.2 Visualization
 
 ![visualization-development-view-level-3](development-view/developement-view-visualization-level-3.svg)
+
+### 3.3.3 PatientManagement
+
+![visualization-development-view-level-3](development-view/development-view-mdpatientmanagement-level-3.svg)
 
 ---
 
