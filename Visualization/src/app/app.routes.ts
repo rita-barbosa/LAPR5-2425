@@ -38,8 +38,8 @@ import { CreateMedicalConditionComponent } from './components/admin/create-medic
 import { CreateRoomTypeComponent } from './components/admin/create-room-type/create-room-type.component';
 import { CreateSpecializationComponent } from './components/admin/create-specialization/create-specialization.component';
 import { CreateSurgeryAppointmentComponent } from './components/staff/doctor/create-surgery-appointment/create-surgery-appointment.component';
-
 import { ListAllergies } from './components/admin/list-allergies/list-allergies.component';
+import { ListSpecializationComponent } from './components/admin/list-specialization/list-specialization.component';
 
 
 export const routes: Routes = [
@@ -84,6 +84,7 @@ export const routes: Routes = [
   { path: 'create-specialization', component: CreateSpecializationComponent},
   { path: 'create-surgery-appointment', component: CreateSurgeryAppointmentComponent},
   { path: 'list-allergies', component: ListAllergies },
+  { path: 'list-specialization', component: ListSpecializationComponent},
   { path: '**', redirectTo: '' }
 ];
 
