@@ -1,12 +1,13 @@
 import { Service, Inject } from 'typedi';
 
-import { Document, FilterQuery, Model } from 'mongoose';
+import { Document, FilterQuery, Model, Types } from 'mongoose';
 import { IAllergyPersistence } from '../dataschema/IAllergyPersistence';
 
 import IAllergyRepo from '../services/IRepos/IAllergyRepo';
 import { Allergy } from '../domain/allergy';
 import { AllergyCode } from '../domain/allergyCode';
 import { AllergyMap } from '../mappers/AllergyMap';
+import { IAllergyQueryFilterParameters } from '../dto/IAllergyQueryFilterParameters';
 
 @Service()
 export default class AllergyRepo implements IAllergyRepo {
@@ -16,6 +17,46 @@ export default class AllergyRepo implements IAllergyRepo {
     @Inject('allergySchema') private allergyschema : Model<IAllergyPersistence & Document>,
     @Inject('logger') private logger
   ) { }
+
+  async findAllByParameters(allergyQueryParameters: IAllergyQueryFilterParameters): Promise<Allergy[]> {
+    const allergyRecordsList: (IAllergyPersistence & Document<any, any, any> & {
+      _id: Types.ObjectId;
+    })[] = [];
+  
+    // Use Promise.all for parallel queries
+    const queryPromises = allergyQueryParameters.queryfilters.map(filter => {
+      const query: any = {};
+      
+      if (filter.code?.length > 0) {
+        query.code = filter.code;
+      }
+  
+      if (filter.designation?.length > 0) {
+        query.designation = filter.designation;
+      }
+  
+      if (filter.description?.length > 0) {
+        query.description = filter.description;
+      }
+  
+      // Return the query promise
+      return this.allergyschema.find(query).exec();
+    });
+  
+    // Wait for all promises to resolve
+    const results = await Promise.all(queryPromises);
+  
+    // Flatten the results into one array
+    results.forEach(records => {
+      allergyRecordsList.push(...records);
+    });
+  
+    // Map the records to their domain representation
+    return allergyRecordsList.length > 0
+      ? allergyRecordsList.map(AllergyMap.toDomain)
+      : [];
+  }
+  
 
 
 

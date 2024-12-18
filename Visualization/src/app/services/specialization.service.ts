@@ -20,11 +20,11 @@ export class SpecializationService {
 
   constructor(private messageService: MessageService, private http: HttpClient) { }
 
-  public createSpecialization(code : string, designation : string, description : string) {
+  public createSpecialization(code : string, denomination : string, description : string) {
     const url = `${this.theServerURL}/Specialization`;
     let specialization: Specialization = {
       code : code,
-      denomination: designation,
+      denomination: denomination,
       description: description
     };
     this.http.post<Specialization>(url, specialization, this.httpOptions)
@@ -34,6 +34,82 @@ export class SpecializationService {
       });
   }
 
+  
+  public getAllSpecializationsAvailable(): Observable<Specialization[]> {
+    const url = `${this.theServerURL}/Specialization/filtered`;
+
+    return this.http.get<Specialization[]>(url, this.httpOptions)
+                    .pipe(            
+                      catchError(this.handleError<Specialization[]>('Get Specializations', []))
+                    );
+  }
+  public getSpecializationsByFilters(code:string,denomination:string,description:string): Observable<Specialization[]> {
+    const url = `${this.theServerURL}/Specialization/filtered`;
+    let params = new HttpParams();
+
+    if (code) {
+      params = params.set('code', code);
+    }
+    if (denomination) {
+      params = params.set('denomination', denomination);
+    }
+    if (description) {
+      params = params.set('description', description);
+    }
+    return this.http.get<Specialization[]>(url, { headers: this.httpOptions.headers, params })
+                    .pipe(
+                      catchError(this.handleError<Specialization[]>('Get Specializations', []))
+                    );
+  }
+  public getSpecializationById(code: string): Observable<Specialization> {
+    const url = `${this.theServerURL}/Specialization/filtered?code=${code}`;
+  
+    return this.http.get<Specialization[]>(url, this.httpOptions).pipe(
+      map(specializations => {
+        if (specializations.length > 0) {
+          return specializations[0];
+        } else {
+          throw new Error('No specialization found for the given code.');
+        }
+      }),
+      catchError(this.handleError<Specialization>('Get Specialization'))
+    );
+  }
+
+  public deleteSpecializationById(code: string): void {
+    const url = `${this.theServerURL}/Specialization/${code}`;
+  
+   this.http.delete<{ message: string }>(url, this.httpOptions)
+    .pipe().subscribe({
+      next: () => {
+        this.log(`Specialization: ${code} was successfully removed.`);
+      },
+      error: (err) => {
+        this.log(`Failed to remove Specialization: ${code}. Error: ${err.message}`);
+      }
+    });
+  }
+
+  public updateSpecialization(code: string, denomination: string, description: string) {
+    const url = `${this.theServerURL}/Specialization`;
+
+    var update : Specialization = {
+      code: code,
+      denomination: denomination,
+      description: description,
+    };
+    
+    this.http.put<Specialization>(url, update, this.httpOptions)
+      .pipe()
+      .subscribe({
+        next: (data) => {
+          this.log(`Specialization was successfully updated.`);
+        },
+        error: (err) => {
+          catchError(this.handleError<Specialization>('Update Specialization'))
+        },
+      });
+  }
   //------------------------/------------------------/------------------------
   private handleError<T>(operation = 'operation', result?: T) {
     return (error: any): Observable<T> => {
