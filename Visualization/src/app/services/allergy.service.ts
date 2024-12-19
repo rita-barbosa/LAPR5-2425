@@ -99,7 +99,7 @@ export class AllergyService {
       EditAllergy.description = description;
     }
   
-    this.http.put<Allergy>(url, EditAllergy, this.httpOptions)
+    this.http.patch<Allergy>(url, EditAllergy, this.httpOptions)
       .pipe(catchError(this.handleError<Allergy>('Create allergy')))
       .subscribe({
         next: (data) => {

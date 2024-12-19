@@ -208,6 +208,23 @@ namespace MDBackoffice.Controllers
 
             return Ok(patients);
         }
+
+         // GET: api/Patient/Filtered-List
+        [HttpGet("get-privacy-policy")]
+        public async Task<ActionResult<string>> GetPrivacyPolicy()
+        {
+
+            var policyText = _service.ObtainPrivacyPolicyText();
+
+            if (policyText.IsNullOrEmpty())
+            {
+                return Ok("No privacy policy available yet.");
+            }
+
+            return Ok(policyText);
+        }
     }
+
+    
 
 }

@@ -40,6 +40,7 @@ import { CreateSpecializationComponent } from './components/admin/create-special
 import { CreateSurgeryAppointmentComponent } from './components/staff/doctor/create-surgery-appointment/create-surgery-appointment.component';
 import { ListAllergies } from './components/admin/list-allergies/list-allergies.component';
 import { ListSpecializationComponent } from './components/admin/list-specialization/list-specialization.component';
+import { PrivacyPolicyComponent } from './components/privacy-policy/privacy-policy.component';
 
 
 export const routes: Routes = [
@@ -85,6 +86,7 @@ export const routes: Routes = [
   { path: 'create-surgery-appointment', component: CreateSurgeryAppointmentComponent},
   { path: 'list-allergies', component: ListAllergies },
   { path: 'list-specialization', component: ListSpecializationComponent},
+  { path: 'privacy-policy', component: PrivacyPolicyComponent},
   { path: '**', redirectTo: '' }
 ];
 
