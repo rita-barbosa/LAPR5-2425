@@ -12,10 +12,9 @@
       - [Physical View](#physical-view)
 <!-- TOC -->
 
-
 ## 1. Context
 
-This is the first time this user story is being done.
+This is the first time this user story is being developed.
 
 ## 2. Requirements
 

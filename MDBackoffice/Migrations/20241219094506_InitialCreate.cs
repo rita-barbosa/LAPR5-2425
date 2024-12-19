@@ -130,20 +130,19 @@ namespace MDBackoffice.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "Rooms",
+                name: "RoomTypes",
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "varchar(255)", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    RoomType = table.Column<string>(type: "longtext", nullable: false)
+                    Designation = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    Capacity = table.Column<int>(type: "int", nullable: false),
-                    CurrentStatus = table.Column<string>(type: "longtext", nullable: false)
+                    Description = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4")
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Rooms", x => x.Id);
+                    table.PrimaryKey("PK_RoomTypes", x => x.Id);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
@@ -461,49 +460,24 @@ namespace MDBackoffice.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "RoomAvailableEquipment",
+                name: "Rooms",
                 columns: table => new
                 {
-                    RoomId = table.Column<string>(type: "varchar(255)", nullable: false)
+                    Id = table.Column<string>(type: "varchar(255)", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    EquipmentName = table.Column<string>(type: "longtext", nullable: false)
+                    Type = table.Column<string>(type: "varchar(255)", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Capacity = table.Column<int>(type: "int", nullable: false),
+                    CurrentStatus = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4")
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_RoomAvailableEquipment", x => new { x.RoomId, x.Id });
+                    table.PrimaryKey("PK_Rooms", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_RoomAvailableEquipment_Rooms_RoomId",
-                        column: x => x.RoomId,
-                        principalTable: "Rooms",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                })
-                .Annotation("MySql:CharSet", "utf8mb4");
-
-            migrationBuilder.CreateTable(
-                name: "RoomMaintenanceSlots",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
-                    StartDate = table.Column<DateTime>(type: "datetime(6)", nullable: false),
-                    EndDate = table.Column<DateTime>(type: "datetime(6)", nullable: false),
-                    StartTime = table.Column<TimeSpan>(type: "time(6)", nullable: false),
-                    EndTime = table.Column<TimeSpan>(type: "time(6)", nullable: false),
-                    Description = table.Column<string>(type: "longtext", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    RoomId = table.Column<string>(type: "varchar(255)", nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4")
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_RoomMaintenanceSlots", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_RoomMaintenanceSlots_Rooms_RoomId",
-                        column: x => x.RoomId,
-                        principalTable: "Rooms",
+                        name: "FK_Rooms_RoomTypes_Type",
+                        column: x => x.Type,
+                        principalTable: "RoomTypes",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 })
@@ -562,7 +536,7 @@ namespace MDBackoffice.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "appointmentHistories",
+                name: "AppointmentHistory",
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "varchar(255)", nullable: false)
@@ -577,11 +551,60 @@ namespace MDBackoffice.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_appointmentHistories", x => x.Id);
+                    table.PrimaryKey("PK_AppointmentHistory", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_appointmentHistories_Patients_PatientId",
+                        name: "FK_AppointmentHistory_Patients_PatientId",
                         column: x => x.PatientId,
                         principalTable: "Patients",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
+                name: "RoomAvailableEquipment",
+                columns: table => new
+                {
+                    RoomId = table.Column<string>(type: "varchar(255)", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    EquipmentName = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_RoomAvailableEquipment", x => new { x.RoomId, x.Id });
+                    table.ForeignKey(
+                        name: "FK_RoomAvailableEquipment_Rooms_RoomId",
+                        column: x => x.RoomId,
+                        principalTable: "Rooms",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
+                name: "RoomMaintenanceSlots",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    StartDate = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    EndDate = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    StartTime = table.Column<TimeSpan>(type: "time(6)", nullable: false),
+                    EndTime = table.Column<TimeSpan>(type: "time(6)", nullable: false),
+                    Description = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    RoomId = table.Column<string>(type: "varchar(255)", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_RoomMaintenanceSlots", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_RoomMaintenanceSlots_Rooms_RoomId",
+                        column: x => x.RoomId,
+                        principalTable: "Rooms",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 })
@@ -694,6 +717,35 @@ namespace MDBackoffice.Migrations
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
+            migrationBuilder.CreateTable(
+                name: "AppointmentStaffs",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "varchar(255)", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    AppointmentId = table.Column<string>(type: "varchar(255)", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    StaffId = table.Column<string>(type: "varchar(255)", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AppointmentStaffs", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_AppointmentStaffs_Appointment_AppointmentId",
+                        column: x => x.AppointmentId,
+                        principalTable: "Appointment",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_AppointmentStaffs_Staff_StaffId",
+                        column: x => x.StaffId,
+                        principalTable: "Staff",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
             migrationBuilder.CreateIndex(
                 name: "IX_Appointment_OperationRequestId",
                 table: "Appointment",
@@ -705,9 +757,19 @@ namespace MDBackoffice.Migrations
                 column: "RoomNumber");
 
             migrationBuilder.CreateIndex(
-                name: "IX_appointmentHistories_PatientId",
-                table: "appointmentHistories",
+                name: "IX_AppointmentHistory_PatientId",
+                table: "AppointmentHistory",
                 column: "PatientId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AppointmentStaffs_AppointmentId",
+                table: "AppointmentStaffs",
+                column: "AppointmentId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AppointmentStaffs_StaffId",
+                table: "AppointmentStaffs",
+                column: "StaffId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -793,6 +855,11 @@ namespace MDBackoffice.Migrations
                 column: "RoomId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Rooms_Type",
+                table: "Rooms",
+                column: "Type");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Staff_SpecializationId",
                 table: "Staff",
                 column: "SpecializationId");
@@ -813,10 +880,10 @@ namespace MDBackoffice.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Appointment");
+                name: "AppointmentHistory");
 
             migrationBuilder.DropTable(
-                name: "appointmentHistories");
+                name: "AppointmentStaffs");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoleClaims");
@@ -861,13 +928,16 @@ namespace MDBackoffice.Migrations
                 name: "Token");
 
             migrationBuilder.DropTable(
-                name: "OperationRequests");
+                name: "Appointment");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
                 name: "OperationTypeRecords");
+
+            migrationBuilder.DropTable(
+                name: "OperationRequests");
 
             migrationBuilder.DropTable(
                 name: "Rooms");
@@ -880,6 +950,9 @@ namespace MDBackoffice.Migrations
 
             migrationBuilder.DropTable(
                 name: "Staff");
+
+            migrationBuilder.DropTable(
+                name: "RoomTypes");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");

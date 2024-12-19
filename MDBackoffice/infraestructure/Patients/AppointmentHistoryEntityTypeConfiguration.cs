@@ -30,5 +30,6 @@ public class AppointmentHistoryConfiguration : IEntityTypeConfiguration<Appointm
         builder.HasOne<Patient>()
             .WithMany(p => p.AppointmentList)
             .HasForeignKey(ah => ah.PatientId); 
+         builder.ToTable("AppointmentHistory");
     }
 }

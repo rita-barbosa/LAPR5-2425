@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MDBackoffice.Migrations
 {
     [DbContext(typeof(MDBackofficeDbContext))]
-    [Migration("20241211092830_InitialCreate")]
+    [Migration("20241219094506_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -48,7 +48,29 @@ namespace MDBackoffice.Migrations
 
                     b.HasIndex("PatientId");
 
-                    b.ToTable("appointmentHistories");
+                    b.ToTable("AppointmentHistory", (string)null);
+                });
+
+            modelBuilder.Entity("MDBackoffice.Domain.AppointmentStaffs.AppointmentStaff", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<string>("AppointmentId")
+                        .IsRequired()
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<string>("StaffId")
+                        .IsRequired()
+                        .HasColumnType("varchar(255)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AppointmentId");
+
+                    b.HasIndex("StaffId");
+
+                    b.ToTable("AppointmentStaffs");
                 });
 
             modelBuilder.Entity("MDBackoffice.Domain.Appointments.Appointment", b =>
@@ -201,12 +223,28 @@ namespace MDBackoffice.Migrations
                     b.ToTable("Patients");
                 });
 
-            modelBuilder.Entity("MDBackoffice.Domain.Rooms.Room", b =>
+            modelBuilder.Entity("MDBackoffice.Domain.RoomTypes.RoomType", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("varchar(255)");
 
                     b.HasKey("Id");
+
+                    b.ToTable("RoomTypes", (string)null);
+                });
+
+            modelBuilder.Entity("MDBackoffice.Domain.Rooms.Room", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasColumnType("varchar(255)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Type");
 
                     b.ToTable("Rooms", (string)null);
                 });
@@ -486,7 +524,7 @@ namespace MDBackoffice.Migrations
 
                             b1.HasKey("AppointmentHistoryId");
 
-                            b1.ToTable("appointmentHistories");
+                            b1.ToTable("AppointmentHistory");
 
                             b1.WithOwner()
                                 .HasForeignKey("AppointmentHistoryId");
@@ -494,6 +532,25 @@ namespace MDBackoffice.Migrations
 
                     b.Navigation("CreatedAt")
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("MDBackoffice.Domain.AppointmentStaffs.AppointmentStaff", b =>
+                {
+                    b.HasOne("MDBackoffice.Domain.Appointments.Appointment", "Appointment")
+                        .WithMany("AppointmentStaffs")
+                        .HasForeignKey("AppointmentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("MDBackoffice.Domain.StaffProfiles.Staff", "Staff")
+                        .WithMany("AppointmentStaffs")
+                        .HasForeignKey("StaffId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Appointment");
+
+                    b.Navigation("Staff");
                 });
 
             modelBuilder.Entity("MDBackoffice.Domain.Appointments.Appointment", b =>
@@ -1389,8 +1446,59 @@ namespace MDBackoffice.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("MDBackoffice.Domain.RoomTypes.RoomType", b =>
+                {
+                    b.OwnsOne("MDBackoffice.Domain.RoomTypes.RoomTypeDescription", "Description", b1 =>
+                        {
+                            b1.Property<string>("RoomTypeId")
+                                .HasColumnType("varchar(255)");
+
+                            b1.Property<string>("Description")
+                                .IsRequired()
+                                .HasColumnType("longtext")
+                                .HasColumnName("Description");
+
+                            b1.HasKey("RoomTypeId");
+
+                            b1.ToTable("RoomTypes");
+
+                            b1.WithOwner()
+                                .HasForeignKey("RoomTypeId");
+                        });
+
+                    b.OwnsOne("MDBackoffice.Domain.RoomTypes.RoomTypeDesignation", "Designation", b1 =>
+                        {
+                            b1.Property<string>("RoomTypeId")
+                                .HasColumnType("varchar(255)");
+
+                            b1.Property<string>("Designation")
+                                .IsRequired()
+                                .HasColumnType("longtext")
+                                .HasColumnName("Designation");
+
+                            b1.HasKey("RoomTypeId");
+
+                            b1.ToTable("RoomTypes");
+
+                            b1.WithOwner()
+                                .HasForeignKey("RoomTypeId");
+                        });
+
+                    b.Navigation("Description")
+                        .IsRequired();
+
+                    b.Navigation("Designation")
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("MDBackoffice.Domain.Rooms.Room", b =>
                 {
+                    b.HasOne("MDBackoffice.Domain.RoomTypes.RoomType", null)
+                        .WithMany()
+                        .HasForeignKey("Type")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.OwnsOne("MDBackoffice.Domain.Rooms.Capacity", "Capacity", b1 =>
                         {
                             b1.Property<string>("RoomId")
@@ -1522,24 +1630,6 @@ namespace MDBackoffice.Migrations
                                 .IsRequired();
                         });
 
-                    b.OwnsOne("MDBackoffice.Domain.Rooms.RoomType", "Type", b1 =>
-                        {
-                            b1.Property<string>("RoomId")
-                                .HasColumnType("varchar(255)");
-
-                            b1.Property<string>("RoomTypeName")
-                                .IsRequired()
-                                .HasColumnType("longtext")
-                                .HasColumnName("RoomType");
-
-                            b1.HasKey("RoomId");
-
-                            b1.ToTable("Rooms");
-
-                            b1.WithOwner()
-                                .HasForeignKey("RoomId");
-                        });
-
                     b.Navigation("AvailableEquipment");
 
                     b.Navigation("Capacity")
@@ -1549,9 +1639,6 @@ namespace MDBackoffice.Migrations
                         .IsRequired();
 
                     b.Navigation("MaintenanceSlots");
-
-                    b.Navigation("Type")
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("MDBackoffice.Domain.Specializations.Specialization", b =>
@@ -1948,6 +2035,11 @@ namespace MDBackoffice.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("MDBackoffice.Domain.Appointments.Appointment", b =>
+                {
+                    b.Navigation("AppointmentStaffs");
+                });
+
             modelBuilder.Entity("MDBackoffice.Domain.OperationTypes.OperationType", b =>
                 {
                     b.Navigation("RequiredStaff");
@@ -1961,6 +2053,11 @@ namespace MDBackoffice.Migrations
             modelBuilder.Entity("MDBackoffice.Domain.Patients.Patient", b =>
                 {
                     b.Navigation("AppointmentList");
+                });
+
+            modelBuilder.Entity("MDBackoffice.Domain.StaffProfiles.Staff", b =>
+                {
+                    b.Navigation("AppointmentStaffs");
                 });
 #pragma warning restore 612, 618
         }
