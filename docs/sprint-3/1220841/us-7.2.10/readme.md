@@ -21,7 +21,7 @@
 
 ## 1. Context
 
-//TO BE DONE
+This is the first time this user story is being developed.
 
 ## 2. Requirements
 

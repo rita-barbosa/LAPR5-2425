@@ -45,7 +45,7 @@ namespace MDBackoffice.Migrations
 
                     b.HasIndex("PatientId");
 
-                    b.ToTable("appointmentHistories");
+                    b.ToTable("AppointmentHistory", (string)null);
                 });
 
             modelBuilder.Entity("MDBackoffice.Domain.AppointmentStaffs.AppointmentStaff", b =>
@@ -521,7 +521,7 @@ namespace MDBackoffice.Migrations
 
                             b1.HasKey("AppointmentHistoryId");
 
-                            b1.ToTable("appointmentHistories");
+                            b1.ToTable("AppointmentHistory");
 
                             b1.WithOwner()
                                 .HasForeignKey("AppointmentHistoryId");

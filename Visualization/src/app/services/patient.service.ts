@@ -14,7 +14,6 @@ import { environment } from 'src/environments/environment';
   providedIn: 'root'
 })
 export class PatientService {
-
   theServerURL = environment.serverBaseUrl + "/Patient"
   token = localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')!).token : null;
   httpOptions = {
@@ -23,6 +22,7 @@ export class PatientService {
       'Authorization': `Bearer ${this.token}`
     })
    };
+   privacyPolicyFile = '../public/privacy-policy-text.md';
 
   constructor(private messageService: MessageService, private http: HttpClient) { }
   public updateProfile(name: string, phone: string, email: string, address: string, emergencyContact: string) {
@@ -164,6 +164,23 @@ export class PatientService {
         this.log(`${data.message}`);
       });
   }
+
+  async getPrivacyPolicyText(): Promise<string> {
+    const url = `${this.theServerURL}/get-privacy-policy`;
+  
+    try {
+      const data = await this.http.get<string>(url, {
+        ...this.httpOptions,
+        responseType: 'text' as 'json'
+      }).toPromise();
+      return data!.toString();
+    } catch (error) {
+      console.error("Error obtaining privacy policy", error);
+      return "Error fetching privacy policy";
+    }
+  }
+  
+  
 
 
 

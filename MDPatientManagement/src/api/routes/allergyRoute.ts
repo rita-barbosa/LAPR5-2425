@@ -23,7 +23,7 @@ export default (app: Router) => {
     }),
     (req, res, next) => ctrl.createAllergy(req, res, next) );
 
-  route.put('/update-allergy',
+  route.patch('/update-allergy',
     celebrate({
       body: Joi.object({
         code: Joi.string().required(),

@@ -41,6 +41,7 @@ import { CreateSurgeryAppointmentComponent } from './components/staff/doctor/cre
 import { ListAllergies } from './components/admin/list-allergies/list-allergies.component';
 import { ListSpecializationComponent } from './components/admin/list-specialization/list-specialization.component';
 import { CreateRoomComponent } from './components/admin/create-room/create-room.component';
+import { PrivacyPolicyComponent } from './components/privacy-policy/privacy-policy.component';
 
 
 export const routes: Routes = [
@@ -87,6 +88,7 @@ export const routes: Routes = [
   { path: 'list-allergies', component: ListAllergies },
   { path: 'list-specialization', component: ListSpecializationComponent},
   { path: 'create-room', component: CreateRoomComponent},
+  { path: 'privacy-policy', component: PrivacyPolicyComponent},
   { path: '**', redirectTo: '' }
 ];
 

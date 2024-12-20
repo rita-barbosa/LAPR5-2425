@@ -7,6 +7,7 @@ using MDBackoffice.Domain.Users;
 using Microsoft.AspNetCore.Mvc;
 using MDBackoffice.Domain.Logs;
 using Microsoft.Extensions.Configuration;
+using System.IO;
 
 namespace MDBackoffice.Domain.Patients
 {
@@ -18,6 +19,9 @@ namespace MDBackoffice.Domain.Patients
         private readonly EmailService _emailService;
         private readonly LogService _logService;
         private readonly IConfiguration _configuration;
+
+        private readonly string PRIVACY_POLICY_PATH = "privacy-policy-text.html";
+
         public PatientService(IUnitOfWork unitOfWork, LogService logService, IConfiguration configuration, IPatientRepository repo, UserService userService, EmailService emailService)
         {
             this._unitOfWork = unitOfWork;
@@ -310,6 +314,21 @@ namespace MDBackoffice.Domain.Patients
             Patient patient = await _repo.FindPatientWithEmailOrPhone(email, phone.Split(' ')[0], phone.Split(' ')[1]);
 
             return patient.Email.EmailAddress;
+        }
+
+        public string ObtainPrivacyPolicyText()
+        {
+            string filePath = PRIVACY_POLICY_PATH;
+            try
+            {
+                string content = File.ReadAllText(filePath);
+                return content;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("An error occurred: " + ex.Message);
+                return "";
+            }
         }
     }
 }
