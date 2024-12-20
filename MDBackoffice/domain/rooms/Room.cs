@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using MDBackoffice.Domain.RoomTypes;
 using MDBackoffice.Domain.Shared;
 
@@ -68,6 +69,11 @@ namespace MDBackoffice.Domain.Rooms
                     endDate: slot.Date.End.ToString()
                 ))
             );
+        }
+
+        public static implicit operator Task<object>(Room v)
+        {
+            throw new NotImplementedException();
         }
     }
 }

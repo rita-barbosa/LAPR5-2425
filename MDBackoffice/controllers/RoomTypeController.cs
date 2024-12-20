@@ -46,6 +46,12 @@ namespace MDBackoffice.Controllers
             }
         }
 
+        [HttpGet("get-all")]
+        public async Task<List<RoomTypeDto>> GetAll()
+        {
+            return await _service.GetAllAsync();
+        }
+
     }
 
 }

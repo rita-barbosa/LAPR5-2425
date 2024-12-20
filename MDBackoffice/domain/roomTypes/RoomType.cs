@@ -36,5 +36,7 @@ namespace MDBackoffice.Domain.RoomTypes
         {
             return HashCode.Combine(Id, Designation, Description);
         }
+
+        
     }
 }

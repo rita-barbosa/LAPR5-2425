@@ -7,5 +7,6 @@ namespace MDBackoffice.Domain.RoomTypes
     public interface IRoomTypeRepository : IRepository<RoomType, RoomTypeCode>
     {
         Task<List<RoomType>>  GetAllRoomTypesAsync();
+        Task<RoomType>  GetByDesignationAsync(string designation);
     }
 }

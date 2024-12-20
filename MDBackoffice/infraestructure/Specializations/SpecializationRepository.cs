@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -40,6 +41,15 @@ namespace MDBackoffice.Infrastructure.Specializations
             }
 
             return specializationQuery.ToListAsync();
+        }
+
+        public async Task<Specialization> FindByDenomination(string denomination)
+        {
+            return await _context.Specializations
+                .Where(spec =>
+                    spec.Denomination != null &&
+                    spec.Denomination.Denomination == denomination)
+                    .FirstOrDefaultAsync() ?? throw new NullReferenceException("Couldn't find the specialization with the denomination.");
         }
     }
 }

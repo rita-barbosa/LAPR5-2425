@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using MDBackoffice.Domain.Shared;
+using Microsoft.Extensions.ObjectPool;
 
 namespace MDBackoffice.Domain.RoomTypes
 {
@@ -26,7 +27,19 @@ namespace MDBackoffice.Domain.RoomTypes
             return new RoomTypeDto(roomType.Id.Value, roomType.Designation.Designation, roomType.Description.Description);
         }
 
+        public async Task<List<RoomTypeDto>> GetAllAsync()
+        {
+            var roomTypes = await _repo.GetAllAsync();
+            var roomTypesDto = new List<RoomTypeDto>();
 
+            foreach(RoomType roomType in roomTypes)
+            {
+                roomTypesDto.Add(new RoomTypeDto(roomType.Id.Value, roomType.Designation.Designation, roomType.Description.Description));
+            }
 
+            return roomTypesDto;
+        }
+
+        
     }
 }

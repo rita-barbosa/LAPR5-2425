@@ -2,7 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using MDBackoffice.Domain.RoomTypes;
 using MDBackoffice.Domain.Shared;
+using Microsoft.Extensions.ObjectPool;
 
 namespace MDBackoffice.Domain.Rooms
 {
@@ -10,55 +12,64 @@ namespace MDBackoffice.Domain.Rooms
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IRoomRepository _repo;
+        private readonly IRoomTypeRepository _repoType;
 
-        public RoomService(IUnitOfWork unitOfWork, IRoomRepository repo)
+        public RoomService(IUnitOfWork unitOfWork, IRoomRepository repo, IRoomTypeRepository typeRepo)
         {
             _unitOfWork = unitOfWork;
             _repo = repo;
+            _repoType = typeRepo;
         }
 
-        public virtual async Task<RoomDto> AddAsync(RoomDto dto)
+        public virtual async Task<RoomDto> AddAsync(CreateRoomDto dto)
         {
-            // var room = new Room(
-            //     dto.RoomNumber,
-            //     dto.Type,
-            //     dto.Capacity,
-            //     dto.CurrentStatus
-            // );
+            var room = await _repo.GetByIdAsync(new RoomNumber(dto.RoomNumber));
 
-            // if (dto.AvailableEquipment != null)
-            // {
-            //     foreach (var equipment in dto.AvailableEquipment)
-            //     {
-            //         room.AddEquipment(equipment);
-            //     }
-            // }
+            if (room != null)
+            {
+               throw new InvalidOperationException("A room with that number already exists.");
+            }
 
-            // if (dto.MaintenanceSlots != null)
-            // {
-            //     foreach (var slotDto in dto.MaintenanceSlots)
-            //     {
-            //         room.AddSlot(slotDto.StartTime, slotDto.EndTime, slotDto.StartDate, slotDto.EndDate);
-            //     }
-            // }
+            var roomType = await _repoType.GetByDesignationAsync(dto.TypeDesignation);
 
-            // await _repo.AddAsync(room);
-            // await _unitOfWork.CommitAsync();
+            var availableEquipmentList = new List<Equipment>();
 
-            // return new RoomDto(
-            //     room.Id.AsString(),
-            //     room.Type.RoomTypeName,
-            //     room.Capacity.CapcityNumber,
-            //     room.AvailableEquipment.ConvertAll(e => e.EquipmentName.ToString()),
-            //     room.CurrentStatus.Description,
-            //     room.MaintenanceSlots.ConvertAll(slot => new SlotsDto(
-            //         slot.TimeInterval.Start.ToString(),
-            //         slot.TimeInterval.End.ToString(),
-            //         slot.Date.Start.ToString(),
-            //         slot.Date.End.ToString()
-            //     ))
-            // );
-            throw new NotImplementedException();
+            var slotList = new List<Slot>();
+
+            if(dto.AvailableEquipment != null)
+            {
+                for(int i = 0; i < dto.AvailableEquipment.Count; i++)
+                {
+                    availableEquipmentList.Add(new Equipment(dto.AvailableEquipment.ElementAt(i)));
+                }
+            }
+
+            if(dto.MaintenanceSlots != null)
+            {
+                for(int i = 0; i < dto.MaintenanceSlots.Count; i++)
+                {
+                    var slot = dto.MaintenanceSlots.ElementAt(i);
+                    slot = slot.Replace("[","");
+                    slot = slot.Replace("]","");
+                    var slotTimes = slot.Split("-");
+
+                    slotList.Add(new Slot(slotTimes.ElementAt(0), slotTimes.ElementAt(1), DateTime.Now.ToString("yyyy-MM-dd"), null));
+                }
+            }
+
+            room = new Room(
+                new RoomNumber(dto.RoomNumber),
+                roomType.Id,
+                new Capacity(dto.Capacity),
+                availableEquipmentList,
+                CurrentStatus.Available,
+                slotList
+            );
+
+            await _repo.AddAsync(room);
+            await _unitOfWork.CommitAsync();
+
+            return room.ToDto();
         }
 
         public async Task<List<RoomDto>> GetAllAsync()

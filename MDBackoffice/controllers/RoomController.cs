@@ -17,8 +17,8 @@ namespace MDBackoffice.Controllers
         }
 
         // POST: api/Room
-        [HttpPost]
-        public async Task<ActionResult<RoomDto>> Create(RoomDto dto){
+        [HttpPost("create")]
+        public async Task<ActionResult<RoomDto>> Create(CreateRoomDto dto){
             try
             {
             var room = await _service.AddAsync(dto);
