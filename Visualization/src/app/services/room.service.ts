@@ -1,10 +1,12 @@
 import { Injectable } from '@angular/core';
 import { MessageService } from './message.service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { catchError, Observable, of, tap } from 'rxjs';
+import { catchError, map, Observable, of, tap, throwError } from 'rxjs';
 import { Room } from '../domain/room';
 import { RoomSchedule } from '../domain/room-schedule';
 import { environment } from 'src/environments/environment';
+import { RoomType } from '../domain/room-type';
+import { CreateRoom } from '../domain/create-room';
 
 
 @Injectable({
@@ -41,6 +43,38 @@ export class RoomService {
         })
     );
   }
+
+  getAllRoomTypesAvailable() : Observable<string[]> {
+      const url = `${this.theServerURL}/RoomType/get-all`;
+  
+      return this.http.get<RoomType[]>(url, this.httpOptions)
+                      .pipe(
+                        map(data => data.map(roomtyp => roomtyp.designation)),
+                        catchError(this.handleError<string[]>('Get Room Types', []))
+                      );
+  }
+
+  createRoom(roomNumber: string, typeDesignation: string, capacity: string, availableEquipment: string, maintenanceSlots: string) {
+    const url = `${this.theServerURL}/Room/create`;
+  
+    const availableEquipmentCleaned = availableEquipment.replace(/\s+/g, '').trim();
+    const maintenanceSlotsCleaned = maintenanceSlots.replace(/\s+/g, '').trim();
+
+    const body: CreateRoom = {
+      roomNumber,
+      typeDesignation,
+      capacity,
+      availableEquipment: availableEquipmentCleaned.split(","),
+      maintenanceSlots: maintenanceSlotsCleaned.split(",")
+    };
+
+    this.http.post<CreateRoom>(url, body, this.httpOptions)
+          .pipe(catchError(this.handleError<CreateRoom>('Create room')))
+          .subscribe(data => {
+            this.log(`${data}`);
+          });
+  }
+  
 
   //------------------------/------------------------/------------------------
   private handleError<T>(operation = 'operation', result?: T) {

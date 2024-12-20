@@ -62,7 +62,7 @@ export class CreateStaffUserComponent implements OnInit{
       this.isSubmitted = true;
       this.userStaff.role = this.userStaff.role.toLowerCase();
       console.log(this.userStaff);
-      this.service.createStaffUser(this.userStaff.email, this.userStaff.password, this.userStaff.phone, this.userStaff.role, this.userInfo.token);
+      this.service.createStaffUser(this.userStaff.email, this.userStaff.password, this.userStaff.phone, this.userStaff.role);
     } else {
       this.isSubmitted = false;
     }

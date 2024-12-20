@@ -109,7 +109,7 @@ export class UserService {
   }
 
 
-  public createStaffUser(userEmail: string, userPassword: string, userPhone: string, userRole: string, tokenAuth: string) {
+  public createStaffUser(userEmail: string, userPassword: string, userPhone: string, userRole: string) {
     const url = `${this.theServerURL}/create-staff`;
     let user: UserStaff = {
       email: userEmail,
@@ -117,7 +117,6 @@ export class UserService {
       phone: userPhone,
       role: userRole
     };
-    token = tokenAuth;
     this.http.post<CreateStaffUserResponse>(url, user, this.httpOptions)
       .pipe(catchError(this.handleError<CreateStaffUserResponse>('Create staff user')))
       .subscribe(data => {
