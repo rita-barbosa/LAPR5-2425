@@ -90,19 +90,19 @@ export default async ({ expressApp }) => {
     path: config.repos.medicalCondition.path
   }
 
-  const MedicalRecordController = {
+  const medicalRecordController = {
     name: config.controllers.medicalRecord.name,
     path: config.controllers.medicalRecord.path
   }
 
-  const MedicalRecordService = {
-    name: config.controllers.medicalRecord.name,
-    path: config.controllers.medicalRecord.path
+  const medicalRecordService = {
+    name: config.services.medicalRecord.name,
+    path: config.services.medicalRecord.path
   }
 
-  const MedicalRecordRepo = {
-    name: config.controllers.medicalRecord.name,
-    path: config.controllers.medicalRecord.path
+  const medicalRecordRepo = {
+    name: config.repos.medicalRecord.name,
+    path: config.repos.medicalRecord.path
   }
 
 
@@ -122,7 +122,7 @@ export default async ({ expressApp }) => {
       allergyController,
       roleController,
       medicalConditionController,
-      MedicalRecordController
+      medicalRecordController
     ],
     repos: [
       roleRepo,
@@ -130,14 +130,14 @@ export default async ({ expressApp }) => {
       allergyRepo,
       userRepo,
       medicalConditionRepo,
-      MedicalRecordRepo
+      medicalRecordRepo
     ],
     services: [
       roleService,
       allergyService,
       roleService,
       medicalConditionService,
-      MedicalRecordService
+      medicalRecordService
     ]
   });
   Logger.info('✌️ Schemas, Controllers, Repositories, Services, etc. loaded');
