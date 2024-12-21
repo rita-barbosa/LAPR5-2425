@@ -1,5 +1,4 @@
 import { AggregateRoot } from "../core/domain/AggregateRoot";
-import { UniqueEntityID } from "../core/domain/UniqueEntityID";
 import { Result } from "../core/logic/Result";
 import { IMedicalRecordDTO } from "../dto/IMedicalRecordDTO";
 import { AllergyCode } from "./allergyCode";
@@ -62,12 +61,14 @@ export class MedicalRecord extends AggregateRoot<MedicalRecordProps> {
     public static create(medicalRecordDTO: IMedicalRecordDTO): Result<MedicalRecord> {
         const idDto = medicalRecordDTO.id;
         const medicalRecordNumberDto = medicalRecordDTO.medicalRecordNumber;
-        const medicalConditionsDto = medicalRecordDTO.medicalConditions;
-        const allergiesDto = medicalRecordDTO.allergies;
-        const descriptionDto = medicalRecordDTO.description;
+        const medicalConditionsDto = medicalRecordDTO.medicalConditions || [];
+        const allergiesDto = medicalRecordDTO.allergies || [];
+        const descriptionDto = medicalRecordDTO.description || "";
 
         if (!!idDto === false || idDto.length === 0) {
             return Result.fail<MedicalRecord>('Must provide an id.')
+        } else if (!!medicalRecordNumberDto === false || medicalRecordNumberDto.length === 0) {
+            return Result.fail<MedicalRecord>('Must provide an medical record number.')
         } else {
             const medicalRecordNumberResult = MedicalRecordNumber.create({
                 medicalRecordNumber: medicalRecordNumberDto,
@@ -84,6 +85,27 @@ export class MedicalRecord extends AggregateRoot<MedicalRecordProps> {
             const medicalRecord = new MedicalRecord({ medicalRecordNumber: medicalRecordNumberObject, medicalConditions: medicalConditionObjects, allergies: allergyObjects, description: descriptionDto }, new MedicalRecordId(idDto));
             return Result.ok<MedicalRecord>(medicalRecord)
         }
+    }
+
+    public changeMedicalConditions(medicalConditions: MedicalConditionId[]): void {
+        if (!Array.isArray(medicalConditions)) {
+            throw new Error("Invalid medical conditions array.");
+        }
+        this.props.medicalConditions = medicalConditions;
+    }
+    
+    public changeAllergies(allergies: AllergyCode[]): void {
+        if (!Array.isArray(allergies)) {
+            throw new Error("Invalid allergies array.");
+        }
+        this.props.allergies = allergies;
+    }
+    
+    public changeDescription(description: string): void {
+        if (description === null || description === undefined) {
+            throw new Error("Description cannot be null or undefined.");
+        }
+        this.props.description = description;
     }
 
 }

@@ -10,20 +10,36 @@ import IMedicalRecordController from "./IControllers/IMedicalRecordController";
 export default class MedicalRecordController implements IMedicalRecordController {
 
     constructor(
-        @Inject(config.services.medicalRecord.name) private medicalRecordServiceInstance : IMedicalRecordService
-    ) {}
+        @Inject(config.services.medicalRecord.name) private medicalRecordServiceInstance: IMedicalRecordService
+    ) { }
 
-    public async createMedicalRecord(req: Request, res: Response, next: NextFunction){
+    public async createMedicalRecord(req: Request, res: Response, next: NextFunction) {
         try {
             const medicalRecordOrError = await this.medicalRecordServiceInstance.createMedicalRecord(req.body as IMedicalRecordDTO) as Result<IMedicalRecordDTO>;
 
-            if(medicalRecordOrError.isFailure){
+            if (medicalRecordOrError.isFailure) {
                 return res.status(402).send();
             }
 
             const medicalRecordDTO = medicalRecordOrError.getValue();
             return res.json(medicalRecordDTO).status(201);
         } catch (e) {
+            return next(e);
+        }
+    }
+
+    public async updateMedicalRecord(req: Request, res: Response, next: NextFunction) {
+        try {
+            const medicalRecordOrError = await this.medicalRecordServiceInstance.updateMedicalRecord(req.body as IMedicalRecordDTO) as Result<IMedicalRecordDTO>;
+
+            if (medicalRecordOrError.isFailure) {
+                return res.status(404).send();
+            }
+
+            const medicalRecordDTO = medicalRecordOrError.getValue();
+            return res.status(201).json(medicalRecordDTO);
+        }
+        catch (e) {
             return next(e);
         }
     }

@@ -9,7 +9,7 @@ export class MedicalRecordMap extends Mapper<MedicalRecord> {
     public static toDTO(medicalRecord: MedicalRecord): IMedicalRecordDTO {
         return {
             id: medicalRecord.id.toString(),
-            medicalRecordNumber: medicalRecord.medicalRecordNumber.value,
+            medicalRecordNumber: medicalRecord.props.medicalRecordNumber.value,
             medicalConditions: medicalRecord.medicalConditions.map(condition => condition.toString()),
             allergies: medicalRecord.allergies.map(allergy => allergy.toString()),
             description: medicalRecord.description
@@ -19,10 +19,10 @@ export class MedicalRecordMap extends Mapper<MedicalRecord> {
 
 
     public static toPersistence(medicalRecord: MedicalRecord): any {
-        return {
+        return { 
             domainId: medicalRecord.id.toString(),
             id: medicalRecord.id.toString(),
-            medicalRecordNumber: medicalRecord.medicalRecordNumber,
+            medicalRecordNumber: medicalRecord.props.medicalRecordNumber.value,
             medicalConditions: medicalRecord.medicalConditions,
             allergies: medicalRecord.allergies,
             description: medicalRecord.description
