@@ -7,7 +7,7 @@ import { TextUtil } from "../utils/TextUtil";
 export class AllergyCode extends UniqueEntityID {
 
   get code (): String {
-    return this.code;
+    return this.code.toString();
   }
 
   public constructor (code : string) {

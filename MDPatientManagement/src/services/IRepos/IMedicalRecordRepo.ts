@@ -1,5 +1,4 @@
 import { Repo } from "../../core/infra/Repo";
-import { Result } from "../../core/logic/Result";
 import { MedicalRecord } from "../../domain/medicalRecord";
 import { MedicalRecordId } from "../../domain/medicalRecordId";
 import { IMedicalRecordQueryFilterParameters } from "../../dto/IMedicalRecordQueryFilterParameters";

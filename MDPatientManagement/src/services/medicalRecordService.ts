@@ -79,18 +79,13 @@ export default class MedicalRecordService implements IMedicalRecordService {
         try {
             const records = await this.medicalRecordRepo.findAll();
 
+            
+
 
             if (records === null || records.length == 0) {
             return Result.fail<IMedicalRecordDTO[]>("Medical Records not found");
             }
             else {
-
-                console.log('RECORD ANTES DE SER DTO')
-                console.log(records[0]);
-
-                console.log('RECORD ENQUANTO DTO')
-                const dto = MedicalRecordMap.toDTO(records[0]) as IMedicalRecordDTO;
-                console.log(dto)
 
                 const recordsListDTOResult = records.map((record) => MedicalRecordMap.toDTO(record) as IMedicalRecordDTO);
                 // // console.log(recordsListDTOResult[0].allergies)

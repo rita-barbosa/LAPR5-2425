@@ -67,7 +67,7 @@ export default class MedicalRecordRepo implements IMedicalRecordRepo {
 
     public async findAll(): Promise<MedicalRecord[]> {
         try {
-          const medicalRecordRecords = await this.medicalRecordSchema.find({});
+          const medicalRecordRecords = await this.medicalRecordSchema.find();
           const medicalRecordList = await Promise.all(
             medicalRecordRecords.map(async (record) => await MedicalRecordMap.toDomain(record))
           );
@@ -85,7 +85,6 @@ export default class MedicalRecordRepo implements IMedicalRecordRepo {
           _id: Types.ObjectId;
         })[] = [];
 
-        // Use Promise.all for parallel queries
         const queryPromises = filters.queryfilters.map(filter => {
           const query: any = {};
 
