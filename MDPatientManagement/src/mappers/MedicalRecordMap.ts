@@ -7,6 +7,7 @@ import { IMedicalRecordDTO } from "../dto/IMedicalRecordDTO";
 export class MedicalRecordMap extends Mapper<MedicalRecord> {
 
     public static toDTO(medicalRecord: MedicalRecord): IMedicalRecordDTO {
+        // console.log(medicalRecord)
         return {
             id: medicalRecord.id.toString(),
             medicalRecordNumber: medicalRecord.props.medicalRecordNumber.value,
@@ -14,7 +15,6 @@ export class MedicalRecordMap extends Mapper<MedicalRecord> {
             allergies: medicalRecord.allergies.map(allergy => allergy.toString()),
             description: medicalRecord.description
         } as IMedicalRecordDTO;
-
     }
 
 

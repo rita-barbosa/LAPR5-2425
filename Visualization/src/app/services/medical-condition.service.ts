@@ -4,7 +4,7 @@ import { environment } from 'src/environments/environment';
 import { MessageService } from './message.service';
 import { MedicalCondition } from '../domain/MedicalCondition';
 import { MedicalConditionSent } from '../domain/MedicalConditionSent';
-import { catchError, Observable, of } from 'rxjs';
+import { catchError, map, Observable, of } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -34,18 +34,40 @@ export class MedicalConditionService {
         description: description,
         symptoms: resultArray
       };
-  
+
       this.http.post<MedicalConditionSent>(url, medicalCondition, this.httpOptions)
         .pipe(catchError(this.handleError<MedicalConditionSent>('Create medical condition')))
         .subscribe(data => {
           this.log(`Medical Condition was successfully created.`);
         });
     }
-    
+
+
+    getMedicalConditionById(id: string): Observable<MedicalCondition> {
+      const url = `${this.theServerURL}/medicalCondition/get-medical-condition-by-id`;
+
+      return this.http.post<MedicalCondition>(url, id, this.httpOptions)
+        .pipe(
+          catchError(this.handleError<MedicalCondition>('Get Medical Condition'))
+        );
+    }
+
+
+  public getAllMedicalConditions(): Observable<MedicalCondition[]> {
+    const url = `${this.theServerURL}/medicalCondition/get-all-medical-conditions`;
+
+    return this.http.get<MedicalCondition[]>(url, this.httpOptions)
+      .pipe(
+        map((data: MedicalCondition[]) => data.map(condition => condition)),
+        catchError(this.handleError<MedicalCondition[]>('Get Medical Condition', []))
+      );
+  }
+
+
   //------------------------/------------------------/------------------------
     private handleError<T>(operation = 'operation', result?: T) {
       return (error: any): Observable<T> => {
-  
+
         if (error.status === 440) {
           this.log("Error: Login session expired.");
           return of(result as T);
@@ -66,6 +88,6 @@ export class MedicalConditionService {
     private log(message: string) {
       this.messageService.add(`${message}`);
     }
-  
+
 
 }

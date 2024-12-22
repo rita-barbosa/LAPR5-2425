@@ -8,6 +8,7 @@ import { MedicalRecordMap } from '../mappers/MedicalRecordMap';
 import IMedicalRecordRepo from './IRepos/IMedicalRecordRepo';
 import { MedicalConditionId } from '../domain/medicalConditionId';
 import { AllergyCode } from '../domain/allergyCode';
+import { IMedicalRecordQueryFilterParameters } from '../dto/IMedicalRecordQueryFilterParameters';
 
 @Service()
 export default class MedicalRecordService implements IMedicalRecordService {
@@ -52,11 +53,11 @@ export default class MedicalRecordService implements IMedicalRecordService {
 
             else {
                 const medicalConditionObjects = (medicalRecordDTO.medicalConditions || []).map(
-                    (condition) => new MedicalConditionId(condition)
+                    (condition) => new MedicalConditionId(condition.toString())
                 );
 
                 const allergyObjects = (medicalRecordDTO.allergies || []).map(
-                    (allergy) => new AllergyCode(allergy)
+                    (allergy) => new AllergyCode(allergy.toString())
                 );
 
                 medicalRecord.changeMedicalConditions(medicalConditionObjects);
@@ -71,6 +72,52 @@ export default class MedicalRecordService implements IMedicalRecordService {
             }
         } catch (e) {
             throw e;
+        }
+    }
+
+    async getAllMedicalRecords(): Promise<Result<IMedicalRecordDTO[]>> {
+        try {
+            const records = await this.medicalRecordRepo.findAll();
+
+
+            if (records === null || records.length == 0) {
+            return Result.fail<IMedicalRecordDTO[]>("Medical Records not found");
+            }
+            else {
+
+                console.log('RECORD ANTES DE SER DTO')
+                console.log(records[0]);
+
+                console.log('RECORD ENQUANTO DTO')
+                const dto = MedicalRecordMap.toDTO(records[0]) as IMedicalRecordDTO;
+                console.log(dto)
+
+                const recordsListDTOResult = records.map((record) => MedicalRecordMap.toDTO(record) as IMedicalRecordDTO);
+                // // console.log(recordsListDTOResult[0].allergies)
+            return Result.ok<IMedicalRecordDTO[]>( recordsListDTOResult )
+            }
+        } catch (e) {
+            throw e;
+        }
+    }
+
+    async getMedicalRecordsByFilters(filters: IMedicalRecordQueryFilterParameters): Promise<Result<IMedicalRecordDTO[]>> {
+        try {
+            const records = await this.medicalRecordRepo.findAllByParameters(filters);
+            if (records.length == 0) {
+            return Result.fail<IMedicalRecordDTO[]>("Medical records not found");
+            }
+    
+            let medicalRecordsDtoList: IMedicalRecordDTO[] = [];
+    
+            for(var i = 0; i < records.length; i++){
+            const allergyDTO = MedicalRecordMap.toDTO(records.at(i)) as IMedicalRecordDTO;
+            medicalRecordsDtoList.push(allergyDTO);
+            }
+    
+            return Result.ok<IMedicalRecordDTO[]>(medicalRecordsDtoList);
+        } catch (error) {
+            throw new Error(`Failed to fetch medical records: ${error.message}`);
         }
     }
 }

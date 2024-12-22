@@ -5,6 +5,8 @@ import { MedicalConditionId } from "../../domain/medicalConditionId";
 export default interface IMedicalCondtionRepo extends Repo<MedicalCondition> {
   save(medicalCondition: MedicalCondition): Promise<MedicalCondition>;
   findByDomainId (medicalConditionId: MedicalConditionId | string): Promise<MedicalCondition>;
+  findAll() : Promise<MedicalCondition[]>;
+  
     
   //findByIds (rolesIds: RoleId[]): Promise<Role[]>;
   //saveCollection (roles: Role[]): Promise<Role[]>;

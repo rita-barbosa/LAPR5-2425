@@ -11,6 +11,7 @@ export default class MedicalConditionController implements IMedicalConditionCont
   constructor(
       @Inject(config.services.medicalCondition.name) private medicalConditionServiceInstance : IMedicalConditionService
   ) {}
+
   
   public async createMedicalCondition(req: Request, res: Response, next: NextFunction) {
     try {
@@ -27,4 +28,36 @@ export default class MedicalConditionController implements IMedicalConditionCont
       return next(e);
     }
   };
+
+  async getAllMedicalCondition(req: Request, res: Response, next: NextFunction) {
+    try {
+          const conditionOrError = await this.medicalConditionServiceInstance.getAllMedicalConditions() as Result<IMedicalConditionDTO[]>;
+    
+          if (conditionOrError.isFailure) {
+            return res.status(404).send();
+          }
+    
+          const conditionDTO = conditionOrError.getValue();
+          return res.status(201).json( conditionDTO );
+        }
+        catch (e) {
+          return next(e);
+        }
+  }
+
+  async getMedicalConditionById(req: Request, res: Response, next: NextFunction) {
+    try {
+          const conditionOrError = await this.medicalConditionServiceInstance.getMedicalConditionById(req.body as string) as Result<IMedicalConditionDTO>;
+    
+          if (conditionOrError.isFailure) {
+            return res.status(404).send();
+          }
+    
+          const conditionDTO = conditionOrError.getValue();
+          return res.status(201).json( conditionDTO );
+        }
+        catch (e) {
+          return next(e);
+        }
+  }
 }

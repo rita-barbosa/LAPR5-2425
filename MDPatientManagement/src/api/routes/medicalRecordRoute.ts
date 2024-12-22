@@ -36,5 +36,10 @@ export default (app: Router) => {
         }),
         (req, res, next) => ctrl.updateMedicalRecord(req, res, next));
     
+    route.get('/get-all-medical-records',
+        (req, res, next) => ctrl.getAllMedicalRecords(req, res, next));
+
+    route.post('/get-filtered-medical-records',
+        (req, res, next) => ctrl.getFilteredMedicalRecords(req, res, next));
 
 };

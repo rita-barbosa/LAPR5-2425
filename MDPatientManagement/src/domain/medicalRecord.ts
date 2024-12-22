@@ -80,8 +80,8 @@ export class MedicalRecord extends AggregateRoot<MedicalRecordProps> {
 
             const medicalRecordNumberObject = medicalRecordNumberResult.getValue();
 
-            const medicalConditionObjects = medicalConditionsDto.map(cond => new MedicalConditionId(cond));
-            const allergyObjects = allergiesDto.map(allergy => new AllergyCode(allergy));
+            const medicalConditionObjects = medicalConditionsDto.map(cond => new MedicalConditionId(cond.toString()));
+            const allergyObjects = allergiesDto.map(allergy => new AllergyCode(allergy.toString()));
             const medicalRecord = new MedicalRecord({ medicalRecordNumber: medicalRecordNumberObject, medicalConditions: medicalConditionObjects, allergies: allergyObjects, description: descriptionDto }, new MedicalRecordId(idDto));
             return Result.ok<MedicalRecord>(medicalRecord)
         }
