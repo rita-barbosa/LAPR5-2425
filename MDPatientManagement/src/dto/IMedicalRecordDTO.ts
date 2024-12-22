@@ -1,5 +1,5 @@
 export interface IMedicalRecordDTO {
-    id: string; //ver aqui como fazer, talvez melhor remover isto
+    id: string;
     medicalRecordNumber: string;
     medicalConditions?: string[];
     allergies?: string[];

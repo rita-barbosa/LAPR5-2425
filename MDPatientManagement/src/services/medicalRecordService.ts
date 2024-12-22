@@ -19,6 +19,13 @@ export default class MedicalRecordService implements IMedicalRecordService {
 
     async createMedicalRecord(medicalRecordDTO: IMedicalRecordDTO): Promise<Result<IMedicalRecordDTO>> {
         try {
+
+            const medicalRecord = await this.medicalRecordRepo.findByDomainId(medicalRecordDTO.id);
+
+            if (medicalRecord != null) {
+                throw new Error("Already exists a Patient Medical Record with that ID!");
+            }
+
             const medicalRecordOrError = await MedicalRecord.create(medicalRecordDTO);
             if (medicalRecordOrError.isFailure) {
                 return Result.fail<IMedicalRecordDTO>(medicalRecordOrError.errorValue());
@@ -56,6 +63,7 @@ export default class MedicalRecordService implements IMedicalRecordService {
                 medicalRecord.changeAllergies(allergyObjects);
                 medicalRecord.changeDescription(medicalRecordDTO.description);
 
+                console.log("\nTHE FIRST TIME I SEE ALLERGIES:", medicalRecord.allergies);
                 await this.medicalRecordRepo.save(medicalRecord);
 
                 const medicalRecordDTOResult = MedicalRecordMap.toDTO(medicalRecord) as IMedicalRecordDTO;

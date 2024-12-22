@@ -6,6 +6,6 @@ export interface IMedicalRecordPersistence {
     id: string;
     medicalRecordNumber: MedicalRecordNumber;
     medicalConditions: MedicalConditionId[];
-    allergyCode: AllergyCode[];
+    allergies: AllergyCode[];
     description: string;
 }
