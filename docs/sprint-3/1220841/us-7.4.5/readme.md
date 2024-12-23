@@ -23,5 +23,6 @@ In this user story, we need to configure the logging service to support this fea
 
 ## 4. Design
 
-//TO BE DONE
+The script used for the database backup process described in user story [7.4.3](../../1220738/us-7.4.3/readme.md)  will be updated to handle logging more effectively. We will use '-' to indicate that the action needs to be executed synchronously.
 
+In the event of an error with severity error or higher, the administrator must be notified. To achieve this, we will implement a script that will be triggered to retrieve logs with the specified severity. Additionally, we will modify the administrator's `.bash_profile` file to ensure the logs are captured as intended.
