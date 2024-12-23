@@ -1,5 +1,7 @@
 using System.Security.Claims;
 using MDBackoffice.Controllers;
+using MDBackoffice.Domain.Appointments;
+using MDBackoffice.Domain.AppointmentStaffs;
 using MDBackoffice.Domain.Emails;
 using MDBackoffice.Domain.Logs;
 using MDBackoffice.Domain.OperationRequests;
@@ -8,6 +10,7 @@ using MDBackoffice.Domain.OperationTypes.ValueObjects.Phase;
 using MDBackoffice.Domain.OperationTypes.ValueObjects.RequiredStaff;
 using MDBackoffice.Domain.Patients;
 using MDBackoffice.Domain.Rooms;
+using MDBackoffice.Domain.RoomTypes;
 using MDBackoffice.Domain.Shared;
 using MDBackoffice.Domain.Specializations;
 using MDBackoffice.Domain.StaffProfiles;
@@ -74,11 +77,20 @@ namespace MDBackofficeTests.integrationtests.operationrequest
             _patientServiceMock = new Mock<PatientService>(_unitOfWorkMock.Object, _logServiceMock.Object, _configurationMock.Object, _repoPatMock.Object, _userServiceMock.Object, _emailServiceMock.Object);
 
             _schedulerAdapterMock = new Mock<IOperationSchedulerAdapter>();
-            _roomServiceMock = new Mock<RoomService>(_unitOfWorkMock.Object, _repoRoomMock.Object);
+
+            var _repoRoomTypeMock = new Mock<IRoomTypeRepository>();
+
+            _roomServiceMock = new Mock<RoomService>(_unitOfWorkMock.Object, _repoRoomMock.Object, _repoRoomTypeMock.Object);
+
+            var _repoReqSta = new Mock<IRequiredStaffRepository>();
+            var _repoAppointMock = new Mock<IAppointmentRepository>();
+            var _repoAppointmentStaffMock = new Mock<IAppointmentStaffRepository>();
+
+            var _appointmentServiceMock = new Mock<AppointmentService>( _unitOfWorkMock.Object, _repoAppointMock.Object, _repoMock.Object, _repoRoomMock.Object, _repoOpTypeMock.Object, _repoStaMock.Object, _repoReqSta.Object, _repoAppointmentStaffMock.Object);
 
             _service = new OperationRequestService(_unitOfWorkMock.Object, _repoMock.Object,
                                                     _repoStaMock.Object, _logServiceMock.Object, _patientServiceMock.Object,
-                                                    _repoPatMock.Object, _repoOpTypeMock.Object, _userServiceMock.Object, _schedulerAdapterMock.Object, _roomServiceMock.Object);
+                                                    _repoPatMock.Object, _repoOpTypeMock.Object, _userServiceMock.Object, _schedulerAdapterMock.Object, _roomServiceMock.Object, _appointmentServiceMock.Object);
 
 
         }

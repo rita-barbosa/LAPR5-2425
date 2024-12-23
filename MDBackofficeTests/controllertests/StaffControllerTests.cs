@@ -84,7 +84,7 @@ namespace MDBackofficeTests.controllertests
 
             var specializationMock = new Mock<Specialization>("25841809","denom","descript");
 
-            _repoSpecMock.Setup(_repoSpecMock => _repoSpecMock.GetByIdAsync(It.IsAny<SpecializationCode>()))
+            _repoSpecMock.Setup(_repoSpecMock => _repoSpecMock.FindByDenomination(It.IsAny<string>()))
                 .ReturnsAsync(specializationMock.Object);
             var context = new DefaultHttpContext();
             context.Request.Headers["Authorization"] = "Bearer valid-token";
