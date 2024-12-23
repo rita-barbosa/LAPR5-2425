@@ -198,7 +198,7 @@ export class PatientService {
       switchMap((medicalRecords: MedicalRecord[]) =>
         forkJoin(
           medicalRecords.map(record =>
-            this.enrichMedicalRecord(record)
+            this.enrichMedicalRecord(record),
           )
         )
       ),
@@ -207,25 +207,42 @@ export class PatientService {
   }
 
   private enrichMedicalRecord(record: MedicalRecord): Observable<MedicalRecordComplete> {
+    console.log('record', record);
+  
+    // Fetch medical conditions and log them
     const medicalConditions$ = forkJoin(
       record.medicalConditions.map(id => this.MedicalConditionService.getMedicalConditionById(id))
     );
-
+  
+    medicalConditions$.subscribe(medicalConditions => {
+      console.log('Fetched medical conditions:', medicalConditions);
+    });
+  
+    // Fetch allergies and log them
     const allergies$ = forkJoin(
       record.allergies.map(code => this.allergyService.getAllergyByCode(code))
     );
-
+  
+    allergies$.subscribe(allergies => {
+      console.log('Fetched allergies:', allergies);
+    });
+  
+    // Use forkJoin to combine both and log final enriched record
     return forkJoin({
       medicalConditions: medicalConditions$,
       allergies: allergies$
     }).pipe(
-      map(({ medicalConditions, allergies }) => ({
-        ...record,
-        medicalConditions,
-        allergies
-      }))
+      map(({ medicalConditions, allergies }) => {
+        console.log('Final medicalConditions and allergies:', medicalConditions, allergies);
+        return {
+          ...record,
+          medicalConditions,
+          allergies
+        };
+      })
     );
   }
+  
 
 
   getFilteredMedicalRecords(filterParameters: AllergyMedicalConditionFilterParameters): Observable<MedicalRecordComplete[]> {

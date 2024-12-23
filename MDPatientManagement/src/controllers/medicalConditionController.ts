@@ -38,7 +38,7 @@ export default class MedicalConditionController implements IMedicalConditionCont
           }
     
           const conditionDTO = conditionOrError.getValue();
-          return res.status(201).json( conditionDTO );
+          return res.status(200).json( conditionDTO );
         }
         catch (e) {
           return next(e);
@@ -47,14 +47,21 @@ export default class MedicalConditionController implements IMedicalConditionCont
 
   async getMedicalConditionById(req: Request, res: Response, next: NextFunction) {
     try {
-          const conditionOrError = await this.medicalConditionServiceInstance.getMedicalConditionById(req.body as string) as Result<IMedicalConditionDTO>;
+
+          const { id } = req.body;
+      
+          if (!id || typeof id !== 'string') {
+            return res.status(400).json({ error: 'Invalid id provided.' });
+          }
+
+          const conditionOrError = await this.medicalConditionServiceInstance.getMedicalConditionById(id) as Result<IMedicalConditionDTO>;
     
           if (conditionOrError.isFailure) {
             return res.status(404).send();
           }
     
           const conditionDTO = conditionOrError.getValue();
-          return res.status(201).json( conditionDTO );
+          return res.status(200).json( conditionDTO );
         }
         catch (e) {
           return next(e);

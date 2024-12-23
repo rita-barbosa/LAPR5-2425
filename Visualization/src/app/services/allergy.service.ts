@@ -24,19 +24,21 @@ export class AllergyService {
 
   public getAllAllergies(): Observable<Allergy[]> {
     const url = `${this.theServerURL}/Allergy/get-all-allergies`;
-
+  
     return this.http.get<Allergy[]>(url, this.httpOptions)
       .pipe(
         map((data: Allergy[]) => data.map(allergy => allergy)),
         catchError(this.handleError<Allergy[]>('Get Allergies', []))
       );
   }
+  
 
 
   getAllergyByCode(code: string): Observable<Allergy> {
     const url = `${this.theServerURL}/Allergy/get-allergy-by-code`;
+    const payload = { code };
 
-    return this.http.post<Allergy>(url, code, this.httpOptions)
+    return this.http.post<Allergy>(url, payload, this.httpOptions)
       .pipe(
         catchError(this.handleError<Allergy>('Get allergy'))
       );

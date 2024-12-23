@@ -65,7 +65,9 @@ export default class MedicalConditionRepo implements IMedicalConditionRepo {
   }
 
   public async findByDomainId (medicalConditionId: MedicalConditionId | string): Promise<MedicalCondition> {
-    const query = { domainId: medicalConditionId};
+    const idX = medicalConditionId instanceof MedicalConditionId ? (<MedicalConditionId>medicalConditionId).toValue() : medicalConditionId;
+    const query = { id: idX };
+
     const medicalConditionRecord = await this.medicalConditionSchema.findOne( query as FilterQuery<IMedicalConditionPersistence & Document> );
 
     if( medicalConditionRecord != null) {

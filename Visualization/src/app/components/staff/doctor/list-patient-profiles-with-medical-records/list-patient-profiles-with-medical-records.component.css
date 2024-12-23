@@ -13,6 +13,47 @@
   max-width: 50%;
 }
 
+/* Medical and Allergy Conditions */
+.blue-panel {
+  background-color: #d1e9fd; /* Light blue */
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 10px; /* Adds space between sections */
+  border: 1px solid #d1e7ff; /* Optional border for structure */
+}
+
+/* Overall Details and Edit Panel */
+.shadow-panel {
+  background-color: #e9f4ff; /* White background */
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Subtle shadow */
+  margin: 20px 0; /* Space above and below the panel */
+}
+
+
+.button-container {
+  display: flex; /* Enables flexbox layout */
+  justify-content: center; /* Centers the buttons horizontally */
+  gap: 15px; /* Adds spacing between buttons */
+  padding: 10px; /* Optional: adds padding around the button group */
+}
+
+button {
+  padding: 10px 15px; /* Adds padding to the buttons for better click area */
+  border-radius: 5px; /* Optional: rounded corners for buttons */
+  font-size: 14px; /* Adjust font size as needed */
+  background-color: #0066cc; /* Button background color */
+  color: white; /* Text color */
+  border: none; /* Removes default border */
+  cursor: pointer; /* Changes cursor to pointer */
+}
+
+button:hover {
+  background-color: #005bb5; /* Darker background on hover */
+}
+
+
 p-dropdown {
   margin-right: 10px;
 }

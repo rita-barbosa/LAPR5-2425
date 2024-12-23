@@ -45,12 +45,14 @@ export class MedicalConditionService {
 
     getMedicalConditionById(id: string): Observable<MedicalCondition> {
       const url = `${this.theServerURL}/medicalCondition/get-medical-condition-by-id`;
-
-      return this.http.post<MedicalCondition>(url, id, this.httpOptions)
+      const payload = { id };
+    
+      return this.http.post<MedicalCondition>(url, payload, this.httpOptions)
         .pipe(
           catchError(this.handleError<MedicalCondition>('Get Medical Condition'))
         );
     }
+    
 
 
   public getAllMedicalConditions(): Observable<MedicalCondition[]> {
@@ -58,7 +60,7 @@ export class MedicalConditionService {
 
     return this.http.get<MedicalCondition[]>(url, this.httpOptions)
       .pipe(
-        map((data: MedicalCondition[]) => data.map(condition => condition)),
+        map((data: MedicalCondition[]) => data.map(condition => condition), ),
         catchError(this.handleError<MedicalCondition[]>('Get Medical Condition', []))
       );
   }

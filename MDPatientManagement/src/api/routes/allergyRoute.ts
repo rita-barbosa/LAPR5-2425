@@ -39,7 +39,7 @@ export default (app: Router) => {
     route.post('/get-allergies-filtered',
       (req, res, next) => ctrl.getAllergiesByFilter(req, res, next) );
 
-    route.get('/get-allergy-by-code',
+    route.post('/get-allergy-by-code',
       celebrate({
         body: Joi.object({
           code: Joi.string().required()

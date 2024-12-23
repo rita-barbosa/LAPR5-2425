@@ -25,12 +25,12 @@ export default (app: Router) => {
     route.get('/get-all-medical-conditions',
         (req, res, next) => ctrl.getAllMedicalCondition(req, res, next) );
   
-      route.get('/get-medical-condition-by-id',
+      route.post('/get-medical-condition-by-id',
         celebrate({
           body: Joi.object({
             id : Joi.string().required()
           }),
         }),
-        (req, res, next) => ctrl.getAllMedicalCondition(req, res, next) );
+        (req, res, next) => ctrl.getMedicalConditionById(req, res, next) );
 
 };

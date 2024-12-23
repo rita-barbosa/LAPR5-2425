@@ -77,7 +77,45 @@
 
     <br>
 
-    <div *ngIf="showMedicalRecord" class="medical-record-details">
+    <div *ngIf="showMedicalRecord" class="shadow-panel">
+      <h1>Patient Medical Record</h1>
+      <br>
+        <p><strong>Patient Name:</strong> {{ fullPatient.name || '-' }}</p>
+        <p><strong>Medical Record Number:</strong> {{ fullPatientMedicalRecord.medicalRecordNumber || '-' }}</p>
+        
+        <br>
+        <h2>Medical Conditions</h2>
+        <br>
+        <div *ngIf="fullPatientMedicalRecord.medicalConditions.length === 0">
+          <p>No medical conditions associated yet.</p>
+        </div>
+
+        <div *ngFor="let condition of fullPatientMedicalRecord.medicalConditions; let i = index" class="blue-panel">
+          <p><strong>Designation:</strong> {{ condition.designation || '-' }}</p>
+          <p><strong>Description:</strong> {{ condition.description || 'No description.' }}</p>
+          <p><strong>Symptoms:</strong> {{ condition.symptoms || 'No symptons described.' }}</p>
+        </div>
+
+        <br>
+
+        <h2>Allergies</h2>
+        <div *ngIf="fullPatientMedicalRecord.allergies.length === 0">
+          <p>No allergies associated yet.</p>
+        </div>
+
+        <div *ngFor="let condition of fullPatientMedicalRecord.allergies; let i = index" class="blue-panel">
+          <p><strong>Designation:</strong> {{ condition.designation || '-' }}</p>
+          <p><strong>Description:</strong> {{ condition.description || 'No description.' }}</p>
+        </div>
+
+        <br>
+
+        <button type="button" (click)="editMedicalRecord()">Edit Medical Record</button>
+        <button type="button" (click)="closeDetails()">Close</button>
+    </div>
+
+
+    <div *ngIf="editingMedicalRecord" class="shadow-panel">
       <h1>Patient Medical Record Update</h1>
       <form #medicalRecordForm="ngForm" (ngSubmit)="onSubmit(medicalRecordForm)" novalidate>
         <h2>Patient Basic Info</h2>
@@ -100,12 +138,11 @@
           <p>No medical conditions associated yet.</p>
         </div>
 
-        <div *ngFor="let condition of medicalRecord.medicalConditions; let i = index" class="medical-condition-entry">
+        <div *ngFor="let condition of medicalRecord.medicalConditions; let i = index" class="blue-panel">
           <p><strong>Designation:</strong> {{ condition.designation || '-' }}</p>
           <p><strong>Description:</strong> {{ condition.description || 'No description.' }}</p>
           <p><strong>Symptoms:</strong> {{ condition.symptoms || 'No symptons described.' }}</p>
           <button (click)="removeMedicalCondition(i)">Remove</button>
-          <br>
           <br>
         </div>
 
@@ -127,7 +164,7 @@
           <p>No allergies associated yet.</p>
         </div>
 
-        <div *ngFor="let condition of medicalRecord.allergies; let i = index" class="medical-condition-entry">
+        <div *ngFor="let condition of medicalRecord.allergies; let i = index" class="blue-panel">
           <p><strong>Designation:</strong> {{ condition.designation || '-' }}</p>
           <p><strong>Description:</strong> {{ condition.description || 'No description.' }}</p>
           <button (click)="removeAllergy(i)">Remove</button>
@@ -136,8 +173,12 @@
 
         <br>
 
-        <button type="submit" [disabled]="medicalRecordForm.invalid || isSubmitted">Submit</button>
-        <button type="button" (click)="clearForm()">Clear</button>
+        <div class="button-container">
+          <button type="submit" [disabled]="medicalRecordForm.invalid || isSubmitted">Submit</button>
+          <button type="button" (click)="clearForm()">Clear</button>
+          <button type="button" (click)="closeEditing()">Close</button>
+        </div>
+        
       </form>
     </div>
   </div>

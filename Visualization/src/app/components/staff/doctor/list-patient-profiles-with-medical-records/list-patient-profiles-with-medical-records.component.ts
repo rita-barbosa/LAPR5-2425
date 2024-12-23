@@ -43,6 +43,7 @@ export class ListPatientProfilesWithMedicalRecord implements OnInit {
   fullPatient!: PatientWithId;
   fullPatientMedicalRecord!: MedicalRecordComplete;
   showMedicalRecord: boolean = false;
+  editingMedicalRecord: boolean = false;
 
   medicalRecords: MedicalRecordComplete[] = [];
   medicalRecordNumbers: string[] = [];
@@ -61,106 +62,14 @@ export class ListPatientProfilesWithMedicalRecord implements OnInit {
   allFullAllergies : Allergy[] = [];
   allFullMedicalConditions : MedicalCondition[] = [];
 
-
-  patientListMock: PatientWithId[] = [
-    {
-      name: 'John Doe',
-      phone: '555-123-4567',
-      email: 'john.doe@example.com',
-      address: '123 Elm Street, Springfield, IL',
-      dateBirth: '1985-05-15',
-      patientId: '1'
-    },
-    {
-      name: 'Jane Smith',
-      phone: '555-987-6543',
-      email: 'jane.smith@example.com',
-      address: '456 Maple Avenue, Denver, CO',
-      dateBirth: '1990-03-20',
-      patientId: '2'
-    },
-    {
-      name: 'Alice Johnson',
-      phone: '555-456-7890',
-      email: 'alice.johnson@example.com',
-      address: '789 Pine Road, Austin, TX',
-      dateBirth: '1978-11-05',
-      patientId: '3'
-    },
-    {
-      name: 'Robert Brown',
-      phone: '555-789-1234',
-      email: 'robert.brown@example.com',
-      address: '321 Oak Lane, Seattle, WA',
-      dateBirth: '2000-01-12',
-      patientId: '4'
-    }
-  ];
-
-
-  medicalRecordsMock: MedicalRecordComplete[] = [
-    {
-      id: '1',
-      medicalRecordNumber: '202412000001',
-      medicalConditions: [
-        { id: 'FB70.0', designation: 'Low Back Pain', description: 'Pain in the lower back region.', symptoms: 'Sharp pain, stiffness, difficulty standing.' }
-      ],
-      allergies: [
-        { code: 'BZ02.2', designation: 'Peanut Allergy', description: 'Manifests as rashes and bloating.' }
-      ],
-      description: 'Patient with chronic lower back pain and peanut allergy.'
-    },
-    {
-      id: '2',
-      medicalRecordNumber: '202412000002',
-      medicalConditions: [
-        { id: 'FB71.0', designation: 'Asthma', description: 'Chronic respiratory condition.', symptoms: 'Shortness of breath, wheezing, coughing.' }
-      ],
-      allergies: [
-        { code: 'BZ03.4', designation: 'Pollen Allergy', description: 'Leads to sneezing and watery eyes.' }
-      ],
-      description: 'Asthma patient with seasonal pollen allergy.'
-    },
-    {
-      id: '3',
-      medicalRecordNumber: '202412000003',
-      medicalConditions: [
-        { id: 'FB72.0', designation: 'Hypertension', description: 'High blood pressure.', symptoms: 'Headaches, shortness of breath, nosebleeds.' }
-      ],
-      allergies: [
-        { code: 'BZ05.1', designation: 'Dust Allergy', description: 'Causes sneezing and skin irritation.' }
-      ],
-      description: 'Patient with high blood pressure and mild dust allergy.'
-    },
-    {
-      id: '4',
-      medicalRecordNumber: '202412000004',
-      medicalConditions: [
-        { id: 'FB73.0', designation: 'Diabetes', description: 'Chronic condition affecting blood sugar.', symptoms: 'Frequent urination, increased thirst, weight loss.' }
-      ],
-      allergies: [],
-      description: 'Diabetic patient with no known allergies.'
-    }
-  ];
-
-
   constructor(private service: PatientService, private allergyService :AllergyService , private medicalConditionService : MedicalConditionService, private message : MessageComponent) {}
-
-  // ngOnInit(): void {
-  //   this.addFilter();
-  // this.fetchAllergies();
-  // this.fetchMedicalConditions();
-  //   this.fetchPatients();
-  //   this.fetchPatientsMedicalRecords();
-  //   this.filteredConditions = [...this.allMedicalConditions];
-  // }
 
   ngOnInit(): void {
     this.addFilter();
     this.fetchAllergies();
     this.fetchMedicalConditions();
-  this.patientList = this.patientListMock;
-  this.medicalRecords = this.medicalRecordsMock;
+    this.fetchPatients();
+    this.fetchPatientsMedicalRecords();
 }
 
 fetchMedicalConditions() {
@@ -173,20 +82,22 @@ fetchMedicalConditions() {
     },
     error: (error) => console.error('Error fetching medical conditions:', error),
   });
+
 }
 
 
-  fetchAllergies() {
-    this.allergyService.getAllAllergies().subscribe({
-      next: (data) =>  {
-        this.allFullAllergies = data;
-        this.allAllergiesDesignations = this.allFullAllergies.map(allergy => {
-          return allergy.designation;
-        });
-      },
-      error: (error) => console.error('Error fetching allergies:', error),
-    });
-  }
+fetchAllergies() {
+  this.allergyService.getAllAllergies().subscribe({
+    next: (data) => {
+      this.allFullAllergies = data;
+      this.allAllergiesDesignations = this.allFullAllergies.map(allergy => {
+        return allergy.designation;
+      });
+    },
+    error: (error) => console.error('Error fetching allergies:', error),
+  });
+}
+
 
 
   fetchPatients(): void {
@@ -216,10 +127,10 @@ fetchMedicalConditions() {
 
   fetchPatientsMedicalRecords(): void {
     this.service.getAllMedicalRecords().subscribe({
-      next: (data) => (this.medicalRecords = data),
+      next: (data) => { (this.medicalRecords = data),
+      console.log(this.medicalRecords) },
       error: (error) => console.error('Error fetching medical records:', error),
     });
-    console.log(this.medicalRecords)
   }
 
   applyFilters(): void {
@@ -278,7 +189,17 @@ fetchMedicalConditions() {
         this.fullPatientMedicalRecord = this.medicalRecords.find(record => record.id === patient.patientId)!;
         this.medicalRecord = this.fullPatientMedicalRecord;
         this.showMedicalRecord = true;
+        this.editingMedicalRecord = false;
   }
+
+  editMedicalRecord(): void {
+    this.showMedicalRecord = false;
+    this.editingMedicalRecord = true;
+}
+
+closeEditing() : void {
+  this.editingMedicalRecord = false;
+}
 
   closeDetails(): void {
     this.showMedicalRecord = false;
@@ -291,8 +212,6 @@ fetchMedicalConditions() {
   }
 
   addMedicalCondition(inputValue: string): void {
-    console.log('Input Value:', inputValue);
-
     if (inputValue.trim()) {
       const fullCondition = this.allFullMedicalConditions.find(
         (condition) => condition.designation.toLowerCase() === inputValue.toLowerCase()
