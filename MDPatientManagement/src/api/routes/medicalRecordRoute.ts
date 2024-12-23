@@ -17,11 +17,29 @@ export default (app: Router) => {
             body: Joi.object({
                 id: Joi.string().required(),
                 medicalRecordNumber: Joi.string().required(),
-                medicalConditions: Joi.array().required(),
-                allergies: Joi.array().required(),
+                medicalConditions: Joi.array(),
+                allergies: Joi.array(),
                 description: Joi.string(),
             })
         }),
         (req, res, next) => ctrl.createMedicalRecord(req, res, next));
+
+    route.patch('/update',
+        celebrate({
+            body: Joi.object({
+                id: Joi.string().required(),
+                medicalRecordNumber: Joi.string().required(),
+                medicalConditions: Joi.array(),
+                allergies: Joi.array(),
+                description: Joi.string(),
+            })
+        }),
+        (req, res, next) => ctrl.updateMedicalRecord(req, res, next));
+    
+    route.get('/get-all-medical-records',
+        (req, res, next) => ctrl.getAllMedicalRecords(req, res, next));
+
+    route.post('/get-filtered-medical-records',
+        (req, res, next) => ctrl.getFilteredMedicalRecords(req, res, next));
 
 };

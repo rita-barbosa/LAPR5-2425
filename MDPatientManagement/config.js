@@ -97,7 +97,7 @@ export default {
     },
     medicalRecord: {
       name: "MedicalRecordService",
-      path: "../services/medicalRecordServices"
+      path: "../services/medicalRecordService"
     }
   },
 };

@@ -1,5 +1,6 @@
 import { AfterViewInit, Component, ElementRef, HostListener, ViewChild } from '@angular/core';
 import * as THREE from "three";
+import * as TWEEN from '@tweenjs/tween.js';
 import layoutData from '../../../public/Loquitas.json'
 import { GLTFLoader, OrbitControls } from 'three-stdlib';
 import Wall from './simulation_classes/wall_template';
@@ -72,7 +73,6 @@ export class HospitalSimulationComponent implements AfterViewInit {
   vertical!: HTMLInputElement;
   distance!: HTMLInputElement;
   zoom!: HTMLInputElement;
-  mousemove!: HTMLElement | null;
   userInterface!: UserInterface  | null;
 
   fixedViewCamera!: Camera;
@@ -130,14 +130,12 @@ export class HospitalSimulationComponent implements AfterViewInit {
     this.camera.position.set(20, 30, 30); // Higher Y position to hover over.layout
     this.camera.lookAt(0, 0, 0); // Look down at the center of the scene
 
-    this.mousemove = document.getElementById("mousemove");
-
-    this.setupEventListeners();
-
     this.userInterface = new UserInterface(this.scene, this.renderer, document, this.scheduleDays);
 
     this.raycaster = new THREE.Raycaster();
     this.mouse = new THREE.Vector2();
+
+    this.setupEventListeners();
 
     this.tooltipCanvas = document.createElement('canvas');
     const context = this.tooltipCanvas.getContext('2d');
@@ -289,7 +287,7 @@ export class HospitalSimulationComponent implements AfterViewInit {
         }
     }
 
-    return null; 
+    return null;
 }
 
   private createModel(modelUrl: string, scale: any): Promise<THREE.Group> {
@@ -301,7 +299,7 @@ export class HospitalSimulationComponent implements AfterViewInit {
         (gltf) => {
           model = gltf.scene;
           model.scale.copy(scale);
-          resolve(model); 
+          resolve(model);
         },
         (xhr) => {
           console.log((xhr.loaded / xhr.total) * 100 + '% loaded');
@@ -408,8 +406,8 @@ export class HospitalSimulationComponent implements AfterViewInit {
   for (let i = 0; i <= data.size.width; i++) {
       for (let j = 0; j <= data.size.height; j++) {
           if (data.layout[j][i] === 4 || data.layout[j][i] === 7) {
-            if (index < this.roomIDs.length) {  
-            
+            if (index < this.roomIDs.length) {
+
                 const position = this.cellToCartesian(data, [j, i]);
                 this.roomPositions.set(this.roomIDs[index], position)
 
@@ -437,13 +435,46 @@ export class HospitalSimulationComponent implements AfterViewInit {
   }
 
   private setupEventListeners() {
-  this.renderer!.domElement.addEventListener("wheel", (event) => this.mouseWheel(event));
+    this.renderer!.domElement.addEventListener("wheel", (event) => this.mouseWheel(event));
     document.addEventListener("mousemove", event => {
       this.mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
       this.mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
     });
+    document.addEventListener('click', (event) => this.onDocumentMouseClick(event));
   }
 
+  onDocumentMouseClick(event : MouseEvent) {
+    this.mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+    this.mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+    this.raycaster.setFromCamera(this.mouse, this.camera!);
+    const intersects = this.raycaster.intersectObjects(this.objectsToIntersect);
+
+    if (intersects.length > 0) {
+      this.raycasterIntersectedObjectTooltip(intersects);
+        console.log("Clicked on:", this.INTERSECTED?.name);
+        this.moveCameraToRoomCenter(this.INTERSECTED?.position);
+    }
+  }
+
+  moveCameraToRoomCenter(targetPosition : THREE.Vector3 | undefined) {
+    const roomCenter = new THREE.Vector3(targetPosition!.x, this.camera!.position.y, targetPosition!.z);
+
+    new TWEEN.Tween(this.camera!.position)
+        .to(
+            {
+                x: roomCenter.x + 10,
+                y: roomCenter.y + 10,
+                z: roomCenter.z + 10,
+            },
+            500 // duration in ms
+        )
+        .easing(TWEEN.Easing.Quadratic.InOut) // Smooth easing
+        .onUpdate(() => {
+            this.camera!.lookAt(roomCenter); // Keep the camera looking at the target
+        })
+        .start();
+  }
 
   mouseWheel(event: WheelEvent) {
     // Prevent the mouse wheel from scrolling the document's content
@@ -527,7 +558,7 @@ export class HospitalSimulationComponent implements AfterViewInit {
                 this.loadPatient(roomName);
                 this.updateSprite(roomName, false);
             }
-        } 
+        }
         else if (this.roomLoadedPatients.get(roomName) == true) {
                 this.removePatient(roomName);
                 this.updateSprite(roomName, true);
@@ -605,7 +636,7 @@ export class HospitalSimulationComponent implements AfterViewInit {
       }
   }
 
- 
+
   startAnimationLoop() {
     const animate = () => {
 
@@ -655,24 +686,24 @@ export class HospitalSimulationComponent implements AfterViewInit {
 
   loadDataFromBackend(): void {
     this.roomService.getRoomsSchedule().subscribe((scheduledBackend: RoomSchedule[]) => {
-  
+
       this.roomIDs = scheduledBackend.map((roomSchedule) => roomSchedule.roomNumber);
       this.roomSchedule = new Map<string, Map<string, ScheduleSlot[]>>();
       this.scheduleDays = [];
-  
+
       for (let room of scheduledBackend) {
         const scheduleMap = new Map<string, ScheduleSlot[]>();
-  
+
         room.schedule.forEach((slot) => {
           if (!scheduleMap.has(slot.startDate.split(" ")[0])) {
             scheduleMap.set(slot.startDate.split(" ")[0], []);
           }
           scheduleMap.get(slot.startDate.split(" ")[0])!.push(slot);
         });
-  
+
         this.roomSchedule.set(room.roomNumber, scheduleMap);
       }
-  
+
       this.roomSchedule.forEach((scheduleMap) => {
         scheduleMap.forEach((slots, date) => {
           if (!this.scheduleDays.includes(date)) {
@@ -680,9 +711,9 @@ export class HospitalSimulationComponent implements AfterViewInit {
           }
         });
       });
-  
+
       this.scheduleDays.sort((a, b) => new Date(b).getTime() - new Date(a).getTime());
-  
+
       this.createScene();
       this.loadLayout(layoutData);
       document.body.appendChild(this.renderer!.domElement);
@@ -691,10 +722,10 @@ export class HospitalSimulationComponent implements AfterViewInit {
       console.error("Error loading data from backend:", error);
     });
   }
-  
+
   async ngAfterViewInit(): Promise<void> {
     this.loadDataFromBackend();
-  }  
+  }
 
   @HostListener('window:resize', ['$event'])
   onResize(): void {

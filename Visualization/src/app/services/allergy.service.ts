@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { MessageService } from './message.service';
-import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { catchError, map, Observable, of } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { Allergy } from '../domain/Allergy';
@@ -33,10 +33,12 @@ export class AllergyService {
   }
   
 
+
   getAllergyByCode(code: string): Observable<Allergy> {
     const url = `${this.theServerURL}/Allergy/get-allergy-by-code`;
-  
-    return this.http.post<Allergy>(url, code, this.httpOptions)
+    const payload = { code };
+
+    return this.http.post<Allergy>(url, payload, this.httpOptions)
       .pipe(
         catchError(this.handleError<Allergy>('Get allergy'))
       );
@@ -44,15 +46,15 @@ export class AllergyService {
 
   getAllergiesByFilters(allergiesQueryParameters: AllergyQueryParameters): Observable<Allergy[]> {
       const url = `${this.theServerURL}/Allergy/get-allergies-filtered`;
-  
+
       return this.http.post<Allergy[]>(url, allergiesQueryParameters, this.httpOptions).pipe(
           catchError((error) => {
             if (error.status = 404) {
-  
+
               const queryParameters: AllergyQueryParameters = {
                 queryfilters: []
               };
-  
+
               queryParameters.queryfilters.push(
                 {
                   code : '',
@@ -60,7 +62,7 @@ export class AllergyService {
                   description : ''
                 }
               )
-  
+
               this.log('No allergies were found with the chosen criteria.')
               return this.http.post<Allergy[]>(url, queryParameters, this.httpOptions)
             }else {
@@ -94,11 +96,11 @@ export class AllergyService {
       designation: designation,
       description: description,
     };
-  
+
     if (description && description.trim() !== "") {
       EditAllergy.description = description;
     }
-  
+
     this.http.patch<Allergy>(url, EditAllergy, this.httpOptions)
       .pipe(catchError(this.handleError<Allergy>('Create allergy')))
       .subscribe({
@@ -110,7 +112,7 @@ export class AllergyService {
         },
       });
   }
-  
+
 
 
   //------------------------/------------------------/------------------------

@@ -22,4 +22,15 @@ export default (app: Router) => {
     }),
     (req, res, next) => ctrl.createMedicalCondition(req, res, next) );
 
+    route.get('/get-all-medical-conditions',
+        (req, res, next) => ctrl.getAllMedicalCondition(req, res, next) );
+  
+      route.post('/get-medical-condition-by-id',
+        celebrate({
+          body: Joi.object({
+            id : Joi.string().required()
+          }),
+        }),
+        (req, res, next) => ctrl.getMedicalConditionById(req, res, next) );
+
 };

@@ -35,4 +35,37 @@ export default class MedicalConditionService implements IMedicalConditionService
       }
     }
 
+
+  async getMedicalConditionById(id: string): Promise<Result<IMedicalConditionDTO>> {
+    try {
+          const condition = await this.medicalConditionRepo.findByDomainId(id);
+          if (!condition) {
+            return Result.fail<IMedicalConditionDTO>("Allergy not found");
+          }
+    
+          const conditionDTO = MedicalConditionMap.toDTO(condition) as IMedicalConditionDTO;
+          return Result.ok<IMedicalConditionDTO>(conditionDTO);
+        } catch (error) {
+          throw new Error(`Failed to fetch allergy: ${error.message}`);
+        }
+  }
+
+
+  async getAllMedicalConditions(): Promise<Result<IMedicalConditionDTO[]>> {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const conditions = await this.medicalConditionRepo.findAll();
+  
+        if (conditions === null || conditions.length === 0) {
+          resolve(Result.fail<IMedicalConditionDTO[]>("Medical Conditions not found"));
+        } else {
+          const conditionsListDTOResult = conditions.map((condition) => MedicalConditionMap.toDTO(condition) as IMedicalConditionDTO);
+          resolve(Result.ok<IMedicalConditionDTO[]>(conditionsListDTOResult));
+        }
+      } catch (e) {
+        reject(e);
+      }
+    });
+  }
+  
 }

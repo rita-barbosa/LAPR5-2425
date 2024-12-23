@@ -106,17 +106,21 @@ export default class AllergyRepo implements IAllergyRepo {
   }
   
   public async findByCode(code: string | AllergyCode): Promise<Allergy> {
+
     const idX = code instanceof AllergyCode ? (<AllergyCode>code).toValue() : code;
-
-    const query = { code : idX }; 
-    const allergyRecord = await this.allergyschema.findOne( query );
-
-    if( allergyRecord != null) {
+    const query = { code: idX };
+  
+    const allergyRecord = await this.allergyschema.findOne(
+      query as FilterQuery<IAllergyPersistence & Document>
+    );
+    
+    if (allergyRecord != null) {
       return AllergyMap.toDomain(allergyRecord);
-    }
-    else
+    } else {
       return null;
+    }
   }
+  
 
   public async findAll(): Promise<Allergy[]> {
     try {

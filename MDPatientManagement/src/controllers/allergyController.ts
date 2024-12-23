@@ -75,19 +75,26 @@ export default class AllergyController /*extends BaseController*/ implements IAl
 
   public async getAllergyByCode(req: Request, res: Response, next: NextFunction) {
     try {
-      const allergyOrError = await this.allergyServiceInstance.getAllergyByCode(req.body as string) as Result<IAllergyDTO>;
 
+      const { code } = req.body;
+  
+      if (!code || typeof code !== 'string') {
+        return res.status(400).json({ error: 'Invalid code provided.' });
+      }
+  
+      const allergyOrError = await this.allergyServiceInstance.getAllergyByCode(code) as Result<IAllergyDTO>;
+  
       if (allergyOrError.isFailure) {
         return res.status(404).send();
       }
-
+  
       const allergyDTO = allergyOrError.getValue();
-      return res.status(201).json( allergyDTO );
-    }
-    catch (e) {
+      return res.status(201).json(allergyDTO);
+    } catch (e) {
       return next(e);
     }
   }
+  
 
 
   public async getAllAllergies(req: Request, res: Response, next: NextFunction) {
