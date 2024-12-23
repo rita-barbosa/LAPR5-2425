@@ -8,47 +8,35 @@
     <h1 class="main-title">Search Patient Profiles Medical Records</h1>
   </header>
 
-<!-- Filters Section -->
-<div class="filters">
-  <!-- Filters Loop -->
-  <div class="filter-row" *ngFor="let filter of filterParameters.filters; let i = index">
-    <!-- Allergy Designation -->
-    <input
-      type="text"
-      placeholder="Allergy Designation"
-      [(ngModel)]="filter.allergyDesignation"
-      class="filter-input"
-    />
+  <!-- Filters Section -->
+  <div class="filters">
+    <!-- Filters Loop -->
+    <div class="filter-row" *ngFor="let filter of filterParameters.filters; let i = index">
+      <!-- Allergy Designation -->
+      <input type="text" placeholder="Allergy Designation" [(ngModel)]="filter.allergyDesignation"
+        class="filter-input" />
 
-    <!-- Medical Condition -->
-    <input
-      type="text"
-      placeholder="Medical Condition"
-      [(ngModel)]="filter.medicalConditionDesignation"
-      class="filter-input"
-    />
+      <!-- Medical Condition -->
+      <input type="text" placeholder="Medical Condition" [(ngModel)]="filter.medicalConditionDesignation"
+        class="filter-input" />
 
-    <!-- Remove Filter Button -->
-    <button *ngIf="i > 0" (click)="removeFilter(i)" class="remove-filter">Remove</button>
+      <!-- Remove Filter Button -->
+      <button *ngIf="i > 0" (click)="removeFilter(i)" class="remove-filter">Remove</button>
+    </div>
+
+    <!-- Add Filter Button -->
+    <button (click)="addFilter()" class="add-filter-button">Add Filter</button>
+
+    <!-- Apply Filters -->
+    <button (click)="applyFilters()" class="search-button">Search</button>
   </div>
-
-  <!-- Add Filter Button -->
-  <button (click)="addFilter()" class="add-filter-button">Add Filter</button>
-
-  <!-- Apply Filters -->
-  <button (click)="applyFilters()" class="search-button">Search</button>
-</div>
 
 
   <!-- Results Section -->
   <div class="conteudo">
     <div *ngIf="patientList && patientList.length > 0">
-      <p-table
-        [value]="patientList"
-        [(selection)]="selectedPatient"
-        selectionMode="single"
-        [tableStyle]="{ 'border-collapse': 'collapse', 'table-layout': 'fixed', width: '100%' }"
-      >
+      <p-table [value]="patientList" [(selection)]="selectedPatient" selectionMode="single"
+        [tableStyle]="{ 'border-collapse': 'collapse', 'table-layout': 'fixed', width: '100%' }">
         <ng-template pTemplate="header">
           <tr>
             <th style="width: 10%;">Select</th>
@@ -80,38 +68,55 @@
     <div *ngIf="showMedicalRecord" class="shadow-panel">
       <h1>Patient Medical Record</h1>
       <br>
-        <p><strong>Patient Name:</strong> {{ fullPatient.name || '-' }}</p>
-        <p><strong>Medical Record Number:</strong> {{ fullPatientMedicalRecord.medicalRecordNumber || '-' }}</p>
-        
-        <br>
-        <h2>Medical Conditions</h2>
-        <br>
-        <div *ngIf="fullPatientMedicalRecord.medicalConditions.length === 0">
-          <p>No medical conditions associated yet.</p>
+      <p><strong>Patient Name:</strong> {{ fullPatient.name || '-' }}</p>
+      <p><strong>Medical Record Number:</strong> {{ fullPatientMedicalRecord.medicalRecordNumber || '-' }}</p>
+
+      <br>
+      <h2>Medical Conditions</h2>
+      <br>
+      <div *ngIf="fullPatientMedicalRecord.medicalConditions.length === 0">
+        <p>No medical conditions associated yet.</p>
+      </div>
+
+      <div *ngFor="let condition of fullPatientMedicalRecord.medicalConditions; let i = index" class="blue-panel">
+        <p><strong>Designation:</strong> {{ condition.designation || '-' }}</p>
+        <p><strong>Description:</strong> {{ condition.description || 'No description.' }}</p>
+        <p><strong>Symptoms:</strong> {{ condition.symptoms || 'No symptons described.' }}</p>
+      </div>
+
+      <br>
+
+      <h2>Allergies</h2>
+      <div *ngIf="fullPatientMedicalRecord.allergies.length === 0">
+        <p>No allergies associated yet.</p>
+      </div>
+
+      <div *ngFor="let condition of fullPatientMedicalRecord.allergies; let i = index" class="blue-panel">
+        <p><strong>Designation:</strong> {{ condition.designation || '-' }}</p>
+        <p><strong>Description:</strong> {{ condition.description || 'No description.' }}</p>
+      </div>
+
+      <br>
+
+      <h2>Another informations</h2>
+      <div *ngIf="!fullPatientMedicalRecord.description || fullPatientMedicalRecord.description.trim() === ''">
+        <p>No additional information on the Patient Medical Record.</p>
+      </div>
+
+      <div *ngIf="fullPatientMedicalRecord.description && fullPatientMedicalRecord.description.trim() !== ''"
+        class="blue-panel">
+        <p><strong>Description:</strong></p>
+        <div>
+          <p *ngFor="let line of formattedDescription" [ngClass]="{'empty-line': line.trim() === ''}">
+            {{ line.trim() === '' ? ' ' : line }}
+          </p>
         </div>
+      </div>
 
-        <div *ngFor="let condition of fullPatientMedicalRecord.medicalConditions; let i = index" class="blue-panel">
-          <p><strong>Designation:</strong> {{ condition.designation || '-' }}</p>
-          <p><strong>Description:</strong> {{ condition.description || 'No description.' }}</p>
-          <p><strong>Symptoms:</strong> {{ condition.symptoms || 'No symptons described.' }}</p>
-        </div>
+      <br>
 
-        <br>
-
-        <h2>Allergies</h2>
-        <div *ngIf="fullPatientMedicalRecord.allergies.length === 0">
-          <p>No allergies associated yet.</p>
-        </div>
-
-        <div *ngFor="let condition of fullPatientMedicalRecord.allergies; let i = index" class="blue-panel">
-          <p><strong>Designation:</strong> {{ condition.designation || '-' }}</p>
-          <p><strong>Description:</strong> {{ condition.description || 'No description.' }}</p>
-        </div>
-
-        <br>
-
-        <button type="button" (click)="editMedicalRecord()">Edit Medical Record</button>
-        <button type="button" (click)="closeDetails()">Close</button>
+      <button type="button" (click)="editMedicalRecord()">Edit Medical Record</button>
+      <button type="button" (click)="closeDetails()">Close</button>
     </div>
 
 
@@ -122,12 +127,8 @@
         <p><strong>Patient Name:</strong> {{ fullPatient.name || '-' }}</p>
         <div class="input-field">
           <label for="medicalRecordNumber"><strong>Medical Record Number: </strong></label>
-          <input
-            id="medicalRecordNumber"
-            [(ngModel)]="medicalRecord.medicalRecordNumber"
-            name="medicalRecordNumber"
-            readonly
-          />
+          <input id="medicalRecordNumber" [(ngModel)]="medicalRecord.medicalRecordNumber" name="medicalRecordNumber"
+            readonly />
         </div>
 
         <br>
@@ -149,10 +150,7 @@
         <br>
 
         <div>
-          <p-dropdown
-            [options]="allMedicalConditionsDesignations"
-            #inputRef
-            placeholder="Select Medical Condition">
+          <p-dropdown [options]="allMedicalConditionsDesignations" #inputRef placeholder="Select Medical Condition">
           </p-dropdown>
           <button type="button" (click)="addMedicalCondition(inputRef.value)">Add</button>
         </div>
@@ -171,6 +169,18 @@
           <br>
         </div>
 
+        <h2>Another informations</h2>
+
+        <div *ngIf="!fullPatientMedicalRecord.description || fullPatientMedicalRecord.description.trim() === ''">
+          <p>No additional information on the Patient Medical Record.</p>
+        </div>
+
+        <div class="input-field-big">
+          <textarea class="input-field-big-text" id="description" [(ngModel)]="medicalRecord.description"
+            name="description" rows="10" placeholder="Write or edit the description here...">
+            {{ fullPatientMedicalRecord.description }}
+          </textarea>
+        </div>
         <br>
 
         <div class="button-container">
@@ -178,7 +188,7 @@
           <button type="button" (click)="clearForm()">Clear</button>
           <button type="button" (click)="closeEditing()">Close</button>
         </div>
-        
+
       </form>
     </div>
   </div>

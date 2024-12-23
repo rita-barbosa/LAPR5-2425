@@ -208,25 +208,25 @@ export class PatientService {
 
   private enrichMedicalRecord(record: MedicalRecord): Observable<MedicalRecordComplete> {
     console.log('record', record);
-  
+
     // Fetch medical conditions and log them
     const medicalConditions$ = forkJoin(
       record.medicalConditions.map(id => this.MedicalConditionService.getMedicalConditionById(id))
     );
-  
+
     medicalConditions$.subscribe(medicalConditions => {
       console.log('Fetched medical conditions:', medicalConditions);
     });
-  
+
     // Fetch allergies and log them
     const allergies$ = forkJoin(
       record.allergies.map(code => this.allergyService.getAllergyByCode(code))
     );
-  
+
     allergies$.subscribe(allergies => {
       console.log('Fetched allergies:', allergies);
     });
-  
+
     // Use forkJoin to combine both and log final enriched record
     return forkJoin({
       medicalConditions: medicalConditions$,
@@ -242,7 +242,7 @@ export class PatientService {
       })
     );
   }
-  
+
 
 
   getFilteredMedicalRecords(filterParameters: AllergyMedicalConditionFilterParameters): Observable<MedicalRecordComplete[]> {
@@ -264,8 +264,24 @@ export class PatientService {
   }
 
   updateMedicalRecord(id: string, medicalRecordNumber: string, medicalConditions: MedicalCondition[], allergies: Allergy[], description: string) {
-    console.log('submitted')
-    throw new Error('Method not implemented.');
+    const url = `${this.thePatientServerURL}/medicalRecord/update`;
+
+    const medicalConditionIds: string[] = medicalConditions.map(condition => condition.id);
+    const allergyIds: string[] = allergies.map(allergy => allergy.code);
+
+    let medicalRecord: MedicalRecord = {
+      id: id,
+      medicalRecordNumber: medicalRecordNumber,
+      medicalConditions: medicalConditionIds,
+      allergies: allergyIds,
+      description: description
+    };
+
+    return this.http.patch<MedicalRecord>(url, medicalRecord, this.httpOptions).pipe(
+      catchError(this.handleError<MedicalRecord>('Error while updatign patient medical record!')))
+    .subscribe(data => {
+      this.log(`Patient medical record was successfully updated!`);
+    });
   }
 
   //------------------------/------------------------/------------------------

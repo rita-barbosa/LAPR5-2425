@@ -69,6 +69,7 @@ export class ListPatientProfilesWithMedicalRecord implements OnInit {
     this.fetchAllergies();
     this.fetchMedicalConditions();
     this.fetchPatients();
+
     this.fetchPatientsMedicalRecords();
 }
 
@@ -190,10 +191,22 @@ fetchAllergies() {
         this.medicalRecord = this.fullPatientMedicalRecord;
         this.showMedicalRecord = true;
         this.editingMedicalRecord = false;
+        console.log(this.fullPatientMedicalRecord.description);
+  }
+
+  get formattedDescription(): string[] {
+    return this.fullPatientMedicalRecord.description
+      ? this.fullPatientMedicalRecord.description.split('\n')
+      : [];
   }
 
   editMedicalRecord(): void {
     this.showMedicalRecord = false;
+    
+    // this.medicalRecord = {
+    //   ...this.fullPatientMedicalRecord,
+    //   description: this.fullPatientMedicalRecord.description || '' 
+    // };
     this.editingMedicalRecord = true;
 }
 
