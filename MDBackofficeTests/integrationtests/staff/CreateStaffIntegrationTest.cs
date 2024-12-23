@@ -94,7 +94,7 @@ namespace MDBackofficeTests.integrationtests.staff
             _userServiceMock.Setup(_userService => _userService.CheckUserRole("valid-token", "Admin")).Returns(false);
 
 
-            _repoSpecMock.Setup(_repoSpecMock => _repoSpecMock.GetByIdAsync(It.IsAny<SpecializationCode>()))
+            _repoSpecMock.Setup(_repoSpecMock => _repoSpecMock.FindByDenomination(It.IsAny<string>()))
                 .ReturnsAsync(specializationMock.Object);
 
             _unitOfWorkMock.Setup(u => u.CommitAsync()).ReturnsAsync(1);
@@ -129,7 +129,7 @@ namespace MDBackofficeTests.integrationtests.staff
 
             var specializationMock = new Mock<Specialization>("25841809", "denom", "descrip");
 
-            _repoSpecMock.Setup(_repoSpecMock => _repoSpecMock.GetByIdAsync(It.IsAny<SpecializationCode>()))
+            _repoSpecMock.Setup(_repoSpecMock => _repoSpecMock.FindByDenomination(It.IsAny<string>()))
                 .ReturnsAsync(specializationMock.Object);
 
             _unitOfWorkMock.Setup(u => u.CommitAsync()).ReturnsAsync(1);

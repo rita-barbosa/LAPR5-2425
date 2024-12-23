@@ -48,6 +48,46 @@ namespace MDBackoffice.Controllers
             }
         }
 
+        // POST: api/Appointment/get-all
+        [HttpGet("get-all")]
+        public async Task<List<AppointmentDto>> GetAll()
+        {
+            return await _service.GetAllAsync();
+        }
+
+        // POST: api/Appointment/get-all
+        [HttpGet("get-by-id")]
+        public async Task<ActionResult<AppointmentDto>> GetById(string id)
+        {
+            return await _service.GetByIdAsync(id);
+        }
+
+        // POST: api/Appointment/update-appointment
+        [HttpPatch("update-appointment")]
+        public async Task<ActionResult<AppointmentDto>> UpdateAppointment(UpdateAppointmentDto dto)
+        {
+            try
+            {
+                var token = HttpContext.Request.Headers.Authorization.ToString()?.Split(' ')[1];
+
+                if (string.IsNullOrWhiteSpace(token) || _userSvc.CheckUserRole(token, "Doctor"))
+                {
+                    return BadRequest(new { message = "Invalid authorization or user role." });
+                }
+
+                var appointment = await _service.UpdateAsync(dto);
+                return Ok(appointment);
+            }
+            catch (BusinessRuleValidationException ex)
+            {
+                return BadRequest(new { ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { V = $"An unexpected error occurred: {ex.Message}" });
+            }
+        }
+
     }
 
 }

@@ -1,11 +1,13 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using MDBackoffice.Domain.AppointmentStaffs;
 using MDBackoffice.Domain.OperationRequests;
 using MDBackoffice.Domain.OperationTypes.ValueObjects.RequiredStaff;
 using MDBackoffice.Domain.Rooms;
 using MDBackoffice.Domain.Shared;
 using MDBackoffice.Domain.StaffProfiles;
+using Org.BouncyCastle.Asn1.Cms;
 
 namespace MDBackoffice.Domain.Appointments
 {
@@ -46,6 +48,26 @@ namespace MDBackoffice.Domain.Appointments
         public void ChangeStatus(string status)
         {
             this.Status = AppointmentStatus.GetStatusByDescription(status);
+        }
+
+        public void ChangeRoom(string roomNumber)
+        {
+            this.RoomNumber = new RoomNumber(roomNumber);
+        }
+
+        public void ChangeSlot(string newStartTime, string newEndTime, string newStartDate, string newEndDate)
+        {
+            this.Slot = new Slot(newStartTime, newEndTime, newStartDate, newEndDate);
+        }
+
+        public void ChangeStaff(List<Staff> newStaffList)
+        {
+            this.AppointmentStaffs.Clear();
+
+            for(int i = 0; i < newStaffList.Count(); i++)
+            {
+                this.AppointmentStaffs.Add(new AppointmentStaff(this, newStaffList.ElementAt(i)));
+            }
         }
     }
 }
