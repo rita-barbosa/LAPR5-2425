@@ -14,9 +14,12 @@
 :- dynamic better_sol/5. %dynamic and auxiliary fact to storethe better solution in a certain moment
 :- dynamic final_time_heuristics/1.
 :- dynamic earliest_surgery/3.
-:- dynamic assignment_room/2. %assignment_room(so100001,or1).
+%%
+:-dynamic occupied_time/2. % occupied_time(roomId, time).
+:-dynamic operation_assigment/2. % operation_assigment(opId, roomId).
+:-dynamic room_in_scheduling/1.
 
-% task(Id,ProcessTime,DueTime,PenaltyWeight).
+
 staff(d001,doctor,orthopaedist,[so2,so3,so4]).
 staff(d002,doctor,orthopaedist,[so2,so3,so4]).
 staff(d003,doctor,orthopaedist,[so2,so3,so4]).
@@ -45,7 +48,9 @@ timetable(n002,20241028,(500,1400)).
 timetable(n003,20241028,(400,1320)).
 timetable(a001,20241028,(500,1440)).
 
-agenda_operation_room(or1,20241028,[(750, 780, mnt0001), (1080, 1110, mnt0002)]).
+agenda_operation_room(r101,20241028,[]). %180 + 30
+agenda_operation_room(r102,20241028,[(720, 850, mnt0002),(1080, 1110, cnt1003)]). %60 + 30
+agenda_operation_room(r301,20241028,[(720, 780, mnt0002), (1080, 1110, cnt1003)]). %60 + 30
 
 surgery(so2,45,60,45).
 surgery(so3,45,90,45).
@@ -53,13 +58,12 @@ surgery(so4,45,75,45).
 
 surgery_id(so100001,so2).
 surgery_id(so100002,so3).
-surgery_id(so100003,so4).
-surgery_id(so100004,so2).
-
-assignment_room(so100001,or1).
-assignment_room(so100002,or1).
-assignment_room(so100003,or1).
-assignment_room(so100004,or1).
+surgery_id(so100003,so3).
+surgery_id(so100004,so3).
+surgery_id(so100005,so2).
+surgery_id(so100006,so3).
+surgery_id(so100007,so3).
+surgery_id(so100008,so3).
 
 assignment_surgery(so100001,d001).
 assignment_surgery(so100001,d004).
@@ -77,9 +81,25 @@ assignment_surgery(so100004,d003).
 assignment_surgery(so100004,d004).
 assignment_surgery(so100004,n003).
 assignment_surgery(so100004,a001).
+assignment_surgery(so100005,d003).
+assignment_surgery(so100005,d004).
+assignment_surgery(so100005,n003).
+assignment_surgery(so100005,a001).
+assignment_surgery(so100006,d003).
+assignment_surgery(so100006,d004).
+assignment_surgery(so100006,n003).
+assignment_surgery(so100006,a001).
+assignment_surgery(so100007,d003).
+assignment_surgery(so100007,d004).
+assignment_surgery(so100007,n003).
+assignment_surgery(so100007,a001).
+assignment_surgery(so100008,d003).
+assignment_surgery(so100008,d004).
+assignment_surgery(so100008,n003).
+assignment_surgery(so100008,a001).
 
 % surgeries(NTasks).
-surgeries(4).  %% HAS TO BE AT LEAST 3!!
+surgeries(4).  %% HAS TO BE AT LEAST 4!!
 
 % parameters initialization
 reference_value(1100).
@@ -110,19 +130,15 @@ generate:-
     retractall(better(_,_)),
     asserta(better(_,1441)),
     generate_population(Pop),
-    write('Pop='),write(Pop),nl,
     evaluate_population(Pop,PopValue),
-    write('PopValue='),write(PopValue),nl,
     order_population(PopValue,PopOrd),
     generations(NG),
     get_time(Ti),
-    (generate_generation(Ti,0,NG,PopOrd);true),!,
-    better(X,VX),
-    write("Final Time="),write(VX),nl,write("Schedule="),write(X).
+    (generate_generation(Ti,0,NG,PopOrd);true),!.
 
-generate_generation(_, G, G, _):- write('Estabilization achieved.'),nl.
+generate_generation(_, G, G, _).
 generate_generation(T,N,G,Pop):-  
-    ((( evaluate_time(T), write('Surpassed time limit.'),nl; evaluate_reference_value, write('Surpassed reference value.'),nl),true);
+    (((evaluate_time(T); evaluate_reference_value),true);
     random_permutation(Pop, RandomPermPop),
     crossover(RandomPermPop,NPop1),
     mutation(NPop1,NPop),
@@ -137,10 +153,11 @@ generate_generation(T,N,G,Pop):-
 generate_population(Pop):-
     population(PopSize),
     surgeries(NumT),
-    findall(Id,surgery_id(Id,_),SurgeryList),
+    room_in_scheduling(Room),
+    findall(Id,operation_assigment(Id,Room),SurgeryList),
     generate_population(PopSize,SurgeryList,NumT,Pop).
 
-generate_population(0,_,_,[]):-!.  %%% PROBLEMS WHEN INDIVDUALS ARE LESS THAN 3
+generate_population(0,_,_,[]):-!.  %%% PROBLEMS WHEN INDIVDUALS ARE <= 3
 generate_population(PopSize,SurgeryList,NumT,[Ind|Rest]):-
     PopSize1 is PopSize-1,
     generate_population(PopSize1,SurgeryList,NumT,Rest),
@@ -150,7 +167,6 @@ generate_population(PopSize,SurgeryList,NumT,L):-
     generate_population(PopSize,SurgeryList,NumT,L).
     
 generate_individual([G],1,[G]):-!.
-
 generate_individual(TasksList,NumT,[G|Rest]):-
     NumTemp is NumT + 1,
     random(1,NumTemp,N),
@@ -336,7 +352,6 @@ mutacao23(G1,P,[G|Ind],G2,[G|NInd]):-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%% PREDICATES FROM SPRINT C %%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 select_population(0,[_],[_],[_]).
 select_population(PopSize,OldPop,NewPop,Pop):-
     append(OldPop,NewPop,AllPop),
@@ -394,6 +409,98 @@ equal_pop([],[]):-!.
 equal_pop([P1|Pop1],[P2|Pop2]):-
     P1=P2, 
     equal_pop(Pop1, Pop2).
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%% PREDICATES TO DISTRIBUTE OPS %%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+schedule_operations_in_rooms([]).
+schedule_operations_in_rooms([Room | RestRooms]):-
+    retractall(room_in_scheduling(_)),
+    assert(room_in_scheduling(Room)),
+    findall(Id,operation_assigment(Id,Room),SurgeryList),
+    (
+        length(SurgeryList, Len), Len >= 4,
+        (
+            generate,
+            better(X,VX),
+            (VX \== 1441, write("Alert: was able to schedule all surgeries of room "), write(Room),write(">> Schedule="),write(X),nl,!
+            ; 
+            write(">> Warning: was not able to schedule surgeries of room "),write(Room),nl)
+        ),!
+    ;
+       (    
+            not(SurgeryList = []),
+            write(">> Warning: this algorithm needs at least 4 surgeries in a room to work. "),
+            write("The following surgeries were not scheduled: "),write(SurgeryList),nl,!
+        ; 
+            write('No Surgeries assigned to room '),write(Room),nl,
+            true
+       )
+    ),
+    schedule_operations_in_rooms(RestRooms).
+
+distribute_rooms(Day) :-
+    retractall(occupied_time(_, _)),
+    retractall(operation_assigment(_, _)),
+    findall(OpCode, surgery_id(OpCode, _), OperationsList),
+    findall(Room, agenda_operation_room(Room, Day, _), RoomsList),    % Find all rooms with agendas
+    assert_occupied_times(RoomsList),     % Calculate and assert occupied time for each room
+    distribute_operations_round_robin1(OperationsList, RoomsList),!,
+    schedule_operations_in_rooms(RoomsList).
+
+distribute_operations_round_robin1([], _).
+distribute_operations_round_robin1([Operation | RemainingOps], RoomsList) :-
+    (    attempt_assign_to_rooms(Operation, RoomsList),  distribute_operations_round_robin1(RemainingOps, RoomsList)  % Move to the next operation
+    ;   write('Failed to assign operation: '), write(Operation), nl  % Handle unassignable operation
+    ).
+
+attempt_assign_to_rooms(_, [], false):- fail.
+attempt_assign_to_rooms(Operation, [Room | RemainingRooms]) :-
+    check_current_room_occupancy_ratio(Room, Ratio),
+    (   Ratio < 0.8,
+        associate_operation_in_room(Operation, Room)
+    ;   attempt_assign_to_rooms(Operation, RemainingRooms)
+    ).
+    
+assert_occupied_times([]).
+assert_occupied_times([Room | RestRooms]) :-
+    agenda_operation_room(Room, _, Agenda),
+    get_total_time_sum_in_intervals(Agenda, 0, TotalTime),  % Calculate the total occupied time for the room
+    assert(occupied_time(Room, TotalTime)),  % Assert the occupied time as a dynamic fact
+    assert_occupied_times(RestRooms).
+
+get_total_time_sum_in_intervals([], Acc, Acc).
+get_total_time_sum_in_intervals([(Start, End, _) | Agenda], Acc, TotalTimeOccupied) :-
+    integer(Start), integer(End),
+    SlotTime is End - Start,
+    UpdatedAcc is Acc + SlotTime,
+    get_total_time_sum_in_intervals(Agenda, UpdatedAcc, TotalTimeOccupied).
+get_total_time_sum_in_intervals([(Start, End) | FreeIntervals], Acc, TotalTime) :-
+    integer(Start), integer(End),
+    SlotTime is End - Start,
+    UpdatedAcc is Acc + SlotTime,
+    get_total_time_sum_in_intervals(FreeIntervals, UpdatedAcc, TotalTime).
+
+check_current_room_occupancy_ratio(Room, Ratio) :-
+    (   occupied_time(Room, OccupTime),
+        TotalCapacity is 1440,
+        TotalCapacity > OccupTime,
+        FreeTime is 1440 - OccupTime,
+        Ratio is (OccupTime / FreeTime)
+    ;   Ratio = 1  % Assume full occupancy if conditions fail
+    ).
+
+associate_operation_in_room(Operation, Room) :-
+    surgery_id(Operation, OpType),
+    surgery(OpType, PrepTime, Duration, CleanupTime),
+    OpTotalTime is PrepTime + Duration + CleanupTime,
+    retract(occupied_time(Room, OldOccupTime)),
+    NewOccupTime is OldOccupTime + OpTotalTime,
+    assert(occupied_time(Room, NewOccupTime)),
+    retractall(operation_assigment(Operation, _)),
+    assert(operation_assigment(Operation, Room)).
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%% PREDICATES FROM SPRINT B %%%%
