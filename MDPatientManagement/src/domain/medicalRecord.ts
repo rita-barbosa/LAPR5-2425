@@ -13,10 +13,7 @@ interface MedicalRecordProps {
     description?: string;
 }
 
-//adicionar medical record ao patient no backoffice
-
 //mandar um token quando passo deste para o backoffice, mandar o mesmo que se recebe inicialmente no pedido
-
 
 //colocar cena do auth em todos os requests do novo modulo
 export class MedicalRecord extends AggregateRoot<MedicalRecordProps> {

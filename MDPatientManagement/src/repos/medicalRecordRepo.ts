@@ -17,7 +17,6 @@ export default class MedicalRecordRepo implements IMedicalRecordRepo {
   ) { }
 
   public async save(medicalRecord: MedicalRecord): Promise<MedicalRecord> {
-
     const query = { domainId: medicalRecord.id.toString() };
     const medicalRecordDocument = await this.medicalRecordSchema.findOne(query);
 

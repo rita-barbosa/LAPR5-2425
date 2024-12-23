@@ -64,7 +64,6 @@ export default class MedicalRecordService implements IMedicalRecordService {
                 medicalRecord.changeAllergies(allergyObjects);
                 medicalRecord.changeDescription(medicalRecordDTO.description);
 
-                console.log("\nTHE FIRST TIME I SEE ALLERGIES:", medicalRecord.allergies);
                 await this.medicalRecordRepo.save(medicalRecord);
 
                 const medicalRecordDTOResult = MedicalRecordMap.toDTO(medicalRecord) as IMedicalRecordDTO;
@@ -79,17 +78,13 @@ export default class MedicalRecordService implements IMedicalRecordService {
         try {
             const records = await this.medicalRecordRepo.findAll();
 
-            
-
-
             if (records === null || records.length == 0) {
-            return Result.fail<IMedicalRecordDTO[]>("Medical Records not found");
+                return Result.fail<IMedicalRecordDTO[]>("Medical Records not found");
             }
             else {
 
                 const recordsListDTOResult = records.map((record) => MedicalRecordMap.toDTO(record) as IMedicalRecordDTO);
-                // // console.log(recordsListDTOResult[0].allergies)
-            return Result.ok<IMedicalRecordDTO[]>( recordsListDTOResult )
+                return Result.ok<IMedicalRecordDTO[]>(recordsListDTOResult)
             }
         } catch (e) {
             throw e;
@@ -100,16 +95,16 @@ export default class MedicalRecordService implements IMedicalRecordService {
         try {
             const records = await this.medicalRecordRepo.findAllByParameters(filters);
             if (records.length == 0) {
-            return Result.fail<IMedicalRecordDTO[]>("Medical records not found");
+                return Result.fail<IMedicalRecordDTO[]>("Medical records not found");
             }
-    
+
             let medicalRecordsDtoList: IMedicalRecordDTO[] = [];
-    
-            for(var i = 0; i < records.length; i++){
-            const allergyDTO = MedicalRecordMap.toDTO(records.at(i)) as IMedicalRecordDTO;
-            medicalRecordsDtoList.push(allergyDTO);
+
+            for (var i = 0; i < records.length; i++) {
+                const allergyDTO = MedicalRecordMap.toDTO(records.at(i)) as IMedicalRecordDTO;
+                medicalRecordsDtoList.push(allergyDTO);
             }
-    
+
             return Result.ok<IMedicalRecordDTO[]>(medicalRecordsDtoList);
         } catch (error) {
             throw new Error(`Failed to fetch medical records: ${error.message}`);
