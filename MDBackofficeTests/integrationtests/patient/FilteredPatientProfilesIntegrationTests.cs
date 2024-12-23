@@ -112,7 +112,7 @@ namespace MDBackofficeTests.integrationtests.patient
             {
                 HttpContext = context
             };
-            _userServiceMock.Setup(_userService => _userService.CheckUserRole("valid-token", "Admin")).Returns(false);
+            _userServiceMock.Setup(_userService => _userService.CheckUserRole("valid-token", "Doctor")).Returns(false);
 
             _repoMock.Setup(_repo => _repo.FilterPatientProfiles(dto)).ReturnsAsync(resultList);
 
