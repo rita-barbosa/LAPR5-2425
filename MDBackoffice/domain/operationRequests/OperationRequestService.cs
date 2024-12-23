@@ -33,7 +33,7 @@ namespace MDBackoffice.Domain.OperationRequests
         private readonly AppointmentService _appointService;
 
         public OperationRequestService(IUnitOfWork unitOfWork, IOperationRequestRepository repo, IStaffRepository repoSta, LogService logService, PatientService patientService, IPatientRepository repoPat, IOperationTypeRepository repoOpTy, UserService userService,
-                                            IOperationSchedulerAdapter adapter, RoomService room)
+                                            IOperationSchedulerAdapter adapter, RoomService room, AppointmentService appointmentService)
         {
             this._unitOfWork = unitOfWork;
             this._repo = repo;
@@ -45,6 +45,7 @@ namespace MDBackoffice.Domain.OperationRequests
             this._userService = userService;
             this._planningAdapter = adapter;
             this._roomService = room;
+            this._appointService = appointmentService;
         }
 
         public async Task<List<OperationRequestDto>> GetAllAsysnc()

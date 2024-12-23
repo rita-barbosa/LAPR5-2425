@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using MDBackoffice.Domain.AppointmentStaffs;
 using MDBackoffice.Domain.OperationRequests;
@@ -8,6 +10,7 @@ using MDBackoffice.Domain.Rooms;
 using MDBackoffice.Domain.Shared;
 using MDBackoffice.Domain.Specializations;
 using MDBackoffice.Domain.StaffProfiles;
+using Microsoft.AspNetCore.Mvc;
 
 namespace MDBackoffice.Domain.Appointments
 {
@@ -116,5 +119,91 @@ namespace MDBackoffice.Domain.Appointments
             );
         }
 
+        public async Task<List<AppointmentDto>> GetAllAsync()
+        {
+           var list = await _repo.GetAllAsync();
+
+            List<AppointmentDto> listDto = list.ConvertAll(appoint =>
+               new AppointmentDto
+               (appoint.Id.AsGuid(), appoint.Status.Description, appoint.OperationRequestId.ToString(),
+               appoint.RoomNumber.Value, appoint.Slot.TimeInterval.Start.ToString(), appoint.Slot.TimeInterval.End.ToString(),
+               appoint.Slot.Date.Start.ToString(), appoint.Slot.Date.End.ToString(),
+               appoint.AppointmentStaffs.Select(staff => new string(staff.Staff.Id.Value)).ToList()
+               ));
+
+            return listDto; 
+        }
+
+        public async Task<AppointmentDto> UpdateAsync(UpdateAppointmentDto dto)
+        {
+            var appointment = await this._repo.GetByIdAsync(new AppointmentId(dto.AppointmentId));
+
+            if (appointment == null)
+                return null;
+
+            bool roomChange = false, startTimeChange = false, endTimeChange = false, startDateChange = false, endDateChange = false, staffChange = false;
+
+            if (dto.NewRoomNumber != null && dto.NewRoomNumber != appointment.RoomNumber.Value)
+                roomChange = true;
+
+            startTimeChange = dto.NewStartTime != null && dto.NewStartTime != appointment.Slot.TimeInterval.Start.ToString("HH:mm");
+            endTimeChange = dto.NewEndTime != null && dto.NewEndTime != appointment.Slot.TimeInterval.End.ToString("HH:mm");
+            startDateChange = dto.NewStartDate != null && dto.NewStartDate != appointment.Slot.Date.Start.ToString("yyyy-MM-dd");
+            endDateChange = dto.NewEndDate != null && dto.NewEndDate != appointment.Slot.Date.End.ToString("yyyy-MM-dd");
+
+            if (dto.NewStaffList != null && dto.NewStaffList.Any())
+                staffChange = true;
+
+            if (roomChange)
+                appointment.ChangeRoom(dto.NewRoomNumber);
+
+            if (startTimeChange || endTimeChange || startDateChange || endDateChange)
+            {
+                string toChangeStartTime = startTimeChange ? dto.NewStartTime : appointment.Slot.TimeInterval.Start.ToString("HH:mm");
+                string toChangeEndTime = endTimeChange ? dto.NewEndTime : appointment.Slot.TimeInterval.End.ToString("HH:mm");
+                string toChangeStartDate = startDateChange ? dto.NewStartDate : appointment.Slot.Date.Start.ToString("yyyy-MM-dd");
+                string toChangeEndDate = endDateChange ? dto.NewEndDate : appointment.Slot.Date.End.ToString("yyyy-MM-dd");
+
+                appointment.ChangeSlot(toChangeStartTime, toChangeEndTime, toChangeStartDate, toChangeEndDate);
+            }
+
+            if (staffChange)
+            {
+                var turnedToStaffList = new List<Staff>();
+
+                for(int i = 0; i < dto.NewStaffList.Count(); i++)
+                {
+                    turnedToStaffList.Add(await _repoSta.GetByIdAsync(new StaffId(dto.NewStaffList.ElementAt(i))));
+                }
+
+                appointment.ChangeStaff(turnedToStaffList); 
+            }
+
+            await this._unitOfWork.CommitAsync();
+
+            return new AppointmentDto(appointment.Id.AsGuid(),
+                                        appointment.Status.Description, 
+                                        appointment.OperationRequestId.Value, 
+                                        appointment.RoomNumber.Value, 
+                                        appointment.Slot.TimeInterval.Start.ToString("HH:mm"), 
+                                        appointment.Slot.TimeInterval.End.ToString("HH:mm"), 
+                                        appointment.Slot.Date.Start.ToString("yyyy-MM-dd"), 
+                                        appointment.Slot.Date.End.ToString("yyyy-MM-dd"), 
+                                        appointment.AppointmentStaffs.Select(appointStaff => new string(appointStaff.Staff.Id.Value)).ToList());
+        }
+
+        public async Task<ActionResult<AppointmentDto>> GetByIdAsync(string id)
+        {
+           var appointment = await _repo.GetByIdAsync(new AppointmentId(id));
+           return new AppointmentDto(appointment.Id.AsGuid(),
+                                        appointment.Status.Description, 
+                                        appointment.OperationRequestId.Value, 
+                                        appointment.RoomNumber.Value, 
+                                        appointment.Slot.TimeInterval.Start.ToString("HH:mm"), 
+                                        appointment.Slot.TimeInterval.End.ToString("HH:mm"), 
+                                        appointment.Slot.Date.Start.ToString("yyyy-MM-dd"), 
+                                        appointment.Slot.Date.End.ToString("yyyy-MM-dd"), 
+                                        appointment.AppointmentStaffs.Select(appointStaff => new string(appointStaff.Staff.Id.Value)).ToList());
+        }
     }
 }
