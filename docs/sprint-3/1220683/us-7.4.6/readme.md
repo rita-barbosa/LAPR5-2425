@@ -6,7 +6,9 @@
   * [2. Requirements](#2-requirements)
   * [3. Analysis](#3-analysis)
   * [4. Design](#4-design)
-  * [5. Observations](#5-observations)
+  * [5. Implementation](#5-implementation)
+    * [Daily erasure Script - _daily_management.sh_](#daily-erasure-script---_daily_managementsh_)
+      * [Additional Steps](#additional-steps)
 <!-- TOC -->
 
 ## 1. Context
@@ -20,8 +22,6 @@
 **Acceptance Criteria:**
 
 - **7.4.6.1.** The system must automatically delete daily backups older than 7 days without impacting monthly and yearly backups.
-- **7.4.6.2.** Monthly backups should be retained for at least 1 year.
-- **7.4.6.3.** Yearly backups should be retained indefinitely, or until explicitly deleted by the administrator.
 
 **Dependencies/References:**
 
@@ -34,26 +34,45 @@
 
 ## 3. Analysis
 
-To implement this user story, the system requires functionality to:
-
-1. Identify and categorize backups (daily, monthly, yearly) based on creation timestamps or naming conventions.
-2. Automatically delete backups exceeding their retention period, ensuring no overlap with long-term backups.
+To implement this user story, the system requires functionality to automatically delete backups exceeding their retention
+period, ensuring no overlap with long-term backups.
 
 ## 4. Design
 
-To implement this functionality, we use a script that will firstly categorize the backups by inserting them into folders.
-The execution of this script can be scheduled every day as task in cron.
+To implement this functionality, we use a script that will eliminate any file that is older than 7 days. The most recent
+full backup will go be then retrieved and moved to the weekly backup directory, as stated in [US 7.4.4](../../1220841/us-7.4.4/readme.md).
 
-**Daily backups**, performed at 2 a.m. on weekdays, with more than 7 days will be erased.
 
-The last full/integral backup,scheduled every Sunday at 2 a.m, will be moved to a "**Monthly**" folder. These backup files
-have the validity of one year, after that they too will be erased. To better identify them, a nomenclature must be in place,
-such as `backup-YYYY-MM.tar.gz`.
+## 5. Implementation
 
-Lastly, the "**Yearly**" backups are essentially the last monthly backup, which should have the latest version of the data
-in the system. These files should also have a nomenclature, such as `backup-YYYY.tar.gz`, and can only be deleted manually
-by the administrator.
+### Daily erasure Script - _daily_management.sh_
 
-## 5. Observations
+```console
+#!/bin/bash
 
-No observations.
+
+#!/bin/bash
+
+# Directory where backups are stored
+FULL_BACKUP_PATH="/path/to/full_backup" ## to be defined
+
+# Find and delete files older than 7 days
+find "$FULL_BACKUP_PATH" -type f -mtime +7 -exec rm -f {} \;
+
+# Confirmation
+echo "Old backups deleted successfully."
+```
+
+#### Additional Steps
+
+1. Save the script as _daily_management.sh_ and make it executable:
+
+```console
+chmod +x daily_management.sh
+```
+
+2. Edit your crontab by adding the following line to schedule the script every day at 02:30:
+
+```console
+30 2 * * * /scripts/daily_management.sh
+```
