@@ -4,7 +4,7 @@ import { MedicalRecordId } from "../../domain/medicalRecordId";
 import { IMedicalRecordQueryFilterParameters } from "../../dto/IMedicalRecordQueryFilterParameters";
 
 export default interface IMedicalRecordRepo extends Repo<MedicalRecord> {
-    findAllByParameters(filters: IMedicalRecordQueryFilterParameters): Promise<MedicalRecord[]>;
+    findAllByParameters(filters: IMedicalRecordQueryFilterParametersById): Promise<MedicalRecord[]>;
     save(medicalRecord: MedicalRecord): Promise<MedicalRecord>;
     findByDomainId (medicalRecordId: MedicalRecordId | string): Promise<MedicalRecord>;
     findAll() : Promise<MedicalRecord[]>

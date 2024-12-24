@@ -64,55 +64,53 @@ export default class MedicalRecordRepo implements IMedicalRecordRepo {
       return null;
   }
 
-    public async findAll(): Promise<MedicalRecord[]> {
-        try {
-          const medicalRecordRecords = await this.medicalRecordSchema.find();
-          const medicalRecordList = await Promise.all(
-            medicalRecordRecords.map(async (record) => await MedicalRecordMap.toDomain(record))
-          );
-    
-          return medicalRecordList;
-        } catch (error) {
-          this.logger.error("Error fetching all medical record:", error);
-        }
+  public async findAll(): Promise<MedicalRecord[]> {
+    try {
+      const medicalRecordRecords = await this.medicalRecordSchema.find();
+      const medicalRecordList = await Promise.all(
+        medicalRecordRecords.map(async (record) => await MedicalRecordMap.toDomain(record))
+      );
+
+      return medicalRecordList;
+    } catch (error) {
+      this.logger.error("Error fetching all medical record:", error);
+    }
+  }
+
+  public async findAllByParameters(
+    filters: IMedicalRecordQueryFilterParametersById
+  ): Promise<MedicalRecord[]> {
+    const medicalRecordsList: (IMedicalRecordPersistence & Document<any, any, any> & {
+      _id: Types.ObjectId;
+    })[] = [];
+
+    const queryPromises = filters.filters.map(filter => {
+      const query: any = {};
+
+
+      if (filter.allergyCode?.length > 0) {
+          query.allergies = {
+              $elemMatch: { value: filter.allergyCode }
+          };
       }
 
-      public async findAllByParameters(
-        filters: IMedicalRecordQueryFilterParameters
-      ): Promise<MedicalRecord[]> {
-        const medicalRecordsList: (IMedicalRecordPersistence & Document<any, any, any> & {
-          _id: Types.ObjectId;
-        })[] = [];
-
-        const queryPromises = filters.queryfilters.map(filter => {
-          const query: any = {};
-
-          if (filter.allergyDesignation?.length > 0) {
-            query.allergyDesignation = filter.allergyDesignation;
-          }
-
-          if (filter.medicalConditionDesignation?.length > 0) {
-            query.medicalConditionDesignation = filter.medicalConditionDesignation;
-          }
-
-          console.log('QUERY', query)
-
-          // Return the query promise
-          return this.medicalRecordSchema.find(query).exec();
-        });
-
-        // Wait for all promises to resolve
-        const results = await Promise.all(queryPromises);
-
-        // Flatten the results into one array
-        results.forEach(records => {
-          medicalRecordsList.push(...records);
-        });
-
-        // Map the records to their domain representation
-        return medicalRecordsList.length > 0
-          ? medicalRecordsList.map(MedicalRecordMap.toDomain)
-          : [];
+      if (filter.medicalConditionId?.length > 0) {
+          query.medicalConditions = {
+              $elemMatch: { value: filter.medicalConditionId }
+          };
       }
 
+      return this.medicalRecordSchema.find(query).exec();
+  });
+
+    const results = await Promise.all(queryPromises);
+
+    results.forEach(records => {
+      medicalRecordsList.push(...records);
+    });
+
+    return medicalRecordsList.length > 0
+      ? medicalRecordsList.map(MedicalRecordMap.toDomain)
+      : [];
+  }
 }
