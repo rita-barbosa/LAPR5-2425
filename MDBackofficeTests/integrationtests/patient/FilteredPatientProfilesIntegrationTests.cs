@@ -63,7 +63,7 @@ namespace MDBackofficeTests.integrationtests.patient
 
             _userServiceMock = new Mock<UserService>(userManagerMock.Object, roleManagerMock.Object, _logServiceMock.Object, signinManagerMock.Object, _emailServMock.Object, _configurationMock.Object, tokenServiceMock.Object, _loginAdapterMock.Object);
             _emailServiceMock = new Mock<EmailService>(tokenServiceMock.Object, new Mock<IEmailAdapter>().Object);
-             _patientMRAMock = new Mock<IPatientMedicalRecordAdapter>();
+            _patientMRAMock = new Mock<IPatientMedicalRecordAdapter>();
         }
 
         [Fact]
@@ -72,7 +72,7 @@ namespace MDBackofficeTests.integrationtests.patient
             // Arrange
             var _service = new PatientService(_unitOfWorkMock.Object, _logServiceMock.Object,
                                             _configurationMock.Object, _repoMock.Object,
-                                            _userServiceMock.Object, _emailServiceMock.Object, _patientMRAMock.Object);
+                                            _userServiceMock.Object, _emailServiceMock.Object);
 
             var _controller = new PatientController(_service, _userServiceMock.Object);
 
@@ -114,8 +114,9 @@ namespace MDBackofficeTests.integrationtests.patient
             {
                 HttpContext = context
             };
-            _userServiceMock.Setup(_userService => _userService.CheckUserRole("valid-token", "Doctor")).Returns(false);
-
+            _userServiceMock.Setup(_userService =>
+                    _userService.CheckUserRole("valid-token", It.Is<string>(role => role == "Admin" || role == "Doctor")))
+                    .Returns(true);
             _repoMock.Setup(_repo => _repo.FilterPatientProfiles(dto)).ReturnsAsync(resultList);
 
             //Act
@@ -132,7 +133,7 @@ namespace MDBackofficeTests.integrationtests.patient
             //Arrange
             var _service = new PatientService(_unitOfWorkMock.Object, _logServiceMock.Object,
                                             _configurationMock.Object, _repoMock.Object,
-                                            _userServiceMock.Object, _emailServiceMock.Object, _patientMRAMock.Object);
+                                            _userServiceMock.Object, _emailServiceMock.Object);
 
             string firstName = "Duarte";
             string lastName = "Matos";

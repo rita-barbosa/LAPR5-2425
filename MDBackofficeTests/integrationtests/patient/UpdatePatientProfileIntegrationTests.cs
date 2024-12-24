@@ -61,7 +61,7 @@ namespace MDBackofficeTests.integrationtests.patient
             _patientMRAMock = new Mock<IPatientMedicalRecordAdapter>();
             _service = new PatientService(_unitOfWorkMock.Object, _logServiceMock.Object,
                                          _configurationMock.Object, _repoMock.Object,
-                                         _userServiceMock.Object, _emailServiceMock.Object, _patientMRAMock.Object);
+                                         _userServiceMock.Object, _emailServiceMock.Object);
         }
 
         [Fact]

@@ -69,7 +69,7 @@ namespace MDBackofficeTests.integrationtests.patient
             // Pass mocked dependencies to PatientService
             var _service = new PatientService(_unitOfWorkMock.Object, _logServiceMock.Object,
                                             _configurationMock.Object, _repoMock.Object,
-                                            _userServiceMock.Object, _emailServiceMock.Object, _patientMRAMock.Object);
+                                            _userServiceMock.Object, _emailServiceMock.Object);
 
             var _controller = new PatientController(_service, _userServiceMock.Object);
 
@@ -120,7 +120,7 @@ namespace MDBackofficeTests.integrationtests.patient
 
             var service = new PatientService(_unitOfWorkMock.Object, _logServiceMock.Object,
                                                 _configurationMock.Object, _repoMock.Object,
-                                                _userServiceMock.Object, _emailServiceMock.Object, _patientMRAMock.Object);
+                                                _userServiceMock.Object, _emailServiceMock.Object);
 
             //Act
             var result = await service.CreatePatientProfile(dtoMock);

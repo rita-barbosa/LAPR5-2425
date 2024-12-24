@@ -84,7 +84,7 @@ public class PatientServiceTests
             _emailServiceMock = new Mock<EmailService>(tokenServiceMock.Object, new Mock<IEmailAdapter>().Object);
             _service = new PatientService(_unitOfWorkMock.Object, _logServiceMock.Object,
                                             _configurationMock.Object, _repoMock.Object,
-                                            _userServiceMock.Object, _emailServiceMock.Object, _patientMRAMock.Object);
+                                            _userServiceMock.Object, _emailServiceMock.Object);
     }
 
 
@@ -308,7 +308,7 @@ public class PatientServiceTests
 
         var service = new PatientService(_unitOfWorkMock.Object, _logServiceMock.Object,
                                             _configurationMock.Object, _repoMock.Object,
-                                            _userServiceMock.Object, _emailServiceMock.Object, _patientMRAMock.Object);
+                                            _userServiceMock.Object, _emailServiceMock.Object);
 
         //Act
         var profile = await service.CreatePatientProfile(dtoMock);
