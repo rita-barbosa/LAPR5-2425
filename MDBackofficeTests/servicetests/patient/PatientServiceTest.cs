@@ -29,6 +29,7 @@ public class PatientServiceTests
         private readonly Mock<EmailService> _emailServiceMock;
         private readonly PatientService _service;
         private readonly Mock<UserManager<User>> _userManagerMock;
+        private readonly Mock<IPatientMedicalRecordAdapter> _patientMRAMock;
 
         public PatientServiceTests()
         {
@@ -60,6 +61,7 @@ public class PatientServiceTests
                 var _emailServMock = new Mock<EmailService>(tokenServiceMock.Object, new Mock<IEmailAdapter>().Object);
                 _configurationMock = new Mock<IConfiguration>();
                 _loginAdapterMock = new Mock<ILoginAdapter>();
+                _patientMRAMock = new Mock<IPatientMedicalRecordAdapter>();
 
             var signinManagerMock = new Mock<SignInManager<User>>(_userManagerMock.Object,
                                                                       new Mock<IHttpContextAccessor>().Object,
@@ -82,7 +84,7 @@ public class PatientServiceTests
             _emailServiceMock = new Mock<EmailService>(tokenServiceMock.Object, new Mock<IEmailAdapter>().Object);
             _service = new PatientService(_unitOfWorkMock.Object, _logServiceMock.Object,
                                             _configurationMock.Object, _repoMock.Object,
-                                            _userServiceMock.Object, _emailServiceMock.Object);
+                                            _userServiceMock.Object, _emailServiceMock.Object, _patientMRAMock.Object);
     }
 
 
@@ -306,7 +308,7 @@ public class PatientServiceTests
 
         var service = new PatientService(_unitOfWorkMock.Object, _logServiceMock.Object,
                                             _configurationMock.Object, _repoMock.Object,
-                                            _userServiceMock.Object, _emailServiceMock.Object);
+                                            _userServiceMock.Object, _emailServiceMock.Object, _patientMRAMock.Object);
 
         //Act
         var profile = await service.CreatePatientProfile(dtoMock);
