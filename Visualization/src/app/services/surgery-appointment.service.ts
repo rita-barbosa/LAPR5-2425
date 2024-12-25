@@ -4,12 +4,16 @@ import { MessageService } from './message.service';
 import { catchError, map, Observable, of, throwError } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { SurgeryAppointment } from '../domain/SurgeryAppointment';
+import { UpdateAppointment } from '../domain/update-appointment';
+import { FullAppointment } from '../domain/full-appointment';
+import { StaffWithFunction } from '../domain/staff-with-function';
 
 @Injectable({
   providedIn: 'root'
 })
 
 export class SurgeryAppointmentService {
+
   theServerURL = environment.serverBaseUrl;
   token = localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')!).token : null;
   httpOptions = {
@@ -38,6 +42,51 @@ export class SurgeryAppointmentService {
       .subscribe(data => {
         this.log(`Surgery Appointment was successfully created.`);
       });
+  }
+
+  public getAllStaffs() {
+    const url = `${this.theServerURL}/Staff/Get-StaffProfiles`;
+
+    return this.http.get<StaffWithFunction[]>(url, this.httpOptions)
+      .pipe(catchError(this.handleError<StaffWithFunction[]>('Get Rooms'))
+      );
+  }
+
+  public editAppointment(updateAppointment: UpdateAppointment) {
+    const url = `${this.theServerURL}/Appointment/update-appointment`;
+
+    console.log(updateAppointment);
+    console.log("It reached here.");
+
+    this.http.patch<UpdateAppointment>(url, updateAppointment, this.httpOptions)
+      .pipe(catchError(this.handleError<UpdateAppointment>('Edit surgery appointment')))
+      .subscribe(data => {
+        this.log(`Surgery Appointment was successfully Edited.`);
+      });
+  }
+
+  public getAppointmentById(appointmentId: string) {
+    const url = `${this.theServerURL}/Appointment/get-by-id`;
+
+    return this.http.get<FullAppointment>(url, this.httpOptions)
+      .pipe(catchError(this.handleError<FullAppointment>('Get Appointment'))
+      );
+  }
+
+  public getRoomNumbers() {
+    const url = `${this.theServerURL}/Room/Get-All-RoomNumbers`;
+
+    return this.http.get<string[]>(url, this.httpOptions)
+      .pipe(catchError(this.handleError<string[]>('Get Rooms'))
+      );
+  }
+
+  public getAllAppointments() {
+    const url = `${this.theServerURL}/Appointment/get-all`;
+
+    return this.http.get<FullAppointment[]>(url, this.httpOptions)
+      .pipe(catchError(this.handleError<FullAppointment[]>('Get Appointments', []))
+      );
   }
 
   //------------------------/------------------------/------------------------
