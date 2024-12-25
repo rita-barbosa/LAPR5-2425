@@ -4,6 +4,7 @@ using MDBackoffice.Domain.OperationTypes.ValueObjects.Phase;
 using MDBackoffice.Domain.OperationTypes.ValueObjects.RequiredStaff;
 using MDBackoffice.Domain.OperationTypesRecords;
 using MDBackoffice.Domain.Shared;
+using MDBackoffice.Domain.Specializations;
 using Moq;
 using Xunit;
 
@@ -16,13 +17,13 @@ namespace MDBackofficeTests.servicetests.operationtype
         private readonly Mock<IOperationTypeRepository> _repoMock = new Mock<IOperationTypeRepository>();
         private readonly Mock<OperationTypeRecordService> _opRecordService;
         private readonly OperationTypeService _service;
-        
+        private readonly Mock<ISpecializationRepository> _specializationRepo = new Mock<ISpecializationRepository>();        
 
         public OperationTypeServiceTests()
         {
             _opRecordService = new Mock<OperationTypeRecordService>(_unitOfWorkMock.Object, _logServiceMock.Object, new Mock<IOperationTypeRecordRepository>().Object);
 
-            _service = new OperationTypeService(_unitOfWorkMock.Object, _repoMock.Object,_logServiceMock.Object,_opRecordService.Object);
+            _service = new OperationTypeService(_unitOfWorkMock.Object, _repoMock.Object,_logServiceMock.Object,_opRecordService.Object, _specializationRepo.Object);
         }
 
         [Fact]
@@ -234,9 +235,12 @@ namespace MDBackofficeTests.servicetests.operationtype
             Specialization = "251010300"
         }
     };
+
+            var Specialization1 = new Specialization("251010300","Something","Something");
+
             var dto = new OperationTypeDto { Name = "test type 1", EstimatedDuration = 100, Status = true, RequiredStaff = reqStaffDto, Phases = phasesDto };
             _unitOfWorkMock.Setup(u => u.CommitAsync()).ReturnsAsync(1);
-
+            _specializationRepo.Setup(u => u.FindByDenomination("251010300")).ReturnsAsync(Specialization1);
             // Act
             var result = await _service.AddAsync(dto); // Await the result
 

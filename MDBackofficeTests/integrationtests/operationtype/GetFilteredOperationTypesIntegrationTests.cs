@@ -19,6 +19,7 @@ using MDBackoffice.Infrastructure.Emails;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Authentication;
+using MDBackoffice.Domain.Specializations;
 
 namespace MDBackofficeTests.integrationtests.operationtype
 {
@@ -63,8 +64,10 @@ namespace MDBackofficeTests.integrationtests.operationtype
 
             _opRecordService = new Mock<OperationTypeRecordService>(_unitOfWorkMock.Object, _logServiceMock.Object, new Mock<IOperationTypeRecordRepository>().Object);
 
-            _service = new OperationTypeService(_unitOfWorkMock.Object, _repoMock.Object, _logServiceMock.Object, _opRecordService.Object);
+           var _specializationRepo = new Mock<ISpecializationRepository>();
 
+            _service = new OperationTypeService(_unitOfWorkMock.Object, _repoMock.Object, _logServiceMock.Object, _opRecordService.Object, _specializationRepo.Object);
+        
         }
 
         [Fact]

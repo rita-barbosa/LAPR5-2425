@@ -19,6 +19,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Authentication;
+using MDBackoffice.Domain.Specializations;
 
 namespace MDBackofficeTests.controllertests
 {
@@ -33,6 +34,8 @@ namespace MDBackofficeTests.controllertests
         private readonly OperationTypesController _controller;
         private readonly Mock<ILoginAdapter> _loginAdapterMock;
         private readonly Mock<UserManager<User>> _userManagerMock;
+        private readonly Mock<ISpecializationRepository> _specializationRepo = new Mock<ISpecializationRepository>();
+
 
         public OperationTypeControllerTests()
         {
@@ -57,7 +60,7 @@ namespace MDBackofficeTests.controllertests
 
             _opRecordService = new Mock<OperationTypeRecordService>(_unitOfWorkMock.Object, _logServiceMock.Object, new Mock<IOperationTypeRecordRepository>().Object);
 
-            _service = new Mock<OperationTypeService>(_unitOfWorkMock.Object, _repoMock.Object, _logServiceMock.Object, _opRecordService.Object);
+            _service = new Mock<OperationTypeService>(_unitOfWorkMock.Object, _repoMock.Object, _logServiceMock.Object, _opRecordService.Object, _specializationRepo.Object);
 
            var tokenServiceMock = new Mock<TokenService>(_unitOfWorkMock.Object, new Mock<ITokenRepository>().Object, _userManagerMock.Object);
             var _emailServiceMock = new Mock<EmailService>(tokenServiceMock.Object, new Mock<IEmailAdapter>().Object);

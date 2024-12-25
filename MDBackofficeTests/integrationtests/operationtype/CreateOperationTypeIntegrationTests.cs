@@ -21,6 +21,8 @@ using MDBackoffice.Domain.Tokens;
 using MDBackoffice.Infrastructure.Emails;
 using Microsoft.Extensions.Configuration;
 using MDBackoffice.Infrastructure.Users;
+using MDBackoffice.Domain.Specializations;
+using Microsoft.OpenApi.Any;
 
 namespace MDBackofficeTests.integrationtests.operationtype
 {
@@ -32,6 +34,7 @@ namespace MDBackofficeTests.integrationtests.operationtype
         private readonly Mock<OperationTypeRecordService> _opRecordService;
         private readonly OperationTypeService _service;
         private readonly Mock<UserService> _userService;
+        private readonly Mock<ISpecializationRepository> _specializationRepo = new Mock<ISpecializationRepository>();
         public CreateOperationTypeIntegrationTests()
         {
 
@@ -56,8 +59,6 @@ namespace MDBackofficeTests.integrationtests.operationtype
 
             _opRecordService = new Mock<OperationTypeRecordService>(_unitOfWorkMock.Object, _logServiceMock.Object, new Mock<IOperationTypeRecordRepository>().Object);
 
-            _service = new Mock<OperationTypeService>(_unitOfWorkMock.Object, _repoMock.Object, _logServiceMock.Object, _opRecordService.Object).Object;
-
            var tokenServiceMock = new Mock<TokenService>(_unitOfWorkMock.Object, new Mock<ITokenRepository>().Object, _userManagerMock.Object);
             var _emailServiceMock = new Mock<EmailService>(tokenServiceMock.Object, new Mock<IEmailAdapter>().Object);
             var _configurationMock = new Mock<IConfiguration>();
@@ -68,7 +69,7 @@ namespace MDBackofficeTests.integrationtests.operationtype
 
             _opRecordService = new Mock<OperationTypeRecordService>(_unitOfWorkMock.Object, _logServiceMock.Object, new Mock<IOperationTypeRecordRepository>().Object);
 
-            _service = new OperationTypeService(_unitOfWorkMock.Object, _repoMock.Object, _logServiceMock.Object, _opRecordService.Object);
+            _service = new OperationTypeService(_unitOfWorkMock.Object, _repoMock.Object, _logServiceMock.Object, _opRecordService.Object, _specializationRepo.Object);
         
         }
 
@@ -104,6 +105,9 @@ namespace MDBackofficeTests.integrationtests.operationtype
                 }
             };
 
+            var Specialization1 = new Specialization("25001907","Something","Something");
+         
+
             var dto = new OperationTypeDto { Name = "test type 1", EstimatedDuration = 100, Status = true, RequiredStaff = reqStaffDto, Phases = phasesDto };
             var context = new DefaultHttpContext();
             context.Request.Headers["Authorization"] = "Bearer valid-token";
@@ -112,8 +116,7 @@ namespace MDBackofficeTests.integrationtests.operationtype
                 HttpContext = context
             };
             _userService.Setup(_userService => _userService.CheckUserRole("valid-token", "Admin")).Returns(false);
-
-
+            _specializationRepo.Setup(u => u.FindByDenomination("25001907")).ReturnsAsync(Specialization1);
             _unitOfWorkMock.Setup(u => u.CommitAsync()).ReturnsAsync(1);
 
             //Act
@@ -155,6 +158,9 @@ namespace MDBackofficeTests.integrationtests.operationtype
                     var dto = new OperationTypeDto { Name = "test type 1", EstimatedDuration = 100, Status = true, RequiredStaff = reqStaffDto, Phases = phasesDto };
                     _unitOfWorkMock.Setup(u => u.CommitAsync()).ReturnsAsync(1);
 
+                    var Specialization1 = new Specialization("25001907","Something","Something");
+                     _specializationRepo.Setup(u => u.FindByDenomination("25001907")).ReturnsAsync(Specialization1);
+           
                     // Act
                     var result = await _service.AddAsync(dto); // Await the result
 
