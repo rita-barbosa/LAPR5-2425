@@ -162,6 +162,7 @@ export class HospitalSimulationComponent implements AfterViewInit {
     this.scene.add(this.tooltipSprite);
   }
 
+
   initializeFixedCamera() {
     const cameraData: CameraParameters = {
       view: "fixed",
@@ -214,7 +215,9 @@ export class HospitalSimulationComponent implements AfterViewInit {
         if (intersectedObject !== this.INTERSECTED) {
             this.INTERSECTED = intersectedObject;
 
-            if (this.INTERSECTED) {
+            console.log(this.INTERSECTED!.name);
+
+            if (this.INTERSECTED && this.INTERSECTED.name.startsWith('Patient')) {
                 let message = this.getAppoitmentInfo(this.INTERSECTED.name);
                 if (message) {
                   this.showTooltip(message, intersectedObject.getWorldPosition(new THREE.Vector3()));
@@ -222,10 +225,10 @@ export class HospitalSimulationComponent implements AfterViewInit {
             }
         }
     } else {
-        if (this.INTERSECTED) {
+        
             this.hideTooltip();
             this.INTERSECTED = null;
-        }
+        
     }
 }
 
@@ -344,6 +347,7 @@ export class HospitalSimulationComponent implements AfterViewInit {
           wallObject.position.set(i - data.size.width / 2, 0.5, j - data.size.height / 2 - 0.5);
           wallObject.name = "Wall";
           this.layout.add(wallObject);
+          this.objectsToIntersect.push(wallObject);
         }
 
         // North wall
@@ -352,6 +356,7 @@ export class HospitalSimulationComponent implements AfterViewInit {
           wallObject.position.set(i - data.size.width / 2 + 0.5, 0.5, j - data.size.height / 2);
           wallObject.name = "Wall";
           this.layout.add(wallObject);
+          this.objectsToIntersect.push(wallObject);
         }
 
         //North Surgical bed
@@ -374,6 +379,7 @@ export class HospitalSimulationComponent implements AfterViewInit {
           doorObject.rotation.y = Math.PI;
           doorObject.name = "North Door";
           this.layout.add(doorObject);
+          this.objectsToIntersect.push(doorObject);
         }
 
         //South Surgical bed
@@ -396,6 +402,37 @@ export class HospitalSimulationComponent implements AfterViewInit {
           doorObject.name = "South Door";
           doorObject.rotation.y = Math.PI;
           this.layout.add(doorObject);
+          this.objectsToIntersect.push(doorObject);
+
+        }
+
+
+        //West Door
+        if (data.layout[j][i] === 9) {
+          const doorObject = this.door.clone();
+          doorObject.position.set(i - data.size.width / 2, -1.25, j - data.size.height / 2 - 0.4);
+          doorObject.position.x -= 1.05;
+          doorObject.position.z += 0.4;
+          doorObject.scale.set(0.7, 1, 0.6);
+          doorObject.rotation.y = Math.PI / 2;
+          doorObject.name = "West Door";
+          this.layout.add(doorObject);
+          this.objectsToIntersect.push(doorObject);
+
+        }
+
+        //East Door
+        if (data.layout[j][i] === 10) {
+          const doorObject = this.door.clone();
+          doorObject.position.set(i - data.size.width / 2, -1.25, j - data.size.height / 2 - 0.4);
+          doorObject.position.x += 0.95;
+           doorObject.position.z += 0.4;
+          doorObject.scale.set(0.7, 1, 0.6);
+          doorObject.rotation.y = Math.PI / 2;
+          doorObject.name = "East Door";
+          this.layout.add(doorObject);
+          this.objectsToIntersect.push(doorObject);
+
         }
 
       }
@@ -437,44 +474,49 @@ export class HospitalSimulationComponent implements AfterViewInit {
   private setupEventListeners() {
     this.renderer!.domElement.addEventListener("wheel", (event) => this.mouseWheel(event));
     document.addEventListener("mousemove", event => {
-      this.mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-      this.mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
-    });
+      const rect = this.canvas.getBoundingClientRect();
+  
+      this.mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+      this.mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+  });
     document.addEventListener('click', (event) => this.onDocumentMouseClick(event));
   }
 
-  onDocumentMouseClick(event : MouseEvent) {
-    this.mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-    this.mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
 
-    this.raycaster.setFromCamera(this.mouse, this.camera!);
-    const intersects = this.raycaster.intersectObjects(this.objectsToIntersect);
+  onDocumentMouseClick(event: MouseEvent) {
+    const rect = this.canvas.getBoundingClientRect();
+    this.mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+    this.mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
 
-    if (intersects.length > 0) {
-      this.raycasterIntersectedObjectTooltip(intersects);
-        console.log("Clicked on:", this.INTERSECTED?.name);
-        this.moveCameraToRoomCenter(this.INTERSECTED?.position);
+    if (this.INTERSECTED?.name.startsWith('Patient')) {
+         const targetPosition = this.INTERSECTED?.getWorldPosition(new THREE.Vector3()).normalize();
+        // const targetPosition = this.INTERSECTED?.position;
+        this.moveCameraToRoomCenter(targetPosition);
     }
-  }
+}
 
-  moveCameraToRoomCenter(targetPosition : THREE.Vector3 | undefined) {
-    const roomCenter = new THREE.Vector3(targetPosition!.x, this.camera!.position.y, targetPosition!.z);
+moveCameraToRoomCenter(targetPosition: THREE.Vector3 | undefined) {
+  if (!targetPosition) return;
 
-    new TWEEN.Tween(this.camera!.position)
-        .to(
-            {
-                x: roomCenter.x + 10,
-                y: roomCenter.y + 10,
-                z: roomCenter.z + 10,
-            },
-            500 // duration in ms
-        )
-        .easing(TWEEN.Easing.Quadratic.InOut) // Smooth easing
-        .onUpdate(() => {
-            this.camera!.lookAt(roomCenter); // Keep the camera looking at the target
-        })
-        .start();
-  }
+  const roomCenter = new THREE.Vector3(targetPosition.x, targetPosition.y, (targetPosition.z - 5));
+  const startPosition = this.camera!.position.clone();
+
+  new TWEEN.Tween(startPosition)
+      .to(
+          {
+              x: roomCenter.x,
+              y: startPosition.y,
+              z: roomCenter.z,
+          },
+          2800
+      )
+      .easing(TWEEN.Easing.Quadratic.InOut)
+      .onUpdate(() => {
+          this.camera!.position.copy(startPosition);
+      })
+      .start();
+}
+
 
   mouseWheel(event: WheelEvent) {
     // Prevent the mouse wheel from scrolling the document's content
@@ -532,7 +574,6 @@ export class HospitalSimulationComponent implements AfterViewInit {
         Math.floor(position.x / this.scale.x + data.size!.width / 2.0)
     ];
 }
-
 
   checkOccupancy() {
     for (let [roomName, roomScheduleMap] of this.roomSchedule) {
@@ -643,12 +684,15 @@ export class HospitalSimulationComponent implements AfterViewInit {
       this.raycaster.setFromCamera(this.mouse, this.camera!);
 
       const intersects = this.raycaster.intersectObjects(this.objectsToIntersect);
+
       this.raycasterIntersectedObjectTooltip(intersects);
 
       this.workDayTime = this.userInterface!.timeSettings.hours;
       this.selectedDay = this.userInterface!.selectedDay.day;
 
       this.checkOccupancy();
+
+      TWEEN.update();
 
       this.animationFrameId = requestAnimationFrame(animate);
         this.renderer!.render(this.scene!, this.camera!);
@@ -682,7 +726,6 @@ export class HospitalSimulationComponent implements AfterViewInit {
     }
     this.userInterface = null;
 }
-
 
   loadDataFromBackend(): void {
     this.roomService.getRoomsSchedule().subscribe((scheduledBackend: RoomSchedule[]) => {
@@ -729,11 +772,19 @@ export class HospitalSimulationComponent implements AfterViewInit {
 
   @HostListener('window:resize', ['$event'])
   onResize(): void {
-    this.resize();
+      this.resize();
   }
-
+  
   private resize(): void {
-    this.renderer!.setSize(this.canvas.clientWidth, this.canvas.clientHeight);
-    this.startAnimationLoop();
+      const width = this.canvas.clientWidth;
+      const height = this.canvas.clientHeight;
+  
+      // Update renderer size
+      this.renderer!.setSize(width, height);
+  
+      // Update camera aspect ratio and projection matrix
+      this.camera!.aspect = width / height;
+      this.camera!.updateProjectionMatrix();
   }
+  
 }
