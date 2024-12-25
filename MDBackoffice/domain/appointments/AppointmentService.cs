@@ -11,6 +11,7 @@ using MDBackoffice.Domain.Shared;
 using MDBackoffice.Domain.Specializations;
 using MDBackoffice.Domain.StaffProfiles;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 
 namespace MDBackoffice.Domain.Appointments
 {
@@ -121,76 +122,156 @@ namespace MDBackoffice.Domain.Appointments
 
         public async Task<List<AppointmentDto>> GetAllAsync()
         {
-           var list = await _repo.GetAllAsync();
+            var list = await _repo.GetAppointmentsWithStaff();
 
-            List<AppointmentDto> listDto = list.ConvertAll(appoint =>
-               new AppointmentDto
-               (appoint.Id.AsGuid(), appoint.Status.Description, appoint.OperationRequestId.ToString(),
-               appoint.RoomNumber.Value, appoint.Slot.TimeInterval.Start.ToString(), appoint.Slot.TimeInterval.End.ToString(),
-               appoint.Slot.Date.Start.ToString(), appoint.Slot.Date.End.ToString(),
-               appoint.AppointmentStaffs.Select(staff => new string(staff.Staff.Id.Value)).ToList()
-               ));
+            var listDto = new List<AppointmentDto>();
 
-            return listDto; 
+            for(int i = 0; i < list.Count(); i++)
+            {
+                var dto = new AppointmentDto
+                (
+                    list.ElementAt(i).Id.AsGuid(),
+                    list.ElementAt(i).Status.Description,
+                    list.ElementAt(i).OperationRequestId.ToString(),
+                    list.ElementAt(i).RoomNumber.Value,
+                    list.ElementAt(i).Slot.TimeInterval.Start.ToString(),
+                    list.ElementAt(i).Slot.TimeInterval.End.ToString(),
+                    list.ElementAt(i).Slot.Date.Start.ToString(),
+                    list.ElementAt(i).Slot.Date.End.ToString(),
+                    list.ElementAt(i).AppointmentStaffs.Select(appointStaff => appointStaff.Id.Value.Split("-").ToList().Last()).ToList()
+                );
+                listDto.Add(dto);
+            }
+
+            return listDto; // Convert the array to a List<AppointmentDto>
         }
+
+
 
         public async Task<AppointmentDto> UpdateAsync(UpdateAppointmentDto dto)
         {
-            var appointment = await this._repo.GetByIdAsync(new AppointmentId(dto.AppointmentId));
+            if (dto == null) throw new ArgumentNullException(nameof(dto));
 
-            if (appointment == null)
-                return null;
+            var appointment = await _repo.GetAppointmentByIdWithStaff(dto.AppointmentId);
+            if (appointment == null) return null;
 
-            bool roomChange = false, startTimeChange = false, endTimeChange = false, startDateChange = false, endDateChange = false, staffChange = false;
+            bool roomChange = !dto.NewRoomNumber.Equals("");
+            bool startTimeChange = !dto.NewStartTime.Equals("");
+            bool endTimeChange = !dto.NewEndTime.Equals("");
+            bool startDateChange = !dto.NewStartDate.Equals("");
+            bool endDateChange = !dto.NewEndDate.Equals("");
+            bool staffChange = !(dto.NewStaffList.Count() == 0);
 
-            if (dto.NewRoomNumber != null && dto.NewRoomNumber != appointment.RoomNumber.Value)
-                roomChange = true;
+            OperationRequest operationRequest = await this._repoOpReq.GetByIdAsync(new OperationRequestId(appointment.OperationRequestId.Value)) ??
+                throw new BusinessRuleValidationException("Operation Request is invalid.");
 
-            startTimeChange = dto.NewStartTime != null && dto.NewStartTime != appointment.Slot.TimeInterval.Start.ToString("HH:mm");
-            endTimeChange = dto.NewEndTime != null && dto.NewEndTime != appointment.Slot.TimeInterval.End.ToString("HH:mm");
-            startDateChange = dto.NewStartDate != null && dto.NewStartDate != appointment.Slot.Date.Start.ToString("yyyy-MM-dd");
-            endDateChange = dto.NewEndDate != null && dto.NewEndDate != appointment.Slot.Date.End.ToString("yyyy-MM-dd");
+            OperationType operationType = await this._repoOpType.GetByIdAsync(new OperationTypeId(operationRequest.OperationTypeId.AsString())) ??
+                throw new BusinessRuleValidationException("Operation Type is invalid.");
 
-            if (dto.NewStaffList != null && dto.NewStaffList.Any())
-                staffChange = true;
+            List<RequiredStaff> requiredStaffList = await this._repoOpType.GetRequiredStaffByOperationTypeIdAsync(operationType.Id) ??
+                throw new BusinessRuleValidationException("There are no Required Staff.");
+            
+            List<Staff> staffs = new List<Staff>();
 
-            if (roomChange)
-                appointment.ChangeRoom(dto.NewRoomNumber);
+            List<string> staffsToTested = new List<string>();
+            var isStaffAvailable = true;
 
             if (startTimeChange || endTimeChange || startDateChange || endDateChange)
             {
-                string toChangeStartTime = startTimeChange ? dto.NewStartTime : appointment.Slot.TimeInterval.Start.ToString("HH:mm");
-                string toChangeEndTime = endTimeChange ? dto.NewEndTime : appointment.Slot.TimeInterval.End.ToString("HH:mm");
-                string toChangeStartDate = startDateChange ? dto.NewStartDate : appointment.Slot.Date.Start.ToString("yyyy-MM-dd");
-                string toChangeEndDate = endDateChange ? dto.NewEndDate : appointment.Slot.Date.End.ToString("yyyy-MM-dd");
+                var newStartTime = startTimeChange ? dto.NewStartTime : appointment.Slot.TimeInterval.Start.ToString();
+                var newEndTime = endTimeChange ? dto.NewEndTime : appointment.Slot.TimeInterval.End.ToString();
+                var newStartDate = startDateChange ? dto.NewStartDate : appointment.Slot.Date.Start.ToString();
+                var newEndDate = endDateChange ? dto.NewEndDate : appointment.Slot.Date.End.ToString();
 
-                appointment.ChangeSlot(toChangeStartTime, toChangeEndTime, toChangeStartDate, toChangeEndDate);
+                appointment.ChangeSlot(newStartTime, newEndTime, newStartDate, newEndDate);
+            }
+
+            if (roomChange) appointment.ChangeRoom(dto.NewRoomNumber);
+
+            if(staffChange){
+                staffsToTested = dto.NewStaffList;
+            }else{
+                foreach(AppointmentStaff appointmentStaff in appointment.AppointmentStaffs){
+                    staffsToTested.Add(appointmentStaff.Staff.Id.Value);
+                }
+            }
+
+            foreach(RequiredStaff requiredStaff in requiredStaffList){
+                Function function = requiredStaff.Function;
+                SpecializationCode specialization = requiredStaff.SpecializationId;
+                NumberStaff numberStaff = requiredStaff.StaffQuantity;
+
+                int total = 0;
+                
+                foreach(string sta in staffsToTested){
+                   Staff staff = await this._repoSta.GetByIdAsync(new StaffId(sta)) ??
+                        throw new BusinessRuleValidationException("Staff is invalid.");
+
+                        isStaffAvailable &= await _appointmentStaffRepo.IsStaffAvailableAsync(staff.Id, appointment.Slot.TimeInterval.Start.ToString(), appointment.Slot.TimeInterval.End.ToString());
+
+                    if(staff.Function.Equals(function) && staff.SpecializationId.Equals(specialization) && total < numberStaff.NumberRequired)
+                    {
+                        total++;
+                        staffs.Add(staff);
+                    } else {
+                        throw new BusinessRuleValidationException("The Staff is not required for this surgery.");
+                    }
+                }
+            }
+
+            if (!isStaffAvailable)
+            {
+                throw new BusinessRuleValidationException("One or more staff members are not available for the selected time.");
+            }
+
+            Room room = await this._repoRoom.GetByIdAsync(new RoomNumber(appointment.RoomNumber.Value)) ??
+                throw new BusinessRuleValidationException("Room is invalid");
+
+            var isRoomAvailable = await _repoRoom.IsRoomAvailableAsync(room.Id, appointment.Slot.TimeInterval.Start.ToString(), appointment.Slot.TimeInterval.End.ToString(), appointment.Id.AsGuid());
+
+            if (!isRoomAvailable)
+            {
+                throw new BusinessRuleValidationException("The surgery room is not available for the selected time.");
             }
 
             if (staffChange)
             {
-                var turnedToStaffList = new List<Staff>();
-
-                for(int i = 0; i < dto.NewStaffList.Count(); i++)
+                var staffList = new List<Staff>();
+                foreach (var staffId in dto.NewStaffList)
                 {
-                    turnedToStaffList.Add(await _repoSta.GetByIdAsync(new StaffId(dto.NewStaffList.ElementAt(i))));
+                    var staff = await _repoSta.GetByIdAsync(new StaffId(staffId));
+                    if (staff != null) staffList.Add(staff);
                 }
 
-                appointment.ChangeStaff(turnedToStaffList); 
+                appointment.ClearStaff();
+
+                foreach (var appointStaff in appointment.AppointmentStaffs)
+                {
+                    _appointmentStaffRepo.Remove(appointStaff);
+                }
+
+                await _unitOfWork.CommitAsync();
+
+                foreach (var appointStaff in appointment.AppointmentStaffs)
+                {
+                    await _appointmentStaffRepo.AddAsync(appointStaff);
+                }
+
+                appointment.ChangeStaff(staffList);
             }
 
-            await this._unitOfWork.CommitAsync();
-
+            await _unitOfWork.CommitAsync();
             return new AppointmentDto(appointment.Id.AsGuid(),
                                         appointment.Status.Description, 
                                         appointment.OperationRequestId.Value, 
                                         appointment.RoomNumber.Value, 
-                                        appointment.Slot.TimeInterval.Start.ToString("HH:mm"), 
-                                        appointment.Slot.TimeInterval.End.ToString("HH:mm"), 
-                                        appointment.Slot.Date.Start.ToString("yyyy-MM-dd"), 
-                                        appointment.Slot.Date.End.ToString("yyyy-MM-dd"), 
+                                        appointment.Slot.TimeInterval.Start.ToString(), 
+                                        appointment.Slot.TimeInterval.End.ToString(), 
+                                        appointment.Slot.Date.Start.ToString(), 
+                                        appointment.Slot.Date.End.ToString(), 
                                         appointment.AppointmentStaffs.Select(appointStaff => new string(appointStaff.Staff.Id.Value)).ToList());
         }
+
 
         public async Task<ActionResult<AppointmentDto>> GetByIdAsync(string id)
         {

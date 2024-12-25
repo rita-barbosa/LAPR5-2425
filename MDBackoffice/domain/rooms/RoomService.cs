@@ -121,6 +121,14 @@ namespace MDBackoffice.Domain.Rooms
             return listDto;
         }
 
+        public async Task<List<string>> GetAllRoomNumbersAsync()
+        {
+            var list = await _repo.GetAllRoomsAsync();
 
+            List<string> listDto = list.ConvertAll(room =>
+               new string (room.Id.Value));
+
+            return listDto;
+        }
     }
 }

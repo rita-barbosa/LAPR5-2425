@@ -8,6 +8,9 @@ using MDBackoffice.Domain.Logs;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using MDBackoffice.Domain.OperationTypes.ValueObjects;
+using System.Linq;
+using MDBackoffice.Infrastructure.Specializations;
+using MDBackoffice.Domain.Specializations;
 
 namespace MDBackoffice.Domain.OperationTypes
 {
@@ -18,13 +21,15 @@ namespace MDBackoffice.Domain.OperationTypes
         private readonly IOperationTypeRepository _repo;
         private readonly OperationTypeRecordService _recordService;
         private readonly LogService _logService;
+        private readonly ISpecializationRepository _specRepo;
 
-        public OperationTypeService(IUnitOfWork unitOfWork, IOperationTypeRepository repo, LogService logService, OperationTypeRecordService operationTypeRecordService)
+        public OperationTypeService(IUnitOfWork unitOfWork, IOperationTypeRepository repo, LogService logService, OperationTypeRecordService operationTypeRecordService, ISpecializationRepository specializationRepository)
         {
             _unitOfWork = unitOfWork;
             _repo = repo;
             _logService = logService;
             _recordService = operationTypeRecordService;
+            _specRepo = specializationRepository;
         }
 
         public async Task<List<OperationTypeDto>> GetAllAsync()
@@ -50,6 +55,11 @@ namespace MDBackoffice.Domain.OperationTypes
 
         public virtual async Task<OperationTypeDto> AddAsync(OperationTypeDto dto)
         {
+            for(int i = 0; i < dto.RequiredStaff.Count(); i++)
+            {
+                dto.RequiredStaff.ElementAt(i).Specialization = (await _specRepo.FindByDenomination(dto.RequiredStaff.ElementAt(i).Specialization)).Id.Value;
+            } 
+
             var operationType = new OperationType(
                 dto.Name,
                 dto.EstimatedDuration,

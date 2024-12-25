@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using MDBackoffice.Domain.Appointments;
@@ -16,6 +17,15 @@ namespace MDBackoffice.Infrastructure.AppointmentStaffs
         public AppointmentStaffRepository(MDBackofficeDbContext context) : base(context.AppointmentStaffs)
         {
             _context = context;
+        }
+
+        public async Task<List<AppointmentStaff>> GetAppointmentByAptId(string id)
+        {
+            List<AppointmentStaff> list = await _context.AppointmentStaffs
+                .Where(aptStaff => aptStaff.Appointment.Id.Value.Equals(id))
+                .ToListAsync();
+
+            return list;
         }
 
         public async Task<bool> IsStaffAvailableAsync(StaffId staffId, string startTime, string endTime, Guid? excludedAppointmentId = null)
