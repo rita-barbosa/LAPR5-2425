@@ -33,7 +33,6 @@ export class MedicalRecordMap extends Mapper<MedicalRecord> {
     
 
     public static toPersistence(medicalRecord: MedicalRecord): any {
-        console.log(medicalRecord)
         return { 
             domainId: medicalRecord.id.toString(),
             id: medicalRecord.id.toString(),

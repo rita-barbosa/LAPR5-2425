@@ -8,6 +8,7 @@ import { Allergy } from '../domain/allergy';
 import { AllergyCode } from '../domain/allergyCode';
 import { AllergyMap } from '../mappers/AllergyMap';
 import { IAllergyQueryFilterParameters } from '../dto/IAllergyQueryFilterParameters';
+import { AllergyDesignation } from '../domain/allergyDesignation';
 
 @Service()
 export default class AllergyRepo implements IAllergyRepo {
@@ -120,7 +121,22 @@ export default class AllergyRepo implements IAllergyRepo {
       return null;
     }
   }
+
+  public async findByDesignation(designation: string | AllergyDesignation): Promise<Allergy | null> {
+    const designationValue = designation instanceof AllergyDesignation 
+      ? designation.value 
+      : designation;
   
+    const query = { designation: designationValue }; 
+
+    const allergyRecord = await this.allergyschema.findOne(query as FilterQuery<IAllergyPersistence & Document>);
+
+    if (allergyRecord != null) {
+      return AllergyMap.toDomain(allergyRecord);
+    } else {
+      return null;
+    }
+  }
 
   public async findAll(): Promise<Allergy[]> {
     try {

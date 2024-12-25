@@ -69,6 +69,7 @@ export class ListPatientProfilesWithMedicalRecord implements OnInit {
     this.fetchAllergies();
     this.fetchMedicalConditions();
     this.fetchPatients();
+
     this.fetchPatientsMedicalRecords();
 }
 
@@ -135,25 +136,29 @@ fetchAllergies() {
 
   applyFilters(): void {
     this.fetchFilteredPatientMedicalRecords();
-    this.fetchPatientProfilesByMedicalRecordNumber();
   }
-
-
+  
   fetchFilteredPatientMedicalRecords(): void {
     this.service.getFilteredMedicalRecords(this.filterParameters).subscribe({
       next: (records) => {
         this.medicalRecords = records;
+        console.log('Filtered Medical Records:', this.medicalRecords);  // Verifique os dados filtrados no console
+        
+        // Atualize os medicalRecordNumbers dentro do subscribe
+        this.medicalRecordNumbers = this.medicalRecords.map(record => record.medicalRecordNumber);
+        
+        // Agora que medicalRecordNumbers foi atualizado, chama a função de buscar os perfis
+        this.fetchPatientProfilesByMedicalRecordNumber();
       },
       error: (error) => {
         console.error('Error fetching medical records:', error);
       },
     });
-
-    this.medicalRecordNumbers = this.medicalRecords.map(record => record.medicalRecordNumber);
-
   }
-
+  
   fetchPatientProfilesByMedicalRecordNumber(): void {
+    console.log('Medical Record Numbers:', this.medicalRecordNumbers);  // Agora terá os números atualizados
+    
     const patientQueryParameters: PatientQueryParameters = {
       queryfilters: this.medicalRecordNumbers.map((recordNumber) => ({
         firstName: '',
@@ -162,18 +167,18 @@ fetchAllergies() {
         gender: '',
         dateBirth: '',
         medicalRecordNumber: recordNumber,
-      }))
+      })),
     };
-
+  
     this.service.getPatientsByFilters(patientQueryParameters).subscribe({
       next: (patients) => {
         this.patientList = patients;
+        console.log('Filtered Patient Profiles:', this.patientList);  // Verifique os dados de pacientes filtrados no console
       },
       error: (error) => {
         console.error('Error fetching patient profiles:', error);
       },
     });
-
   }
 
   addFilter(): void {
@@ -190,10 +195,22 @@ fetchAllergies() {
         this.medicalRecord = this.fullPatientMedicalRecord;
         this.showMedicalRecord = true;
         this.editingMedicalRecord = false;
+        console.log(this.fullPatientMedicalRecord.description);
+  }
+
+  get formattedDescription(): string[] {
+    return this.fullPatientMedicalRecord.description
+      ? this.fullPatientMedicalRecord.description.split('\n')
+      : [];
   }
 
   editMedicalRecord(): void {
     this.showMedicalRecord = false;
+    
+    // this.medicalRecord = {
+    //   ...this.fullPatientMedicalRecord,
+    //   description: this.fullPatientMedicalRecord.description || '' 
+    // };
     this.editingMedicalRecord = true;
 }
 
