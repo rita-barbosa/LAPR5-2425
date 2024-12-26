@@ -71,6 +71,8 @@ Error handling will be implemented to manage issues like connection failures, in
 
 ## 5. Implementation
 
+In an effort to make an secure, simple connection with the VMs, a security key pair was created and shared with both VMs so there is no need to add the password everytime the script is run.
+
 Changes were made to the backup file scripts in the MySQL virtual machine as to ensure it creates the backups and stores them in the machine and also sends them to the Backoffice virtual machine:
 
 ````
@@ -123,7 +125,7 @@ fi
 
 # Transfer the backup file to the remote VM
 echo "[$(date '+%Y-%m-%d %H:%M:%S')] Transferring backup file to remote VM..." >> "$LOG_FILE"
-scp "$BACKUP_FILE.tar.gz" "$REMOTE_VM_USER@$REMOTE_VM_HOST:$REMOTE_VM_DIR" >> "$LOG_FILE" 2>&1
+scp -i ~/.ssh/vmConnection "$BACKUP_FILE.tar.gz" "$REMOTE_VM_USER@$REMOTE_VM_HOST:$REMOTE_VM_DIR" >> "$LOG_FILE" 2>&1
 
 if [ $? -eq 0 ]; then
   echo "[$(date '+%Y-%m-%d %H:%M:%S')] Backup file transferred successfully to $REMOTE_VM_HOST:$REMOTE_VM_DIR" >> "$LOG_FILE"
