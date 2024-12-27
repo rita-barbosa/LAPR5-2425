@@ -90,6 +90,15 @@ of staff availability and consideration of staff involvement in other rooms to m
 > - start 7.3.1 with the operations' assignment method and then change the GA adapted for your problem to ensure N rooms
 
 
+> **Question:** This user story is only to decide where the surgery is going to take place, for what i understand.
+My question is, if we need to check if the surgery is possible to be done in a certain room(if theres an availabity slot big enougth for the time needed for the surgery).
+Or if there are for example 30 surgeries for a room, and does that room have enough availability slots for all of the 30 surgeries.
+>
+> **Answer:** You can check the relation between the sum of the operations times (preparation+surgery+cleaning) for a certain room and the sum of free times of the room. If you divide the first by the second (ratio) it is obvious that if the value is >1 it will be impossible.
+But due to small time intervals tha are not occupied we sugest that the ratio has the value <0.8.
+So, a check you can do during the assignment of operatios to rooms is to verify if the ratio is still in the limit.
+
+
 ## 3. Analysis
 
 This user story focuses on distributing a set of surgeries across multiple operation rooms before scheduling. The main 

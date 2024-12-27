@@ -22,6 +22,18 @@ namespace MDBackoffice.Domain.Patients
 
         private readonly string PRIVACY_POLICY_PATH = "privacy-policy-text.html";
 
+        private readonly IPatientMedicalRecordAdapter _mrnAdapter;
+        // public PatientService(IUnitOfWork unitOfWork, LogService logService, IConfiguration configuration, IPatientRepository repo, UserService userService, EmailService emailService,IPatientMedicalRecordAdapter mrnAdapter)
+        // {
+        //     this._unitOfWork = unitOfWork;
+        //     this._repo = repo;
+        //     this._userService = userService;
+        //     this._configuration = configuration;
+        //     this._emailService = emailService;
+        //     this._logService = logService;
+        //     this._mrnAdapter = mrnAdapter;
+        // }
+
         public PatientService(IUnitOfWork unitOfWork, LogService logService, IConfiguration configuration, IPatientRepository repo, UserService userService, EmailService emailService)
         {
             this._unitOfWork = unitOfWork;
@@ -56,6 +68,13 @@ namespace MDBackoffice.Domain.Patients
             var patient = new Patient(dto.FirstName, dto.LastName, dto.Address, gender, dto.Phone, dto.EmergencyContact, dto.Email, dto.DateBirth, seqNumber);
 
             await _repo.AddAsync(patient);
+
+            // bool mrnCreation = await _mrnAdapter.CreateMedicalRecord(patient.Id, [], [], string.Empty);
+
+            // if(!mrnCreation)
+            // {
+            //     throw new BusinessRuleValidationException("There Patient Medical Record wasn't created.");
+            // }
 
             await _unitOfWork.CommitAsync();
 

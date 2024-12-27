@@ -44,6 +44,34 @@ This feature is related to the existence of a patient profile (US 5.1.8) and a p
 >
 > **Answer:** It consists of a code (for instance, SNOMED CT (Systematized Nomenclature of Medicine - Clinical Terms) or ICD-11 (International Classification of Diseases, 11th Revision)), a designation and an optional longer description.
 
+
+> **Question:** I would like to ask you if there is a list of allergies that you would prefer us to use in the system by default, if so, which ones?
+>
+> **Answer:**
+> default medical conditions (ICD-11):
+>
+> * A04.0 Cholera
+> * A08.0: Rotavirus enteritis
+> * B20: Human Immunodeficiency Virus (HIV) disease
+> * B50: Plasmodium falciparum malaria
+> * 2A20.0: Malignant neoplasm of lung
+> * 2F44.0: Malignant neoplasm of the breast
+> * 3A01.1: Iron deficiency anemia
+> * 4A44: Hereditary hemochromatosis
+> * 5A11: Type 1 diabetes mellitus
+> * 5B55: Obesity
+> * 6A80: Major depressive disorder
+> * 6C40: Generalized anxiety disorder
+> * FB20.1: Osteoporosis with pathological fracture
+> * FB81.1: Osteoarthritis of the knee
+> * FB81.2: Osteoarthritis of the hip
+> * FB80.1: Rheumatoid arthritis
+> * FA24.0: Fracture of femur
+> * FA22.0: Fracture of radius and ulna
+> * FA21.0: Dislocation of shoulder
+> * FB70.0: Low back pain
+
+
 ## 3. Analysis
 
 Allergies are conditions that a patient has, and those must be registered in the Patient Medical Record. The following

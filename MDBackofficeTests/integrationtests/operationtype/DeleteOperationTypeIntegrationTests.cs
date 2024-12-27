@@ -19,6 +19,7 @@ using MDBackoffice.Domain.Emails;
 using MDBackoffice.Infrastructure.Emails;
 using Microsoft.Extensions.Configuration;
 using MDBackoffice.Infrastructure.Users;
+using MDBackoffice.Domain.Specializations;
 
 namespace MDBackofficeTests.integrationtests.operationtype
 {
@@ -59,7 +60,9 @@ namespace MDBackofficeTests.integrationtests.operationtype
 
             _opRecordService = new Mock<OperationTypeRecordService>(_unitOfWorkMock.Object, _logServiceMock.Object, new Mock<IOperationTypeRecordRepository>().Object);
 
-            _service = new Mock<OperationTypeService>(_unitOfWorkMock.Object, _repoMock.Object, _logServiceMock.Object, _opRecordService.Object).Object;
+            var _specializationRepo = new Mock<ISpecializationRepository>();
+
+            _service = new Mock<OperationTypeService>(_unitOfWorkMock.Object, _repoMock.Object, _logServiceMock.Object, _opRecordService.Object, _specializationRepo.Object).Object;
 
            var tokenServiceMock = new Mock<TokenService>(_unitOfWorkMock.Object, new Mock<ITokenRepository>().Object, _userManagerMock.Object);
             var _emailServiceMock = new Mock<EmailService>(tokenServiceMock.Object, new Mock<IEmailAdapter>().Object);
@@ -71,8 +74,8 @@ namespace MDBackofficeTests.integrationtests.operationtype
 
             _opRecordService = new Mock<OperationTypeRecordService>(_unitOfWorkMock.Object, _logServiceMock.Object, new Mock<IOperationTypeRecordRepository>().Object);
 
-            _service = new OperationTypeService(_unitOfWorkMock.Object, _repoMock.Object, _logServiceMock.Object, _opRecordService.Object);
-
+            _service = new OperationTypeService(_unitOfWorkMock.Object, _repoMock.Object, _logServiceMock.Object, _opRecordService.Object, _specializationRepo.Object);
+        
         }
 
         [Fact]

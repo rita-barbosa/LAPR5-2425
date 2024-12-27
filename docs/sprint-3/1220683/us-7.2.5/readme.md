@@ -50,6 +50,40 @@ This feature is related to the existence of a patient profile (US 5.1.8) and a p
 > **Answer:** They are two different things. A Medical Condition represents a diagnosed health issue or disease. Examples: Diabetes, Hypertension, Asthma, etc.
 
 
+> **Question:** Regarding User Story 7.2.5, we would like to confirm how the search for medical conditions should work. Should the search return all registered medical conditions, or should it allow filtering based on a specific parameter? If it’s based on a parameter, could you specify which one?
+>
+> **Answer:** This requirement is related to the adding/updating of an medical condition entry in the medical record. Thus, when the doctor is adding or editing a medical condition entry, they must be able to search for medical condition by code or designation instead of entering the "id" directly or selecting it from a drop down.
+
+
+> **Question:** I would like to ask you if there is a list of medical conditions that you would prefer us to use in the system by default, and if so, which ones? We'd also like to ask if when you say “I want to search for Medical Conditions, so that I can use it to update the Patient Medical Record” what the last part implies?
+Is the search done to immediately add to the patient profile or is it just a search done to get information about a medical condition, for example?
+>
+> **Answer:** 
+> default medical conditions (ICD-11):
+>
+> * A04.0 Cholera
+> * A08.0: Rotavirus enteritis
+> * B20: Human Immunodeficiency Virus (HIV) disease
+> * B50: Plasmodium falciparum malaria
+> * 2A20.0: Malignant neoplasm of lung
+> * 2F44.0: Malignant neoplasm of the breast
+> * 3A01.1: Iron deficiency anemia
+> * 4A44: Hereditary hemochromatosis
+> * 5A11: Type 1 diabetes mellitus
+> * 5B55: Obesity
+> * 6A80: Major depressive disorder
+> * 6C40: Generalized anxiety disorder
+> * FB20.1: Osteoporosis with pathological fracture
+> * FB81.1: Osteoarthritis of the knee
+> * FB81.2: Osteoarthritis of the hip
+> * FB80.1: Rheumatoid arthritis
+> * FA24.0: Fracture of femur
+> * FA22.0: Fracture of radius and ulna
+> * FA21.0: Dislocation of shoulder
+> * FB70.0: Low back pain
+>
+> > We would also like to ask if when you say “I want to search for Medical Conditions, so that I can use it to update the Patient Medical Record” what does the last part imply? when the doctor is editing the patient's medical record, he or she should have the possibility of inserting entries for allergies and/or medical conditions via allergy/medical condition search
+
 ## 3. Analysis
 
 When a doctor is looking through a patient's medical record, he has the possibility of updating it. One of the areas that

@@ -34,6 +34,7 @@ namespace MDBackofficeTests.integrationtests.patient
         private readonly Mock<UserService> _userServiceMock;
         private readonly Mock<EmailService> _emailServiceMock;
         private readonly Mock<ILoginAdapter> _loginAdapterMock;
+        private readonly Mock<IPatientMedicalRecordAdapter> _patientMRAMock;
 
 
         public FilteredPatientProfilesIntegrationTests()
@@ -62,6 +63,7 @@ namespace MDBackofficeTests.integrationtests.patient
 
             _userServiceMock = new Mock<UserService>(userManagerMock.Object, roleManagerMock.Object, _logServiceMock.Object, signinManagerMock.Object, _emailServMock.Object, _configurationMock.Object, tokenServiceMock.Object, _loginAdapterMock.Object);
             _emailServiceMock = new Mock<EmailService>(tokenServiceMock.Object, new Mock<IEmailAdapter>().Object);
+            _patientMRAMock = new Mock<IPatientMedicalRecordAdapter>();
         }
 
         [Fact]
@@ -112,8 +114,9 @@ namespace MDBackofficeTests.integrationtests.patient
             {
                 HttpContext = context
             };
-            _userServiceMock.Setup(_userService => _userService.CheckUserRole("valid-token", "Doctor")).Returns(false);
-
+            _userServiceMock.Setup(_userService =>
+                    _userService.CheckUserRole("valid-token", It.Is<string>(role => role == "Admin" || role == "Doctor")))
+                    .Returns(true);
             _repoMock.Setup(_repo => _repo.FilterPatientProfiles(dto)).ReturnsAsync(resultList);
 
             //Act

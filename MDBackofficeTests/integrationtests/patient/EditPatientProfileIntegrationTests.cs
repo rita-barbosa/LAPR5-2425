@@ -35,6 +35,7 @@ namespace MDBackofficeTests.integrationtests.patient
         private readonly Mock<IConfiguration> _configurationMock = new Mock<IConfiguration>();
         private readonly Mock<ILoginAdapter> _loginAdapterMock;
         private readonly Mock<UserService> _userServiceMock;
+        private readonly Mock<IPatientMedicalRecordAdapter> _patientMRAMock;
 
         public EditPatientProfileIntegrationTests()
         {
@@ -60,17 +61,19 @@ namespace MDBackofficeTests.integrationtests.patient
                                                                new Mock<IUserConfirmation<User>>().Object);
             _userServiceMock = new Mock<UserService>(_userManagerMock.Object, roleManagerMock.Object, _logServiceMock.Object, signinManagerMock.Object, _emailServiceMock.Object, _configurationMock.Object, tokenServiceMock.Object, _loginAdapterMock.Object);
 
+            _patientMRAMock = new Mock<IPatientMedicalRecordAdapter>();
+
             _service = new PatientService(_unitOfWorkMock.Object, _logServiceMock.Object,
                                             _configurationMock.Object, _repoMock.Object,
                                             _userServiceMock.Object, _emailServiceMock.Object);
-          
+
         }
 
         [Fact]
         public async Task EditProfile_ReturnsAcceptedPatientDto_IntegrationControllerService()
         {
             //Arrange
-            var _controller = new PatientController(_service,_userServiceMock.Object);
+            var _controller = new PatientController(_service, _userServiceMock.Object);
 
             var oldEmail = "tes@email.com";
             var newEmail = "tesNew@email.com";

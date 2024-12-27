@@ -42,6 +42,8 @@ import { ListAllergies } from './components/admin/list-allergies/list-allergies.
 import { ListSpecializationComponent } from './components/admin/list-specialization/list-specialization.component';
 import { CreateRoomComponent } from './components/admin/create-room/create-room.component';
 import { PrivacyPolicyComponent } from './components/privacy-policy/privacy-policy.component';
+import { ListAppointmentComponent } from './components/staff/doctor/list-appointment/list-appointment.component';
+
 import { ListPatientProfilesWithMedicalRecord } from './components/staff/doctor/list-patient-profiles-with-medical-records/list-patient-profiles-with-medical-records.component';
 
 export const routes: Routes = [
@@ -90,6 +92,7 @@ export const routes: Routes = [
   { path: 'create-room', component: CreateRoomComponent},
   { path: 'privacy-policy', component: PrivacyPolicyComponent},
   { path: 'list-patient-profiles-with-medical-records', component: ListPatientProfilesWithMedicalRecord},
+  { path: 'list-appointment', component: ListAppointmentComponent},
   { path: '**', redirectTo: '' }
 ];
 

@@ -62,12 +62,21 @@ namespace MDBackoffice.Domain.Appointments
 
         public void ChangeStaff(List<Staff> newStaffList)
         {
-            this.AppointmentStaffs.Clear();
-
-            for(int i = 0; i < newStaffList.Count(); i++)
+            // Add the new staff
+            foreach (var newStaff in newStaffList)
             {
-                this.AppointmentStaffs.Add(new AppointmentStaff(this, newStaffList.ElementAt(i)));
+                this.AppointmentStaffs.Add(new AppointmentStaff(this, newStaff));
             }
         }
+
+        public void ClearStaff()
+        {
+            foreach (var staff in AppointmentStaffs.ToList())
+            {
+                // Explicitly mark as deleted
+                AppointmentStaffs.Remove(staff);
+            }
+        }
+
     }
 }

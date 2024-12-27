@@ -6,7 +6,9 @@
   * [2. Requirements](#2-requirements)
   * [3. Analysis](#3-analysis)
   * [4. Design](#4-design)
-  * [5. Observations](#5-observations)
+  * [5. Implementation](#5-implementation)
+    * [Database restoration validation Script - _restore_and_validate_database.sh_](#database-restoration-validation-script---_restore_and_validate_databasesh_)
+      * [Additional Steps](#additional-steps)
 <!-- TOC -->
 
 ## 1. Context
@@ -63,6 +65,88 @@ Finally, the results of these validation queries are logged into a file. This lo
 clarity on whether each validation test passed or failed, offering actionable insights to system administrators. This 
 process ensures that backups are not only stored but are also reliable and ready to support recovery when needed.
 
-## 5. Observations
 
-No observations.
+## 5. Implementation
+
+### Database restoration validation Script - _restore_and_validate_database.sh_
+
+```console
+#!/bin/bash
+
+# Configuration
+BACKUP_DIR="/backup/full"
+DB_USER="root"
+DB_PASSWORD="liXQcsVFLzhagSol4xXW"
+DB_NAME="mysql"
+LOG_FILE="/var/log/db_restore_validation.log"
+
+# Start logging
+exec >> "$LOG_FILE" 2>&1
+echo "----------------------------"
+echo "Backup Restore Validation - $(date)"
+echo "----------------------------"
+
+# Step 1: Find the most recent backup file
+echo "Finding the most recent backup file..."
+BACKUP_FILE=$(ls -t "$BACKUP_DIR"/*.tar.gz | head -n 1)
+if [ -z "$BACKUP_FILE" ]; then
+    echo "Error: No backup files found in $BACKUP_DIR."
+    exit 1
+fi
+echo "Most recent backup file: $BACKUP_FILE"
+
+# Extract the SQL file name from the archive
+EXTRACTED_FILE="${BACKUP_FILE%.tar.gz}"
+
+# Step 2: Extract the backup file
+echo "Extracting backup file..."
+tar -xvzf "$BACKUP_FILE" -C "$BACKUP_DIR"
+if [ $? -ne 0 ]; then
+    echo "Error: Failed to extract the backup file."
+    exit 1
+fi
+echo "Backup extracted successfully."
+
+# Step 3: Restore the database
+echo "Restoring the database..."
+mysql -u "$DB_USER" -p"$DB_PASSWORD" "$DB_NAME" < "$EXTRACTED_FILE"
+if [ $? -ne 0 ]; then
+    echo "Error: Failed to restore the database."
+    exit 1
+fi
+echo "Database restored successfully."
+
+# Step 4: Validate the database state
+echo "Validating the database state..."
+QUERY_RESULT=$(mysql -u "$DB_USER" -p"$DB_PASSWORD" "$DB_NAME" -e "SELECT COUNT(*) AS user_count FROM users;")
+if [ $? -ne 0 ]; then
+    echo "Error: Query execution failed."
+    exit 1
+fi
+echo "Query executed successfully. Result:"
+echo "$QUERY_RESULT"
+
+# Step 5: Clean up extracted files (optional)
+echo "Cleaning up extracted backup file..."
+rm -f "$EXTRACTED_FILE"
+echo "Cleanup completed."
+
+echo "Backup restore and validation completed successfully."
+```
+
+#### Additional Steps
+
+1. Save the script as _restore_and_validate_database.sh_ and make it executable:
+
+```console
+chmod +x restore_and_validate_database.sh
+```
+
+1. Run the script when a database restoration is needed:
+
+```console
+./restore_and_validate_database.sh
+```
+
+> Since this action is done on-demand, then there is no need to automate it by using cron.
+

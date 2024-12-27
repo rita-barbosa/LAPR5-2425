@@ -50,6 +50,26 @@ export default class MedicalConditionService implements IMedicalConditionService
         }
   }
 
+  async getMedicalConditionByDesignation(designation: string): Promise<Result<IMedicalConditionDTO>> {
+    try {
+      // Chama o repositório para encontrar a condição médica pela designação
+      const condition = await this.medicalConditionRepo.findByDesignation(designation);
+      
+      // Verifica se a condição foi encontrada
+      if (!condition) {
+        return Result.fail<IMedicalConditionDTO>("Medical condition not found");
+      }
+  
+      // Mapeia a condição encontrada para um DTO
+      const conditionDTO = MedicalConditionMap.toDTO(condition) as IMedicalConditionDTO;
+      
+      // Retorna o DTO como sucesso
+      return Result.ok<IMedicalConditionDTO>(conditionDTO);
+    } catch (error) {
+      throw new Error(`Failed to fetch medical condition: ${error.message}`);
+    }
+  }
+
 
   async getAllMedicalConditions(): Promise<Result<IMedicalConditionDTO[]>> {
     return new Promise(async (resolve, reject) => {

@@ -22,7 +22,8 @@ using MDBackoffice.Infrastructure.Users;
 
 namespace MDBackofficeTests.controllertests
 {
-    public class PatientControllerTests{
+    public class PatientControllerTests
+    {
 
         private readonly Mock<PatientService> _service;
         private readonly Mock<IUnitOfWork> _unitOfWorkMock = new Mock<IUnitOfWork>();
@@ -41,7 +42,7 @@ namespace MDBackofficeTests.controllertests
             identityOptionsMock.Setup(o => o.Value).Returns(new IdentityOptions());
             var identityErrorDescriberMock = new Mock<IdentityErrorDescriber>();
 
-            
+
             _userManagerMock = new Mock<UserManager<User>>(new Mock<IUserStore<User>>().Object, identityOptionsMock.Object, new Mock<IPasswordHasher<User>>().Object, new List<IUserValidator<User>> { new Mock<IUserValidator<User>>().Object }, new List<IPasswordValidator<User>> { new Mock<IPasswordValidator<User>>().Object }, new Mock<ILookupNormalizer>().Object, identityErrorDescriberMock.Object, new Mock<IServiceProvider>().Object, new Mock<ILogger<UserManager<User>>>().Object);
             var roleManagerMock = new Mock<RoleManager<Role>>(new Mock<IRoleStore<Role>>().Object, new List<IRoleValidator<Role>>(), new Mock<ILookupNormalizer>().Object, identityErrorDescriberMock.Object, new Mock<ILogger<RoleManager<Role>>>().Object);
 
@@ -56,27 +57,27 @@ namespace MDBackofficeTests.controllertests
                                                                new Mock<ILogger<SignInManager<User>>>().Object,
                                                                new Mock<IAuthenticationSchemeProvider>().Object,
                                                                new Mock<IUserConfirmation<User>>().Object);
-            _userServiceMock = new Mock<UserService>(_userManagerMock.Object, roleManagerMock.Object, _logServiceMock.Object,signinManagerMock.Object, _emailServiceMock.Object, _configurationMock.Object, tokenServiceMock.Object, _loginAdapterMock.Object);
-            
-            _service = new Mock<PatientService>(_unitOfWorkMock.Object, _logServiceMock.Object, 
-                                            _configurationMock.Object, _repoMock.Object, 
+            _userServiceMock = new Mock<UserService>(_userManagerMock.Object, roleManagerMock.Object, _logServiceMock.Object, signinManagerMock.Object, _emailServiceMock.Object, _configurationMock.Object, tokenServiceMock.Object, _loginAdapterMock.Object);
+
+            _service = new Mock<PatientService>(_unitOfWorkMock.Object, _logServiceMock.Object,
+                                            _configurationMock.Object, _repoMock.Object,
                                             _userServiceMock.Object, _emailServiceMock.Object);
-            _controller = new PatientController(_service.Object,_userServiceMock.Object);
+            _controller = new PatientController(_service.Object, _userServiceMock.Object);
         }
 
         [Fact]
         public async Task CreatePatientProfile_Returns_CreatedResult()
         {
             //Arrage
-                     var dtoMock = new CreatingPatientDto
-                ("Rita",
-                "Barbosa",
-                "Portugal, 4590-850, Rua da Sardinha",
-                "+351 910000000",
-                "ritabarbosa@email.com",
-                "+351 912345678",
-                "Female",
-                "2004-12-15");
+            var dtoMock = new CreatingPatientDto
+       ("Rita",
+       "Barbosa",
+       "Portugal, 4590-850, Rua da Sardinha",
+       "+351 910000000",
+       "ritabarbosa@email.com",
+       "+351 912345678",
+       "Female",
+       "2004-12-15");
             var context = new DefaultHttpContext();
             context.Request.Headers["Authorization"] = "Bearer valid-token";
             _controller.ControllerContext = new ControllerContext
@@ -137,7 +138,7 @@ namespace MDBackofficeTests.controllertests
             _repoMock.Verify(um => um.ExistsPatientWithId(id), Times.Once);
             _repoMock.Verify(um => um.GetByIdAsync(new MedicalRecordNumber(id)), Times.Once);
             _userServiceMock.Verify(um => um.DeleteByIdAsync(patientMock.Object.UserReference), Times.Once);
-    }
+        }
 
         [Fact]
         public async Task UpdateAsync_ReturnsOkPatientDto()
@@ -239,7 +240,9 @@ namespace MDBackofficeTests.controllertests
             {
                 HttpContext = context
             };
-            _userServiceMock.Setup(_userService => _userService.CheckUserRole("valid-token", "Admin")).Returns(false);
+            _userServiceMock.Setup(_userService =>
+                    _userService.CheckUserRole("valid-token", It.Is<string>(role => role == "Admin" || role == "Doctor")))
+                    .Returns(true);
             _service.Setup(p => p.FilterPatientProfiles(dto)).ReturnsAsync(result);
 
             //Act

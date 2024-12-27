@@ -162,7 +162,18 @@ However level 3 is shown below.
 
 ## 5. Implementation
 
-//TO BE DONE
+To fully test out this feature the user must login with a doctor account.
+
+After doing so they must choose the feature "List Surgery Appointments":
+![alt text](image.png)
+
+Then they'll be met with a list of all the appointments which they will then be able to choose one to update:
+![alt text](image-1.png)
+
+After choosing one and clicking on the button "Edit Appointment" the doctor will be met with several input fields that do not need to be filled as they may want to change only certain aspects about the appointment:
+![alt text](image-2.png)
+
+After updating, the system will check if the changes are possible or not, if they are the appointment will be updated, if they arent then the appointment will not be updated.
 
 ## 6. Testing
 

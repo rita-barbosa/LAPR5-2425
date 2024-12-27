@@ -31,6 +31,7 @@ namespace MDBackofficeTests.integrationtests.patient
         private readonly Mock<EmailService> _emailServiceMock;
         private readonly Mock<ILoginAdapter> _loginAdapterMock;
         private readonly PatientService _service;
+        private readonly Mock<IPatientMedicalRecordAdapter> _patientMRAMock;
 
 
         public DeletePatientIntegrationTests()
@@ -59,6 +60,7 @@ namespace MDBackofficeTests.integrationtests.patient
 
             _userServiceMock = new Mock<UserService>(userManagerMock.Object, roleManagerMock.Object, _logServiceMock.Object, signinManagerMock.Object ,_emailServMock.Object, _configurationMock.Object, tokenServiceMock.Object, _loginAdapterMock.Object);
             _emailServiceMock = new Mock<EmailService>(tokenServiceMock.Object, new Mock<IEmailAdapter>().Object);
+            _patientMRAMock = new Mock<IPatientMedicalRecordAdapter>();
 
          _service = new PatientService(_unitOfWorkMock.Object, _logServiceMock.Object,
                                          _configurationMock.Object, _repoMock.Object,

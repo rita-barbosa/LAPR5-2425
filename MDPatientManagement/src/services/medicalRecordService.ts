@@ -9,11 +9,15 @@ import IMedicalRecordRepo from './IRepos/IMedicalRecordRepo';
 import { MedicalConditionId } from '../domain/medicalConditionId';
 import { AllergyCode } from '../domain/allergyCode';
 import { IMedicalRecordQueryFilterParameters } from '../dto/IMedicalRecordQueryFilterParameters';
+import IMedicalConditionRepo from './IRepos/IMedicalConditionRepo';
+import IAllergyRepo from './IRepos/IAllergyRepo';
 
 @Service()
 export default class MedicalRecordService implements IMedicalRecordService {
     constructor(
         @Inject(config.repos.medicalRecord.name) private medicalRecordRepo: IMedicalRecordRepo,
+        @Inject(config.repos.medicalCondition.name) private medicalConditionRepo: IMedicalConditionRepo,
+        @Inject(config.repos.allergy.name) private allergyRepo: IAllergyRepo,
         @Inject('logger') private logger,
     ) { }
 
@@ -64,7 +68,6 @@ export default class MedicalRecordService implements IMedicalRecordService {
                 medicalRecord.changeAllergies(allergyObjects);
                 medicalRecord.changeDescription(medicalRecordDTO.description);
 
-                console.log("\nTHE FIRST TIME I SEE ALLERGIES:", medicalRecord.allergies);
                 await this.medicalRecordRepo.save(medicalRecord);
 
                 const medicalRecordDTOResult = MedicalRecordMap.toDTO(medicalRecord) as IMedicalRecordDTO;
@@ -79,17 +82,13 @@ export default class MedicalRecordService implements IMedicalRecordService {
         try {
             const records = await this.medicalRecordRepo.findAll();
 
-            
-
-
             if (records === null || records.length == 0) {
-            return Result.fail<IMedicalRecordDTO[]>("Medical Records not found");
+                return Result.fail<IMedicalRecordDTO[]>("Medical Records not found");
             }
             else {
 
                 const recordsListDTOResult = records.map((record) => MedicalRecordMap.toDTO(record) as IMedicalRecordDTO);
-                // // console.log(recordsListDTOResult[0].allergies)
-            return Result.ok<IMedicalRecordDTO[]>( recordsListDTOResult )
+                return Result.ok<IMedicalRecordDTO[]>(recordsListDTOResult)
             }
         } catch (e) {
             throw e;
@@ -97,22 +96,53 @@ export default class MedicalRecordService implements IMedicalRecordService {
     }
 
     async getMedicalRecordsByFilters(filters: IMedicalRecordQueryFilterParameters): Promise<Result<IMedicalRecordDTO[]>> {
-        try {
-            const records = await this.medicalRecordRepo.findAllByParameters(filters);
-            if (records.length == 0) {
+        try {    
+          const updatedFilters = await this.convertDesignationsToIds(filters);
+      
+          const records = await this.medicalRecordRepo.findAllByParameters(updatedFilters);
+
+          if (records.length == 0) {
             return Result.fail<IMedicalRecordDTO[]>("Medical records not found");
-            }
-    
-            let medicalRecordsDtoList: IMedicalRecordDTO[] = [];
-    
-            for(var i = 0; i < records.length; i++){
+          }
+      
+          let medicalRecordsDtoList: IMedicalRecordDTO[] = [];
+      
+          for (var i = 0; i < records.length; i++) {
             const allergyDTO = MedicalRecordMap.toDTO(records.at(i)) as IMedicalRecordDTO;
             medicalRecordsDtoList.push(allergyDTO);
-            }
-    
-            return Result.ok<IMedicalRecordDTO[]>(medicalRecordsDtoList);
+          }
+      
+          return Result.ok<IMedicalRecordDTO[]>(medicalRecordsDtoList);
         } catch (error) {
-            throw new Error(`Failed to fetch medical records: ${error.message}`);
+          throw new Error(`Failed to fetch medical records: ${error.message}`);
         }
-    }
+      }
+      
+      private async convertDesignationsToIds(
+        filters: IMedicalRecordQueryFilterParameters
+      ): Promise<IMedicalRecordQueryFilterParametersById> {
+        const updatedFilters: IMedicalRecordQueryFilterParametersById = { filters: [] };
+      
+        for (const filter of filters.filters) {
+          const updatedFilter: any = {};
+      
+          if (filter.allergyDesignation && filter.allergyDesignation.length > 0) {
+            const allergy = await this.allergyRepo.findByDesignation(filter.allergyDesignation);
+            if (allergy) {
+              updatedFilter.allergyCode = allergy.code.toString();
+            }
+          }
+      
+          if (filter.medicalConditionDesignation && filter.medicalConditionDesignation.length > 0) {
+            const condition = await this.medicalConditionRepo.findByDesignation(filter.medicalConditionDesignation);
+            if (condition) {
+              updatedFilter.medicalConditionId = condition.id.toString();
+            }
+          }
+      
+          updatedFilters.filters.push(updatedFilter);
+        }
+      
+        return updatedFilters;
+      }
 }

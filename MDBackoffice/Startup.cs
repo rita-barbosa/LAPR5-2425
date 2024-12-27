@@ -230,6 +230,9 @@ namespace MDBackoffice
             services.AddTransient<IAppointmentStaffRepository, AppointmentStaffRepository>();
 
             services.AddTransient<IRequiredStaffRepository, RequiredStaffRepository>();
+
+            services.AddTransient<IPatientMedicalRecordAdapter, PatientMedicalRecordAdapter>();
+            services.AddTransient<PatientMedicalRecordAdapter>();
         }
 
 

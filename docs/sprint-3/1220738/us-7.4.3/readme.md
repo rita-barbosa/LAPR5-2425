@@ -63,7 +63,7 @@ This User Story will involve the system logs from Linux and possibly a FTS to se
 
 ### 4.1. Realization
 
-The design for this user story involves creating a script that automates the process of backing up databases to a Cloud environment with date-formatted naming. The script will identify the database(s) to back up, generate a backup file, and rename the file according to the format <DBName>_yyyyMMdd. The current date will be used for the yyyyMMdd part of the filename to ensure uniqueness and clarity.
+The design for this user story involves creating a script that automates the process of backing up databases to a Cloud environment with date-formatted naming. The script will identify the database(s) to back up, generate a backup file, and rename the file according to the format yyyyMMdd. The current date will be used for the yyyyMMdd part of the filename to ensure uniqueness and clarity.
 
 The script will then transfer the backup to the specified Cloud environment using appropriate API commands or CLI tools for the chosen provider. It will rely on preconfigured authentication credentials and permissions for secure and successful uploads.
 
@@ -71,7 +71,74 @@ Error handling will be implemented to manage issues like connection failures, in
 
 ## 5. Implementation
 
-//TO BE DONE
+In an effort to make an secure, simple connection with the VMs, a security key pair was created and shared with both VMs so there is no need to add the password everytime the script is run.
+
+Changes were made to the backup file scripts in the MySQL virtual machine as to ensure it creates the backups and stores them in the machine and also sends them to the Backoffice virtual machine:
+
+````
+#!/bin/bash
+
+LOG_FILE="/backup/log/$(date +%Y%m%d).log"
+DATE=$(date +%Y-%m-%d)
+DATEFORUS=$(date +%Y%m%d)
+FULL_BACKUP_DIR="/backup/full"
+MYSQL_USER="root"
+MYSQL_PASSWORD="hospital-project"
+MYSQL_HOST="vs773.dei.isep.ipp.pt"
+MYSQL_PORT="3306"
+REMOTE_VM_USER="root"       # Replace with the username for the remote VM
+REMOTE_VM_HOST="vs251.dei.isep.ipp.pt"    # Replace with the remote VM's IP or hostname
+REMOTE_VM_DIR="/backup/full"    # Replace with the destination directory on the remote VM
+
+# Log start time
+echo "[$(date '+%Y-%m-%d %H:%M:%S')] Starting full backup script..." >> "$LOG_FILE"
+
+# Check if the full backup directory exists, and create it only if it does not
+if [ ! -d "$FULL_BACKUP_DIR" ]; then
+  mkdir -p "$FULL_BACKUP_DIR"
+  echo "[$(date '+%Y-%m-%d %H:%M:%S')] Created full backup directory: $FULL_BACKUP_DIR" >> "$LOG_FILE"
+fi
+
+# Perform the full backup using mysqldump
+BACKUP_FILE="$FULL_BACKUP_DIR/$DATEFORUS.sql"
+echo "[$(date '+%Y-%m-%d %H:%M:%S')] Starting mysqldump to $BACKUP_FILE..." >> "$LOG_FILE"
+mysqldump --user="$MYSQL_USER" --password="$MYSQL_PASSWORD" --host="$MYSQL_HOST" \
+  --single-transaction --flush-logs --all-databases > "$BACKUP_FILE" 2>> "$LOG_FILE"
+
+if [ $? -eq 0 ]; then
+  echo "[$(date '+%Y-%m-%d %H:%M:%S')] Full backup completed successfully." >> "$LOG_FILE"
+else
+  echo "[$(date '+%Y-%m-%d %H:%M:%S')] ERROR: Full backup failed." >> "$LOG_FILE"
+  exit 1
+fi
+
+# Compress the full backup file
+tar -czf "$BACKUP_FILE.tar.gz" -C "$FULL_BACKUP_DIR" "$(basename $BACKUP_FILE)" >> "$LOG_FILE" 2>&1
+
+if [ $? -eq 0 ]; then
+  rm -f "$BACKUP_FILE" # Remove the uncompressed file
+  echo "[$(date '+%Y-%m-%d %H:%M:%S')] Full backup compressed to $BACKUP_FILE.tar.gz" >> "$LOG_FILE"
+else
+  echo "[$(date '+%Y-%m-%d %H:%M:%S')] ERROR: Compression failed." >> "$LOG_FILE"
+  exit 1
+fi
+
+# Transfer the backup file to the remote VM
+echo "[$(date '+%Y-%m-%d %H:%M:%S')] Transferring backup file to remote VM..." >> "$LOG_FILE"
+scp -i ~/.ssh/vmConnection "$BACKUP_FILE.tar.gz" "$REMOTE_VM_USER@$REMOTE_VM_HOST:$REMOTE_VM_DIR" >> "$LOG_FILE" 2>&1
+
+if [ $? -eq 0 ]; then
+  echo "[$(date '+%Y-%m-%d %H:%M:%S')] Backup file transferred successfully to $REMOTE_VM_HOST:$REMOTE_VM_DIR" >> "$LOG_FILE"
+else
+  echo "[$(date '+%Y-%m-%d %H:%M:%S')] ERROR: Failed to transfer backup file to remote VM." >> "$LOG_FILE"
+  exit 1
+fi
+
+# Log end time
+echo "[$(date '+%Y-%m-%d %H:%M:%S')] Full backup script finished." >> "$LOG_FILE"
+````
+
+It sends the files to the other VM using ssh (scp).
 
 ## 6. Testing
 

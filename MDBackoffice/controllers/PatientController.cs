@@ -194,7 +194,7 @@ namespace MDBackoffice.Controllers
         {
             var token = HttpContext.Request.Headers.Authorization.ToString()?.Split(' ')[1];
 
-            if (string.IsNullOrWhiteSpace(token) || _userSvc.CheckUserRole(token, "Admin"))
+            if (string.IsNullOrWhiteSpace(token) || (!_userSvc.CheckUserRole(token, "Doctor") && !_userSvc.CheckUserRole(token, "Admin")))
             {
                 return BadRequest("Invalid authorization or user role.");
             }

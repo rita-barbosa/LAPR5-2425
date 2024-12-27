@@ -29,6 +29,7 @@ namespace MDBackofficeTests.integrationtests.patient
         private readonly Mock<UserService> _userServiceMock;
         private readonly Mock<EmailService> _emailServiceMock;
         private readonly Mock<ILoginAdapter> _loginAdapterMock;
+        private readonly Mock<IPatientMedicalRecordAdapter> _patientMRAMock;
 
 
         public CreatePatientIntegrationTests()
@@ -39,7 +40,7 @@ namespace MDBackofficeTests.integrationtests.patient
             identityOptionsMock.Setup(o => o.Value).Returns(new IdentityOptions());
             var identityErrorDescriberMock = new Mock<IdentityErrorDescriber>();
 
-            
+
             var userManagerMock = new Mock<UserManager<User>>(new Mock<IUserStore<User>>().Object, identityOptionsMock.Object, new Mock<IPasswordHasher<User>>().Object, new List<IUserValidator<User>> { new Mock<IUserValidator<User>>().Object }, new List<IPasswordValidator<User>> { new Mock<IPasswordValidator<User>>().Object }, new Mock<ILookupNormalizer>().Object, identityErrorDescriberMock.Object, new Mock<IServiceProvider>().Object, new Mock<ILogger<UserManager<User>>>().Object);
             var roleManagerMock = new Mock<RoleManager<Role>>(new Mock<IRoleStore<Role>>().Object, new List<IRoleValidator<Role>>(), new Mock<ILookupNormalizer>().Object, identityErrorDescriberMock.Object, new Mock<ILogger<RoleManager<Role>>>().Object);
 
@@ -55,18 +56,19 @@ namespace MDBackofficeTests.integrationtests.patient
                                                                new Mock<IAuthenticationSchemeProvider>().Object,
                                                                new Mock<IUserConfirmation<User>>().Object);
 
-            _userServiceMock = new Mock<UserService>(userManagerMock.Object, roleManagerMock.Object, _logServiceMock.Object, signinManagerMock.Object ,_emailServMock.Object, _configurationMock.Object, tokenServiceMock.Object, _loginAdapterMock.Object);
+            _userServiceMock = new Mock<UserService>(userManagerMock.Object, roleManagerMock.Object, _logServiceMock.Object, signinManagerMock.Object, _emailServMock.Object, _configurationMock.Object, tokenServiceMock.Object, _loginAdapterMock.Object);
             _emailServiceMock = new Mock<EmailService>(tokenServiceMock.Object, new Mock<IEmailAdapter>().Object);
+            _patientMRAMock = new Mock<IPatientMedicalRecordAdapter>();
 
         }
-        
+
 
         [Fact]
         public async Task CreateWithValidData_ReturnsCreatedResult_IntegrationControllerService()
         {
             // Pass mocked dependencies to PatientService
-            var _service = new PatientService(_unitOfWorkMock.Object, _logServiceMock.Object, 
-                                            _configurationMock.Object, _repoMock.Object, 
+            var _service = new PatientService(_unitOfWorkMock.Object, _logServiceMock.Object,
+                                            _configurationMock.Object, _repoMock.Object,
                                             _userServiceMock.Object, _emailServiceMock.Object);
 
             var _controller = new PatientController(_service, _userServiceMock.Object);
@@ -114,11 +116,11 @@ namespace MDBackofficeTests.integrationtests.patient
                 "Female",
                 "2004-12-15");
 
-             _unitOfWorkMock.Setup(u => u.CommitAsync()).ReturnsAsync(1);
+            _unitOfWorkMock.Setup(u => u.CommitAsync()).ReturnsAsync(1);
 
             var service = new PatientService(_unitOfWorkMock.Object, _logServiceMock.Object,
                                                 _configurationMock.Object, _repoMock.Object,
-                                                _userServiceMock.Object, _emailServiceMock.Object);     
+                                                _userServiceMock.Object, _emailServiceMock.Object);
 
             //Act
             var result = await service.CreatePatientProfile(dtoMock);
@@ -128,7 +130,7 @@ namespace MDBackofficeTests.integrationtests.patient
             Assert.Equal(dtoMock.Phone, result.Phone);
             Assert.Equal(dtoMock.Email, result.Email);
             Assert.Equal(dtoMock.Address, result.Address);
-            Assert.Equal(dtoMock.DateBirth, result.DateBirth);        
+            Assert.Equal(dtoMock.DateBirth, result.DateBirth);
             _repoMock.Verify(r => r.AddAsync(It.IsAny<Patient>()), Times.Once);
             _unitOfWorkMock.Verify(u => u.CommitAsync(), Times.Once);
 
