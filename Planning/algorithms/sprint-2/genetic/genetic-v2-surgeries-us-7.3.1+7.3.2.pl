@@ -4,13 +4,14 @@
 :-dynamic prob_crossover/1.
 :-dynamic prob_mutation/1.
 :-dynamic time_limit/1.
-:-dynamic better/2.
+:-dynamic better/4.
 %%
 :- dynamic availability/3.
-:- dynamic agenda_staff/3.
 :- dynamic agenda_staff1/3.
+:- dynamic agenda_staff_aux/3.
 :- dynamic agenda_operation_room/3.
 :- dynamic agenda_operation_room1/3.
+:- dynamic agenda_operation_room_aux/3.
 :- dynamic better_sol/5. %dynamic and auxiliary fact to storethe better solution in a certain moment
 :- dynamic final_time_heuristics/1.
 :- dynamic earliest_surgery/3.
@@ -48,7 +49,7 @@ timetable(n002,20241028,(500,1400)).
 timetable(n003,20241028,(400,1320)).
 timetable(a001,20241028,(500,1440)).
 
-agenda_operation_room(r101,20241028,[]). %180 + 30
+agenda_operation_room(r101,20241028,[(720, 850, mnt0002)]). %180 + 30
 agenda_operation_room(r102,20241028,[(720, 850, mnt0002),(1080, 1110, cnt1003)]). %60 + 30
 agenda_operation_room(r301,20241028,[(720, 780, mnt0002), (1080, 1110, cnt1003)]). %60 + 30
 
@@ -65,43 +66,49 @@ surgery_id(so100006,so3).
 surgery_id(so100007,so3).
 surgery_id(so100008,so3).
 
-assignment_surgery(so100001,d001).
-assignment_surgery(so100001,d004).
-assignment_surgery(so100001,n001).
-assignment_surgery(so100001,a001).
+assignment_surgery(so100001,d001).%
+assignment_surgery(so100001,d004).%
+assignment_surgery(so100001,n001).%
+assignment_surgery(so100001,a001).%
+
 assignment_surgery(so100002,d002).
 assignment_surgery(so100002,d004).
 assignment_surgery(so100002,n002).
 assignment_surgery(so100002,a001).
+
 assignment_surgery(so100003,d003).
 assignment_surgery(so100003,d004).
 assignment_surgery(so100003,n003).
 assignment_surgery(so100003,a001).
+
 assignment_surgery(so100004,d003).
 assignment_surgery(so100004,d004).
 assignment_surgery(so100004,n003).
 assignment_surgery(so100004,a001).
+
 assignment_surgery(so100005,d003).
 assignment_surgery(so100005,d004).
 assignment_surgery(so100005,n003).
 assignment_surgery(so100005,a001).
+
 assignment_surgery(so100006,d003).
 assignment_surgery(so100006,d004).
 assignment_surgery(so100006,n003).
 assignment_surgery(so100006,a001).
+
 assignment_surgery(so100007,d003).
 assignment_surgery(so100007,d004).
 assignment_surgery(so100007,n003).
 assignment_surgery(so100007,a001).
+
 assignment_surgery(so100008,d003).
 assignment_surgery(so100008,d004).
 assignment_surgery(so100008,n003).
 assignment_surgery(so100008,a001).
 
 % surgeries(NTasks).
-surgeries(4).  %% HAS TO BE AT LEAST 4!!
-
-% parameters initialization
+%surgeries(4).  %% HAS TO BE AT LEAST 4!!
+:-dynamic surgeries/1.
 reference_value(1100).
 time_limit(10).
 population(2).
@@ -109,6 +116,9 @@ generations(10).
 prob_crossover(0.5).
 prob_mutation(0.25).
 mix_percentage(0.2).
+
+% parameters initialization
+
 
 initialize:-write('Number of generations to consider stabilization: '),read(NG), 			
     (retract(generations(_));true), asserta(generations(NG)),
@@ -126,16 +136,51 @@ initialize:-write('Number of generations to consider stabilization: '),read(NG),
 	PM is P3/100, 
 	(retract(prob_mutation(_));true), asserta(prob_mutation(PM)).
 
-generate:-
-    retractall(better(_,_)),
-    asserta(better(_,1441)),
+generate :-
+    retractall(better(_,_,_,_)),
+    asserta(better(_,1441,_,_)),
     generate_population(Pop),
-    evaluate_population(Pop,PopValue),
-    order_population(PopValue,PopOrd),
+    evaluate_population(Pop, PopValue),
+    order_population(PopValue, PopOrd),
     generations(NG),
     get_time(Ti),
-    (generate_generation(Ti,0,NG,PopOrd);true),!.
+    (   generate_generation(Ti, 0, NG, PopOrd),
+        better(_,VX,_,_),
+        (VX \== 1441,update_staff_aux,update_operation_room_aux,!; true),!
+    ; true), 
+    !. 
 
+update_staff_aux :-
+    better(_, _, AgendaDoctors, _),
+    forall(member((D, Agenda), AgendaDoctors),
+           update_or_add_aux_staff(D, Agenda)).
+
+update_or_add_aux_staff(D, NewAgenda) :-
+    (   agenda_staff_aux(D, Day, ExistingAgenda)
+    ->  merge_agendas(ExistingAgenda, NewAgenda, MergedAgenda),
+        retract(agenda_staff_aux(D, Day, ExistingAgenda)),
+        assertz(agenda_staff_aux(D, Day, MergedAgenda))
+    ;   true
+    ).
+
+update_operation_room_aux :-
+    room_in_scheduling(R),
+    better(_, _, _, AgendaR),
+    forall(member((Agenda), AgendaR),
+            update_or_add_aux_room(R, Agenda)).
+
+update_or_add_aux_room(R, NewAgenda) :-
+    (   agenda_operation_room_aux(R, Day, ExistingAgenda)
+    ->  merge_agendas(ExistingAgenda, [NewAgenda], MergedAgenda),
+        retract(agenda_operation_room_aux(R, Day, ExistingAgenda)),
+        assertz(agenda_operation_room_aux(R, Day, MergedAgenda))
+    ;   true
+    ).
+
+merge_agendas(Existing, New, Merged) :-
+    append(Existing, New, Combined),
+    sort(Combined, Merged).
+    
 generate_generation(_, G, G, _).
 generate_generation(T,N,G,Pop):-  
     (((evaluate_time(T); evaluate_reference_value),true);
@@ -187,10 +232,10 @@ evaluate(Seq, V):-
     retractall(agenda_staff1(_, _, _)),
     retractall(agenda_operation_room1(_, _, _)),
     retractall(availability(_, _, _)),
-    findall(_, (agenda_staff(D, Day, Agenda), assertz(agenda_staff1(D, Day, Agenda))), _),
-    agenda_operation_room(Room, Day, Agenda),
-    assert(agenda_operation_room1(Room, Day, Agenda)),
-    findall(_, (agenda_staff1(D, Day, L), free_agenda0(L, LFA), adapt_timetable(D, Day, LFA, LFA2), assertz(availability(D, Day, LFA2))), _),
+    room_in_scheduling(Room),
+    findall(_, (agenda_staff_aux(D, Day, Agenda), assertz(agenda_staff1(D, Day, Agenda))), _),
+    agenda_operation_room_aux(Room, Day, Agenda), assert(agenda_operation_room1(Room, Day, Agenda)),
+    findall(_, (agenda_staff_aux(D, Day, L), free_agenda0(L, LFA), adapt_timetable(D, Day, LFA, LFA2), assertz(availability(D, Day, LFA2))), _),
     (can_schedule_surgeries(Seq,Room,Day,V),!;V is 1441).
 
 can_schedule_surgeries([], _, _, V):- V = 0, !.
@@ -226,10 +271,21 @@ bchange([X*VX,Y*VY|L1],[Y*VY|L2]):-
 bchange([X|L1],[X|L2]):-bchange(L1,L2).
 
 update_best_individual([X*VX|_]):-
-    better(_,Value),
+    better(_,Value,_,_),
     Value > VX,
-    retractall(better(_,_)),
-    asserta(better(X,VX)).
+    retractall(better(_,_,_,_)),
+    findall(Doctor,assignment_surgery(_,Doctor),LDoctors1),
+    remove_equals(LDoctors1,LDoctors),
+    get_staff_agenda(LDoctors,LDAgendas),
+    room_in_scheduling(Room),
+    agenda_operation_room1(Room,_,AgendaR),
+    asserta(better(X,VX,LDAgendas,AgendaR)).
+
+
+%-OBTAINS DOCTOR AGENDAS---------------------------------------------
+get_staff_agenda([],[]).
+get_staff_agenda([D|LD],[(D,AgD)|LAgD]):-agenda_staff1(D,_,AgD),get_staff_agenda(LD,LAgD).
+
 
 evaluate_time(T):-
     time_limit(Limit),
@@ -239,7 +295,7 @@ evaluate_time(T):-
 
 evaluate_reference_value:-
     reference_value(Value), 
-    better(_,V),
+    better(_,V,_,_),
     V =< Value.
 
 generate_crossover_points(P1,P2):- generate_crossover_points1(P1,P2).
@@ -420,34 +476,49 @@ schedule_operations_in_rooms([Room | RestRooms]):-
     assert(room_in_scheduling(Room)),
     findall(Id,operation_assigment(Id,Room),SurgeryList),
     (
-        length(SurgeryList, Len), Len >= 4,
+        length(SurgeryList, Len), Len >= 2,
         (
+            retractall(surgeries(_)),
+            asserta(surgeries(Len)),
             generate,
-            better(X,VX),
-            (VX \== 1441, write("Alert: was able to schedule all surgeries of room "), write(Room),write(">> Schedule="),write(X),nl,!
+            better(X,VX,AgS,AgR),
+            (
+                VX \== 1441, 
+                write("Alert: was able to schedule all surgeries of room "), write(Room),write(">> Schedule"),write(X),nl,
+                write('Staff='),write(AgS),nl,write('Room='),write(AgR),nl,!
             ; 
-            write(">> Warning: was not able to schedule surgeries of room "),write(Room),nl)
+                write(">> Warning: was not able to schedule surgeries of room "),write(Room), write(" Therefore, the following surgeries were not scheduled: "),write(SurgeryList),nl
+            )
         ),!
     ;
        (    
             not(SurgeryList = []),
-            write(">> Warning: this algorithm needs at least 4 surgeries in a room to work. "),
-            write("The following surgeries were not scheduled: "),write(SurgeryList),nl,!
+            write(">> Warning: this algorithm needs at least 2 surgeries in a room to work. "),
+            write("The following surgeries were not scheduled: "),write(SurgeryList),nl
         ; 
-            write('No Surgeries assigned to room '),write(Room),nl,
-            true
+            write('No Surgeries assigned to room '),write(Room),nl
        )
     ),
     schedule_operations_in_rooms(RestRooms).
 
 distribute_rooms(Day) :-
+    retractall(agenda_operation_room_aux(_,_,_)),
+    retractall(agenda_staff_aux(_,_,_)),
     retractall(occupied_time(_, _)),
     retractall(operation_assigment(_, _)),
+    findall(_,(agenda_staff(D,Day,Agenda),assertz(agenda_staff_aux(D,Day,Agenda))),_),
+    findall(_,(agenda_operation_room(R,Day,Agenda),assertz(agenda_operation_room_aux(R,Day,Agenda))),_),
     findall(OpCode, surgery_id(OpCode, _), OperationsList),
     findall(Room, agenda_operation_room(Room, Day, _), RoomsList),    % Find all rooms with agendas
     assert_occupied_times(RoomsList),     % Calculate and assert occupied time for each room
     distribute_operations_round_robin1(OperationsList, RoomsList),!,
     schedule_operations_in_rooms(RoomsList).
+
+
+remove_equals([],[]).
+remove_equals([X|L],L1):-member(X,L),!,remove_equals(L,L1).
+remove_equals([X|L],[X|L1]):-remove_equals(L,L1).
+
 
 distribute_operations_round_robin1([], _).
 distribute_operations_round_robin1([Operation | RemainingOps], RoomsList) :-

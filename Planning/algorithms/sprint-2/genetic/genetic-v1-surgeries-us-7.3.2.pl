@@ -52,8 +52,8 @@ surgery(so4,45,75,45).
 
 surgery_id(so100001,so2).
 surgery_id(so100002,so3).
-surgery_id(so100003,so4).
-surgery_id(so100004,so2).
+%surgery_id(so100003,so4).
+%surgery_id(so100004,so2).
 
 
 assignment_surgery(so100001,d001).
@@ -74,7 +74,7 @@ assignment_surgery(so100004,n003).
 assignment_surgery(so100004,a001).
 
 % surgeries(NTasks).
-surgeries(4).  %% HAS TO BE AT LEAST 4!!
+surgeries(2).  %% HAS TO BE AT LEAST 4!!
 
 % parameters initialization
 reference_value(1100).
