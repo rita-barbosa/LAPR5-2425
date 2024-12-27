@@ -29,7 +29,7 @@ export class OperationRequestScheduler implements OnInit {
   staffList: StaffWithFunction[] = [];
   selectedStaff: StaffWithFunction[] = [];
   roomList: Room[] = [];
-  selectedRoom !: Room;
+  selectedRoom: Room[] = [];
   operationRequestList: OperationRequest[] = [];
   selectedOperationRequest!: OperationRequest;
   algorithm = '';
@@ -37,7 +37,7 @@ export class OperationRequestScheduler implements OnInit {
 
   scheduleOperation !: SchedulingData;
   schedulingBackend: SchedulingBackend = {
-    roomID : '',
+    roomID : [],
     schedulingData : [],
     algorithm : '',
     date : ''
@@ -45,6 +45,7 @@ export class OperationRequestScheduler implements OnInit {
 
 
   storedToken = localStorage.getItem('user');
+  isRoomRestricted: boolean = false;
 
   constructor(private staffService: StaffService, private roomService : RoomService, private opRequestsService : OperationRequestService, private router: Router) {}
 
@@ -121,11 +122,20 @@ export class OperationRequestScheduler implements OnInit {
     }
   }
 
-  scheduleOperationRequest(){
+  scheduleOperationRequest() {
     this.schedulingBackend.algorithm = this.algorithm;
-    this.schedulingBackend.roomID = this.selectedRoom.roomNumber;
+
+    // Collect roomNumbers from the selectedRoom array
+    this.schedulingBackend.roomID = this.selectedRoom.map((room: any) => room.roomNumber);
+
     this.schedulingBackend.date = this.day.toString();
     this.opRequestsService.scheduleOperationRequest(this.schedulingBackend);
   }
 
+  updateAlgorithmOptions() {
+    this.isRoomRestricted = this.selectedRoom.length > 1;
+    if (this.isRoomRestricted && this.algorithm !== 'genetic-room-distribution') {
+      this.algorithm = 'genetic-room-distribution';
+    }
+  }
 }

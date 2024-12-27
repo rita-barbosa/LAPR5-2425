@@ -39,7 +39,7 @@ namespace MDBackoffice.Domain.Appointments
         public Appointment(OperationRequestId opRequestId, string roomNumber, string startTime, string endTime, string startDate, string endDate = null)
         {
             this.Id = new AppointmentId(Guid.NewGuid());
-            this.Status = AppointmentStatus.Scheduled;
+            this.Status = AppointmentStatus.GetStatusByDescription("Scheduled");
             this.OperationRequestId = opRequestId;
             this.RoomNumber = new RoomNumber(roomNumber);
             this.Slot = new Slot(startTime, endTime, startDate, endDate);

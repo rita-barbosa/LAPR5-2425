@@ -11,7 +11,7 @@ namespace MDBackoffice.Domain.OperationRequests
     {
          Task<List<SchedulesDto>> ScheduleOperationsAsync(
             Dictionary<ScheduleOperationRequestDto, List<ScheduleStaffDto>> operationsMap,
-            RoomDto room,
+            List<RoomDto> room,
             string day,
             string algorithm);
     }

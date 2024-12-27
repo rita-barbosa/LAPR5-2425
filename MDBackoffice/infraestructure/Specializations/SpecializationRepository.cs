@@ -47,8 +47,8 @@ namespace MDBackoffice.Infrastructure.Specializations
         {
             return await _context.Specializations
                 .Where(spec =>
-                    spec.Denomination != null &&
-                    spec.Denomination.Denomination == denomination)
+                    spec.Id != null &&
+                    spec.Id == new SpecializationCode(denomination))
                     .FirstOrDefaultAsync() ?? throw new NullReferenceException("Couldn't find the specialization with the denomination.");
         }
     }

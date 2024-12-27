@@ -312,7 +312,8 @@ namespace MDBackoffice.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { ex.Message });
+                Console.Write(ex.Message);
+                    return BadRequest(new { V = $"An unexpected error occurred: {ex.Message}" });
             }
         }
 

@@ -17,7 +17,7 @@ namespace MDBackoffice.Infrastructure.OperationRequests
     {
         public async Task<List<SchedulesDto>> ScheduleOperationsAsync(
             Dictionary<ScheduleOperationRequestDto, List<ScheduleStaffDto>> operationsMap,
-            RoomDto room,
+            List<RoomDto> room,
             string day,
             string algorithm)
         {
@@ -39,6 +39,10 @@ namespace MDBackoffice.Infrastructure.OperationRequests
             {
                 url = "http://localhost:8080/api/p/heuristic-highest-occupancy";
             }
+            else if (algorithm.Equals("genetic-room-distribution"))
+            {
+                url = "http://localhost:8080/api/p/room-distribution-and-genetic";
+            }
 
             using (var httpClient = new HttpClient())
             {
@@ -50,7 +54,14 @@ namespace MDBackoffice.Infrastructure.OperationRequests
                     var responseBody = response.Content.ReadAsStringAsync().Result;
                     Console.WriteLine(responseBody);
 
-                    return ConvertJsonToDto(responseBody);
+                    if (algorithm.Equals("genetic-room-distribution"))
+                    {
+                        return ConvertJsonGeneticToDto(responseBody);
+                    }
+                    else
+                    {
+                        return ConvertJsonToDto(responseBody);
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -60,24 +71,22 @@ namespace MDBackoffice.Infrastructure.OperationRequests
             }
         }
 
+
         private string CreateScheduleJson(Dictionary<ScheduleOperationRequestDto, List<ScheduleStaffDto>> operationsMap,
-            RoomDto room,
+            List<RoomDto> room,
             string day)
         {
-            var agRoom = new List<object>
+            var agRoom = room.Select(r => new
             {
-                new
+                roomId = r.RoomNumber,
+                date = day.Replace("-", ""),
+                occupied = r.MaintenanceSlots.Select(slot => new
                 {
-                    roomId = room.RoomNumber,
-                    date = day.Replace("-", ""),
-                    occupied = room.MaintenanceSlots.Select(slot => new
-                    {
-                        start = ConvertToMinutes(slot.StartTime),
-                        end = ConvertToMinutes(slot.EndTime),
-                        operationId = slot.Name ?? "occupied"
-                    }).ToList()
-                }
-            };
+                    start = ConvertToMinutes(slot.StartTime),
+                    end = ConvertToMinutes(slot.EndTime),
+                    operationId = slot.Name ?? "occupied"
+                }).ToList()
+            }).ToList();
 
 
             var staff = operationsMap
@@ -193,10 +202,36 @@ namespace MDBackoffice.Infrastructure.OperationRequests
             return $"{hours:D2}:{minutes:D2}:00";
         }
 
+
+        private List<SchedulesDto> ConvertJsonGeneticToDto(string json)
+        {
+            var parsedJson = JsonSerializer.Deserialize<Dictionary<string, JsonElement>>(json);
+
+            // Initialize the list to store the results
+            List<SchedulesDto> schedules = new List<SchedulesDto>();
+
+            // Check if "replies" exists and is an array
+            if (parsedJson.ContainsKey("replies") && parsedJson["replies"].ValueKind == JsonValueKind.Array)
+            {
+                foreach (var reply in parsedJson["replies"].EnumerateArray())
+                {
+                    // Check if RoomSchedule and StaffSchedule are not null
+                    if (reply.TryGetProperty("RoomSchedule", out var roomSchedule) && roomSchedule.ValueKind != JsonValueKind.Null &&
+                        reply.TryGetProperty("StaffSchedule", out var staffSchedule) && staffSchedule.ValueKind != JsonValueKind.Null)
+                    {
+                        // Call ConvertJsonToDto and combine both schedules
+                        var schedulesForReply = ConvertJsonToDto(reply.ToString());
+                        schedules.AddRange(schedulesForReply);
+                    }
+                }
+            }
+
+            return schedules;
+        }
+
+
         private List<SchedulesDto> ConvertJsonToDto(string json)
         {
-            Console.WriteLine(json);
-
             // Parse the JSON string into a dictionary
             var parsedJson = JsonSerializer.Deserialize<Dictionary<string, JsonElement>>(json);
 
@@ -225,7 +260,7 @@ namespace MDBackoffice.Infrastructure.OperationRequests
             };
 
             // Extract and deserialize the RoomSchedule from the JSON string
-            string roomScheduleRaw = parsedJson["RoomSchedule:"].GetString(); // Get the RoomSchedule string
+            string roomScheduleRaw = parsedJson["RoomSchedule"].GetString(); // Get the RoomSchedule string
             var roomScheduleList = JsonSerializer.Deserialize<List<JsonElement>>(roomScheduleRaw); // Deserialize into a list of JsonElement
 
             // Convert the RoomSchedule to SlotsDto

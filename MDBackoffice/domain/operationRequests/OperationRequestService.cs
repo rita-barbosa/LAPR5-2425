@@ -15,6 +15,7 @@ using MDBackoffice.Infrastructure.OperationRequests;
 using MDBackoffice.Domain.Rooms;
 using MDBackoffice.Domain.Appointments;
 using System.Text;
+using MDBackoffice.Domain.Specializations;
 
 namespace MDBackoffice.Domain.OperationRequests
 {
@@ -31,9 +32,10 @@ namespace MDBackoffice.Domain.OperationRequests
         private readonly IOperationSchedulerAdapter _planningAdapter;
         private readonly RoomService _roomService;
         private readonly AppointmentService _appointService;
+        private readonly SpecializationService _specService;
 
         public OperationRequestService(IUnitOfWork unitOfWork, IOperationRequestRepository repo, IStaffRepository repoSta, LogService logService, PatientService patientService, IPatientRepository repoPat, IOperationTypeRepository repoOpTy, UserService userService,
-                                            IOperationSchedulerAdapter adapter, RoomService room, AppointmentService appointmentService)
+                                            IOperationSchedulerAdapter adapter, RoomService room, AppointmentService appointmentService,SpecializationService specializationService )
         {
             this._unitOfWork = unitOfWork;
             this._repo = repo;
@@ -46,6 +48,7 @@ namespace MDBackoffice.Domain.OperationRequests
             this._planningAdapter = adapter;
             this._roomService = room;
             this._appointService = appointmentService;
+            _specService = specializationService;
         }
 
         public async Task<List<OperationRequestDto>> GetAllAsysnc()
@@ -320,12 +323,33 @@ namespace MDBackoffice.Domain.OperationRequests
                 throw new ArgumentNullException(nameof(scheduleInfoDto));
             }
 
-            var r = scheduleInfoDto.RoomID;
-
-            var room = await _roomService.GetRoomDtoById(r);
-            if (room == null)
+            DateTime dayDate;
+            if (!DateTime.TryParseExact(scheduleInfoDto.Date, "yyyy-MM-dd", null, System.Globalization.DateTimeStyles.None, out dayDate))
             {
-                throw new InvalidOperationException("Room not found.");
+                throw new InvalidOperationException("Invalid day format. Expected format is yyyy-MM-dd.");
+            }
+            var roomIds = scheduleInfoDto.RoomID;
+            var rooms = new List<RoomDto>();
+            foreach (var roomId in roomIds)
+            {
+                var room = await _roomService.GetRoomDtoById(roomId);
+                if (room == null)
+                {
+                    throw new InvalidOperationException($"Room with ID {roomId} not found.");
+                }
+
+                room.MaintenanceSlots = room.MaintenanceSlots
+                .Where(slot =>
+                {
+                    DateTime startDate, endDate;
+                    bool isStartDateValid = DateTime.TryParseExact(slot.StartDate, "dd/MM/yyyy HH:mm:ss", null, System.Globalization.DateTimeStyles.None, out startDate);
+                    bool isEndDateValid = DateTime.TryParseExact(slot.EndDate, "dd/MM/yyyy HH:mm:ss", null, System.Globalization.DateTimeStyles.None, out endDate);
+
+                    // If either the start date or end date matches the specified day
+                    return (isStartDateValid && startDate.Date == dayDate.Date) || (isEndDateValid && endDate.Date == dayDate.Date);
+                })
+                .ToList();
+                rooms.Add(room);
             }
 
             var operationsMap = new Dictionary<ScheduleOperationRequestDto, List<ScheduleStaffDto>>();
@@ -337,9 +361,9 @@ namespace MDBackoffice.Domain.OperationRequests
 
                 ScheduleOperationRequestDto scheduleOperationRequestDto = new ScheduleOperationRequestDto(staffForRequestEntry.OperationRequestID,
                                                                                                         opType.Name.OperationName,
-                                                                                                        opType.Phases[0].Duration.DurationMinutes.ToString(),
-                                                                                                        opType.Phases[1].Duration.DurationMinutes.ToString(),
-                                                                                                        opType.Phases[2].Duration.DurationMinutes.ToString());
+                                                                                                        opType.Phases[0].Duration.DurationMinutes,
+                                                                                                        opType.Phases[1].Duration.DurationMinutes,
+                                                                                                        opType.Phases[2].Duration.DurationMinutes);
 
                 var listStaff = new List<ScheduleStaffDto>();
 
@@ -352,29 +376,27 @@ namespace MDBackoffice.Domain.OperationRequests
                     }
                     List<Slot> freeSlots = staff.Slots;
                     var busySpots = GetBusyIntervals(freeSlots, scheduleInfoDto.Date);
-                    ScheduleStaffDto scheduleStaffDto = new ScheduleStaffDto(staffDto.Id, staffDto.Function, staffDto.SpecializationId, busySpots);
+                    SpecializationDto specDto = await _specService.GetByIdAsync(new SpecializationCode(staffDto.SpecializationId));
+                    ScheduleStaffDto scheduleStaffDto = new ScheduleStaffDto(staffDto.Id, staffDto.Function, specDto.Denomination, busySpots);
                     listStaff.Add(scheduleStaffDto);
                 }
 
                 operationsMap.Add(scheduleOperationRequestDto, listStaff);
             }
 
-            List<SchedulesDto> listSchedulesToDo = await _planningAdapter.ScheduleOperationsAsync(operationsMap, room, scheduleInfoDto.Date, scheduleInfoDto.Algorithm);
+            List<SchedulesDto> listSchedulesToDo = await _planningAdapter.ScheduleOperationsAsync(operationsMap, rooms, scheduleInfoDto.Date, scheduleInfoDto.Algorithm);
 
             await UpdateSchedules(listSchedulesToDo);
 
             StringBuilder sb = new StringBuilder();
-            sb.Append("DAY : ");
-            sb.Append(scheduleInfoDto.Date);
-            sb.Append("/");
-
-            sb.Append("ROOM ID : ");
-            sb.Append(scheduleInfoDto.RoomID);
-            sb.Append("/");
-
             foreach (SchedulesDto schedules in listSchedulesToDo)
             {
-                // Process Room Schedule
+                sb.Append("DAY : ");
+                sb.Append(schedules.Date);
+                sb.Append("/");
+                sb.Append("ROOM ID : ");
+                sb.Append(schedules.RoomId);
+                sb.Append("/");
                 sb.Append("Room Schedule:\n");
                 if (schedules.RoomSchedule.ContainsKey(schedules.RoomId))
                 {
@@ -388,9 +410,6 @@ namespace MDBackoffice.Domain.OperationRequests
                 {
                     sb.Append("No room schedule available.\n");
                 }
-
-                // Process Staff Schedule
-                
                 sb.Append(" | Staff Schedule:\n");
                 if (schedules.StaffSchedule != null && schedules.StaffSchedule.Count > 0)
                 {
@@ -410,7 +429,6 @@ namespace MDBackoffice.Domain.OperationRequests
                 }
             }
 
-            // Output the message
             string message = sb.ToString();
             return message;
         }
@@ -457,6 +475,21 @@ namespace MDBackoffice.Domain.OperationRequests
             // Process each schedule in the list
             foreach (var schedule in schedules)
             {
+                var roomId = schedule.RoomId;
+                // Process each slot in the room schedule to update the operation request
+                foreach (var roomEntry in schedule.RoomSchedule)
+                {
+                    var slots = roomEntry.Value;
+
+                    foreach (var slot in slots)
+                    {
+                        if (!string.IsNullOrEmpty(slot.Name) && slot.Name != "occupied")
+                        {
+                            await CreateSurgeryAppointment(slot.Name, roomId, slot, schedule.StaffSchedule.Keys.ToList());
+                          //  await UpdateOperationRequest(slot.Name);
+                        }
+                    }
+                }
                 // Process staff schedules
                 foreach (var staffId in schedule.StaffSchedule.Keys)
                 {
@@ -469,27 +502,12 @@ namespace MDBackoffice.Domain.OperationRequests
                 }
 
                 // Process room schedule (adding maintenance slots)
-                var roomId = schedule.RoomId;
+                
                 var roomBusySlots = schedule.RoomSchedule.ContainsKey(roomId)
                     ? schedule.RoomSchedule[roomId]
                     : new List<SlotsDto>();
                 // Update the room's schedule in the system (assuming a dictionary or similar structure exists)
                 await UpdateRoomSchedule(roomId, roomBusySlots);
-
-                 // Process each slot in the room schedule to update the operation request
-                foreach (var roomEntry in schedule.RoomSchedule)
-                {
-                    var slots = roomEntry.Value;
-
-                    foreach (var slot in slots)
-                    {
-                        if (!string.IsNullOrEmpty(slot.Name))
-                        {
-                            await CreateSurgeryAppointment(slot.Name, roomId, slot, schedule.StaffSchedule.Keys.ToList());
-                            await UpdateOperationRequest(slot.Name); 
-                        }
-                    }
-                }
             }
             await _unitOfWork.CommitAsync();
         }
@@ -515,21 +533,21 @@ namespace MDBackoffice.Domain.OperationRequests
 
             room.ChangeSlots(roomSchedule);
         }
-        
+
 
         private async Task UpdateOperationRequest(string opRequestId)
         {
             var opRequest = await _repo.GetByIdAsync(new OperationRequestId(opRequestId));
 
             opRequest.ChangeStatus("Planned");
-        } 
+        }
 
         private async Task CreateSurgeryAppointment(string opRequestId, string roomNumber, SlotsDto slot, List<string> staffList)
         {
-         var appointmentDto = new CreatingAppointmentDto(opRequestId, roomNumber, slot.StartTime,
-            slot.EndTime, slot.StartDate, slot.EndDate, staffList);
+            var appointmentDto = new CreatingAppointmentDto(opRequestId, roomNumber, slot.StartTime,
+               slot.EndTime, slot.StartDate, slot.EndDate, staffList);
 
-           await _appointService.AddAsync(appointmentDto);
+            await _appointService.CreateAppointment(appointmentDto);
         }
 
         private List<SlotsDto> CalculateFreeSlots(List<SlotsDto> busySlots, int startOfDay, int endOfDay)
