@@ -11,6 +11,7 @@ using MDBackoffice.Domain.Patients;
 using MDBackoffice.Domain.Rooms;
 using MDBackoffice.Domain.RoomTypes;
 using MDBackoffice.Domain.Shared;
+using MDBackoffice.Domain.Specializations;
 using MDBackoffice.Domain.StaffProfiles;
 using MDBackoffice.Domain.Tokens;
 using MDBackoffice.Domain.Users;
@@ -50,7 +51,7 @@ namespace MDBackofficeTests.controllertests
         private readonly Mock<ILoginAdapter> _loginAdapterMock;
          private readonly Mock<IOperationSchedulerAdapter> _schedulerAdapterMock;
         private readonly Mock<RoomService> _roomServiceMock;
-
+        private readonly Mock<SpecializationService> _specServiceMock = new Mock<SpecializationService>(new Mock<IUnitOfWork>().Object, new Mock<ISpecializationRepository>().Object);
         public OperationRequestControllerTests()
         {
             Mock<LogService> _logServiceMock = new Mock<LogService>(new Mock<IUnitOfWork>().Object, new Mock<ILogRepository>().Object);
@@ -93,7 +94,7 @@ namespace MDBackofficeTests.controllertests
 
             _service = new Mock<OperationRequestService>(_unitOfWorkMock.Object, _repoMock.Object,
                                                     _repoStaMock.Object, _logServiceMock.Object, _patientServiceMock.Object,
-                                                    _repoPatMock.Object, _repoOpTypeMock.Object, _userServiceMock.Object,  _schedulerAdapterMock.Object, _roomServiceMock.Object, _appointmentServiceMock.Object);
+                                                    _repoPatMock.Object, _repoOpTypeMock.Object, _userServiceMock.Object,  _schedulerAdapterMock.Object, _roomServiceMock.Object, _appointmentServiceMock.Object,_specServiceMock.Object);
 
             _controller = new OperationRequestController(_service.Object, _userServiceMock.Object);
         }
