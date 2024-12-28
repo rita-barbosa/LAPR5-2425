@@ -5,7 +5,7 @@ import sinon from "sinon";
 import { Container } from "typedi";
 import IMedicalConditionDTO from "../../../src/dto/IMedicalConditionDTO";
 import IMedicalConditionRepo from "../../../src/services/IRepos/IMedicalConditionRepo";
-import MedicalConditionService from "../../../src/services/MedicalConditionService";
+import MedicalConditionService from "../../../src/services/medicalConditionService";
 import { MedicalCondition } from "../../../src/domain/medicalCondition";
 import { MedicalConditionMap } from "../../../src/mappers/MedicalConditionMap";
 
