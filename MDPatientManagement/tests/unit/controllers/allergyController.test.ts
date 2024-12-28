@@ -1,11 +1,8 @@
 import "reflect-metadata";
-import { expect } from "chai";
 import { it } from 'mocha';
 import sinon from "sinon";
 import { Container } from "typedi";
 import { IAllergyDTO } from "../../../src/dto/IAllergyDTO";
-import IAllergyRepo from "../../../src/services/IRepos/IAllergyRepo";
-import AllergyService from "../../../src/services/AllergyService";
 import AllergyController from "../../../src/controllers/allergyController";
 import { IAllergyQueryFilterParametersDTO } from "../../../src/dto/IAllergyQueryFilterParametersDTO";
 import { Response, Request, NextFunction } from 'express';
@@ -56,7 +53,7 @@ describe("AllergyController Unit Tests", function () {
         };
         const res: Partial<Response> = {
             json: sinon.spy(),
-            status: sinon.stub().returnsThis(), // Mock `status` method and chain it
+            status: sinon.stub().returnsThis() // Mock `status` method and chain it
         };
         const next: Partial<NextFunction> = sinon.spy();
     
