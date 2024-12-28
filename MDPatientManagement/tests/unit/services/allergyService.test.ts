@@ -5,8 +5,7 @@ import sinon from "sinon";
 import { Container } from "typedi";
 import { IAllergyDTO } from "../../../src/dto/IAllergyDTO";
 import IAllergyRepo from "../../../src/services/IRepos/IAllergyRepo";
-import AllergyService from "../../../src/services/AllergyService";
-import { Allergy } from "../../../src/domain/allergy";
+import AllergyService from "../../../src/services/allergyService";
 import { AllergyMap } from "../../../src/mappers/AllergyMap";
 import { IAllergyQueryFilterParametersDTO } from "../../../src/dto/IAllergyQueryFilterParametersDTO";
 
