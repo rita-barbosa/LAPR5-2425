@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, input, OnInit, ViewChild } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { TableModule } from 'primeng/table';
@@ -229,6 +229,7 @@ closeEditing() : void {
   }
 
   addMedicalCondition(inputValue: string): void {
+    console.log(inputValue);
     if (inputValue.trim()) {
       const fullCondition = this.allFullMedicalConditions.find(
         (condition) => condition.designation.toLowerCase() === inputValue.toLowerCase()
@@ -248,6 +249,31 @@ closeEditing() : void {
       } else {
         console.warn('Condition not found in data.');
         this.message.messageService.add('Condition not found in data.')
+      }
+    }
+  }
+
+  addAllergy(inputValue: string): void {
+    console.log(inputValue);
+    if (inputValue.trim()) {
+      const fullAllergy = this.allFullAllergies.find(
+        (allergy) => allergy.designation.toLowerCase() === inputValue.toLowerCase()
+      );
+
+      if (fullAllergy) {
+        const allergyExists = this.medicalRecord.allergies.some(
+          (allergy) => allergy.designation.toLowerCase() === fullAllergy.designation.toLowerCase()
+        );
+
+        if (!allergyExists) {
+          this.medicalRecord.allergies.push({ ...fullAllergy });
+        } else {
+          console.warn('Allergy already exists in the list.');
+          this.message.messageService.add('Allergy already exists in the list.')
+        }
+      } else {
+        console.warn('Allergy not found in data.');
+        this.message.messageService.add('Allergy not found in data.')
       }
     }
   }
