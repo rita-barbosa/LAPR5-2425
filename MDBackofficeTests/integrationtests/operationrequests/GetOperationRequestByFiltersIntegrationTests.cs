@@ -47,7 +47,7 @@ namespace MDBackofficeTests.integrationtests.operationrequest
         private readonly Mock<ILoginAdapter> _loginAdapterMock;
         private readonly Mock<IOperationSchedulerAdapter> _schedulerAdapterMock;
         private readonly Mock<RoomService> _roomServiceMock;
-
+        private readonly Mock<SpecializationService> _specServiceMock = new Mock<SpecializationService>(new Mock<IUnitOfWork>().Object, new Mock<ISpecializationRepository>().Object);
         public GetOperationRequestByFiltersIntegrationTests()
         {
             Mock<LogService> _logServiceMock = new Mock<LogService>(new Mock<IUnitOfWork>().Object, new Mock<ILogRepository>().Object);
@@ -90,7 +90,7 @@ namespace MDBackofficeTests.integrationtests.operationrequest
 
             _service = new OperationRequestService(_unitOfWorkMock.Object, _repoMock.Object,
                                                     _repoStaMock.Object, _logServiceMock.Object, _patientServiceMock.Object,
-                                                    _repoPatMock.Object, _repoOpTypeMock.Object, _userServiceMock.Object, _schedulerAdapterMock.Object, _roomServiceMock.Object, _appointmentServiceMock.Object);
+                                                    _repoPatMock.Object, _repoOpTypeMock.Object, _userServiceMock.Object, _schedulerAdapterMock.Object, _roomServiceMock.Object, _appointmentServiceMock.Object, _specServiceMock.Object);
 
 
         }

@@ -12,14 +12,14 @@ namespace MDBackoffice.Domain.OperationRequests
 
         public string OperationTypeId { get; set; }
 
-        public string PrepTime { get; set; }
+        public int PrepTime { get; set; }
 
-        public string SurgTime { get; set; }
+        public int SurgTime { get; set; }
 
-        public string CleanTime { get; set; }
+        public int CleanTime { get; set; }
 
 
-        public ScheduleOperationRequestDto(string Id, string operationType, string prepTime, string surgTime, string cleanTime)
+        public ScheduleOperationRequestDto(string Id, string operationType, int prepTime, int surgTime, int cleanTime)
         {
             this.Id = Id;
             this.OperationTypeId = operationType;

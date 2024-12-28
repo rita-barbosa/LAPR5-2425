@@ -178,6 +178,7 @@ export class OperationRequestService {
         this.log(`Operation request success message: ${message.message}`); // Log the success message
       },
       error: (err) => {
+        console.log(err);
         this.handleError('Error in schedule operation request:', err);
       }
     });

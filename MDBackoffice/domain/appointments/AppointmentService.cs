@@ -39,8 +39,7 @@ namespace MDBackoffice.Domain.Appointments
             _appointmentStaffRepo = appointmentStaffRepo;
         }
 
-        public virtual async Task<AppointmentDto> AddAsync(CreatingAppointmentDto dto)
-        {
+        public async Task<AppointmentDto> CreateAppointment(CreatingAppointmentDto dto){
             OperationRequest operationRequest = await this._repoOpReq.GetByIdAsync(new OperationRequestId(dto.OperationRequestId)) ??
                 throw new BusinessRuleValidationException("Operation Request is invalid.");
 
@@ -57,25 +56,27 @@ namespace MDBackoffice.Domain.Appointments
                 Function function = requiredStaff.Function;
                 SpecializationCode specialization = requiredStaff.SpecializationId;
                 NumberStaff numberStaff = requiredStaff.StaffQuantity;
-
-                int total = 0;
-                
+               
                 foreach(string sta in dto.StaffList){
                    Staff staff = await this._repoSta.GetByIdAsync(new StaffId(sta)) ??
                         throw new BusinessRuleValidationException("Staff is invalid.");
 
-                        isStaffAvailable &= await _appointmentStaffRepo.IsStaffAvailableAsync(staff.Id, dto.StartTime, dto.EndTime);
-
-                    if(staff.Function.Equals(function) && staff.SpecializationId.Equals(specialization) && total < numberStaff.NumberRequired)
-                    {
-                        total++;
-                        staffs.Add(staff);
-                    } else {
-                        throw new BusinessRuleValidationException("The Staff is not required for this surgery.");
+                    isStaffAvailable &= await _appointmentStaffRepo.IsStaffAvailableAsync(staff.Id, dto.StartTime, dto.EndTime);
+                    
+                    if(staff.Function.Equals(function) && staff.SpecializationId.Equals(specialization))
+                    {                      
+                        if (staffs.Count <  numberStaff.NumberRequired){
+                          staffs.Add(staff);
+                        }
+                    } 
+                    if (staffs.Count >=  numberStaff.NumberRequired){
+                        break;
                     }
                 }
-            }
-
+                if (staffs.Count <  numberStaff.NumberRequired){
+                    throw new BusinessRuleValidationException("Not enough staff available for this surgery.");
+                }
+            }          
             if (!isStaffAvailable)
             {
                 throw new BusinessRuleValidationException("One or more staff members are not available for the selected time.");
@@ -90,7 +91,6 @@ namespace MDBackoffice.Domain.Appointments
             {
                 throw new BusinessRuleValidationException("The surgery room is not available for the selected time.");
             }
-
 
             var appointment = new Appointment(
                 operationRequest.Id,
@@ -113,11 +113,15 @@ namespace MDBackoffice.Domain.Appointments
 
             operationRequest.ChangeStatus("Planned");
 
-            await _unitOfWork.CommitAsync();
-  
             return new AppointmentDto(appointment.Id.AsGuid(), appointment.Status.Description.ToString(), appointment.OperationRequestId.Value, appointment.RoomNumber.AsString(),
                 appointment.Slot.TimeInterval.Start.ToString(), appointment.Slot.TimeInterval.End.ToString(), appointment.Slot.Date.Start.ToString(), appointment.Slot.Date.End.ToString(), staffIds
             );
+        }
+        public virtual async Task<AppointmentDto> AddAsync(CreatingAppointmentDto dto)
+        {
+            var apt = await CreateAppointment(dto);
+            await _unitOfWork.CommitAsync();
+            return apt;
         }
 
         public async Task<List<AppointmentDto>> GetAllAsync()

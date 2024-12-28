@@ -127,11 +127,15 @@ namespace MDBackoffice
                 options.Lockout.AllowedForNewUsers = true;
             });
 
-            services.AddDbContext<MDBackofficeDbContext>(options =>
-            options.UseMySql(
-            Configuration.GetConnectionString("DefaultConnection"),
-            new MySqlServerVersion(new Version(5, 7, 37)) // Adjust version as needed
-            )
+           services.AddDbContext<MDBackofficeDbContext>(options =>
+                options.UseMySql(
+                    Configuration.GetConnectionString("DefaultConnection"),
+                    new MySqlServerVersion(new Version(5, 7, 37)), // Adjust version as needed
+                    options => options.EnableRetryOnFailure(
+                        maxRetryCount: 10,      // Number of retries
+                        maxRetryDelay: TimeSpan.FromSeconds(20), // Delay between retries
+                        errorNumbersToAdd: null)     
+                )
             .ReplaceService<IValueConverterSelector, StronglyEntityIdValueConverterSelector>()
             );
             ConfigureMyServices(services);

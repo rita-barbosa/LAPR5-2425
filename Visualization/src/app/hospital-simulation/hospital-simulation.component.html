@@ -8,4 +8,18 @@
     <div id="parent">
         <canvas class="canvas" #myCanvas id="myCanvas"></canvas>
     </div>
+    <div *ngIf="overlayInfoVisible" id="roomInfoOverlay" class="overlay">
+        <p><strong>Room Number:</strong> {{ roomDetails?.roomNumber }}</p>
+        <p><strong>Room Type:</strong> {{ roomDetails?.type }}</p>
+        <p><strong>Capacity:</strong> {{ roomDetails?.capacity }}</p>
+        <p><strong>Available Equipment:</strong> {{ roomDetails?.availableEquipment }}</p>
+        <p><strong>Status:</strong> {{ roomDetails?.currentStatus }}</p>
+        <p><strong>Slots:</strong></p>
+        <ul>
+            <li *ngFor="let slot of roomDetails?.maintenanceSlots">
+                Start: {{ slot.startDate }} {{ slot.startTime }}, 
+                End: {{ slot.endDate }} {{ slot.endTime }}
+            </li>
+        </ul>
+    </div>
 </body>

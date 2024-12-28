@@ -45,6 +45,7 @@ public class OperationRequestServiceTests
     private readonly Mock<ILoginAdapter> _loginAdapterMock;
     private readonly Mock<IOperationSchedulerAdapter> _schedulerAdapterMock;
     private readonly Mock<RoomService> _roomServiceMock;
+    private readonly Mock<SpecializationService> _specServiceMock = new Mock<SpecializationService>(new Mock<IUnitOfWork>().Object, new Mock<ISpecializationRepository>().Object);
 
     public OperationRequestServiceTests()
     {
@@ -109,7 +110,7 @@ public class OperationRequestServiceTests
 
             _service = new OperationRequestService(_unitOfWorkMock.Object, _repoMock.Object,
                                                     _repoStaMock.Object, _logServiceMock.Object, _patientServiceMock.Object,
-                                                    _repoPatMock.Object, _repoOpTypeMock.Object, _userServiceMock.Object,  _schedulerAdapterMock.Object, _roomServiceMock.Object, _appointmentServiceMock.Object);
+                                                    _repoPatMock.Object, _repoOpTypeMock.Object, _userServiceMock.Object,  _schedulerAdapterMock.Object, _roomServiceMock.Object, _appointmentServiceMock.Object, _specServiceMock.Object);
     }
 
     [Fact]
@@ -177,7 +178,7 @@ public class OperationRequestServiceTests
 
         var service = new OperationRequestService(_unitOfWorkMock.Object, _repoMock.Object,
                                                     _repoStaMock.Object, _logServiceMock.Object, _patientServiceMock.Object,
-                                                    _repoPatMock.Object, _repoOpTypeMock.Object, _userServiceMock.Object, _schedulerAdapterMock.Object, _roomServiceMock.Object, _appointmentServiceMock.Object);
+                                                    _repoPatMock.Object, _repoOpTypeMock.Object, _userServiceMock.Object, _schedulerAdapterMock.Object, _roomServiceMock.Object, _appointmentServiceMock.Object,_specServiceMock.Object);
 
         //Act
         var result = await service.AddAsync(dtoMock);

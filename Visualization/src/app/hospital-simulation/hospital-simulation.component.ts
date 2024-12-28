@@ -13,6 +13,10 @@ import { ScheduleSlot } from '../domain/shedule-slot';
 import { RoomService } from '../services/room.service';
 import { RoomSchedule } from '../domain/room-schedule';
 import { SideBarDoctorComponent } from '../components/staff/doctor/sidebar-doctor/side-bar-doctor.component';
+import { Room } from '../domain/room';
+import { UserInfo } from 'src/app/domain/user-info';
+import { Router } from '@angular/router';
+import { CommonModule } from '@angular/common';
 
 type CameraParameters = {
   view: string;
@@ -35,7 +39,7 @@ type CameraParameters = {
 @Component({
   selector: 'app-hospital-simulation',
   standalone: true,
-  imports: [SideBarDoctorComponent],
+  imports: [SideBarDoctorComponent, CommonModule],
   templateUrl: './hospital-simulation.component.html',
   styleUrl: './hospital-simulation.component.css'
 })
@@ -43,6 +47,7 @@ type CameraParameters = {
 export class HospitalSimulationComponent implements AfterViewInit {
 
   @ViewChild('myCanvas') private canvasRef!: ElementRef<HTMLCanvasElement>;
+  storedToken = localStorage.getItem('user');
 
   constructor(private roomService: RoomService) {}
 
@@ -50,7 +55,11 @@ export class HospitalSimulationComponent implements AfterViewInit {
     return this.canvasRef.nativeElement;
   }
 
+  overlayInfoVisible = false;
+  private selectedRoom: string | null = null;
   roomIDs !: string[];
+  rooms : Room[] = [];
+  roomDetails: Room | null = null;
   roomSprites = new Map<string, Sprite>;
   roomLoadedPatients = new Map<string, boolean>;
   roomSchedule = new Map<string, Map<string, ScheduleSlot[]>>;
@@ -99,7 +108,6 @@ export class HospitalSimulationComponent implements AfterViewInit {
   private bedScale = new THREE.Vector3(0.03, 0.03, 0.025);
   private patientScale = new THREE.Vector3(0.005, 0.005, 0.005);
   private doorScale = new THREE.Vector3(0.4, 1, 0.6);
-
 
   private createScene(): void {
 
@@ -480,6 +488,13 @@ export class HospitalSimulationComponent implements AfterViewInit {
       this.mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
   });
     document.addEventListener('click', (event) => this.onDocumentMouseClick(event));
+    document.addEventListener('keydown', (event) => {
+      if (event.key.toLowerCase() === "i") {
+          this.toggleRoomInfoOverlay();
+      }  else {
+        console.warn("Nenhum quarto selecionado. Pressiona num quarto antes.");
+      }
+    });
   }
 
 
@@ -492,7 +507,9 @@ export class HospitalSimulationComponent implements AfterViewInit {
          const targetPosition = this.INTERSECTED?.getWorldPosition(new THREE.Vector3()).normalize();
         // const targetPosition = this.INTERSECTED?.position;
         this.moveCameraToRoomCenter(targetPosition);
-    }
+        this.selectedRoom = this.INTERSECTED?.name;
+        this.updateRoomInfoOverlay(this.selectedRoom);
+    } 
 }
 
 moveCameraToRoomCenter(targetPosition: THREE.Vector3 | undefined) {
@@ -516,6 +533,50 @@ moveCameraToRoomCenter(targetPosition: THREE.Vector3 | undefined) {
       })
       .start();
 }
+
+toggleRoomInfoOverlay() {
+  this.overlayInfoVisible = !this.overlayInfoVisible;
+  console.log("Overlay:", this.overlayInfoVisible ? "Visible" : "Ocult");
+
+  if (this.overlayInfoVisible && this.selectedRoom) {
+      const roomId = this.selectedRoom.replace("Patient-", "");
+      console.log("RoomId:", roomId);
+
+      this.roomDetails = this.rooms.find(r => r.roomNumber === roomId) || null;
+
+      if (this.roomDetails) {
+          console.log("Room information updated:", this.roomDetails);
+      } else {
+          console.error("The Room with RoomId was not found:", roomId);
+      }
+  } else {
+      this.roomDetails = null;
+  }
+}
+
+updateRoomInfoOverlay(selectedRoom: string) {
+  console.log("Updated overlay for the room:", selectedRoom);
+
+  const roomId = selectedRoom.replace("Patient-", "");
+  console.log("RoomId:", roomId);
+
+  this.roomDetails = this.rooms.find(r => r.roomNumber === roomId) || null;
+
+  if (this.roomDetails) {
+    this.roomDetails.maintenanceSlots = this.roomDetails?.maintenanceSlots.map(slot => ({
+      ...slot,
+      startDate: slot.startDate.split(' ')[0],
+      startTime: slot.startTime.split(':').slice(0, 2).join(':'),
+      endDate: slot.endDate.split(' ')[0],
+      endTime: slot.endTime.split(':').slice(0, 2).join(':')
+  }));
+    console.log(this.roomDetails.maintenanceSlots);
+    console.log("Room information updated:", this.roomDetails);
+  } else {
+    console.error("The Room with RoomId was not found:", roomId);
+  }
+}
+
 
 
   mouseWheel(event: WheelEvent) {
@@ -766,8 +827,20 @@ moveCameraToRoomCenter(targetPosition: THREE.Vector3 | undefined) {
     });
   }
 
+  loadRooms() {
+    this.roomService.getAllRooms().subscribe({
+        next: (roomList: Room[]) => {
+            this.rooms = roomList;
+        },
+        error: (err) => {
+            console.error("Error loading room data:", err);
+        }
+    });
+}
+
   async ngAfterViewInit(): Promise<void> {
     this.loadDataFromBackend();
+    this.loadRooms();
   }
 
   @HostListener('window:resize', ['$event'])

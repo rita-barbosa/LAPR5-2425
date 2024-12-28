@@ -26,6 +26,7 @@ using MDBackoffice.Domain.Rooms;
 using MDBackoffice.Domain.RoomTypes;
 using MDBackoffice.Domain.Appointments;
 using MDBackoffice.Domain.AppointmentStaffs;
+using MDBackoffice.Domain.Specializations;
 
 namespace MDBackofficeTests.integrationtests.operationrequests
 {
@@ -47,7 +48,7 @@ namespace MDBackofficeTests.integrationtests.operationrequests
         private readonly Mock<IOperationSchedulerAdapter> _schedulerAdapterMock;
         private readonly Mock<RoomService> _roomServiceMock;
         private readonly Mock<AppointmentService> _appointmentServiceMock;
-
+        private readonly Mock<SpecializationService> _specServiceMock = new Mock<SpecializationService>(new Mock<IUnitOfWork>().Object, new Mock<ISpecializationRepository>().Object);
         public DeleteOperationRequestIntegrationTests()
         {
             _logServiceMock = new Mock<LogService>(new Mock<IUnitOfWork>().Object, new Mock<ILogRepository>().Object);
@@ -101,7 +102,7 @@ namespace MDBackofficeTests.integrationtests.operationrequests
 
             var _service = new OperationRequestService(_unitOfWorkMock.Object, _repoMock.Object,
                                                     _repoStaMock.Object, _logServiceMock.Object, _patientServiceMock.Object,
-                                                    _repoPatMock.Object, _repoOpTypeMock.Object, _userServiceMock.Object, _schedulerAdapterMock.Object, _roomServiceMock.Object, _appointmentServiceMock.Object);
+                                                    _repoPatMock.Object, _repoOpTypeMock.Object, _userServiceMock.Object, _schedulerAdapterMock.Object, _roomServiceMock.Object, _appointmentServiceMock.Object, _specServiceMock.Object);
 
             var _controller = new OperationRequestController(_service, _userServiceMock.Object);
 
@@ -191,7 +192,7 @@ namespace MDBackofficeTests.integrationtests.operationrequests
 
             var _service = new OperationRequestService(_unitOfWorkMock.Object, _repoMock.Object,
                                                    _repoStaMock.Object, _logServiceMock.Object, _patientServiceMock.Object,
-                                                   _repoPatMock.Object, _repoOpTypeMock.Object, _userServiceMock.Object, _schedulerAdapterMock.Object, _roomServiceMock.Object, _appointmentServiceMock.Object);
+                                                   _repoPatMock.Object, _repoOpTypeMock.Object, _userServiceMock.Object, _schedulerAdapterMock.Object, _roomServiceMock.Object, _appointmentServiceMock.Object, _specServiceMock.Object);
 
             var _controller = new OperationRequestController(_service, _userServiceMock.Object);
 
@@ -274,7 +275,7 @@ namespace MDBackofficeTests.integrationtests.operationrequests
             // Arrange
             var _service = new OperationRequestService(_unitOfWorkMock.Object, _repoMock.Object,
                                                         _repoStaMock.Object, _logServiceMock.Object, _patientServiceMock.Object,
-                                                        _repoPatMock.Object, _repoOpTypeMock.Object, _userServiceMock.Object, _schedulerAdapterMock.Object, _roomServiceMock.Object, _appointmentServiceMock.Object);
+                                                        _repoPatMock.Object, _repoOpTypeMock.Object, _userServiceMock.Object, _schedulerAdapterMock.Object, _roomServiceMock.Object, _appointmentServiceMock.Object, _specServiceMock.Object);
 
 
             var staffId = "D202400001";
@@ -343,7 +344,7 @@ namespace MDBackofficeTests.integrationtests.operationrequests
             // Arrange
             var _service = new OperationRequestService(_unitOfWorkMock.Object, _repoMock.Object,
                                                    _repoStaMock.Object, _logServiceMock.Object, _patientServiceMock.Object,
-                                                   _repoPatMock.Object, _repoOpTypeMock.Object, _userServiceMock.Object, _schedulerAdapterMock.Object, _roomServiceMock.Object, _appointmentServiceMock.Object);
+                                                   _repoPatMock.Object, _repoOpTypeMock.Object, _userServiceMock.Object, _schedulerAdapterMock.Object, _roomServiceMock.Object, _appointmentServiceMock.Object, _specServiceMock.Object);
 
 
             var staffId = "D202400001";

@@ -28,12 +28,12 @@ namespace MDBackoffice.Domain.Specializations
 
         public async Task<SpecializationDto> GetByIdAsync(SpecializationCode id)
         {
-            var spe = await this._repo.GetByIdAsync(id);
+            var specialization = await this._repo.GetByIdAsync(id);
 
-            if (spe == null)
+            if (specialization == null)
                 return null;
 
-            return new SpecializationDto { Denomination = spe.Id.Value };
+            return new SpecializationDto { Code = specialization.Id.Value, Denomination = specialization.Denomination.ToString(), Description = specialization.Description.ToString() };
         }
 
         public async Task<SpecializationDto> AddAsync(SpecializationDto dto)

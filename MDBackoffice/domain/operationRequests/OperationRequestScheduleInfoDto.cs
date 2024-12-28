@@ -9,7 +9,7 @@ namespace MDBackoffice.Domain.OperationRequests
 {
     public class OperationRequestScheduleInfoDto
     {
-        public string RoomID { get; set; }
+        public List<string> RoomID { get; set; }
         public List<StaffForRequestEntry> SchedulingData { get; set; }
 
         public string Algorithm { get; set; }
@@ -19,7 +19,7 @@ namespace MDBackoffice.Domain.OperationRequests
         public OperationRequestScheduleInfoDto() { }
         public OperationRequestScheduleInfoDto(
             List<StaffForRequestEntry> staffForRequest,
-            string selectedRoomId,
+            List<string> selectedRoomId,
             string algorithm,
             string day)
         {
