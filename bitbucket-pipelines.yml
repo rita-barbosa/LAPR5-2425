@@ -1,9 +1,8 @@
-image: mcr.microsoft.com/dotnet/sdk:8.0
-
 pipelines:
   default:
     - step:
         name: 'Build and Test .NET Application'
+        image: mcr.microsoft.com/dotnet/sdk:8.0
         caches:
           - dotnetcore
         script:
@@ -16,6 +15,7 @@ pipelines:
           - test-reports/**
     - step:
         name: 'Build and Test Node.js Application'
+        image: node:18
         caches:
           - node
         script:
