@@ -169,6 +169,16 @@
           <br>
         </div>
 
+        <br>
+
+        <div>
+          <p-dropdown [options]="allAllergiesDesignations" #inputRefe placeholder="Select Allergies">
+          </p-dropdown>
+          <button type="button" (click)="addAllergy(inputRefe.value)">Add</button>
+        </div>
+
+        <br>
+
         <h2>Another informations</h2>
 
         <div *ngIf="!fullPatientMedicalRecord.description || fullPatientMedicalRecord.description.trim() === ''">
