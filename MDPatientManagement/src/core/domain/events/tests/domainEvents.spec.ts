@@ -1,4 +1,4 @@
-
+import { expect } from "chai";
 import * as sinon from 'sinon'
 import { DomainEvents } from '../DomainEvents';
 import { MockJobCreatedEvent } from './mocks/events/mockJobCreatedEvent'
