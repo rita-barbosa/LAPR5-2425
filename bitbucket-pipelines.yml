@@ -1,19 +1,6 @@
 pipelines:
   default:
     - step:
-        name: 'Build and Test .NET Application'
-        image: mcr.microsoft.com/dotnet/sdk:8.0
-        caches:
-          - dotnetcore
-        script:
-          - echo "Starting build and tests for .NET application..."
-          - REPORTS_PATH=./test-reports/build_${BITBUCKET_BUILD_NUMBER}
-          - dotnet restore
-          - dotnet build --no-restore --configuration Release
-          - dotnet test --no-build --configuration Release --test-adapter-path:. --logger:"junit;LogFilePath=$REPORTS_PATH/junit.xml"
-        artifacts:
-          - test-reports/**
-    - step:
         name: 'Build and Test Node.js Application'
         image: node:18
         caches:
@@ -26,3 +13,17 @@ pipelines:
           - npm test
         artifacts:
           - MDPatientManagement/test-reports/** # Adjust this path if necessary
+    - step:
+        name: 'Build and Test .NET Application'
+        image: mcr.microsoft.com/dotnet/sdk:8.0
+        caches:
+          - dotnetcore
+        script:
+          - echo "Starting build and tests for .NET application..."
+          - REPORTS_PATH=./test-reports/build_${BITBUCKET_BUILD_NUMBER}
+          - dotnet restore
+          - dotnet build --no-restore --configuration Release
+          - dotnet test --no-build --configuration Release --test-adapter-path:. --logger:"junit;LogFilePath=$REPORTS_PATH/junit.xml"
+        artifacts:
+          - test-reports/**
+
