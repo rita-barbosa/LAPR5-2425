@@ -18,7 +18,7 @@ export default class MedicalConditionService implements IMedicalConditionService
 
   public async createMedicalCondition(medicalConditionDTO: IMedicalConditionDTO): Promise<Result<IMedicalConditionDTO>> {
     try {
-        const medicalConditionOrError = await MedicalCondition.create( medicalConditionDTO );
+        const medicalConditionOrError = await MedicalCondition.create(medicalConditionDTO );
   
         if (medicalConditionOrError.isFailure) {
           return Result.fail<IMedicalConditionDTO>(medicalConditionOrError.errorValue());
