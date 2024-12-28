@@ -2,13 +2,15 @@ import "reflect-metadata";
 import { it } from 'mocha';
 import sinon from "sinon";
 import { Container } from "typedi";
-import IMedicalConditionDTO from "../../../src/dto/IMedicalConditionDTO";
-import MedicalConditionController from "../../../src/controllers/medicalConditionController";
-import IMedicalConditionService from "../../../src/services/IServices/IMedicalConditionService";
-import { Result } from "../../../src/core/logic/Result";
+import IMedicalConditionDTO from "../../src/dto/IMedicalConditionDTO";
+import MedicalConditionController from "../../src/controllers/medicalConditionController";
+import IMedicalConditionService from "../../src/services/IServices/IMedicalConditionService";
 import { Response, Request, NextFunction } from 'express';
+import { MedicalCondition } from "../../src/domain/medicalCondition";
+import { MedicalConditionMap } from "../../src/mappers/MedicalConditionMap";
+import IMedicalConditionRepo from "../../src/services/IRepos/IMedicalConditionRepo";
 
-describe("MedicalConditionController Unit Tests", function () {
+describe("MedicalCondition Controller+Service Integration Tests", function () {
     const sandbox = sinon.createSandbox();
     this.timeout(5000);
 
@@ -23,14 +25,14 @@ describe("MedicalConditionController Unit Tests", function () {
         };
         Container.set("logger", mockLogger);
 
-        let medicalConditionSchemaInstance = require("../../../src/persistence/schemas/medicalConditionSchema").default;
+        let medicalConditionSchemaInstance = require("../../src/persistence/schemas/medicalConditionSchema").default;
         Container.set("medicalConditionSchema", medicalConditionSchemaInstance);
 
-        let medicalConditionRepoClass = require("../../../src/repos/medicalConditionRepo").default;
+        let medicalConditionRepoClass = require("../../src/repos/medicalConditionRepo").default;
         let medicalConditionRepoInstance = Container.get(medicalConditionRepoClass);
         Container.set("MedicalConditionRepo", medicalConditionRepoInstance);
 
-        let medicalConditionServiceClass = require("../../../src/services/medicalConditionService").default;
+        let medicalConditionServiceClass = require("../../src/services/medicalConditionService").default;
         let medicalConditionServiceInstance = Container.get(medicalConditionServiceClass);
         Container.set("MedicalConditionService", medicalConditionServiceInstance);
     });
@@ -40,7 +42,7 @@ describe("MedicalConditionController Unit Tests", function () {
         sinon.restore();
     });
 
-    it("should create a medical condition successfully with medicalConditionService stub", async () => {
+    it("should create a medical condition successfully with medicalConditionRepo and medicalCondition stub", async () => {
         const medicalConditionDTO: IMedicalConditionDTO = {
             id: 'FB70.0',
             designation: 'valid designation',
@@ -56,9 +58,17 @@ describe("MedicalConditionController Unit Tests", function () {
         };
         let next: Partial<NextFunction> = () => { };
 
-        let medicalConditionServiceInstance = Container.get("MedicalConditionService") as IMedicalConditionService;
-        sinon.stub(medicalConditionServiceInstance, "createMedicalCondition").returns(Result.ok<IMedicalConditionDTO>(medicalConditionDTO));
+        sinon.stub(MedicalCondition, "create").resolves({
+            isFailure: false,
+            getValue: () => (medicalConditionDTO),
+        });
 
+        sinon.stub(MedicalConditionMap, "toDTO").returns(medicalConditionDTO);
+
+        let medicalConditionRepoInstance = Container.get("MedicalConditionRepo") as IMedicalConditionRepo;
+        sinon.stub(medicalConditionRepoInstance, "save").resolves(medicalConditionDTO);
+
+        let medicalConditionServiceInstance = Container.get("MedicalConditionService") as IMedicalConditionService;
         const ctrl = new MedicalConditionController(medicalConditionServiceInstance as IMedicalConditionService);
         // Act
         await ctrl.createMedicalCondition(<Request>req, <Response>res, <NextFunction>next);
