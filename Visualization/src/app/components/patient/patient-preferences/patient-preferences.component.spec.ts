@@ -6,6 +6,8 @@ import { CommonModule } from '@angular/common';
 import { SideBarPatientComponent } from '../sidebar-patient/side-bar-patient.component';
 import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
+import { PrivacyPolicyComponent } from '../../privacy-policy/privacy-policy.component';
+import { PatientService } from 'src/app/services/patient.service';
 
 describe('PatientPreferences', () => {
   let component: PatientPreferences;
@@ -16,7 +18,7 @@ describe('PatientPreferences', () => {
     const userServiceMock = {
       sendAccountDeleteRequest: jasmine.createSpy('sendAccountDeleteRequest').and.returnValue(of(null)),
     };
-
+    const patientServiceMock = jasmine.createSpyObj('PatientService', ['getPrivacyPolicyText']);
     const activatedRouteMock = {
       snapshot: {
         paramMap: {
@@ -26,9 +28,10 @@ describe('PatientPreferences', () => {
     };
 
     await TestBed.configureTestingModule({
-      imports: [PatientPreferences, CommonModule, MessageComponent, SideBarPatientComponent],
+      imports: [CommonModule, MessageComponent, SideBarPatientComponent,PrivacyPolicyComponent],
       providers: [
         { provide: UserService, useValue: userServiceMock },
+        { provide: PatientService, useValue: patientServiceMock },
         { provide: ActivatedRoute, useValue: activatedRouteMock }, // Provide the mock ActivatedRoute
       ],
     }).compileComponents();

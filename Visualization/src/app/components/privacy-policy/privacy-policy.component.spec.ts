@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { MessageComponent } from './privacy-policy.component';
+import { MessageComponent } from '../message/message.component';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 
