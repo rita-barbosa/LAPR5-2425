@@ -7,7 +7,7 @@ import IAllergyRepo from '../services/IRepos/IAllergyRepo';
 import { Allergy } from '../domain/allergy';
 import { AllergyCode } from '../domain/allergyCode';
 import { AllergyMap } from '../mappers/AllergyMap';
-import { IAllergyQueryFilterParameters } from '../dto/IAllergyQueryFilterParameters';
+import { IAllergyQueryFilterParametersDTO } from '../dto/IAllergyQueryFilterParametersDTO';
 import { AllergyDesignation } from '../domain/allergyDesignation';
 
 @Service()
@@ -19,7 +19,7 @@ export default class AllergyRepo implements IAllergyRepo {
     @Inject('logger') private logger
   ) { }
 
-  async findAllByParameters(allergyQueryParameters: IAllergyQueryFilterParameters): Promise<Allergy[]> {
+  async findAllByParameters(allergyQueryParameters: IAllergyQueryFilterParametersDTO): Promise<Allergy[]> {
     const allergyRecordsList: (IAllergyPersistence & Document<any, any, any> & {
       _id: Types.ObjectId;
     })[] = [];

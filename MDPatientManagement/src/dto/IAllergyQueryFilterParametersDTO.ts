@@ -1,6 +1,7 @@
 import { IAllergyFilter } from "./IAllergyFilter";
 
-export interface IAllergyQueryFilterParameters {
+export interface IAllergyQueryFilterParametersDTO {
     queryfilters: IAllergyFilter[];
   }
+
   

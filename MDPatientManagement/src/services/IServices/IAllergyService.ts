@@ -1,6 +1,6 @@
 import { Result } from "../../core/logic/Result";
 import { IAllergyDTO } from "../../dto/IAllergyDTO";
-import { IAllergyQueryFilterParameters } from "../../dto/IAllergyQueryFilterParameters";
+import { IAllergyQueryFilterParametersDTO } from "../../dto/IAllergyQueryFilterParametersDTO";
 import { IAllergyUpdateDTO } from "../../dto/IAllergyUpdateDTO";
 
 export default interface IAllergyService  {
@@ -8,6 +8,6 @@ export default interface IAllergyService  {
   createAllergy(allergyDTO: IAllergyDTO): Promise<Result<IAllergyDTO>>;
   updateAllergy(allergyDTO: IAllergyUpdateDTO): Promise<Result<IAllergyDTO>>;
   getAllAllergies(): Promise<Result<IAllergyDTO[]>>;
-  getAllergiesByFilters(arg0: IAllergyQueryFilterParameters): Result<IAllergyDTO[]> | PromiseLike<Result<IAllergyDTO[]>>;
+  getAllergiesByFilters(arg0: IAllergyQueryFilterParametersDTO): Result<IAllergyDTO[]> | PromiseLike<Result<IAllergyDTO[]>>;
 
 }

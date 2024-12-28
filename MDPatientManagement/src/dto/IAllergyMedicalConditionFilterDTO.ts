@@ -1,4 +1,4 @@
-export interface IAllergyMedicalConditionFilter {
+export interface IAllergyMedicalConditionFilterDTO {
     allergyDesignation?: string;
     medicalConditionDesignation?: string;
 }

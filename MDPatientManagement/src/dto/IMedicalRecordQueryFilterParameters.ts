@@ -1,6 +1,6 @@
-import { IAllergyMedicalConditionFilter } from "./IAllergyMedicalConditionFilter";
+import { IAllergyMedicalConditionFilterDTO } from "./IAllergyMedicalConditionFilterDTO";
 
 export interface IMedicalRecordQueryFilterParameters {
-  filters : IAllergyMedicalConditionFilter[];
+  filters : IAllergyMedicalConditionFilterDTO[];
 }
   

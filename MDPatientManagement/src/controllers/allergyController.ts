@@ -9,14 +9,10 @@ import IAllergyController from './IControllers/IAllergyController';
 import IAllergyService from '../services/IServices/IAllergyService';
 import { IAllergyDTO } from '../dto/IAllergyDTO';
 import { IAllergyUpdateDTO } from '../dto/IAllergyUpdateDTO';
-import { IAllergyQueryFilterParameters } from '../dto/IAllergyQueryFilterParameters';
+import { IAllergyQueryFilterParametersDTO } from '../dto/IAllergyQueryFilterParametersDTO';
 
 @Service()
 export default class AllergyController /*extends BaseController*/ implements IAllergyController  {
-  
-  // protected executeImpl(): Promise<void | any> {
-  //   throw new Error('Method not implemented.');
-  // }
   
   constructor(
       @Inject(config.services.allergy.name) private allergyServiceInstance : IAllergyService
@@ -26,7 +22,7 @@ export default class AllergyController /*extends BaseController*/ implements IAl
 
   async getAllergiesByFilter(req: Request, res: Response, next: NextFunction) {
     try {
-      const allergyOrError = await this.allergyServiceInstance.getAllergiesByFilters(req.body as IAllergyQueryFilterParameters) as Result<IAllergyDTO[]>;
+      const allergyOrError = await this.allergyServiceInstance.getAllergiesByFilters(req.body as IAllergyQueryFilterParametersDTO) as Result<IAllergyDTO[]>;
 
       if (allergyOrError.isFailure) {
         return res.status(404).send();

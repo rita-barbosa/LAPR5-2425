@@ -10,17 +10,16 @@ import IAllergyRepo from './IRepos/IAllergyRepo';
 import { Allergy } from '../domain/allergy';
 
 import { Result } from "../core/logic/Result";
-import { IAllergyQueryFilterParameters } from '../dto/IAllergyQueryFilterParameters';
+import { IAllergyQueryFilterParametersDTO } from '../dto/IAllergyQueryFilterParametersDTO';
 import { forEach } from 'lodash';
 
 @Service()
 export default class AllergyService implements IAllergyService{
   constructor(
-      @Inject(config.repos.allergy.name) private allergyRepo : IAllergyRepo,
-      @Inject('logger') private logger,
+      @Inject(config.repos.allergy.name) private allergyRepo : IAllergyRepo
   ) {}
 
-  async getAllergiesByFilters(arg0: IAllergyQueryFilterParameters): Promise<Result<IAllergyDTO[]>> {
+  async getAllergiesByFilters(arg0: IAllergyQueryFilterParametersDTO): Promise<Result<IAllergyDTO[]>> {
     try {
       const allergies = await this.allergyRepo.findAllByParameters(arg0);
       if (allergies.length == 0) {

@@ -23,12 +23,12 @@ describe("MedicalConditionController Unit Tests", function () {
         };
         Container.set("logger", mockLogger);
 
-        let medicalConditionSchemaInstance = require("../../../src/persistence/schemas/medicalConditionSchema").default;
-        Container.set("medicalConditionSchema", medicalConditionSchemaInstance);
+        // let medicalConditionSchemaInstance = require("../../../src/persistence/schemas/medicalConditionSchema").default;
+        // Container.set("medicalConditionSchema", medicalConditionSchemaInstance);
 
-        let medicalConditionRepoClass = require("../../../src/repos/medicalConditionRepo").default;
-        let medicalConditionRepoInstance = Container.get(medicalConditionRepoClass);
-        Container.set("MedicalConditionRepo", medicalConditionRepoInstance);
+        // let medicalConditionRepoClass = require("../../../src/repos/medicalConditionRepo").default;
+        // let medicalConditionRepoInstance = Container.get(medicalConditionRepoClass);
+        // Container.set("MedicalConditionRepo", medicalConditionRepoInstance);
 
         let medicalConditionServiceClass = require("../../../src/services/medicalConditionService").default;
         let medicalConditionServiceInstance = Container.get(medicalConditionServiceClass);
