@@ -11,7 +11,7 @@ import { MessageService } from '../../services/message.service';
   providedIn: 'root',
 })
 export class AuthService {
-    
+
   token = localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')!).token : null;
   httpOptions = {
     headers: new HttpHeaders({
@@ -21,7 +21,7 @@ export class AuthService {
    };
 
     constructor(private http: HttpClient,
-                private messageService: MessageService, 
+                private messageService: MessageService,
                 private router: Router) {
     }
 
@@ -29,7 +29,7 @@ export class AuthService {
       return (error: any): Observable<T> => {
         console.error(error); // log to console instead of just alerting
         this.log(`${operation} failed: ${error.message}`);
-    
+
         // Handle different error status codes
         if (error.status === 440) {
           this.log("Session expired.");
@@ -38,19 +38,19 @@ export class AuthService {
         } else if (error.status === 403) {
           this.log("You do not have permission to access this content.");
         }
-    
+
         return of(result as T);
       };
     }
 
   CreateUserPatient(email: string, password: string, phoneNumber: string) {
-    const url = environment + '/create-patient';
+    const url = environment.serverBaseUrl + '/create-patient';
     let userPatient: UserPatient = {
       email: email,
       password: password,
       phone: phoneNumber,
     };
-  
+
     this.http.post<{message: string}>(url, userPatient, this.httpOptions)
       .pipe(catchError(this.handleError<{message: string}>('Create user patient')) // Handle errors gracefully
       )
@@ -58,11 +58,11 @@ export class AuthService {
           this.log(data.message); // Log the message from the server
       });
   }
-  
+
 
   private log(message: string) {
     this.messageService.add(`${message}`);
   }
-  
-  
+
+
 }

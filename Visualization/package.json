@@ -27,6 +27,7 @@
     "angular-jwt": "^0.1.11",
     "marked": "^12.0.2",
     "ngx-markdown": "^18.1.0",
+    "pdfkit": "^0.15.2",
     "primeicons": "^7.0.0",
     "primeng": "^17.18.15",
     "rxjs": "~7.8.0",

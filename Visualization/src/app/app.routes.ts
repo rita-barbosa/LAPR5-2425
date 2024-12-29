@@ -45,6 +45,7 @@ import { PrivacyPolicyComponent } from './components/privacy-policy/privacy-poli
 import { ListAppointmentComponent } from './components/staff/doctor/list-appointment/list-appointment.component';
 
 import { ListPatientProfilesWithMedicalRecord } from './components/staff/doctor/list-patient-profiles-with-medical-records/list-patient-profiles-with-medical-records.component';
+import { ExportMedicalRecordComponent } from './components/patient/export-medical-record/export-medical-record.component';
 
 export const routes: Routes = [
   { path: '', component: LoginComponent, pathMatch: 'full' },
@@ -93,6 +94,7 @@ export const routes: Routes = [
   { path: 'privacy-policy', component: PrivacyPolicyComponent},
   { path: 'list-patient-profiles-with-medical-records', component: ListPatientProfilesWithMedicalRecord},
   { path: 'list-appointment', component: ListAppointmentComponent},
+  { path: 'export-medical-record', component: ExportMedicalRecordComponent},
   { path: '**', redirectTo: '' }
 ];
 
