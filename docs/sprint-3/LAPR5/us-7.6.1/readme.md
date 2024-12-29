@@ -92,7 +92,7 @@ The diagrams can be found in the [team decision views folder](../../team-decisio
 - _MDPatientManagement_<br>
 ![Process View - Level 3](diagrams/level-3-process-view-mdpatientmanagement.svg)
 
-**Note:**  The file format will remain as a .pdf, but it will require a password for access. We will use `iText7` to generate a password-protected PDF, secured using the patient's password.
+**Note:**  The file format will remain as a .pdf, but it will require a password for access. We will use `fs-extra, pdf-lib and minizip-asm.js` to generate a password-protected PDF, secured using the patient's password.
 
 #### Development View
 
@@ -103,7 +103,21 @@ The diagrams can be found in the [team decision views folder](../../team-decisio
 The diagrams can be found in the [team decision views folder](../../team-decisions/views/general-views.md#4-physical-view).
 ## 5. Implementation
 
-//TO BE DONE
+The patient will have to first login onto their account to use this functionality, after doing so they should choose the "Download Medical Record" option in the **Profile Settings** dropdown box:
+![alt text](image.png)
+
+Having done that, they will be presented with this following menu:
+![alt text](image-1.png)
+They should put the filepath for the desired zip file to go to and the password for the file.
+
+After doing so and clicking the button, the program will get their medical record and info, put it in the pdf as outlined above and make it available for the user in the specified folder.
+![alt text](image-2.png)
+
+After the file is made available, the patient will be able to open the zip and input a password when they decide to open the file:
+![alt text](image-3.png)
+
+In this example the pdf will look like this:
+![alt text](image-4.png)
 
 ## 6. Testing
 
