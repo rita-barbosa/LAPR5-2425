@@ -33,6 +33,7 @@ namespace MDBackofficeTests.controllertests
         private readonly Mock<IConfiguration> _configurationMock = new Mock<IConfiguration>();
         private readonly Mock<UserService> _userServiceMock;
         private readonly Mock<ILoginAdapter> _loginAdapterMock;
+        private readonly Mock<IPatientMedicalRecordAdapter> _patientMRAMock;
 
         public PatientControllerTests()
         {
@@ -59,9 +60,10 @@ namespace MDBackofficeTests.controllertests
                                                                new Mock<IUserConfirmation<User>>().Object);
             _userServiceMock = new Mock<UserService>(_userManagerMock.Object, roleManagerMock.Object, _logServiceMock.Object, signinManagerMock.Object, _emailServiceMock.Object, _configurationMock.Object, tokenServiceMock.Object, _loginAdapterMock.Object);
 
+            _patientMRAMock = new Mock<IPatientMedicalRecordAdapter>();
             _service = new Mock<PatientService>(_unitOfWorkMock.Object, _logServiceMock.Object,
                                             _configurationMock.Object, _repoMock.Object,
-                                            _userServiceMock.Object, _emailServiceMock.Object);
+                                            _userServiceMock.Object, _emailServiceMock.Object, _patientMRAMock.Object);
             _controller = new PatientController(_service.Object, _userServiceMock.Object);
         }
 
@@ -84,6 +86,7 @@ namespace MDBackofficeTests.controllertests
             {
                 HttpContext = context
             };
+            _patientMRAMock.Setup(m => m.CreateMedicalRecord(It.IsAny<MedicalRecordNumber>(),It.IsAny<List<string>>(), It.IsAny<List<string>>(),It.IsAny<string>())).ReturnsAsync(true);
             _userServiceMock.Setup(_userService => _userService.CheckUserRole("valid-token", "Admin")).Returns(false);
             _unitOfWorkMock.Setup(u => u.CommitAsync()).ReturnsAsync(1);
 

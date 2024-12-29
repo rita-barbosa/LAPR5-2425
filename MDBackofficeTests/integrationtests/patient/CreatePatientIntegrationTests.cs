@@ -69,7 +69,7 @@ namespace MDBackofficeTests.integrationtests.patient
             // Pass mocked dependencies to PatientService
             var _service = new PatientService(_unitOfWorkMock.Object, _logServiceMock.Object,
                                             _configurationMock.Object, _repoMock.Object,
-                                            _userServiceMock.Object, _emailServiceMock.Object);
+                                            _userServiceMock.Object, _emailServiceMock.Object, _patientMRAMock.Object);
 
             var _controller = new PatientController(_service, _userServiceMock.Object);
 
@@ -89,6 +89,8 @@ namespace MDBackofficeTests.integrationtests.patient
                 HttpContext = context
             };
             _userServiceMock.Setup(_userService => _userService.CheckUserRole("valid-token", "Admin")).Returns(false);
+
+            _patientMRAMock.Setup(m => m.CreateMedicalRecord(It.IsAny<MedicalRecordNumber>(),It.IsAny<List<string>>(), It.IsAny<List<string>>(),It.IsAny<string>())).ReturnsAsync(true);
 
             _unitOfWorkMock.Setup(u => u.CommitAsync()).ReturnsAsync(1);
             //Act
@@ -116,11 +118,13 @@ namespace MDBackofficeTests.integrationtests.patient
                 "Female",
                 "2004-12-15");
 
+            _patientMRAMock.Setup(m => m.CreateMedicalRecord(It.IsAny<MedicalRecordNumber>(),It.IsAny<List<string>>(), It.IsAny<List<string>>(),It.IsAny<string>())).ReturnsAsync(true);
+
             _unitOfWorkMock.Setup(u => u.CommitAsync()).ReturnsAsync(1);
 
             var service = new PatientService(_unitOfWorkMock.Object, _logServiceMock.Object,
                                                 _configurationMock.Object, _repoMock.Object,
-                                                _userServiceMock.Object, _emailServiceMock.Object);
+                                                _userServiceMock.Object, _emailServiceMock.Object, _patientMRAMock.Object);
 
             //Act
             var result = await service.CreatePatientProfile(dtoMock);

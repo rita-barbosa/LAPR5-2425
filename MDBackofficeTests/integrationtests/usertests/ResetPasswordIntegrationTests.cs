@@ -34,6 +34,8 @@ namespace MDBackofficeTests.integrationtests.usertests
         private readonly Mock<RoleManager<Role>> _roleManagerMock;
         private readonly Mock<EmailService> _emailServiceMock;
         private readonly Mock<ILoginAdapter> _loginAdapterMock;
+        private readonly Mock<IPatientMedicalRecordAdapter> _patientMRAMock;
+
         public ResetPasswordIntegrationTests()
         {
             var identityOptionsMock = new Mock<IOptions<IdentityOptions>>();
@@ -83,8 +85,9 @@ namespace MDBackofficeTests.integrationtests.usertests
                     _loginAdapterMock.Object
                 );
 
+            _patientMRAMock = new Mock<IPatientMedicalRecordAdapter>();
             _patientServiceMock = new Mock<PatientService>(_unitOfWorkMock.Object, _logServiceMock.Object, _configurationMock.Object, new Mock<IPatientRepository>().Object,
-                    _userService, _emailServiceMock.Object);
+                    _userService, _emailServiceMock.Object, _patientMRAMock.Object);
              _staffServiceMock = new Mock<StaffService>(_unitOfWorkMock.Object, _logServiceMock.Object, new Mock<IStaffRepository>().Object, new Mock<ISpecializationRepository>().Object,
                     _userManagerMock.Object, _configurationMock.Object, _emailServiceMock.Object, _userService);  
         }

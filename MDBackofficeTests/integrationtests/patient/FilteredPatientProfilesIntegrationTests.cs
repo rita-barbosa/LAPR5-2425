@@ -72,7 +72,7 @@ namespace MDBackofficeTests.integrationtests.patient
             // Arrange
             var _service = new PatientService(_unitOfWorkMock.Object, _logServiceMock.Object,
                                             _configurationMock.Object, _repoMock.Object,
-                                            _userServiceMock.Object, _emailServiceMock.Object);
+                                            _userServiceMock.Object, _emailServiceMock.Object, _patientMRAMock.Object);
 
             var _controller = new PatientController(_service, _userServiceMock.Object);
 
@@ -133,7 +133,7 @@ namespace MDBackofficeTests.integrationtests.patient
             //Arrange
             var _service = new PatientService(_unitOfWorkMock.Object, _logServiceMock.Object,
                                             _configurationMock.Object, _repoMock.Object,
-                                            _userServiceMock.Object, _emailServiceMock.Object);
+                                            _userServiceMock.Object, _emailServiceMock.Object, _patientMRAMock.Object);
 
             string firstName = "Duarte";
             string lastName = "Matos";
