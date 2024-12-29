@@ -41,6 +41,7 @@ namespace MDBackofficeTests.controllertests
         private readonly Mock<ISpecializationRepository> _specRepoMock;
         private readonly Mock<IPatientRepository> _patientRepoMock;
         private readonly Mock<ILoginAdapter> _loginAdapterMock;
+        private readonly Mock<IPatientMedicalRecordAdapter> _patientMRAMock;
 
         public UserControllerTests()
         {
@@ -84,8 +85,9 @@ namespace MDBackofficeTests.controllertests
             _userServiceMock = new Mock<UserService>(_userManagerMock.Object, _roleManagerMock.Object, _logServiceMock.Object, _signinManagerMock.Object, _emailServiceMock.Object, _configurationMock.Object, _tokenServiceMock.Object, _loginAdapterMock.Object);
 
             _patientRepoMock = new Mock<IPatientRepository>();
+            _patientMRAMock = new Mock<IPatientMedicalRecordAdapter>();
             _patientServiceMock = new Mock<PatientService>(_unitOfWorkMock.Object, _logServiceMock.Object, _configurationMock.Object, _patientRepoMock.Object,
-                    _userServiceMock.Object, _emailServiceMock.Object);
+                    _userServiceMock.Object, _emailServiceMock.Object, _patientMRAMock.Object);
             _staffRepoMock = new Mock<IStaffRepository>();
             _specRepoMock = new Mock<ISpecializationRepository>();
             _staffServiceMock = new Mock<StaffService>(_unitOfWorkMock.Object, _logServiceMock.Object, _staffRepoMock.Object, _specRepoMock.Object,
