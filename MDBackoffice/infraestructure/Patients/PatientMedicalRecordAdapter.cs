@@ -67,9 +67,6 @@ namespace MDBackoffice.Infrastructure.Patients
                 };
             }
 
-
-
-
             return JsonSerializer.Serialize(allData, new JsonSerializerOptions { WriteIndented = true });
         }
     }
