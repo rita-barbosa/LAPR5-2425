@@ -1,5 +1,3 @@
-import { StaffWithFunction } from "./staff-with-function";
-
 export interface SurgeryAppointment {
     operationRequestId: string,
     roomNumber: string,

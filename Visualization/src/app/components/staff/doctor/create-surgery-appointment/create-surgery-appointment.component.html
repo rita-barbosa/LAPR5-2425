@@ -11,16 +11,6 @@
             submitting:</p>
 
         <form #surgeryAppointmentForm="ngForm" (ngSubmit)="onSubmit(surgeryAppointmentForm)" novalidate>
-            <!-- Existing input fields -->
-            <!-- <div class="input-field">
-                <label for="operationRequestId">Select Operation Request:</label>
-                <select name="Operation Request" #operationRequestId="ngModel"
-                    [(ngModel)]="surgeryAppointment.operationRequestId" [disabled]="isSubmitted" required>
-                    <option *ngFor="let operationRequestId of operationRequestList" [value]="operationRequestId">
-                        {{ operationRequestId }}
-                    </option>
-                </select>
-            </div> -->
 
             <div class="input-field">
                 <label style="font-size: 16px;"><strong>Select Operation Request:</strong></label>
@@ -50,16 +40,6 @@
                     </p-table>
                 </div>
             </div>
-
-            <!-- <div class="input-field">
-                <label for="roomNumber">Select Room:</label>
-                <select name="Room" #roomNumber="ngModel" [(ngModel)]="surgeryAppointment.roomNumber"
-                    [disabled]="isSubmitted" required>
-                    <option *ngFor="let roomNumber of rooms" [value]="roomNumber">
-                        {{ roomNumber }}
-                    </option>
-                </select>
-            </div> -->
 
             <div class="input-field">
                 <label style="font-size: 16px;"><strong>Select the Room:</strong></label>

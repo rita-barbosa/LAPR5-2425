@@ -14,12 +14,10 @@ import { StaffWithFunction } from 'src/app/domain/staff-with-function';
 import { StaffService } from 'src/app/services/staff.service';
 import { TableModule } from 'primeng/table';
 
-
-
 @Component({
   selector: 'app-create-surgery-appointment',
   standalone: true,
-  imports: [SideBarDoctorComponent, MessageComponent, FormsModule, CommonModule, TableModule,],
+  imports: [SideBarDoctorComponent, MessageComponent, FormsModule, CommonModule, TableModule],
   templateUrl: './create-surgery-appointment.component.html',
   styleUrl: './create-surgery-appointment.component.css'
 })
@@ -110,8 +108,8 @@ export class CreateSurgeryAppointmentComponent {
   }
 
   onSubmit(form: NgForm): void {
-    this.isSubmitted = true;
     if (form.valid) {
+      this.isSubmitted = true;
       this.service.createSurgeryAppointment(
         this.surgeryAppointment.operationRequestId,
         this.surgeryAppointment.roomNumber,
