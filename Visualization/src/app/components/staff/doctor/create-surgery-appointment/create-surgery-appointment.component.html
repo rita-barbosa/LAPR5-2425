@@ -12,6 +12,7 @@
 
         <form #surgeryAppointmentForm="ngForm" (ngSubmit)="onSubmit(surgeryAppointmentForm)" novalidate>
 
+            <!-- Select Operation Request -->
             <div class="input-field">
                 <label style="font-size: 16px;"><strong>Select Operation Request:</strong></label>
                 <div *ngIf="operationRequestList && operationRequestList.length > 0">
@@ -26,11 +27,10 @@
                                 <th style="width: 15%;">Deadline</th>
                             </tr>
                         </ng-template>
-
                         <ng-template pTemplate="body" let-operationRequest>
                             <tr [pSelectableRow]="operationRequest">
                                 <td>
-                                    <p-tableRadioButton [value]="operationRequest.id"></p-tableRadioButton>
+                                    <p-tableRadioButton [value]="operationRequest.id" name="operationRadio"></p-tableRadioButton>
                                 </td>
                                 <td>{{ operationRequest.operationTypeId || '-' }}</td>
                                 <td>{{ operationRequest.priority || '-' }}</td>
@@ -39,8 +39,12 @@
                         </ng-template>
                     </p-table>
                 </div>
+                <div *ngIf="surgeryAppointmentForm.submitted && !surgeryAppointment.operationRequestId" class="error-message">
+                    <p>Operation Request is required.</p>
+                </div>                
             </div>
 
+            <!-- Select Room -->
             <div class="input-field">
                 <label style="font-size: 16px;"><strong>Select the Room:</strong></label>
                 <div *ngIf="rooms && rooms.length > 0">
@@ -54,11 +58,10 @@
                                 <th style="width: 10%;">Capacity</th>
                             </tr>
                         </ng-template>
-
                         <ng-template pTemplate="body" let-room>
                             <tr [pSelectableRow]="room">
                                 <td>
-                                    <p-tableRadioButton [value]="room.roomNumber" [name]="'roomRadio'"></p-tableRadioButton>
+                                    <p-tableRadioButton [value]="room.roomNumber" name="roomRadio"></p-tableRadioButton>
                                 </td>
                                 <td>{{ room.roomNumber || '-' }}</td>
                                 <td>{{ room.type || '-' }}</td>
@@ -67,9 +70,10 @@
                         </ng-template>
                     </p-table>
                 </div>
+                <div *ngIf="surgeryAppointmentForm.submitted && !surgeryAppointment.roomNumber" class="error-message">
+                    <p>Room selection is required.</p>
+                </div>
             </div>
-
-            <br>
 
             <!-- Select Staff -->
             <div class="input-field">
@@ -86,11 +90,10 @@
                                 <th style="width: 10%;">Specialization</th>
                             </tr>
                         </ng-template>
-
                         <ng-template pTemplate="body" let-staff>
                             <tr [pSelectableRow]="staff">
                                 <td>
-                                    <p-tableCheckbox [value]="staff.id"></p-tableCheckbox>
+                                    <p-tableCheckbox [value]="staff.id" name="staffCheck"></p-tableCheckbox>
                                 </td>
                                 <td>{{ staff.name || '-' }}</td>
                                 <td>{{ staff.id || '-' }}</td>
@@ -100,7 +103,11 @@
                         </ng-template>
                     </p-table>
                 </div>
+                <div *ngIf="surgeryAppointmentForm.submitted && !surgeryAppointment.staffList?.length" class="error-message">
+                    <p>Staff selection is required.</p>
+                </div>
             </div>
+
 
             <br>
 
@@ -135,7 +142,8 @@
                         
             <div class="button">
                 <button type="submit" class="add-button-submit"
-                    [disabled]="surgeryAppointmentForm.invalid || isSubmitted">Submit</button>
+                [disabled]="surgeryAppointmentForm.invalid || !surgeryAppointment.operationRequestId || !surgeryAppointment.roomNumber || !surgeryAppointment.staffList || !surgeryAppointment.startTime || !surgeryAppointment.endTime || !surgeryAppointment.startDate || !surgeryAppointment.endDate || isSubmitted">Submit</button>
+
                 <button type="button" class="add-button-clear" (click)="clearForm()">Clear Input</button>
             </div>
 
