@@ -35,6 +35,7 @@ Here is the updated table with the new data:
 | [7.2.13](1220841/us-7.2.13/readme.md) | Rita            | Afonso         |
 | [7.2.14](1220683/us-7.2.14/readme.md) | Matilde         | Ana            |
 | [7.2.15](1220841/us-7.2.15/readme.md) | Rita            | Afonso         |
+| [7.2.16](1220683/us-7.2.16/readme.md) | Matilde         | Ana            |
 | [7.3.1](us-7.3.1/readme.md)           | Ana/Matilde     | Ana            |
 | [7.3.2](us-7.3.2/readme.md)           | Afonso/Rita     | Afonso         |
 | 7.3.3                                 | Todos           | --             |

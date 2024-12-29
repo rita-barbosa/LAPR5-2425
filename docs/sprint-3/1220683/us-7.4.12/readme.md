@@ -8,6 +8,7 @@
   * [4. Design](#4-design)
   * [5. Implementation](#5-implementation)
     * [Database restoration validation Script - _restore_and_validate_database.sh_](#database-restoration-validation-script---_restore_and_validate_databasesh_)
+      * [**Observations:**](#observations)
       * [Additional Steps](#additional-steps)
 <!-- TOC -->
 
@@ -76,8 +77,8 @@ process ensures that backups are not only stored but are also reliable and ready
 # Configuration
 BACKUP_DIR="/backup/full"
 DB_USER="root"
-DB_PASSWORD="liXQcsVFLzhagSol4xXW"
-DB_NAME="mysql"
+DB_PASSWORD="hospital-project"
+DB_NAME="HospitalDB"
 LOG_FILE="/var/log/db_restore_validation.log"
 
 # Start logging
@@ -86,20 +87,18 @@ echo "----------------------------"
 echo "Backup Restore Validation - $(date)"
 echo "----------------------------"
 
-# Step 1: Find the most recent backup file
-echo "Finding the most recent backup file..."
-BACKUP_FILE=$(ls -t "$BACKUP_DIR"/*.tar.gz | head -n 1)
+# Step 1: Find the most recent full backup file
+echo "Finding the most recent full backup file..."
+BACKUP_FILE=$(ls -t "$BACKUP_DIR"/full_backup_*.tar.gz | head -n 1)
 if [ -z "$BACKUP_FILE" ]; then
-    echo "Error: No backup files found in $BACKUP_DIR."
+    echo "Error: No full backup files found in $BACKUP_DIR."
     exit 1
 fi
-echo "Most recent backup file: $BACKUP_FILE"
-
-# Extract the SQL file name from the archive
-EXTRACTED_FILE="${BACKUP_FILE%.tar.gz}"
+echo "Most recent full backup file: $BACKUP_FILE"
 
 # Step 2: Extract the backup file
 echo "Extracting backup file..."
+EXTRACTED_FILE="${BACKUP_DIR}/$(basename "$BACKUP_FILE" .tar.gz)"
 tar -xvzf "$BACKUP_FILE" -C "$BACKUP_DIR"
 if [ $? -ne 0 ]; then
     echo "Error: Failed to extract the backup file."
@@ -111,19 +110,19 @@ echo "Backup extracted successfully."
 echo "Restoring the database..."
 mysql -u "$DB_USER" -p"$DB_PASSWORD" "$DB_NAME" < "$EXTRACTED_FILE"
 if [ $? -ne 0 ]; then
-    echo "Error: Failed to restore the database."
+    echo "Error: Database restoration failed."
     exit 1
 fi
 echo "Database restored successfully."
 
 # Step 4: Validate the database state
 echo "Validating the database state..."
-QUERY_RESULT=$(mysql -u "$DB_USER" -p"$DB_PASSWORD" "$DB_NAME" -e "SELECT COUNT(*) AS user_count FROM users;")
+QUERY_RESULT=$(mysql -u "$DB_USER" -p"$DB_PASSWORD" "$DB_NAME" -e "SHOW TABLES;")
 if [ $? -ne 0 ]; then
     echo "Error: Query execution failed."
     exit 1
 fi
-echo "Query executed successfully. Result:"
+echo "Query executed successfully. Tables in the database:"
 echo "$QUERY_RESULT"
 
 # Step 5: Clean up extracted files (optional)
@@ -133,6 +132,12 @@ echo "Cleanup completed."
 
 echo "Backup restore and validation completed successfully."
 ```
+
+#### **Observations:**
+* **exec >> "$LOG_FILE" 2>&1** : appends (>>) all messages from file descriptor 2 (stderr) to the same destination of file descriptor 1 (stdout). In this case, the destination is the file referred in $LOG_FILE.
+* **$(ls -t "$BACKUP_DIR"/full_backup_*.tar.gz | head -n 1)** : lists the files in modification order, most recently modified first, matches their name and retrieves the first one (head).
+* **[ $? -ne 0 ]** : checks the exit status of the last executed command. If it is 0, then it indicates success, else wise error.
+
 
 #### Additional Steps
 

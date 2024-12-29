@@ -30,7 +30,10 @@
 
 **Client Clarifications:**
 
-> No clarifications.
+> **Question:** US7.4.6 - Here we understand that it is to delete all daily backups created in US7.4.3 that are more than 7 days old, except those that meet the dates: 1 per month of the last year, 1 per week of the last month, 1 per day of last 7 days, is that it? We had already done this in US7.4.4 - Can we combine the 2?
+> 
+> **Answer:** 7.4.6: the statement says "to have a lifetime of no more than 7 (seven) days, except for the US retention of the monthly and annual copies". In other words, you don't want a script that runs monthly, but rather a script that selects and eliminates backups older than 7 days, except those provided for in the retention criteria.
+For proof of concept, you can copy to other folders. And you can combine US 7.4.4 and 7.4.6 in a single task.
 
 ## 3. Analysis
 
@@ -48,19 +51,16 @@ full backup will go be then retrieved and moved to the weekly backup directory, 
 ### Daily erasure Script - _daily_management.sh_
 
 ```console
-#!/bin/bash
-
-
-#!/bin/bash
-
-# Directory where backups are stored
-FULL_BACKUP_PATH="/path/to/full_backup" ## to be defined
-
-# Find and delete files older than 7 days
-find "$FULL_BACKUP_PATH" -type f -mtime +7 -exec rm -f {} \;
-
-# Confirmation
-echo "Old backups deleted successfully."
+#!/bin/bash 
+ 
+# Directory where backups are stored 
+BACKUP_PATH="/backups/" 
+ 
+# Find and delete files older than 7 days 
+find "$BACKUP_PATH" -type f -mtime +7 -exec rm -f {} \; 
+ 
+# Confirmation 
+echo "Old backups deleted successfully." 
 ```
 
 #### Additional Steps
