@@ -52,6 +52,8 @@ namespace MDBackofficeTests.controllertests
          private readonly Mock<IOperationSchedulerAdapter> _schedulerAdapterMock;
         private readonly Mock<RoomService> _roomServiceMock;
         private readonly Mock<SpecializationService> _specServiceMock = new Mock<SpecializationService>(new Mock<IUnitOfWork>().Object, new Mock<ISpecializationRepository>().Object);
+        private readonly Mock<IPatientMedicalRecordAdapter> _patientMRAMock;
+
         public OperationRequestControllerTests()
         {
             Mock<LogService> _logServiceMock = new Mock<LogService>(new Mock<IUnitOfWork>().Object, new Mock<ILogRepository>().Object);
@@ -78,7 +80,9 @@ namespace MDBackofficeTests.controllertests
             _loginAdapterMock = new Mock<ILoginAdapter>();
 
             _userServiceMock = new Mock<UserService>(_userManagerMock.Object, roleManagerMock.Object, _logServiceMock.Object, signinManagerMock.Object, _emailServiceMock.Object, _configurationMock.Object, tokenServiceMock.Object, _loginAdapterMock.Object);
-            var _patientServiceMock = new Mock<PatientService>(_unitOfWorkMock.Object, _logServiceMock.Object, _configurationMock.Object, _repoPatMock.Object, _userServiceMock.Object, _emailServiceMock.Object);
+            _patientMRAMock = new Mock<IPatientMedicalRecordAdapter>();
+
+            var _patientServiceMock = new Mock<PatientService>(_unitOfWorkMock.Object, _logServiceMock.Object, _configurationMock.Object, _repoPatMock.Object, _userServiceMock.Object, _emailServiceMock.Object, _patientMRAMock.Object);
 
             _schedulerAdapterMock = new Mock<IOperationSchedulerAdapter>();
 

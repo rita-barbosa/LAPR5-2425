@@ -46,6 +46,7 @@ public class OperationRequestServiceTests
     private readonly Mock<IOperationSchedulerAdapter> _schedulerAdapterMock;
     private readonly Mock<RoomService> _roomServiceMock;
     private readonly Mock<SpecializationService> _specServiceMock = new Mock<SpecializationService>(new Mock<IUnitOfWork>().Object, new Mock<ISpecializationRepository>().Object);
+    private readonly Mock<IPatientMedicalRecordAdapter> _patientMRAMock;
 
     public OperationRequestServiceTests()
     {
@@ -94,8 +95,11 @@ public class OperationRequestServiceTests
                 tokenServiceMock.Object,
                 _loginAdapterMock.Object
             );
+
+        _patientMRAMock = new Mock<IPatientMedicalRecordAdapter>();
+
         _patientServiceMock = new Mock<PatientService>(_unitOfWorkMock.Object, _logServiceMock.Object, _configurationMock.Object, _repoPatMock.Object,
-                    _userServiceMock.Object, _emailServiceMock.Object);
+                    _userServiceMock.Object, _emailServiceMock.Object, _patientMRAMock.Object);
         _schedulerAdapterMock = new Mock<IOperationSchedulerAdapter>();
         
             var _repoRoomTypeMock = new Mock<IRoomTypeRepository>();
