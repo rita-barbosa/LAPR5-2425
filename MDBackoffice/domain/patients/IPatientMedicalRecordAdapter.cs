@@ -7,5 +7,7 @@ namespace MDBackoffice.Domain.Patients
     {
         Task<bool> CreateMedicalRecord(MedicalRecordNumber medicalRecordNumber, List<string> medicalConditions,
             List<string> allergies, string description);
+
+        Task<string> ExportMedicalRecordData(MedicalRecordNumber medicalRecordNumber, string filePath, string password);
     }
 }

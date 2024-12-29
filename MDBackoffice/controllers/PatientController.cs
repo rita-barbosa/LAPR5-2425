@@ -85,6 +85,33 @@ namespace MDBackoffice.Controllers
             }
         }
 
+        [HttpPost]
+        [Route("Download-Medical-Record")]
+        //[Authorize(Policy = "Admin")]
+        public async Task<ActionResult<PatientDto>> DownloadMedicalRecord(DownloadMedicalRecordDto dto)
+        {
+            try
+            {
+                var token = HttpContext.Request.Headers.Authorization.ToString()?.Split(' ')[1];
+
+                if (string.IsNullOrWhiteSpace(token) || _userSvc.CheckUserRole(token, "Patient"))
+                {
+                    return BadRequest("Invalid authorization or user role.");
+                }
+                var patient = await _service.DownloadMedicalRecord(dto, token);
+
+                return Ok(new { patient });
+            }
+            catch (BusinessRuleValidationException ex)
+            {
+                return BadRequest(new { ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { V = $"An unexpected error occurred: {ex.Message}" });
+            }
+        }
+
         [HttpPut]
         [Route("Delete-PatientProfile")]
         //[Authorize(Policy = "Admin")]

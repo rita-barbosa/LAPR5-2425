@@ -14,5 +14,6 @@ namespace MDBackoffice.Domain.Patients
         Task<Patient> GetPatientWithEmail(string email);
         Task<Patient> FindPatientWithEmailOrPhone(string email, string v1, string v2);
         Task<Patient> GetByIdWithAppointmentHistoryAsync(MedicalRecordNumber medicalRecordNumber);
+        Task<MedicalRecordNumber> GetMedicalRecordNumberOfPatientWithEmail(string email);
     }
 }

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Net.Http;
 using System.Text;
 using System.Text.Json;
@@ -30,6 +31,40 @@ namespace MDBackoffice.Infrastructure.Patients
                     Console.WriteLine(responseBody);
 
                     return true;
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error occurred: {ex.Message}");
+                    throw;
+                }
+            }
+        }
+
+        public async Task<string> ExportMedicalRecordData(MedicalRecordNumber medicalRecordNumber, string filePath, string password)
+        {
+            object allData = new
+            {
+                medicalRecordNumber = medicalRecordNumber.AsString(),
+                filepath = filePath,
+                pass = password
+            };
+
+            string json = JsonSerializer.Serialize(allData, new JsonSerializerOptions { WriteIndented = true });
+            Console.WriteLine(json);
+
+            string url = "http://localhost:4000/api/medicalRecord/export";
+
+            using (var httpClient = new HttpClient())
+            {
+                var content = new StringContent(json, Encoding.UTF8, "application/json");
+                try
+                {
+                    var response = httpClient.PostAsync(url, content).Result;
+                    response.EnsureSuccessStatusCode();
+                    var responseBody = response.Content.ReadAsStringAsync().Result;
+                    Console.WriteLine(responseBody);
+
+                    return responseBody;
                 }
                 catch (Exception ex)
                 {

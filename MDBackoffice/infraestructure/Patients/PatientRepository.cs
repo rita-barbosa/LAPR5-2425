@@ -159,5 +159,15 @@ namespace MDBackoffice.Infrastructure.Patients
 
             return patient.FirstOrDefault();
         }
+
+        public async Task<MedicalRecordNumber> GetMedicalRecordNumberOfPatientWithEmail(string email)
+        {
+            var patientId = await _context.Patients
+                .Where(p => p.Email.EmailAddress.Equals(email))
+                .Select(p => p.Id) 
+                .FirstOrDefaultAsync(); 
+
+            return patientId;
+        }
     }
 }

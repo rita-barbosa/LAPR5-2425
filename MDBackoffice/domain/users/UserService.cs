@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.ObjectPool;
 using Microsoft.IdentityModel.Tokens;
 
 namespace MDBackoffice.Domain.Users
@@ -492,6 +493,13 @@ namespace MDBackoffice.Domain.Users
            var userInfo = DecodeJwtToken(token);
 
            return userInfo.Email ?? throw new BusinessRuleValidationException("No logged in user.");
+        }
+
+        public async Task<bool> ConfirmUserPasswordAsync(string email, string password)
+        {
+            User user = await _userManager.FindByEmailAsync(email) ?? throw new BusinessRuleValidationException("Can't find the currently logged in user.");
+
+            return await this._userManager.CheckPasswordAsync(user, password);
         }
     }
 }

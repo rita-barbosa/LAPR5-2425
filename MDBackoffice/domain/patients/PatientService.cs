@@ -8,6 +8,9 @@ using Microsoft.AspNetCore.Mvc;
 using MDBackoffice.Domain.Logs;
 using Microsoft.Extensions.Configuration;
 using System.IO;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using iText.Kernel.Pdf;
 
 namespace MDBackoffice.Domain.Patients
 {
@@ -339,5 +342,29 @@ namespace MDBackoffice.Domain.Patients
                 return "";
             }
         }
+
+        public async Task<string> DownloadMedicalRecord(DownloadMedicalRecordDto dto, string token)
+    {
+        // Get the logged-in user's email using the provided token
+        string email = this._userService.GetLoggedInEmail(token);
+        if (string.IsNullOrEmpty(email))
+        {
+            throw new NullReferenceException("No token found or invalid.");
+        }
+
+        // Confirm the user's password
+        bool isPasswordValid = await this._userService.ConfirmUserPasswordAsync(email, dto.Password);
+        if (!isPasswordValid)
+        {
+            throw new InvalidOperationException("Incorrect password for this user.");
+        }
+
+        // Get the medical record number associated with the user's email
+        MedicalRecordNumber medicalRecordNumber = await this._repo.GetMedicalRecordNumberOfPatientWithEmail(email);
+
+        // Export the medical record data to a file
+        return await this._mrnAdapter.ExportMedicalRecordData(medicalRecordNumber, dto.FilePath, dto.Password);
+    }
+
     }
 }
