@@ -16,8 +16,9 @@ import { InvalidTargetIndexError, PDFDocument, PDFFont, rgb, StandardFonts } fro
 import { MedicalRecordId } from '../domain/medicalRecordId';
 import { ExceptionHandler } from 'winston';
 import path from 'path';
-import fs from 'fs';
-import AdmZip from 'adm-zip';
+import fs from 'fs-extra';
+import Minizip from "minizip-asm.js";
+
 
 @Service()
 export default class MedicalRecordService implements IMedicalRecordService {
@@ -249,24 +250,24 @@ export default class MedicalRecordService implements IMedicalRecordService {
     
         const pdfBytes = await pdfDoc.save();
         const pdfPath = path.join(exportInfo.filepath, "Medical_Record.pdf");
+        const compressedPath = path.join(exportInfo.filepath, "Medical_Record.zip");
         fs.writeFileSync(pdfPath, pdfBytes);
-    
-        // Create a zip file and add the PDF to it
-        const zip = new AdmZip();
-        zip.addFile("Medical_Record.pdf", pdfBytes);
-    
-        // Set a password for the ZIP file
-        const zipPassword = exportInfo.pass || "defaultPassword"; // Provide a default password if not provided
-        const zipPath = path.join(exportInfo.filepath, "Medical_Record.zip");
 
-        zip.writeZip(zipPath, {
-            zipPassword: zipPassword
-        });
-    
-        // Delete the PDF file after adding it to the zip
+        const mz = new Minizip();
+        const files = await fs.readdir(exportInfo.filepath);
+
+        for(let file of files) {
+            const filePath = `${exportInfo.filepath}/${file}`;
+            const fileData = await fs.readFile(pdfPath);
+            mz.append(file,fileData,{password: exportInfo.pass});
+        }
+
+        const data = new Uint8Array(mz.zip());
+        await fs.writeFile(compressedPath,data);
+
         fs.unlinkSync(pdfPath);
     
-        return Result.ok<string>(zipPath);
+        return Result.ok<string>(pdfPath);
     }
     
     private wrapText(text: string, maxWidth: number, font: PDFFont, fontSize: number): string[] {
