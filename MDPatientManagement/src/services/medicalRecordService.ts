@@ -11,6 +11,13 @@ import { AllergyCode } from '../domain/allergyCode';
 import { IMedicalRecordQueryFilterParameters } from '../dto/IMedicalRecordQueryFilterParameters';
 import IMedicalConditionRepo from './IRepos/IMedicalConditionRepo';
 import IAllergyRepo from './IRepos/IAllergyRepo';
+import { IExportMedicalRecordDTO } from '../dto/IExportMedicalRecordDTO';
+import { InvalidTargetIndexError, PDFDocument, PDFFont, rgb, StandardFonts } from 'pdf-lib';
+import { MedicalRecordId } from '../domain/medicalRecordId';
+import { ExceptionHandler } from 'winston';
+import path from 'path';
+import fs from 'fs';
+import AdmZip from 'adm-zip';
 
 @Service()
 export default class MedicalRecordService implements IMedicalRecordService {
@@ -20,7 +27,6 @@ export default class MedicalRecordService implements IMedicalRecordService {
         @Inject(config.repos.allergy.name) private allergyRepo: IAllergyRepo,
         @Inject('logger') private logger,
     ) { }
-
 
     async createMedicalRecord(medicalRecordDTO: IMedicalRecordDTO): Promise<Result<IMedicalRecordDTO>> {
         try {
@@ -145,4 +151,146 @@ export default class MedicalRecordService implements IMedicalRecordService {
       
         return updatedFilters;
       }
+
+      async exportMedicalRecord(exportInfo: IExportMedicalRecordDTO): Promise<Result<string>> {
+        const medicalRecord = await this.medicalRecordRepo.findByDomainId(new MedicalRecordId(exportInfo.medicalRecordNumber));
+    
+        if (!medicalRecord) {
+            throw new Error("Medical Record wasn't found with this Medical Record Number.");
+        }
+    
+        const pdfDoc = await PDFDocument.create();
+        const timesRomanFont = await pdfDoc.embedFont(StandardFonts.TimesRoman);
+        const boldFont = await pdfDoc.embedFont(StandardFonts.TimesRomanBold);
+    
+        let page = pdfDoc.addPage([500, 700]);
+        page.setFont(timesRomanFont);
+    
+        let yPosition = 650;
+        const lineHeight = 20;
+        const sectionSpacing = 30;
+    
+        const drawDivider = () => {
+            yPosition -= lineHeight / 2;
+            page.drawLine({
+                start: { x: 50, y: yPosition },
+                end: { x: 450, y: yPosition },
+                thickness: 1,
+                color: rgb(0.8, 0.8, 0.8),
+            });
+            yPosition -= lineHeight;
+        };
+    
+        page.setFont(boldFont);
+        page.drawText('Medical Record', { x: 50, y: yPosition, size: 24 });
+        yPosition -= sectionSpacing;
+    
+        page.setFont(timesRomanFont);
+        page.drawText(`Record Number: ${exportInfo.medicalRecordNumber}`, { x: 50, y: yPosition, size: 14 });
+        yPosition -= sectionSpacing;
+    
+        page.setFont(boldFont);
+        page.drawText('Medical Conditions:', { x: 50, y: yPosition, size: 16 });
+        yPosition -= lineHeight;
+    
+        page.setFont(timesRomanFont);
+        if (medicalRecord.medicalConditions.length === 0) {
+            page.drawText(`- No medical conditions associated.`, { x: 70, y: yPosition, size: 12 });
+        } else {
+            for (const conditionId of medicalRecord.medicalConditions) {
+                const medicalCondition = await this.medicalConditionRepo.findByDomainId(conditionId);
+                page.drawText(`- ${medicalCondition.designation}`, { x: 70, y: yPosition, size: 12 });
+                yPosition -= lineHeight;
+                if (yPosition < 50) {
+                    yPosition = 650;
+                    page = pdfDoc.addPage([500, 700]);
+                    page.setFont(timesRomanFont);
+                }
+            }
+        }
+        yPosition -= sectionSpacing;
+    
+        page.setFont(boldFont);
+        page.drawText('Allergies:', { x: 50, y: yPosition, size: 16 });
+        yPosition -= lineHeight;
+    
+        page.setFont(timesRomanFont);
+        if (medicalRecord.allergies.length === 0) {
+            page.drawText(`- No allergies associated.`, { x: 70, y: yPosition, size: 12 });
+        } else {
+            for (const allergyCode of medicalRecord.allergies) {
+                const allergy = await this.allergyRepo.findByCode(allergyCode);
+                page.drawText(`- ${allergy.designation.value}`, { x: 70, y: yPosition, size: 12 });
+                yPosition -= lineHeight;
+                if (yPosition < 50) {
+                    yPosition = 650;
+                    page = pdfDoc.addPage([500, 700]);
+                    page.setFont(timesRomanFont);
+                }
+            }
+        }
+        yPosition -= sectionSpacing;
+    
+        page.setFont(boldFont);
+        page.drawText('Additional Notes:', { x: 50, y: yPosition, size: 16 });
+        yPosition -= lineHeight;
+    
+        page.setFont(timesRomanFont);
+        const noteLines = this.wrapText(medicalRecord.description, 400, timesRomanFont, 12);
+        for (const line of noteLines) {
+            page.drawText(line, { x: 70, y: yPosition, size: 12 });
+            yPosition -= lineHeight;
+            if (yPosition < 50) {
+                yPosition = 650;
+                page = pdfDoc.addPage([500, 700]);
+                page.setFont(timesRomanFont);
+            }
+        }
+    
+        const pdfBytes = await pdfDoc.save();
+        const pdfPath = path.join(exportInfo.filepath, "Medical_Record.pdf");
+        fs.writeFileSync(pdfPath, pdfBytes);
+    
+        // Create a zip file and add the PDF to it
+        const zip = new AdmZip();
+        zip.addFile("Medical_Record.pdf", pdfBytes);
+    
+        // Set a password for the ZIP file
+        const zipPassword = exportInfo.pass || "defaultPassword"; // Provide a default password if not provided
+        const zipPath = path.join(exportInfo.filepath, "Medical_Record.zip");
+
+        zip.writeZip(zipPath, {
+            zipPassword: zipPassword
+        });
+    
+        // Delete the PDF file after adding it to the zip
+        fs.unlinkSync(pdfPath);
+    
+        return Result.ok<string>(zipPath);
+    }
+    
+    private wrapText(text: string, maxWidth: number, font: PDFFont, fontSize: number): string[] {
+        const words = text.split(' ');
+        const lines: string[] = [];
+        let currentLine = '';
+    
+        for (const word of words) {
+            const testLine = currentLine ? `${currentLine} ${word}` : word;
+            const testWidth = font.widthOfTextAtSize(testLine, fontSize);
+    
+            if (testWidth > maxWidth) {
+                lines.push(currentLine);
+                currentLine = word;
+            } else {
+                currentLine = testLine;
+            }
+        }
+    
+        if (currentLine) {
+            lines.push(currentLine);
+        }
+    
+        return lines;
+    }
+    
 }

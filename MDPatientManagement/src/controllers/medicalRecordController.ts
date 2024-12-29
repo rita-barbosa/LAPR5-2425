@@ -6,6 +6,7 @@ import { IMedicalRecordDTO } from "../dto/IMedicalRecordDTO";
 import { Result } from "../core/logic/Result";
 import IMedicalRecordController from "./IControllers/IMedicalRecordController";
 import { IMedicalRecordQueryFilterParameters } from "../dto/IMedicalRecordQueryFilterParameters";
+import { IExportMedicalRecordDTO } from "../dto/IExportMedicalRecordDTO";
 
 @Service()
 export default class MedicalRecordController implements IMedicalRecordController {
@@ -70,6 +71,22 @@ export default class MedicalRecordController implements IMedicalRecordController
     
             const medicalRecordDTO = medicalRecordOrError.getValue();
             return res.status(201).json( medicalRecordDTO );
+        }
+        catch (e) {
+            return next(e);
+        }
+    }
+
+    public async exportMedicalRecords(req: Request, res: Response, next: NextFunction) {
+        try {
+            const successMessage = await this.medicalRecordServiceInstance.exportMedicalRecord(req.body as IExportMedicalRecordDTO) as Result<string>;
+    
+            if (successMessage.isFailure) {
+            return res.status(404).send();
+            }
+
+            const filePath = successMessage.getValue();
+            return res.status(201).json( filePath );
         }
         catch (e) {
             return next(e);

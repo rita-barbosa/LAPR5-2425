@@ -42,4 +42,7 @@ export default (app: Router) => {
     route.post('/get-filtered-medical-records',
         (req, res, next) => ctrl.getFilteredMedicalRecords(req, res, next));
 
+    route.post('/export',
+        (req, res, next) => ctrl.exportMedicalRecords(req, res, next));
+
 };

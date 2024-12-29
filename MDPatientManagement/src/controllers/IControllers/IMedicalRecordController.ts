@@ -5,4 +5,5 @@ export default interface IMedicalConditionController {
     updateMedicalRecord(req: Request, res: Response, next: NextFunction);
     getFilteredMedicalRecords(req: Request, res: Response, next: NextFunction);
     getAllMedicalRecords(req: Request, res: Response, next: NextFunction);
+    exportMedicalRecords(req: Request, res: Response, next: NextFunction);
 }
