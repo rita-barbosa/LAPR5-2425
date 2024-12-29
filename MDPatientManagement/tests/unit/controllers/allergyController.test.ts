@@ -40,6 +40,99 @@ describe("AllergyController Unit Tests", function () {
         sandbox.restore();
         sinon.restore();
     });
+
+    it("should create an allergy successfully with allergyService stub", async () => {
+        const allergyDTO: IAllergyDTO = {
+            code: 'BZ04',
+            designation: 'Peanut Allergy',
+            description: 'An allergic reaction to peanuts.',
+        };
+    
+        let body = allergyDTO;
+        let req: Partial<Request> = {};
+        req.body = body;
+    
+        let res: Partial<Response> = {
+            json: sinon.spy()
+        };
+    
+        let next: Partial<NextFunction> = () => { };
+    
+        let allergyServiceInstance = Container.get("AllergyService") as IAllergyService;
+        sinon.stub(allergyServiceInstance, "createAllergy").returns(Result.ok<IAllergyDTO>(allergyDTO));
+    
+        const ctrl = new AllergyController(allergyServiceInstance as IAllergyService);
+    
+        // Act
+        await ctrl.createAllergy(<Request>req, <Response>res, <NextFunction>next);
+    
+        // Assert
+        sinon.assert.calledOnce(res.json);
+        sinon.assert.calledOnce(res.json);
+        sinon.assert.calledWith(res.json, sinon.match(allergyDTO)); 
+    });
+
+    it("should return 402 status if allergy creation fails", async function () {
+        const allergyDTO: IAllergyDTO = {
+            code: 'BZ04',
+            designation: 'Peanut Allergy',
+            description: 'An allergic reaction to peanuts.',
+        };
+    
+        let body = allergyDTO;
+        let req: Partial<Request> = {};
+        req.body = body;
+    
+        let res: Partial<Response> = {
+            json: sinon.spy(),
+            status: sinon.stub().returnsThis() 
+        };
+    
+        let next: Partial<NextFunction> = () => { };
+
+        const allergyServiceInstance = Container.get("AllergyService") as IAllergyService;
+        sinon.stub(allergyServiceInstance, "createAllergy").resolves(Result.fail<IAllergyDTO>("Error creating allergy"));
+    
+        const ctrl = new AllergyController(allergyServiceInstance as IAllergyService);
+    
+        // Act
+        await ctrl.createAllergy(<Request>req, <Response>res, <NextFunction>next);
+    
+        // Assert
+        sinon.assert.calledOnce(res.status as sinon.SinonSpy);
+        sinon.assert.calledWith(res.status as sinon.SinonSpy, 402);
+        sinon.assert.notCalled(res.json); 
+    });
+    
+
+    it("should call next with error if an exception is thrown", async function () {
+        const allergyDTO: IAllergyDTO = {
+            code: 'BZ04',
+            designation: 'Peanut Allergy',
+            description: 'An allergic reaction to peanuts.',
+        };
+
+        const req: Partial<Request> = {
+            body: allergyDTO,
+        };
+        const res: Partial<Response> = {
+            json: sinon.spy()
+        };
+        const next: Partial<NextFunction> = sinon.spy();
+
+
+        const allergyServiceInstance = Container.get("AllergyService") as IAllergyService;
+        sinon.stub(allergyServiceInstance, "createAllergy").rejects(new Error("Unexpected error"));
+
+        const ctrl = new AllergyController(allergyServiceInstance as IAllergyService);
+        // Act
+        await ctrl.createAllergy(<Request>req, <Response>res, <NextFunction>next);
+
+        // Assert
+        sinon.assert.calledOnce(next);
+        sinon.assert.calledWith(next, sinon.match.instanceOf(Error));
+    });
+
     it("should return allergies when found", async function () {
         const filter: IAllergyQueryFilterParametersDTO = {
             queryfilters: [
