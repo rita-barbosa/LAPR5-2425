@@ -10,6 +10,7 @@ import { AllergyMap } from "../../../src/mappers/AllergyMap";
 import { IAllergyQueryFilterParametersDTO } from "../../../src/dto/IAllergyQueryFilterParametersDTO";
 import { Result } from "../../../src/core/logic/Result";
 import { Allergy } from "../../../src/domain/allergy";
+import { IAllergyUpdateDTO } from "../../../src/dto/IAllergyUpdateDTO";
 
 describe("AllergyService Unit Tests", function () {
     const sandbox = sinon.createSandbox();
@@ -104,6 +105,90 @@ describe("AllergyService Unit Tests", function () {
             expect(error.message).to.equal("Database error");
         }
     });
+
+    it("should update an allergy successfully", async function () {
+        const allergyDTO: IAllergyUpdateDTO = {
+            code: 'BZ04',
+            designation: 'Seafood Allergy',
+            description: 'Green skin and mucus.',
+        };
+
+        const existingAllergy = {
+            code: 'BZ04',
+            designation: 'Peanut Allergy',
+            description: 'An allergic reaction to peanuts.',
+            changeDesignation: sinon.stub(),
+            changeDescription: sinon.stub(),
+        };
+
+        let allergyRepoInstance = Container.get("AllergyRepo") as IAllergyRepo;
+        sinon.stub(allergyRepoInstance, "findByCode").resolves(existingAllergy);
+        sinon.stub(allergyRepoInstance, "save").resolves();
+        sinon.stub(AllergyMap, "toDTO").returns({
+            code: allergyDTO.code,
+            designation: allergyDTO.designation,
+            description: allergyDTO.description,
+        });
+
+        const service = new AllergyService(allergyRepoInstance as IAllergyRepo);
+        const result = await service.updateAllergy(allergyDTO);
+
+        expect(result.isSuccess).to.be.true;
+        expect(result.getValue()).to.deep.equal({
+            code: allergyDTO.code,
+            designation: allergyDTO.designation,
+            description: allergyDTO.description,
+        });
+        expect(existingAllergy.changeDesignation.calledWith(allergyDTO.designation)).to.be.true;
+        expect(existingAllergy.changeDescription.calledWith(allergyDTO.description)).to.be.true;
+    });
+
+    it("should return a failure if allergy is not found", async function () {
+        const allergyDTO: IAllergyUpdateDTO = {
+            code: 'BZ04',
+            designation: 'Seafood Allergy',
+            description: 'Green skin and mucus.',
+        };
+
+        let allergyRepoInstance = Container.get("AllergyRepo") as IAllergyRepo;
+        sinon.stub(allergyRepoInstance, "findByCode").resolves(null);
+
+        const service = new AllergyService(allergyRepoInstance as IAllergyRepo);
+        const result = await service.updateAllergy(allergyDTO);
+
+        expect(result.isFailure).to.be.true;
+        expect(result.errorValue()).to.equal("Allergy not found");
+    });
+
+    it("should throw an error if there is an exception in the repository during save", async function () {
+        const allergyDTO: IAllergyUpdateDTO = {
+            code: 'BZ04',
+            designation: 'Seafood Allergy',
+            description: 'Green skin and mucus.',
+        };
+
+        const existingAllergy = {
+            code: 'BZ04',
+            designation: 'Peanut Allergy',
+            description: 'An allergic reaction to peanuts.',
+            changeDesignation: sinon.stub(),
+            changeDescription: sinon.stub(),
+        };
+
+        let allergyRepoInstance = Container.get("AllergyRepo") as IAllergyRepo;
+        sinon.stub(allergyRepoInstance, "findByCode").resolves(existingAllergy);
+        sinon.stub(allergyRepoInstance, "save").rejects(new Error("Database error"));
+
+        const service = new AllergyService(allergyRepoInstance as IAllergyRepo);
+
+        try {
+            await service.updateAllergy(allergyDTO);
+            expect.fail("Expected error to be thrown");
+        } catch (error) {
+            expect(error.message).to.equal("Database error");
+        }
+    });
+
     
 
     it("should return allergies when found", async function () {
