@@ -2,19 +2,18 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { TableModule } from 'primeng/table';
-import { MessageComponent } from '../../message/message.component';
-
-import { SideBarAdminComponent } from '../sidebar-admin/side-bar-admin.component';
+import { MessageComponent } from '../../../message/message.component';
 import { Allergy } from 'src/app/domain/Allergy';
 import { AllergyListingFilterParameters } from 'src/app/domain/allergy-listing-filter-parameters';
 import { AllergyQueryParameters } from 'src/app/domain/allergy-query-parameters';
 import { AllergyService } from 'src/app/services/allergy.service';
+import { SideBarDoctorComponent } from '../sidebar-doctor/side-bar-doctor.component';
 
 
 @Component({
   selector: 'app-list-patient-profiles',
   standalone: true,
-  imports: [SideBarAdminComponent, CommonModule, TableModule, FormsModule, MessageComponent],
+  imports: [SideBarDoctorComponent, CommonModule, TableModule, FormsModule, MessageComponent],
   templateUrl: './list-allergies.component.html',
   styleUrls: ['./list-allergies.component.css']
 })
