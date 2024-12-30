@@ -114,4 +114,124 @@ describe("MedicalConditionService Unit Tests", function () {
       expect(error.message).to.equal("Save error");
     }
   });
+
+  it("should return a medical condition by ID successfully", async () => {
+    // Arrange
+    const medicalConditionDTO: IMedicalConditionDTO = {
+      id: "FB70.0",
+      designation: "valid designation",
+      description: "valid description",
+      symptoms: ["Symptom 1", "Symptom 2"],
+    };
+  
+    const medicalConditionRepoInstance = Container.get("MedicalConditionRepo") as IMedicalConditionRepo;
+  
+    sinon.stub(medicalConditionRepoInstance, "findByDomainId").resolves({
+      id: "FB70.0",
+      designation: "valid designation",
+      description: "valid description",
+      symptoms: ["Symptom 1", "Symptom 2"],
+    });
+
+    sinon.stub(MedicalConditionMap, "toDTO").returns(medicalConditionDTO);
+  
+    const service = new MedicalConditionService(medicalConditionRepoInstance);
+  
+    // Act
+    const result = await service.getMedicalConditionById("FB70.0");
+  
+    // Assert
+    expect(result.isSuccess).to.be.true;
+    expect(result.getValue()).to.deep.equal(medicalConditionDTO);
+  });
+  
+  it("should return failure if medical condition by ID is not found", async () => {
+    // Arrange
+    const medicalConditionRepoInstance = Container.get("MedicalConditionRepo") as IMedicalConditionRepo;
+  
+    sinon.stub(medicalConditionRepoInstance, "findByDomainId").resolves(null);
+  
+    const service = new MedicalConditionService(medicalConditionRepoInstance);
+  
+    // Act
+    const result = await service.getMedicalConditionById("FB70.0");
+  
+    // Assert
+    expect(result.isFailure).to.be.true;
+    expect(result.errorValue()).to.equal("Allergy not found");
+  });
+  
+  it("should fetch all medical conditions successfully", async () => {
+    // Arrange
+    const medicalConditions = [
+      {
+        id: "FB70.0", designation: "Condition 1", description: "Description 1", symptoms: ["Symptom A", "Symptom B"],
+      },
+      {
+        id: "FB70.1", designation: "Condition 2", description: "Description 2", symptoms: ["Symptom C", "Symptom D"],
+      },
+    ];
+  
+    const medicalConditionDTOs: IMedicalConditionDTO[] = medicalConditions.map((condition) => ({
+      id: condition.id,
+      designation: condition.designation,
+      description: condition.description,
+      symptoms: condition.symptoms,
+    }));
+  
+    const medicalConditionRepoInstance = Container.get("MedicalConditionRepo") as IMedicalConditionRepo;
+  
+    sinon.stub(medicalConditionRepoInstance, "findAll").resolves(medicalConditions);
+  
+    sinon.stub(MedicalConditionMap, "toDTO").callsFake((condition) => ({
+      id: condition.id,
+      designation: condition.designation,
+      description: condition.description,
+      symptoms: condition.symptoms,
+    }));
+  
+    const service = new MedicalConditionService(medicalConditionRepoInstance);
+  
+    // Act
+    const result = await service.getAllMedicalConditions();
+  
+    // Assert
+    expect(result.isSuccess).to.be.true;
+    expect(result.getValue()).to.deep.equal(medicalConditionDTOs);
+  });
+  
+  it("should return failure if no medical conditions are found", async () => {
+    // Arrange
+    const medicalConditionRepoInstance = Container.get("MedicalConditionRepo") as IMedicalConditionRepo;
+  
+    sinon.stub(medicalConditionRepoInstance, "findAll").resolves([]);
+  
+    const service = new MedicalConditionService(medicalConditionRepoInstance);
+  
+    // Act
+    const result = await service.getAllMedicalConditions();
+  
+    // Assert
+    expect(result.isFailure).to.be.true;
+    expect(result.errorValue()).to.equal("Medical Conditions not found");
+  });
+  
+  it("should throw an error if fetching all medical conditions fails", async () => {
+    // Arrange
+    const medicalConditionRepoInstance = Container.get("MedicalConditionRepo") as IMedicalConditionRepo;
+  
+    sinon.stub(medicalConditionRepoInstance, "findAll").rejects(new Error("Database error"));
+  
+    const service = new MedicalConditionService(medicalConditionRepoInstance);
+  
+    // Act
+    try {
+      await service.getAllMedicalConditions();
+      throw new Error("Expected method to throw, but it didn't.");
+    } catch (error) {
+      // Assert
+      expect(error.message).to.equal("Database error");
+    }
+  });
+
 });

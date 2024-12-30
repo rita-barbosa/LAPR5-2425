@@ -69,7 +69,6 @@ export class ListPatientProfilesWithMedicalRecord implements OnInit {
     this.fetchAllergies();
     this.fetchMedicalConditions();
     this.fetchPatients();
-
     this.fetchPatientsMedicalRecords();
 }
 
@@ -137,17 +136,17 @@ fetchAllergies() {
   applyFilters(): void {
     this.fetchFilteredPatientMedicalRecords();
   }
-  
+
   fetchFilteredPatientMedicalRecords(): void {
     this.service.getFilteredMedicalRecords(this.filterParameters).subscribe({
       next: (records) => {
         this.medicalRecords = records;
-        console.log('Filtered Medical Records:', this.medicalRecords);  // Verifique os dados filtrados no console
-        
-        // Atualize os medicalRecordNumbers dentro do subscribe
+        console.log('Filtered Medical Records:', this.medicalRecords);
+
+
         this.medicalRecordNumbers = this.medicalRecords.map(record => record.medicalRecordNumber);
-        
-        // Agora que medicalRecordNumbers foi atualizado, chama a função de buscar os perfis
+
+
         this.fetchPatientProfilesByMedicalRecordNumber();
       },
       error: (error) => {
@@ -155,10 +154,10 @@ fetchAllergies() {
       },
     });
   }
-  
+
   fetchPatientProfilesByMedicalRecordNumber(): void {
-    console.log('Medical Record Numbers:', this.medicalRecordNumbers);  // Agora terá os números atualizados
-    
+    console.log('Medical Record Numbers:', this.medicalRecordNumbers);
+
     const patientQueryParameters: PatientQueryParameters = {
       queryfilters: this.medicalRecordNumbers.map((recordNumber) => ({
         firstName: '',
@@ -169,11 +168,11 @@ fetchAllergies() {
         medicalRecordNumber: recordNumber,
       })),
     };
-  
+
     this.service.getPatientsByFilters(patientQueryParameters).subscribe({
       next: (patients) => {
         this.patientList = patients;
-        console.log('Filtered Patient Profiles:', this.patientList);  // Verifique os dados de pacientes filtrados no console
+        console.log('Filtered Patient Profiles:', this.patientList);
       },
       error: (error) => {
         console.error('Error fetching patient profiles:', error);
@@ -206,11 +205,6 @@ fetchAllergies() {
 
   editMedicalRecord(): void {
     this.showMedicalRecord = false;
-    
-    // this.medicalRecord = {
-    //   ...this.fullPatientMedicalRecord,
-    //   description: this.fullPatientMedicalRecord.description || '' 
-    // };
     this.editingMedicalRecord = true;
 }
 

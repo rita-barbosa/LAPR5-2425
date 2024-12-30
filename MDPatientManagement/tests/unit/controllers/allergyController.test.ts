@@ -8,6 +8,7 @@ import { IAllergyQueryFilterParametersDTO } from "../../../src/dto/IAllergyQuery
 import { Response, Request, NextFunction } from 'express';
 import IAllergyService from "../../../src/services/IServices/IAllergyService";
 import { Result } from "../../../src/core/logic/Result";
+import { IAllergyUpdateDTO } from "../../../src/dto/IAllergyUpdateDTO";
 
 describe("AllergyController Unit Tests", function () {
     const sandbox = sinon.createSandbox();
@@ -131,6 +132,99 @@ describe("AllergyController Unit Tests", function () {
         // Assert
         sinon.assert.calledOnce(next);
         sinon.assert.calledWith(next, sinon.match.instanceOf(Error));
+    });
+
+    it("should return 201 status and allergy DTO when allergy is updated successfully", async function () {
+        const allergyDTO: IAllergyUpdateDTO = {
+            code: 'BZ04',
+            designation: 'Peanut Allergy',
+            description: 'An allergic reaction to peanuts.',
+        };
+
+        let body = allergyDTO;
+        let req: Partial<Request> = {};
+        req.body = body;
+
+        let res: Partial<Response> = {
+            json: sinon.spy(),
+            status: sinon.stub().returnsThis() // Mock status method and chain it
+        };
+
+        let next: Partial<NextFunction> = () => { };
+
+        const allergyServiceInstance = Container.get("AllergyService") as IAllergyService;
+        sinon.stub(allergyServiceInstance, "updateAllergy").resolves(Result.ok<IAllergyDTO>(allergyDTO));
+
+        const ctrl = new AllergyController(allergyServiceInstance as IAllergyService);
+
+        // Act
+        await ctrl.updateAllergy(<Request>req, <Response>res, <NextFunction>next);
+
+        // Assert
+        sinon.assert.calledOnce(res.status as sinon.SinonSpy);
+        sinon.assert.calledWith(res.status as sinon.SinonSpy, 201);
+        sinon.assert.calledOnce(res.json);
+        sinon.assert.calledWith(res.json, sinon.match(allergyDTO));
+    });
+
+    it("should return 404 status if allergy update fails", async function () {
+        const allergyDTO: IAllergyUpdateDTO = {
+            code: 'BZ04',
+            designation: 'Peanut Allergy',
+            description: 'An allergic reaction to peanuts.',
+        };
+
+        let body = allergyDTO;
+        let req: Partial<Request> = {};
+        req.body = body;
+
+        let res: Partial<Response> = {
+            json: sinon.spy(),
+            status: sinon.stub().returnsThis()
+        };
+
+        let next: Partial<NextFunction> = () => { };
+
+        const allergyServiceInstance = Container.get("AllergyService") as IAllergyService;
+        sinon.stub(allergyServiceInstance, "updateAllergy").resolves(Result.fail<IAllergyDTO>("Allergy not found"));
+
+        const ctrl = new AllergyController(allergyServiceInstance as IAllergyService);
+
+        // Act
+        await ctrl.updateAllergy(<Request>req, <Response>res, <NextFunction>next);
+
+        // Assert
+        sinon.assert.calledOnce(res.status as sinon.SinonSpy);
+        sinon.assert.calledWith(res.status as sinon.SinonSpy, 404);
+        sinon.assert.notCalled(res.json);
+    });
+
+    it("should call next with error if an exception is thrown during allergy update", async function () {
+        const allergyDTO: IAllergyUpdateDTO = {
+            code: 'BZ04',
+            designation: 'Peanut Allergy',
+            description: 'An allergic reaction to peanuts.',
+        };
+
+        const req: Partial<Request> = {
+            body: allergyDTO,
+        };
+        const res: Partial<Response> = {
+            json: sinon.spy()
+        };
+        const next: Partial<NextFunction> = sinon.spy();
+
+        const allergyServiceInstance = Container.get("AllergyService") as IAllergyService;
+        sinon.stub(allergyServiceInstance, "updateAllergy").rejects(new Error("Unexpected error"));
+
+        const ctrl = new AllergyController(allergyServiceInstance as IAllergyService);
+
+        // Act
+        await ctrl.updateAllergy(<Request>req, <Response>res, <NextFunction>next);
+
+        // Assert
+        sinon.assert.calledOnce(next);
+        sinon.assert.calledWith(next, sinon.match.instanceOf(Error)); 
     });
 
     it("should return allergies when found", async function () {

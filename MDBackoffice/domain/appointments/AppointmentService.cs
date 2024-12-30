@@ -152,7 +152,7 @@ namespace MDBackoffice.Domain.Appointments
 
 
 
-        public async Task<AppointmentDto> UpdateAsync(UpdateAppointmentDto dto)
+        public virtual async Task<AppointmentDto> UpdateAsync(UpdateAppointmentDto dto)
         {
             if (dto == null) throw new ArgumentNullException(nameof(dto));
 
@@ -209,9 +209,9 @@ namespace MDBackoffice.Domain.Appointments
                 
                 foreach(string sta in staffsToTested){
                    Staff staff = await this._repoSta.GetByIdAsync(new StaffId(sta)) ??
-                        throw new BusinessRuleValidationException("Staff is invalid.");
+                        throw new BusinessRuleValidationException("Staff is invalid."); //
 
-                        isStaffAvailable &= await _appointmentStaffRepo.IsStaffAvailableAsync(staff.Id, appointment.Slot.TimeInterval.Start.ToString(), appointment.Slot.TimeInterval.End.ToString());
+                        isStaffAvailable &= await _appointmentStaffRepo.IsStaffAvailableAsync(staff.Id, appointment.Slot.TimeInterval.Start.ToString(), appointment.Slot.TimeInterval.End.ToString(),null);
 
                     if(staff.Function.Equals(function) && staff.SpecializationId.Equals(specialization) && total < numberStaff.NumberRequired)
                     {
@@ -283,9 +283,9 @@ namespace MDBackoffice.Domain.Appointments
            return new AppointmentDto(appointment.Id.AsGuid(),
                                         appointment.Status.Description, 
                                         appointment.OperationRequestId.Value, 
-                                        appointment.RoomNumber.Value, 
-                                        appointment.Slot.TimeInterval.Start.ToString("HH:mm"), 
-                                        appointment.Slot.TimeInterval.End.ToString("HH:mm"), 
+                                        appointment.RoomNumber.Value,
+                                       $"{appointment.Slot.TimeInterval.Start.Hours:D2}:{appointment.Slot.TimeInterval.Start.Minutes:D2}", // Format TimeSpan
+                                        $"{appointment.Slot.TimeInterval.End.Hours:D2}:{appointment.Slot.TimeInterval.End.Minutes:D2}",   // Format TimeSpan
                                         appointment.Slot.Date.Start.ToString("yyyy-MM-dd"), 
                                         appointment.Slot.Date.End.ToString("yyyy-MM-dd"), 
                                         appointment.AppointmentStaffs.Select(appointStaff => new string(appointStaff.Staff.Id.Value)).ToList());
