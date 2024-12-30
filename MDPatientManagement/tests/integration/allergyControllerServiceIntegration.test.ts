@@ -11,6 +11,7 @@ import { Result } from "../../src/core/logic/Result";
 import IAllergyRepo from "../../src/services/IRepos/IAllergyRepo";
 import { AllergyMap } from "../../src/mappers/AllergyMap";
 import { Allergy } from "../../src/domain/allergy";
+import { IAllergyUpdateDTO } from "../../src/dto/IAllergyUpdateDTO";
 
 describe("Allergy Controller+Service Integration Tests", function () {
     const sandbox = sinon.createSandbox();
@@ -83,6 +84,117 @@ describe("Allergy Controller+Service Integration Tests", function () {
         sinon.assert.calledOnce(res.json);
         sinon.assert.calledWith(res.json, sinon.match(allergyDTO));
     });
+
+    it("should update an allergy successfully with allergyRepo and allergy stub", async () => {
+        // Arrange
+        const allergyDTO: IAllergyUpdateDTO = {
+            code: 'BZ04',
+            designation: 'Peanut Allergy Updated',
+            description: 'An allergic reaction to peanuts, now updated.',
+        };
+
+        const updatedAllergyDTO: IAllergyUpdateDTO = {
+            code: 'BZ04',
+            designation: 'Seafood Allergy',
+            description: 'Green skin and mucus.',
+        };
+    
+        const req: Partial<Request> = { body: updatedAllergyDTO};
+        const res: Partial<Response> = {
+            json: sinon.spy(),
+            status: sinon.stub().returnsThis()
+        };
+        const next: Partial<NextFunction> = sinon.spy();
+    
+        const mockAllergy = {
+            code: allergyDTO.code,
+            designation: allergyDTO.designation,
+            description: allergyDTO.description,
+            changeDesignation: sinon.spy(),
+            changeDescription: sinon.spy()
+        };
+    
+        const allergyRepoInstance = Container.get("AllergyRepo") as IAllergyRepo;
+        const findByCodeStub = sinon.stub(allergyRepoInstance, "findByCode").resolves(mockAllergy);
+        const saveStub = sinon.stub(allergyRepoInstance, "save").resolves(mockAllergy);
+        const mapStub = sinon.stub(AllergyMap, "toDTO").returns(updatedAllergyDTO);
+
+        const allergyServiceInstance = Container.get("AllergyService") as IAllergyService;
+        const ctrl = new AllergyController(allergyServiceInstance);
+    
+        // Act
+        await ctrl.updateAllergy(<Request>req, <Response>res, <NextFunction>next);
+    
+        // Assert
+        sinon.assert.calledOnce(findByCodeStub);
+        sinon.assert.calledOnce(saveStub);
+        sinon.assert.calledOnce(mapStub);
+        sinon.assert.calledOnce(res.json); 
+        sinon.assert.calledWith(res.json, updatedAllergyDTO); 
+    });
+    
+      it("should return error 404 if allergy not found in updateAllergy", async function () {
+        // Arrange
+        const allergyDTO: IAllergyUpdateDTO = {
+          code: 'BZ04',
+          designation: 'Peanut Allergy Updated',
+          description: 'An allergic reaction to peanuts, now updated.',
+        };
+    
+        let body = allergyDTO;
+        let req: Partial<Request> = {};
+        req.body = body;
+        let res: Partial<Response> = {
+          json: sinon.spy(),
+          status: sinon.stub().returnsThis()
+        };
+        const next: Partial<NextFunction> = sinon.spy();
+    
+        const allergyRepoInstance = Container.get("AllergyRepo") as IAllergyRepo;
+        const findByCodeStub = sinon.stub(allergyRepoInstance, "findByCode").resolves(null);
+        const allergyServiceInstance = Container.get("AllergyService") as IAllergyService;
+        const ctrl = new AllergyController(allergyServiceInstance);
+    
+        // Act
+        await ctrl.updateAllergy(<Request>req, <Response>res, <NextFunction>next);
+    
+        // Assert
+        sinon.assert.calledOnce(findByCodeStub);
+        sinon.assert.calledOnce(res.status);
+        sinon.assert.calledWith(res.status, 404);
+        sinon.assert.notCalled(res.json);
+      });
+    
+      it("should call next with error if an exception occurs during updateAllergy", async function () {
+        // Arrange
+        const allergyDTO: IAllergyUpdateDTO = {
+          code: 'BZ04',
+          designation: 'Peanut Allergy Updated',
+          description: 'An allergic reaction to peanuts, now updated.',
+        };
+    
+        let body = allergyDTO;
+        let req: Partial<Request> = {};
+        req.body = body;
+        let res: Partial<Response> = {
+          json: sinon.spy()
+        };
+        const next: Partial<NextFunction> = sinon.spy();
+    
+        const allergyRepoInstance = Container.get("AllergyRepo") as IAllergyRepo;
+        const findByCodeStub = sinon.stub(allergyRepoInstance, "findByCode").rejects(new Error("Unexpected error"));
+    
+        const allergyServiceInstance = Container.get("AllergyService") as IAllergyService;
+        const ctrl = new AllergyController(allergyServiceInstance);
+    
+        // Act
+        await ctrl.updateAllergy(<Request>req, <Response>res, <NextFunction>next);
+    
+        // Assert
+        sinon.assert.calledOnce(next);
+        sinon.assert.calledOnce(findByCodeStub);
+        sinon.assert.calledWith(next, sinon.match.instanceOf(Error));
+      });
 
 
     it("should return allergies when found with allergyRepo and allergy stub", async function () {

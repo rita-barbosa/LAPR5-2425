@@ -1,109 +1,114 @@
-// import { ComponentFixture, TestBed } from '@angular/core/testing';
-// import { SideBarAdminComponent } from '../sidebar-admin/side-bar-admin.component';
-// import { CommonModule } from '@angular/common';
-// import { TableModule } from 'primeng/table';
-// import { FormsModule, NgForm } from '@angular/forms';
-// import { MessageComponent } from '../../message/message.component';
-// import { ActivatedRoute } from '@angular/router';
-// import { HttpClientTestingModule } from '@angular/common/http/testing';
-// import { StaffService } from 'src/app/services/staff.service';
-// import { of } from 'rxjs';
-// import { EditAllergyComponent } from './edit-allergy.component';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { EditAllergyComponent } from './edit-allergy.component';
+import { AllergyService } from 'src/app/services/allergy.service';
+import { of } from 'rxjs';
+import { NgForm } from '@angular/forms';
+import { By } from '@angular/platform-browser';
+import { ActivatedRoute } from '@angular/router';
 
-// describe('EditAllergyComponent', () => {
-//   let component: EditAllergyComponent;
-//   let fixture: ComponentFixture<EditAllergyComponent>;
-//   let staffService: StaffService;
+describe('EditAllergyComponent', () => {
+  let component: EditAllergyComponent;
+  let fixture: ComponentFixture<EditAllergyComponent>;
+  let allergyServiceSpy: jasmine.SpyObj<AllergyService>;
 
-  // beforeEach(async () => {
+  beforeEach(async () => {
+    const allergyServiceMock = jasmine.createSpyObj('AllergyService', ['getAllAllergies', 'EditAllergy']);
+    const activatedRouteMock = {
+      snapshot: {
+        paramMap: {
+          get: jasmine.createSpy('get').and.returnValue(null),
+        },
+      },
+    };
 
-  //   const staffServiceMock = {
-  //     EditStaffProfile: jasmine.createSpy('EditPatientProfile'),
-  //     getAllSpecializationsAvailable: jasmine.createSpy('getAllSpecializationsAvailable').and.returnValue(of(['Specialization 1', 'Specialization 2']))
-  //   };
+    await TestBed.configureTestingModule({
+      imports: [EditAllergyComponent],
+      providers: [
+        { provide: AllergyService, useValue: allergyServiceMock },
+        { provide: ActivatedRoute, useValue: activatedRouteMock }
 
-  //   const activatedRouteMock = {
-  //     snapshot: {
-  //       paramMap: {
-  //         get: jasmine.createSpy('get').and.returnValue(null),
-  //       },
-  //     },
-  //   };
+      ]
+    }).compileComponents();
 
-  //   await TestBed.configureTestingModule({
-  //     imports: [EditStaffProfileComponent, SideBarAdminComponent, CommonModule, TableModule, FormsModule, MessageComponent, HttpClientTestingModule],
-  //     providers: [
-  //       { provide: StaffService, useValue: staffServiceMock },
-  //       { provide: ActivatedRoute, useValue: activatedRouteMock } // Provide the mock ActivatedRoute
-  //     ]
-  //   }).compileComponents();
+    allergyServiceSpy = TestBed.inject(AllergyService) as jasmine.SpyObj<AllergyService>;
+    allergyServiceSpy.getAllAllergies.and.returnValue(of([
+      {
+        code: 'BZ04', designation: 'Peanuts', description: 'Irritated skin with rashes and blood.'
+      },
+      {
+        code: 'BZ05.3', designation: 'Pollen Allergy', description: 'Mucus.'
+      }
+    ]));
+    fixture = TestBed.createComponent(EditAllergyComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
 
-  //   fixture = TestBed.createComponent(EditStaffProfileComponent);
-  //   component = fixture.componentInstance;
-  //   staffService = TestBed.inject(StaffService);
-  //   fixture.detectChanges();
-  // });
+  });
 
-  // it('should create', () => {
-  //   expect(component).toBeTruthy();
-  // });
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
 
-  // it('should load no data when component initializes', () => {
-  //   // Check that the patient data is loaded
-  //   expect(component.staff.id).toBeFalsy;
-  //   expect(component.staff.email).toBeFalsy;
-  //   expect(component.staff.address).toBeFalsy;
-  //   expect(component.staff.phone).toBeFalsy;
-  //   expect(component.staff.specializationId).toBeFalsy;
-  // });
+  it('should initialize allergies on ngOnInit', () => {
+    component.ngOnInit();
+    expect(allergyServiceSpy.getAllAllergies).toHaveBeenCalled();
+    expect(component.allergies.length).toBe(2);
+    expect(component.allergies[0].code).toBe('BZ04');
+    expect(component.allergies[1].code).toBe('BZ05.3');
+  });
 
-  // it('should call EditStaffProfile service method on form submit with correct data', () => {
-  //   component.staff.id = 'test-id';
-  //   component.staff.phone = 'New Phone';
-  //   component.staff.email = 'new-email@test.com';
-  //   component.staff.address = 'New Address';
-  //   component.staff.specializationId = 'id-specialization';
+  it('should call service.EditAllergy on valid form submission', () => {
+    const form = {
+      valid: true,
+      resetForm: jasmine.createSpy('resetForm')
+    } as unknown as NgForm;
 
-  //   // Call onSubmit with a valid form
-  //   component.onSubmit(component.staffForm);
+    component.fullAllergy = { code: 'A002', designation: 'Milk', description: 'Milk allergy' };
+    component.onSubmit(form);
 
-  //   // Ensure the EditPatientProfile method was called with the correct parameters
-  //   expect(staffService.EditStaffProfile).toHaveBeenCalledWith(
-  //     'test-id',
-  //     'New Phone',
-  //     'new-email@test.com',
-  //     'New Address',
-  //     'id-specialization'
-  //   );
-  // });
+    expect(component.isSubmitted).toBeTrue();
+    expect(allergyServiceSpy.EditAllergy).toHaveBeenCalledWith('A002', 'Milk', 'Milk allergy');
+  });
 
-  // it('should not call EditStaffProfile service method when form is invalid', () => {
-  //   // Simulate an invalid form submission
-  //   component.staffForm.control.setErrors({ invalid: true });
-  //   component.onSubmit(component.staffForm);
+  it('should not call service.EditAllergy on invalid form submission', () => {
+    const form = {
+      valid: false,
+      resetForm: jasmine.createSpy('resetForm')
+    } as unknown as NgForm;
 
-  //   // Ensure the service method was not called
-  //   expect(staffService.EditStaffProfile).not.toHaveBeenCalled();
-  // });
+    component.fullAllergy = { code: '', designation: '', description: '' };
 
-  // it('should reset form and clear patient data when clearForm is called', () => {
-  //   component.staff.id = 'test-id';
-  //   component.staff.phone = 'New Phone';
-  //   component.staff.email = 'new-email@test.com';
-  //   component.staff.address = 'New Address';
-  //   component.staff.specializationId = 'id-specialization';
-  
-  //   component.clearForm();
-  
-  //   // Use null or empty string for flexible validation
-  //   expect(component.staff.id).toBeFalsy;
-  //   expect(component.staff.email).toBeFalsy;
-  //   expect(component.staff.address).toBeFalsy;
-  //   expect(component.staff.phone).toBeFalsy;
-  //   expect(component.staff.specializationId).toBeFalsy;
-  
-  //   expect(component.staffForm.form.pristine).toBeTrue();
-  // });
-  
+    component.onSubmit(form);
 
-// });
+    expect(component.isSubmitted).toBeFalse();
+    expect(allergyServiceSpy.EditAllergy).not.toHaveBeenCalled();
+  });
+
+
+  it('should clear form when clearForm is called', () => {
+    component.allergy = { code: 'A002', designation: 'Milk', description: 'Milk allergy' };
+    const form = jasmine.createSpyObj('NgForm', ['resetForm']);
+    component.allergyForm = form as unknown as NgForm;
+
+    component.clearForm();
+
+    expect(component.allergy.code).toBe('');
+    expect(component.allergy.designation).toBe('');
+    expect(component.allergy.description).toBe('');
+    expect(form.resetForm).toHaveBeenCalled();
+  });
+
+  it('should set editDetails to true and populate fullAllergy on toggleEdition', () => {
+    const mockAllergy = { code: 'A003', designation: 'Eggs', description: 'Egg allergy' };
+    component.toggleEdition(mockAllergy);
+
+    expect(component.fullAllergy).toEqual(mockAllergy);
+    expect(component.editDetails).toBeTrue();
+  });
+
+  it('should set editDetails to false on closeEdition', () => {
+    component.editDetails = true;
+    component.closeEdition();
+    expect(component.editDetails).toBeFalse();
+  });
+});

@@ -18,6 +18,7 @@ import { ExceptionHandler } from 'winston';
 import path from 'path';
 import fs from 'fs-extra';
 import Minizip from "minizip-asm.js";
+import { IMedicalRecordQueryFilterParametersById } from '../dto/IMedicalRecordQueryFiltersIds';
 
 
 @Service()
@@ -26,7 +27,6 @@ export default class MedicalRecordService implements IMedicalRecordService {
         @Inject(config.repos.medicalRecord.name) private medicalRecordRepo: IMedicalRecordRepo,
         @Inject(config.repos.medicalCondition.name) private medicalConditionRepo: IMedicalConditionRepo,
         @Inject(config.repos.allergy.name) private allergyRepo: IAllergyRepo,
-        @Inject('logger') private logger,
     ) { }
 
     async createMedicalRecord(medicalRecordDTO: IMedicalRecordDTO): Promise<Result<IMedicalRecordDTO>> {
@@ -155,22 +155,22 @@ export default class MedicalRecordService implements IMedicalRecordService {
 
       async exportMedicalRecord(exportInfo: IExportMedicalRecordDTO): Promise<Result<string>> {
         const medicalRecord = await this.medicalRecordRepo.findByDomainId(new MedicalRecordId(exportInfo.medicalRecordNumber));
-    
+
         if (!medicalRecord) {
             throw new Error("Medical Record wasn't found with this Medical Record Number.");
         }
-    
+
         const pdfDoc = await PDFDocument.create();
         const timesRomanFont = await pdfDoc.embedFont(StandardFonts.TimesRoman);
         const boldFont = await pdfDoc.embedFont(StandardFonts.TimesRomanBold);
-    
+
         let page = pdfDoc.addPage([500, 700]);
         page.setFont(timesRomanFont);
-    
+
         let yPosition = 650;
         const lineHeight = 20;
         const sectionSpacing = 30;
-    
+
         const drawDivider = () => {
             yPosition -= lineHeight / 2;
             page.drawLine({
@@ -181,19 +181,19 @@ export default class MedicalRecordService implements IMedicalRecordService {
             });
             yPosition -= lineHeight;
         };
-    
+
         page.setFont(boldFont);
         page.drawText('Medical Record', { x: 50, y: yPosition, size: 24 });
         yPosition -= sectionSpacing;
-    
+
         page.setFont(timesRomanFont);
         page.drawText(`Record Number: ${exportInfo.medicalRecordNumber}`, { x: 50, y: yPosition, size: 14 });
         yPosition -= sectionSpacing;
-    
+
         page.setFont(boldFont);
         page.drawText('Medical Conditions:', { x: 50, y: yPosition, size: 16 });
         yPosition -= lineHeight;
-    
+
         page.setFont(timesRomanFont);
         if (medicalRecord.medicalConditions.length === 0) {
             page.drawText(`- No medical conditions associated.`, { x: 70, y: yPosition, size: 12 });
@@ -210,11 +210,11 @@ export default class MedicalRecordService implements IMedicalRecordService {
             }
         }
         yPosition -= sectionSpacing;
-    
+
         page.setFont(boldFont);
         page.drawText('Allergies:', { x: 50, y: yPosition, size: 16 });
         yPosition -= lineHeight;
-    
+
         page.setFont(timesRomanFont);
         if (medicalRecord.allergies.length === 0) {
             page.drawText(`- No allergies associated.`, { x: 70, y: yPosition, size: 12 });
@@ -231,11 +231,11 @@ export default class MedicalRecordService implements IMedicalRecordService {
             }
         }
         yPosition -= sectionSpacing;
-    
+
         page.setFont(boldFont);
         page.drawText('Additional Notes:', { x: 50, y: yPosition, size: 16 });
         yPosition -= lineHeight;
-    
+
         page.setFont(timesRomanFont);
         const noteLines = this.wrapText(medicalRecord.description, 400, timesRomanFont, 12);
         for (const line of noteLines) {
@@ -247,7 +247,7 @@ export default class MedicalRecordService implements IMedicalRecordService {
                 page.setFont(timesRomanFont);
             }
         }
-    
+
         const pdfBytes = await pdfDoc.save();
         const pdfPath = path.join(exportInfo.filepath, "Medical_Record.pdf");
         const compressedPath = path.join(exportInfo.filepath, "Medical_Record.zip");
@@ -266,19 +266,19 @@ export default class MedicalRecordService implements IMedicalRecordService {
         await fs.writeFile(compressedPath,data);
 
         fs.unlinkSync(pdfPath);
-    
+
         return Result.ok<string>(pdfPath);
     }
-    
+
     private wrapText(text: string, maxWidth: number, font: PDFFont, fontSize: number): string[] {
         const words = text.split(' ');
         const lines: string[] = [];
         let currentLine = '';
-    
+
         for (const word of words) {
             const testLine = currentLine ? `${currentLine} ${word}` : word;
             const testWidth = font.widthOfTextAtSize(testLine, fontSize);
-    
+
             if (testWidth > maxWidth) {
                 lines.push(currentLine);
                 currentLine = word;
@@ -286,12 +286,12 @@ export default class MedicalRecordService implements IMedicalRecordService {
                 currentLine = testLine;
             }
         }
-    
+
         if (currentLine) {
             lines.push(currentLine);
         }
-    
+
         return lines;
     }
-    
+
 }
