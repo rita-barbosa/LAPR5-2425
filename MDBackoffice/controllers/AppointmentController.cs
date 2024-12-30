@@ -59,7 +59,23 @@ namespace MDBackoffice.Controllers
         [HttpGet("get-by-id")]
         public async Task<ActionResult<AppointmentDto>> GetById(string id)
         {
-            return await _service.GetByIdAsync(id);
+            try
+            {
+                var dto = await _service.GetByIdAsync(id);
+                return Ok(dto);
+            }
+            catch (BusinessRuleValidationException ex)
+            {
+                return BadRequest(new
+                {
+                    ex.Message
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { V = $"An unexpected error occurred: {ex.Message}" });
+            }
+
         }
 
         // POST: api/Appointment/update-appointment
