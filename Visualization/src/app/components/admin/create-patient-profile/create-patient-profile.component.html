@@ -57,6 +57,64 @@
           [class.invalid-placeholder]="dateBirth.invalid && dateBirth.touched" />
           <span></span>
       </div>
+
+      <div class="input-field">
+        <input name="description" #description="ngModel" [(ngModel)]="patient.description" placeholder="Description" [disabled]="isSubmitted" required
+          [class.invalid-placeholder]="description.invalid && description.touched" />
+          <span></span>
+      </div>
+
+      <br>
+
+      <div class="input-field">
+        <h2>Medical Conditions</h2>
+        <br>
+        <div *ngIf="patient.medicalConditions.length === 0">
+          <p>No medical conditions associated yet.</p>
+        </div>
+
+        <div *ngFor="let condition of patient.medicalConditions; let i = index" class="blue-panel">
+          <p><strong>Designation:</strong> {{ condition.designation || '-' }}</p>
+          <p><strong>Description:</strong> {{ condition.description || 'No description.' }}</p>
+          <p><strong>Symptoms:</strong> {{ condition.symptoms || 'No symptons described.' }}</p>
+          <button (click)="removeMedicalCondition(i)">Remove</button>
+          <br>
+        </div>
+
+        <br>
+
+        <div>
+          <p-dropdown [options]="allMedicalConditionsDesignations" #inputRef placeholder="Select Medical Condition">
+          </p-dropdown>
+          <button type="button" (click)="addMedicalCondition(inputRef.value)">Add</button>
+        </div>
+      </div>
+
+        <br>
+
+        <div class="input-field">
+        <h2>Allergies</h2>
+        <div *ngIf="patient.allergies.length === 0">
+          <p>No allergies associated yet.</p>
+        </div>
+
+        <div *ngFor="let condition of patient.allergies; let i = index" class="blue-panel">
+          <p><strong>Designation:</strong> {{ condition.designation || '-' }}</p>
+          <p><strong>Description:</strong> {{ condition.description || 'No description.' }}</p>
+          <button (click)="removeAllergy(i)">Remove</button>
+          <br>
+        </div>
+
+        <br>
+
+        <div>
+          <p-dropdown [options]="allAllergiesDesignations" #inputRefe placeholder="Select Allergies">
+          </p-dropdown>
+          <button type="button" (click)="addAllergy(inputRefe.value)">Add</button>
+        </div>
+      </div>
+
+      <br>
     
       <div class="button">
         <button type="submit" class="add-button-submit" [disabled]="patientForm.invalid || isSubmitted">Submit</button>
