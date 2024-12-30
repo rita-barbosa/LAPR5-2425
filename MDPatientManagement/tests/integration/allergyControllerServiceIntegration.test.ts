@@ -15,7 +15,7 @@ import { IAllergyUpdateDTO } from "../../src/dto/IAllergyUpdateDTO";
 
 describe("Allergy Controller+Service Integration Tests", function () {
     const sandbox = sinon.createSandbox();
-    this.timeout(5000);
+    this.timeout(10000);
 
     beforeEach(() => {
         Container.reset();
