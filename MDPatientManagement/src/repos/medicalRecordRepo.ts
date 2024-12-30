@@ -6,6 +6,7 @@ import { MedicalRecordMap } from "../mappers/MedicalRecordMap";
 import { MedicalRecord } from "../domain/medicalRecord";
 import { MedicalRecordId } from "../domain/medicalRecordId";
 import { IMedicalRecordQueryFilterParameters } from "../dto/IMedicalRecordQueryFilterParameters";
+import { IMedicalRecordQueryFilterParametersById } from "../dto/IMedicalRecordQueryFiltersIds";
 
 @Service()
 export default class MedicalRecordRepo implements IMedicalRecordRepo {
