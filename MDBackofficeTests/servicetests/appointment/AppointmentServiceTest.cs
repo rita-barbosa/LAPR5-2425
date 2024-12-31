@@ -37,8 +37,8 @@ namespace MDBackofficeTests.controllertests
                 "R102",                    
                 "14:00:00",                
                 "16:00:00",               
-                "2024-07-08",              
-                "2024-07-08",              
+                "2024-04-04",              
+                "2024-04-04",              
                 new List<string> { "D202400001" } 
             );
 
@@ -50,8 +50,8 @@ namespace MDBackofficeTests.controllertests
                 "R102",
                  "14:00:00",
                  "16:00:00",
-                 "08/07/2024 00:00:00",
-                 "08/07/2024 00:00:00",
+                 "04/04/2024 00:00:00",
+                 "04/04/2024 00:00:00",
                  new List<string> { "D202400001" }
             );
 
@@ -184,8 +184,8 @@ namespace MDBackofficeTests.controllertests
                 "R102",
                 "14:00:00",
                 "16:00:00",
-                "2024-07-08",
-                "2024-07-08"
+                "2024-04-04",
+                "2024-04-04"
             );
 
             var appointmentId = Guid.Parse(existingAppointment.Id.AsString());
@@ -196,8 +196,8 @@ namespace MDBackofficeTests.controllertests
                 "R201",
                 "14:00:00",
                 "16:00:00",
-                "2024-07-08",
-                "2024-07-08",
+                "2024-04-04",
+                "2024-04-04",
                 new List<string> { "D202400001" }
             );
 
@@ -209,8 +209,8 @@ namespace MDBackofficeTests.controllertests
                 "R201",
                 "14:00:00",
                 "16:00:00",
-                "08/07/2024 00:00:00",
-                "08/07/2024 00:00:00",
+                "04/04/2024 00:00:00",
+                "04/04/2024 00:00:00",
                 new List<string> { "D202400001" }
             );
 
@@ -278,7 +278,7 @@ namespace MDBackofficeTests.controllertests
                     new Capacity(5),
                     new List<Equipment> { new Equipment("Surgical Light"), new Equipment("Surgical Table") },
                     CurrentStatus.Available,
-                    new List<Slot> { new Slot("Routine surgery", "14:00", "16:00", "2024-07-08", "2024-07-08") }
+                    new List<Slot> { new Slot("Routine surgery", "14:00", "16:00", "2024-04-04", "2024-04-04") }
                 ));
 
             _repoRoomMock.Setup(repo => repo.IsRoomAvailableAsync(It.IsAny<RoomNumber>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<Guid?>()))
