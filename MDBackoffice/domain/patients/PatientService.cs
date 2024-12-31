@@ -62,7 +62,7 @@ namespace MDBackoffice.Domain.Patients
 
             await _repo.AddAsync(patient);
 
-            bool mrnCreation = await _mrnAdapter.CreateMedicalRecord(patient.Id, [], [], string.Empty);
+            bool mrnCreation = await _mrnAdapter.CreateMedicalRecord(patient.Id, dto.MedicalConditions, dto.Allergies, dto.Description);
 
             if(!mrnCreation)
             {

@@ -101,7 +101,10 @@ public class PatientServiceTests
                 "ritabarbosa@email.com",
                 "+351 912345678",
                 "Female",
-                "2004-12-15");
+                "2004-12-15",
+                new List<string> { "6A80", "3A01.1" },
+                new List<string> { "BZ05.3", "BZ02.2" },
+                "description");
 
         _patientMRAMock.Setup(m => m.CreateMedicalRecord(It.IsAny<MedicalRecordNumber>(),It.IsAny<List<string>>(), It.IsAny<List<string>>(),It.IsAny<string>())).ReturnsAsync(true);
 
@@ -304,7 +307,10 @@ public class PatientServiceTests
                 "ritabarbosa@email.com",
                 "+351 912345678",
                 "Female",
-                "2004-12-15");
+                "2004-12-15",
+                new List<string> { "6A80", "3A01.1" },
+                new List<string> { "BZ05.3", "BZ02.2" },
+                "description");
 
         _patientMRAMock.Setup(m => m.CreateMedicalRecord(It.IsAny<MedicalRecordNumber>(),It.IsAny<List<string>>(), It.IsAny<List<string>>(),It.IsAny<string>())).ReturnsAsync(true);
 

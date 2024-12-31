@@ -65,8 +65,15 @@ export class PatientService {
   }
 
 
-  public createPatientProfile(firstName: string, lastName: string, phone: string, email: string, address: string, emergencyContact: string, gender: string, dateBirth: string) {
+  public createPatientProfile(firstName: string, lastName: string, phone: string, email: string, address: string, emergencyContact: string, gender: string, dateBirth: string, medicalConditions: MedicalCondition[], allergies: Allergy[], description: string) {
     const url = `${this.theServerURL}/Create-PatientProfile`;
+
+    const medicalConditionIds: string[] = medicalConditions.map(condition => condition.id);
+    const allergyIds: string[] = allergies.map(allergy => allergy.code);
+
+    console.log(medicalConditionIds);
+    console.log(allergyIds);
+
     let patient: Patient = {
       firstName: firstName,
       lastName: lastName,
@@ -76,7 +83,12 @@ export class PatientService {
       datebirth: dateBirth,
       emergencyContact: emergencyContact,
       gender: gender,
+      medicalConditions: medicalConditionIds,
+      allergies: allergyIds,
+      description: description
     };
+
+    console.log(patient.email);
 
     this.http.post<Patient>(url, patient, this.httpOptions)
       .pipe(catchError(this.handleError<Patient>('Create patient profile')))
