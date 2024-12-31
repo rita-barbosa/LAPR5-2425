@@ -49,7 +49,9 @@ When the user selects a room, this triggers the animation process, ensuring the 
 
 ## 5. Implementation
 
-//TO BE DONE
+Implementation was done following the design choices, each room had a spotlight, that spotlight was activated each time a person choose a room and was also deactivated everytime a person clicked on anything else:
+
+![alt text](image.png)
 
 ## 6. Testing
 
