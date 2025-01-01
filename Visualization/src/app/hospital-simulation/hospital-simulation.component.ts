@@ -55,6 +55,8 @@ export class HospitalSimulationComponent implements AfterViewInit {
     return this.canvasRef.nativeElement;
   }
 
+  spotlights : Map<string, THREE.SpotLight> = new Map<string, THREE.SpotLight>;
+
   overlayInfoVisible = false;
   private selectedRoom: string | null = null;
   roomIDs !: string[];
@@ -448,36 +450,42 @@ export class HospitalSimulationComponent implements AfterViewInit {
 
   let index = 0;
 
-  for (let i = 0; i <= data.size.width; i++) {
-      for (let j = 0; j <= data.size.height; j++) {
-          if (data.layout[j][i] === 4 || data.layout[j][i] === 7) {
-            if (index < this.roomIDs.length) {
+    for (let i = 0; i <= data.size.width; i++) {
+        for (let j = 0; j <= data.size.height; j++) {
+            if (data.layout[j][i] === 4 || data.layout[j][i] === 7) {
+                if (index < this.roomIDs.length) {
+                    const position = this.cellToCartesian(data, [j, i]);
+                    this.roomPositions.set(this.roomIDs[index], position);
+                    this.roomLoadedPatients.set(this.roomIDs[index], false);
 
-                const position = this.cellToCartesian(data, [j, i]);
-                this.roomPositions.set(this.roomIDs[index], position)
+                    const sprite = new Sprite("   " + this.roomIDs[index] + "   ", true);
+                    sprite.object.position.copy(position);
+                    sprite.object.position.y += 2.5;
+                    sprite.object.position.x += 0.5;
+                    this.roomSprites.set(this.roomIDs[index], sprite);
+                    this.layout.add(sprite.object);
 
-                this.roomLoadedPatients.set(this.roomIDs[index], false);
+                    // Add spotlight for the room
+                    const spotlight = new THREE.SpotLight(0xffffff, 0);
+                    spotlight.position.set(position.x, position.y+1.5 , position.z);
+                    spotlight.target.position.set(position.x, position.y, position.z);
+                    spotlight.castShadow = true;
+                    this.scene!.add(spotlight);
+                    this.scene!.add(spotlight.target);
+                    this.spotlights.set(this.roomIDs[index], spotlight);
 
-                const sprite = new Sprite("   " + this.roomIDs[index] + "   ", true);
-                sprite.object.position.copy(position);
-                sprite.object.position.y += 2.5;
-                sprite.object.position.x += 0.5;
-
-                this.roomSprites.set(this.roomIDs[index], sprite);
-                this.layout.add(sprite.object);
-
-                ++index;
-              } else {
-                  console.warn(`Not enough room IDs to assign to sprites. Current index: ${index}, roomIDs length: ${this.roomIDs.length}`);
-                  break;
-              }
-          }
-      }
-  }
+                    ++index;
+                } else {
+                    console.warn(`Not enough room IDs to assign to sprites. Current index: ${index}, roomIDs length: ${this.roomIDs.length}`);
+                    break;
+                }
+            }
+        }
+    }
 
     this.layout.scale.set(this.scale.x, this.scale.y, this.scale.z);
     this.scene!.add(this.layout);
-  }
+}
 
   private setupEventListeners() {
     this.renderer!.domElement.addEventListener("wheel", (event) => this.mouseWheel(event));
@@ -503,35 +511,58 @@ export class HospitalSimulationComponent implements AfterViewInit {
     this.mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
     this.mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
 
+    this.spotlights.forEach(spotlight => {
+      spotlight.intensity = 0;
+    });
+
     if (this.INTERSECTED?.name.startsWith('Patient')) {
-         const targetPosition = this.INTERSECTED?.getWorldPosition(new THREE.Vector3()).normalize();
-        // const targetPosition = this.INTERSECTED?.position;
-        this.moveCameraToRoomCenter(targetPosition);
+        const targetPosition = this.INTERSECTED?.getWorldPosition(new THREE.Vector3()).normalize();
+        //const targetPosition = this.INTERSECTED?.position;
         this.selectedRoom = this.INTERSECTED?.name;
+        this.moveCameraToRoomCenter(targetPosition, this.selectedRoom);
         this.updateRoomInfoOverlay(this.selectedRoom);
     } 
 }
 
-moveCameraToRoomCenter(targetPosition: THREE.Vector3 | undefined) {
+moveCameraToRoomCenter(targetPosition: THREE.Vector3 | undefined, selectedRoom: string) {
   if (!targetPosition) return;
 
-  const roomCenter = new THREE.Vector3(targetPosition.x, targetPosition.y, (targetPosition.z - 5));
+  const roomId = selectedRoom.replace("Patient-", "");
+  console.log("RoomId:", roomId);
+  const spotlight = this.spotlights.get(roomId); // Retrieve the spotlight from the map
+  if (spotlight) {
+      spotlight.intensity = 30; // Set the desired intensity
+  }
+
+  // Define the room center based on the target position
+  const roomCenter = new THREE.Vector3(
+    spotlight?.target.position.x,
+    spotlight?.target.position.y,
+    spotlight?.target.position.z
+  );
+
+  // Clone the camera's starting position
   const startPosition = this.camera!.position.clone();
 
+  // Animate the camera movement
   new TWEEN.Tween(startPosition)
-      .to(
-          {
-              x: roomCenter.x,
-              y: startPosition.y,
-              z: roomCenter.z,
-          },
-          2800
-      )
-      .easing(TWEEN.Easing.Quadratic.InOut)
-      .onUpdate(() => {
-          this.camera!.position.copy(startPosition);
-      })
-      .start();
+    .to(
+      {
+        x: roomCenter.x,
+        y: startPosition.y,
+        z: roomCenter.z,
+      },
+      2800
+    )
+    .easing(TWEEN.Easing.Quadratic.InOut)
+    .onUpdate(() => {
+      this.camera!.position.copy(startPosition);
+    })
+    .onComplete(() => {
+      // Optional: Add logic to remove spotlight after animation if needed
+      console.log('Camera has reached the room center. Spotlight added.');
+    })
+    .start();
 }
 
 toggleRoomInfoOverlay() {
@@ -559,7 +590,10 @@ updateRoomInfoOverlay(selectedRoom: string) {
 
   const roomId = selectedRoom.replace("Patient-", "");
   console.log("RoomId:", roomId);
-
+  const spotlight = this.spotlights.get(roomId); // Retrieve the spotlight from the map
+  if (spotlight) {
+      spotlight.intensity = 10; // Set the desired intensity
+  }
   this.roomDetails = this.rooms.find(r => r.roomNumber === roomId) || null;
 
   if (this.roomDetails) {

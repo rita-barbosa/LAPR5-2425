@@ -72,21 +72,24 @@ namespace MDBackofficeTests.controllertests
         {
             //Arrage
             var dtoMock = new CreatingPatientDto
-       ("Rita",
-       "Barbosa",
-       "Portugal, 4590-850, Rua da Sardinha",
-       "+351 910000000",
-       "ritabarbosa@email.com",
-       "+351 912345678",
-       "Female",
-       "2004-12-15");
+                ("Rita",
+                "Barbosa",
+                "Portugal, 4590-850, Rua da Sardinha",
+                "+351 910000000",
+                "ritabarbosa@email.com",
+                "+351 912345678",
+                "Female",
+                "2004-12-15",
+                new List<string> { "6A80", "3A01.1" },
+                new List<string> { "BZ05.3", "BZ02.2" },
+                "description");
             var context = new DefaultHttpContext();
             context.Request.Headers["Authorization"] = "Bearer valid-token";
             _controller.ControllerContext = new ControllerContext
             {
                 HttpContext = context
             };
-            _patientMRAMock.Setup(m => m.CreateMedicalRecord(It.IsAny<MedicalRecordNumber>(),It.IsAny<List<string>>(), It.IsAny<List<string>>(),It.IsAny<string>())).ReturnsAsync(true);
+            _patientMRAMock.Setup(m => m.CreateMedicalRecord(It.IsAny<MedicalRecordNumber>(), It.IsAny<List<string>>(), It.IsAny<List<string>>(), It.IsAny<string>())).ReturnsAsync(true);
             _userServiceMock.Setup(_userService => _userService.CheckUserRole("valid-token", "Admin")).Returns(false);
             _unitOfWorkMock.Setup(u => u.CommitAsync()).ReturnsAsync(1);
 

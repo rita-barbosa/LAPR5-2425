@@ -3,7 +3,7 @@ import { describe, it, beforeEach, afterEach } from "mocha";
 import sinon from "sinon";
 import { Container } from "typedi";
 import { Result } from "../../../src/core/logic/Result";
-import MedicalRecordController from "../../../src/controllers/MedicalRecordController";
+import MedicalRecordController from "../../../src/controllers/medicalRecordController";
 import IMedicalRecordService from "../../../src/services/IServices/IMedicalRecordService";
 import { IMedicalRecordDTO } from "../../../src/dto/IMedicalRecordDTO";
 import { Request, Response, NextFunction } from "express";

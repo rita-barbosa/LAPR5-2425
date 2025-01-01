@@ -408,7 +408,10 @@ namespace MDBackofficeTests.controllertests
                 email,
                 "+351 98765432",
                 "female",
-                "2000-10-10"
+                "2000-10-10",
+                new List<string> { "6A80", "3A01.1" },
+                new List<string> { "BZ05.3", "BZ02.2" },
+                "description"
             );
 
             var token = "test-token";

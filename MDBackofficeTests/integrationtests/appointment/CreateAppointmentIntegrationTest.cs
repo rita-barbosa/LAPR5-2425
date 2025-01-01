@@ -1,4 +1,4 @@
-﻿using MDBackoffice.Controllers;
+using MDBackoffice.Controllers;
 using MDBackoffice.Domain.Appointments;
 using MDBackoffice.Domain.Emails;
 using MDBackoffice.Domain.Logs;
@@ -26,7 +26,7 @@ using Moq;
 using Xunit;
 namespace MDBackofficeTests.integrationtests.appointment
 {
-    public class UpdateAppointmentIntegrationTests
+    public class CreateAppointmentIntegrationTests
     {
         private readonly AppointmentService _service;
         private readonly Mock<UserService> _userServiceMock;
@@ -43,7 +43,7 @@ namespace MDBackofficeTests.integrationtests.appointment
         private readonly Mock<UserManager<User>> _userManagerMock;
         private readonly Mock<ILoginAdapter> _loginAdapterMock;
 
-        public UpdateAppointmentIntegrationTests()
+        public CreateAppointmentIntegrationTests()
         {
             _service = new AppointmentService(_unitOfWorkMock.Object, _repoAppointMock.Object, _repoOpReqMock.Object,
                 _repoRoomMock.Object, _repoOpTypeMock.Object, _repoStaMock.Object, _repoReqStaMock.Object, _appointmentStaffRepoMock.Object);
@@ -81,7 +81,7 @@ namespace MDBackofficeTests.integrationtests.appointment
         }
 
         [Fact]
-        public async Task UpdateAppointment_ReturnsOkResult_IntegrationControllerService()
+        public async Task CreateAppointment_ReturnsOkResult_IntegrationControllerService()
         {
             // Arrange
             var context = new DefaultHttpContext();
@@ -93,41 +93,33 @@ namespace MDBackofficeTests.integrationtests.appointment
 
             _userServiceMock
                 .Setup(_userService => _userService.CheckUserRole("valid-token", "Doctor"))
-                .Returns(false);
+                .Returns(true);
+
+
+
+            var createDto = new CreatingAppointmentDto(
+                "test id",                 
+                "R102",                    
+                "14:00:00",                
+                "16:00:00",               
+                "2024-07-08",              
+                "2024-07-08",              
+                new List<string> { "D202400001" } 
+            );
 
             var id = "appointment-id";
-            var updateDto = new UpdateAppointmentDto(
+            var dto = new AppointmentDto(
+                Guid.NewGuid(),
+                "Scheduled",
                 id,
                 "R201",
                  "14:00:00",
                  "16:00:00",
-                 "2024-07-08",
-                 "2024-07-08",
-                 new List<string> { "D202400001" }
-            );
-
-            var retrievedAppointment = new Appointment(
-                new OperationRequestId(id),
-                "R102",
-                "14:00:00",
-                "16:00:00",
-                "2024-07-08",
-                "2024-07-08"
-            );
-
-            var updatedAppointment = new AppointmentDto(
-                Guid.NewGuid(),
-                "Scheduled",
-                id,  // Set OperationRequestId
-                "R201",
-                 "14:00:00",
-                 "16:00:00",
                  "08/07/2024 00:00:00",
                  "08/07/2024 00:00:00",
                  new List<string> { "D202400001" }
             );
 
-            _repoAppointMock.Setup(_repo => _repo.GetAppointmentByIdWithStaff(id)).ReturnsAsync(retrievedAppointment);
 
             _repoOpReqMock
                 .Setup(x => x.GetByIdAsync(It.IsAny<OperationRequestId>()))
@@ -195,8 +187,8 @@ namespace MDBackofficeTests.integrationtests.appointment
                 .ReturnsAsync(true);
 
             var roomMock = new Mock<Room>(
-                      new Mock<RoomNumber>("R102").Object,
-                      new Mock<RoomTypeCode>("BLCOP-T1").Object,
+                      new RoomNumber("R102"),
+                      new RoomTypeCode("BLCOP-T1"),
                       new Mock<Capacity>(5).Object,
                        new List<Equipment>
                        {
@@ -209,12 +201,11 @@ namespace MDBackofficeTests.integrationtests.appointment
                     new Mock<Slot>("Routine surgery", "14:00", "16:00", "2024-07-08", "2024-07-08").Object
                        });
 
-
             _repoRoomMock.Setup(x => x.GetByIdAsync(It.IsAny<RoomNumber>())).ReturnsAsync(roomMock.Object);
             _repoRoomMock.Setup(x => x.IsRoomAvailableAsync(It.IsAny<RoomNumber>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<Guid?>())).ReturnsAsync(true);
 
             // Act
-            var result = await _controller.UpdateAppointment(updateDto);
+            var result = await _controller.Create(createDto);
 
             // Assert
             var actionResult = Assert.IsType<ActionResult<AppointmentDto>>(result);

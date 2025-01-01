@@ -19,7 +19,7 @@ namespace MDBackoffice.Domain.Rooms
 
         }
 
-        private CurrentStatus(string status)
+        public CurrentStatus(string status)
         {
             this.Description = status;
         }

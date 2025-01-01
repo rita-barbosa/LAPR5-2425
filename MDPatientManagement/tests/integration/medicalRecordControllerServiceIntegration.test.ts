@@ -3,7 +3,7 @@ import { it } from 'mocha';
 import sinon from "sinon";
 import { Container } from "typedi";
 import { Response, Request, NextFunction } from 'express';
-import MedicalRecordController from "../../src/controllers/MedicalRecordController";
+import MedicalRecordController from "../../src/controllers/medicalRecordController";
 import IMedicalRecordService from "../../src/services/IServices/IMedicalRecordService";
 import { IMedicalRecordDTO } from "../../src/dto/IMedicalRecordDTO";
 import { MedicalRecordMap } from "../../src/mappers/MedicalRecordMap";
@@ -23,10 +23,12 @@ describe("MedicalRecord Controller + Service Integration Tests", function () {
         };
         Container.set("logger", mockLogger);
 
-        const mockMedicalRecordRepo = {
-            getAll: sandbox.stub().resolves([]),
-          };
-          Container.set("MedicalRecordRepo", mockMedicalRecordRepo);
+        let medicalRecordSchemaInstance = require("../../src/persistence/schemas/medicalRecordSchema").default;
+        Container.set("medicalRecordSchema", medicalRecordSchemaInstance);
+
+        let medicalRecordRepoClass = require("../../src/repos/medicalRecordRepo").default;
+        let medicalRecordRepoInstance = Container.get(medicalRecordRepoClass);
+        Container.set("MedicalRecordRepo", medicalRecordRepoInstance);
 
         let medicalRecordServiceClass = require("../../src/services/medicalRecordService").default;
         let medicalRecordServiceInstance = Container.get(medicalRecordServiceClass);

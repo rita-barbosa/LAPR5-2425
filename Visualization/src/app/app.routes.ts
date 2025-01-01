@@ -38,7 +38,7 @@ import { CreateMedicalConditionComponent } from './components/admin/create-medic
 import { CreateRoomTypeComponent } from './components/admin/create-room-type/create-room-type.component';
 import { CreateSpecializationComponent } from './components/admin/create-specialization/create-specialization.component';
 import { CreateSurgeryAppointmentComponent } from './components/staff/doctor/create-surgery-appointment/create-surgery-appointment.component';
-import { ListAllergies } from './components/admin/list-allergies/list-allergies.component';
+import { ListAllergies } from './components/staff/doctor/list-allergies/list-allergies.component';
 import { ListSpecializationComponent } from './components/admin/list-specialization/list-specialization.component';
 import { CreateRoomComponent } from './components/admin/create-room/create-room.component';
 import { PrivacyPolicyComponent } from './components/privacy-policy/privacy-policy.component';

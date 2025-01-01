@@ -7,4 +7,7 @@ export interface Patient {
     emergencyContact: string;
     gender:string;
     datebirth: string;
+    medicalConditions: string[];
+    allergies: string[];
+    description: string;
 }
