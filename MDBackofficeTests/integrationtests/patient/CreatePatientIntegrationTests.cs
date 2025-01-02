@@ -93,7 +93,7 @@ namespace MDBackofficeTests.integrationtests.patient
             };
             _userServiceMock.Setup(_userService => _userService.CheckUserRole("valid-token", "Admin")).Returns(false);
 
-            _patientMRAMock.Setup(m => m.CreateMedicalRecord(It.IsAny<MedicalRecordNumber>(),It.IsAny<List<string>>(), It.IsAny<List<string>>(),It.IsAny<string>())).ReturnsAsync(true);
+            _patientMRAMock.Setup(m => m.CreateMedicalRecord(It.IsAny<MedicalRecordNumber>(),It.IsAny<List<string>>(), It.IsAny<List<string>>(),It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(true);
 
             _unitOfWorkMock.Setup(u => u.CommitAsync()).ReturnsAsync(1);
             //Act
@@ -124,7 +124,7 @@ namespace MDBackofficeTests.integrationtests.patient
                 new List<string> { "BZ05.3", "BZ02.2" },
                 "description");
 
-            _patientMRAMock.Setup(m => m.CreateMedicalRecord(It.IsAny<MedicalRecordNumber>(),It.IsAny<List<string>>(), It.IsAny<List<string>>(),It.IsAny<string>())).ReturnsAsync(true);
+            _patientMRAMock.Setup(m => m.CreateMedicalRecord(It.IsAny<MedicalRecordNumber>(),It.IsAny<List<string>>(), It.IsAny<List<string>>(),It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(true);
 
             _unitOfWorkMock.Setup(u => u.CommitAsync()).ReturnsAsync(1);
 
@@ -133,7 +133,7 @@ namespace MDBackofficeTests.integrationtests.patient
                                                 _userServiceMock.Object, _emailServiceMock.Object, _patientMRAMock.Object);
 
             //Act
-            var result = await service.CreatePatientProfile(dtoMock);
+            var result = await service.CreatePatientProfile(dtoMock, "test-token");
 
             //Assert
             Assert.NotNull(result);

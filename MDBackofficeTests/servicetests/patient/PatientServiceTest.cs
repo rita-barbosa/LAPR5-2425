@@ -106,12 +106,12 @@ public class PatientServiceTests
                 new List<string> { "BZ05.3", "BZ02.2" },
                 "description");
 
-        _patientMRAMock.Setup(m => m.CreateMedicalRecord(It.IsAny<MedicalRecordNumber>(),It.IsAny<List<string>>(), It.IsAny<List<string>>(),It.IsAny<string>())).ReturnsAsync(true);
+        _patientMRAMock.Setup(m => m.CreateMedicalRecord(It.IsAny<MedicalRecordNumber>(),It.IsAny<List<string>>(), It.IsAny<List<string>>(),It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(true);
 
         _unitOfWorkMock.Setup(u => u.CommitAsync()).ReturnsAsync(1);
 
         //Act
-        var result = await _service.CreatePatientProfile(dtoMock);
+        var result = await _service.CreatePatientProfile(dtoMock, "test-token");
 
         //Assert
         Assert.NotNull(result);
@@ -312,7 +312,7 @@ public class PatientServiceTests
                 new List<string> { "BZ05.3", "BZ02.2" },
                 "description");
 
-        _patientMRAMock.Setup(m => m.CreateMedicalRecord(It.IsAny<MedicalRecordNumber>(),It.IsAny<List<string>>(), It.IsAny<List<string>>(),It.IsAny<string>())).ReturnsAsync(true);
+        _patientMRAMock.Setup(m => m.CreateMedicalRecord(It.IsAny<MedicalRecordNumber>(),It.IsAny<List<string>>(), It.IsAny<List<string>>(),It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(true);
 
         _unitOfWorkMock.Setup(u => u.CommitAsync()).ReturnsAsync(1);
 
@@ -321,7 +321,7 @@ public class PatientServiceTests
                                             _userServiceMock.Object, _emailServiceMock.Object, _patientMRAMock.Object);
 
         //Act
-        var profile = await service.CreatePatientProfile(dtoMock);
+        var profile = await service.CreatePatientProfile(dtoMock, "test-token");
         var result = await service.AnonymizeProfile(profile.Email);
 
         //Assert

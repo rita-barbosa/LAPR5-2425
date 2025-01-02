@@ -71,9 +71,6 @@ export class PatientService {
     const medicalConditionIds: string[] = medicalConditions.map(condition => condition.id);
     const allergyIds: string[] = allergies.map(allergy => allergy.code);
 
-    console.log(medicalConditionIds);
-    console.log(allergyIds);
-
     let patient: Patient = {
       firstName: firstName,
       lastName: lastName,
