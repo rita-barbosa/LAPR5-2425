@@ -391,4 +391,27 @@ public class PatientServiceTests
         Assert.Single(patients);
     }
 
+     [Fact]
+        public async Task DownloadMedicalRecord_ReturnsString()
+        {
+            // Arrange
+            var dtoMock = new DownloadMedicalRecordDto(
+                "202411000001",
+                "Abcde12345!");
+                
+ 
+            _userServiceMock.Setup(_userService => _userService.GetLoggedInEmail("valid-token")).Returns("ritabarbosa@email.com");
+            _userServiceMock.Setup(_userService => _userService.ConfirmUserPasswordAsync("ritabarbosa@email.com", dtoMock.Password)).ReturnsAsync(true);
+            _repoMock.Setup(_repoPatMock => _repoPatMock.GetMedicalRecordNumberOfPatientWithEmail("ritabarbosa@email.com")).ReturnsAsync(It.IsAny<MedicalRecordNumber>());
+            _patientMRAMock.Setup(m => m.ExportMedicalRecordData(It.IsAny<MedicalRecordNumber>(), It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync("expected/file.pdf");
+
+            // Act
+            var result = await _service.DownloadMedicalRecord(dtoMock, "valid-token");
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.IsType<string>(result);
+            Assert.Equal("expected/file.pdf", result);
+        }
+        
 }

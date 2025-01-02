@@ -323,6 +323,35 @@ namespace MDBackofficeTests.controllertests
             Assert.Equal(dtoResult.DateBirth, returnedPatient.DateBirth);
             Assert.Equal(dtoResult.PatientId, returnedPatient.PatientId);
         }
+
+        [Fact]
+        public async Task DownloadMedicalRecord_ReturnsOkPatient()
+        {
+            // Arrange
+            var dtoMock = new DownloadMedicalRecordDto(
+                "202411000001",
+                "Abcde12345!");
+                
+            var context = new DefaultHttpContext();
+            context.Request.Headers["Authorization"] = "Bearer valid-token";
+            _controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = context
+            };
+            _userServiceMock.Setup(_userService => _userService.CheckUserRole("valid-token", "Patient")).Returns(false);
+            _userServiceMock.Setup(_userService => _userService.GetLoggedInEmail("valid-token")).Returns("ritabarbosa@email.com");
+            _userServiceMock.Setup(_userService => _userService.ConfirmUserPasswordAsync("ritabarbosa@email.com", dtoMock.Password)).ReturnsAsync(true);
+            _repoMock.Setup(_repoPatMock => _repoPatMock.GetMedicalRecordNumberOfPatientWithEmail("ritabarbosa@email.com")).ReturnsAsync(It.IsAny<MedicalRecordNumber>());
+            _patientMRAMock.Setup(m => m.ExportMedicalRecordData(It.IsAny<MedicalRecordNumber>(), It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync("expected/file.pdf");
+
+            // Act
+            var result = await _controller.DownloadMedicalRecord(dtoMock);
+
+            // Assert
+            var okResult = Assert.IsType<OkObjectResult>(result.Result);
+            var resturnedString = Assert.IsType<string>(okResult.Value);
+            Assert.Equal("expected/file.pdf", resturnedString);
+        }
     }
 }
 

@@ -17,6 +17,8 @@ describe('CreatePatientProfileComponent', () => {
   let mockPatientService: jasmine.SpyObj<PatientService>;
   let mockAllergyService: jasmine.SpyObj<AllergyService>;
   let mockMedicalConditionService: jasmine.SpyObj<MedicalConditionService>;
+  let mockMessageComponent: jasmine.SpyObj<MessageComponent>;
+
 
   beforeEach(async () => {
     mockPatientService = jasmine.createSpyObj('PatientService', ['createPatientProfile']);
@@ -38,7 +40,7 @@ describe('CreatePatientProfileComponent', () => {
       { id: 'M4', designation: 'Osteoarthritis', symptoms: 'Joint pain, stiffness, swelling' },
       { id: 'M5', designation: 'Anemia', symptoms: 'Fatigue, weakness, pale skin' }
     ]));
-    
+
     const activatedRouteMock = {
       snapshot: {
         paramMap: {
@@ -159,22 +161,20 @@ describe('CreatePatientProfileComponent', () => {
     // Arrange
     const mockInput = document.createElement('input');
     mockInput.classList.add('invalid-placeholder');
-  
+
     const mockNodeList = {
       forEach: (callback: (el: Element) => void) => callback(mockInput),
       length: 1,
       item: (index: number) => (index === 0 ? mockInput : null),
       [0]: mockInput,
     } as unknown as NodeListOf<HTMLInputElement>;
-  
+
     spyOn(document, 'querySelectorAll').and.returnValue(mockNodeList);
-  
+
     // Act
     component.clearForm();
-  
+
     // Assert
     expect(mockInput.classList.contains('invalid-placeholder')).toBeFalse();
   });
-  
-
 });
