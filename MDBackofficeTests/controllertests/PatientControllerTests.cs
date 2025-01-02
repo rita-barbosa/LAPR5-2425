@@ -89,7 +89,7 @@ namespace MDBackofficeTests.controllertests
             {
                 HttpContext = context
             };
-            _patientMRAMock.Setup(m => m.CreateMedicalRecord(It.IsAny<MedicalRecordNumber>(), It.IsAny<List<string>>(), It.IsAny<List<string>>(), It.IsAny<string>())).ReturnsAsync(true);
+            _patientMRAMock.Setup(m => m.CreateMedicalRecord(It.IsAny<MedicalRecordNumber>(), It.IsAny<List<string>>(), It.IsAny<List<string>>(), It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(true);
             _userServiceMock.Setup(_userService => _userService.CheckUserRole("valid-token", "Admin")).Returns(false);
             _unitOfWorkMock.Setup(u => u.CommitAsync()).ReturnsAsync(1);
 
