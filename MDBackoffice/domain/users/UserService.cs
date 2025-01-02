@@ -495,7 +495,7 @@ namespace MDBackoffice.Domain.Users
            return userInfo.Email ?? throw new BusinessRuleValidationException("No logged in user.");
         }
 
-        public async Task<bool> ConfirmUserPasswordAsync(string email, string password)
+        public virtual async Task<bool> ConfirmUserPasswordAsync(string email, string password)
         {
             User user = await _userManager.FindByEmailAsync(email) ?? throw new BusinessRuleValidationException("Can't find the currently logged in user.");
 

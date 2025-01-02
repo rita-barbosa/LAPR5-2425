@@ -24,7 +24,7 @@ export default class MedicalRecordController implements IMedicalRecordController
             }
 
             const medicalRecordDTO = medicalRecordOrError.getValue();
-            return res.json(medicalRecordDTO).status(201);
+            return res.status(201).json(medicalRecordDTO);
         } catch (e) {
             return next(e);
         }

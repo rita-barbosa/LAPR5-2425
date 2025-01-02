@@ -35,7 +35,7 @@ export default (app: Router) => {
 
     route.get('/get-all-medical-conditions',
         middlewares.isAuth,
-        middlewares.isAuthz(["Doctor"]),
+        middlewares.isAuthz(["Doctor", "Admin"]),
         (req, res, next) => ctrl.getAllMedicalCondition(req, res, next) );
   
       route.post('/get-medical-condition-by-id',

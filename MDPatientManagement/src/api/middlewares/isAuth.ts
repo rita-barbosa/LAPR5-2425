@@ -31,7 +31,7 @@ const isAuth = jwt({
   userProperty: 'token', // Use req.token to store the JWT
   getToken: getTokenFromHeader, // How to extract the JWT from the request
   algorithms: ["HS256"],  // Added by JRT
-  issuer : 'HealthcareSystemFAE',
+  issuer : 'HealthcareSystem',
   audience: 'HealthcareSystemUser'
 });
 

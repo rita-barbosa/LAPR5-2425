@@ -149,8 +149,14 @@ namespace MDBackofficeTests.controllertests
             Assert.Equal(dto.RoomNumber, result.RoomNumber);
             Assert.Equal(dto.StartTime, result.StartTime);
             Assert.Equal(dto.EndTime, result.EndTime);
-            Assert.Equal(dto.StartDate, result.StartDate);
-            Assert.Equal(dto.EndDate, result.EndDate);
+            Assert.Equal(
+                DateTime.Parse(dto.StartDate).ToString("MM/dd/yyyy HH:mm"),
+                DateTime.Parse(result.StartDate).ToString("MM/dd/yyyy HH:mm")
+            );
+            Assert.Equal(
+                DateTime.Parse(dto.EndDate).ToString("MM/dd/yyyy HH:mm"),
+                DateTime.Parse(result.EndDate).ToString("MM/dd/yyyy HH:mm")
+            );
 
             Assert.NotNull(result.Staffs);
             Assert.Equal(dto.Staffs.Count, result.Staffs.Count);
@@ -294,9 +300,14 @@ namespace MDBackofficeTests.controllertests
             Assert.Equal(expectedAppointment.RoomNumber, result.RoomNumber);
             Assert.Equal(expectedAppointment.StartTime, result.StartTime);
             Assert.Equal(expectedAppointment.EndTime, result.EndTime);
-            Assert.Equal(expectedAppointment.StartDate, result.StartDate);
-            Assert.Equal(expectedAppointment.EndDate, result.EndDate);
-
+            Assert.Equal(
+                DateTime.Parse(expectedAppointment.StartDate).ToString("MM/dd/yyyy HH:mm"),
+                DateTime.Parse(result.StartDate).ToString("MM/dd/yyyy HH:mm")
+            );
+            Assert.Equal(
+                DateTime.Parse(expectedAppointment.EndDate).ToString("MM/dd/yyyy HH:mm"),
+                DateTime.Parse(result.EndDate).ToString("MM/dd/yyyy HH:mm")
+            );
             Assert.NotNull(result.Staffs);
             Assert.Equal(expectedAppointment.Staffs.Count, result.Staffs.Count);
             for (int i = 0; i < expectedAppointment.Staffs.Count; i++)

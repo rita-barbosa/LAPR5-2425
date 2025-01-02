@@ -13,7 +13,7 @@ namespace MDBackoffice.Infrastructure.Patients
     public class PatientMedicalRecordAdapter : IPatientMedicalRecordAdapter
     {
         public async Task<bool> CreateMedicalRecord(MedicalRecordNumber medicalRecordNumber, List<string> medicalConditions,
-            List<string> allergies, string description)
+            List<string> allergies, string description, string token)
         {
             string json = createMDRJson(medicalRecordNumber, medicalConditions, allergies, description);
             Console.WriteLine(json);
@@ -22,6 +22,8 @@ namespace MDBackoffice.Infrastructure.Patients
 
             using (var httpClient = new HttpClient())
             {
+                 httpClient.DefaultRequestHeaders.Add("Authorization", "Bearer " + token);
+
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
                 try
                 {

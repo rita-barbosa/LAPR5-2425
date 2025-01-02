@@ -48,7 +48,7 @@ export default (app: Router) => {
 
     route.get('/get-all-allergies',
       middlewares.isAuth,
-      middlewares.isAuthz(["Doctor"]),
+      middlewares.isAuthz(["Doctor", "Admin"]),
       (req, res, next) => ctrl.getAllAllergies(req, res, next) );
 
     route.post('/get-allergies-filtered',

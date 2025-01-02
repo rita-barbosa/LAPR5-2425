@@ -47,7 +47,7 @@ namespace MDBackoffice.Domain.Patients
             return new PatientDto(patient.Name.ToString(), patient.PhoneNumber.ToString(), patient.Email.ToString(), patient.Address.ToString(), patient.DateBirth.ToString(), patient.Id.AsString());
         }
 
-        public async Task<PatientDto> CreatePatientProfile([FromBody] CreatingPatientDto dto)
+        public async Task<PatientDto> CreatePatientProfile([FromBody] CreatingPatientDto dto, string token)
         {
             if (await _repo.ExistsPatientWithEmailOrPhone(dto.Email, dto.Phone.Split(' ')[0], dto.Phone.Split(' ')[1]))
             {
@@ -62,7 +62,7 @@ namespace MDBackoffice.Domain.Patients
 
             await _repo.AddAsync(patient);
 
-            bool mrnCreation = await _mrnAdapter.CreateMedicalRecord(patient.Id, dto.MedicalConditions, dto.Allergies, dto.Description);
+            bool mrnCreation = await _mrnAdapter.CreateMedicalRecord(patient.Id, dto.MedicalConditions, dto.Allergies, dto.Description, token);
 
             if(!mrnCreation)
             {

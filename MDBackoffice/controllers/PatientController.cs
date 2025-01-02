@@ -71,7 +71,7 @@ namespace MDBackoffice.Controllers
                 {
                     return BadRequest("Invalid authorization or user role.");
                 }
-                var patient = await _service.CreatePatientProfile(dto);
+                var patient = await _service.CreatePatientProfile(dto, token);
 
                 return CreatedAtAction(nameof(GetPatientById), new { id = patient.PatientId }, patient);
             }
@@ -100,7 +100,7 @@ namespace MDBackoffice.Controllers
                 }
                 var patient = await _service.DownloadMedicalRecord(dto, token);
 
-                return Ok(new { patient });
+                return Ok(patient);
             }
             catch (BusinessRuleValidationException ex)
             {

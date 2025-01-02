@@ -12,9 +12,8 @@ import { IMedicalRecordQueryFilterParameters } from '../dto/IMedicalRecordQueryF
 import IMedicalConditionRepo from './IRepos/IMedicalConditionRepo';
 import IAllergyRepo from './IRepos/IAllergyRepo';
 import { IExportMedicalRecordDTO } from '../dto/IExportMedicalRecordDTO';
-import { InvalidTargetIndexError, PDFDocument, PDFFont, rgb, StandardFonts } from 'pdf-lib';
+import { PDFDocument, PDFFont, rgb, StandardFonts } from 'pdf-lib';
 import { MedicalRecordId } from '../domain/medicalRecordId';
-import { ExceptionHandler } from 'winston';
 import path from 'path';
 import fs from 'fs-extra';
 import Minizip from "minizip-asm.js";
