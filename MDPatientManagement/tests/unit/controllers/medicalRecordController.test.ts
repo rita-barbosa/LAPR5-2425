@@ -16,17 +16,17 @@ describe("MedicalRecordController Unit Tests", function () {
     Container.reset();
 
     const mockLogger = {
-        info: sandbox.stub(),
-        error: sandbox.stub(),
-        warn: sandbox.stub(),
-        debug: sandbox.stub(),
+      info: sandbox.stub(),
+      error: sandbox.stub(),
+      warn: sandbox.stub(),
+      debug: sandbox.stub(),
     };
     Container.set("logger", mockLogger);
 
-  const mockMedicalRecordRepo = {
-    getAll: sandbox.stub().resolves([]),
-  };
-  Container.set("MedicalRecordRepo", mockMedicalRecordRepo);
+    const mockMedicalRecordRepo = {
+      getAll: sandbox.stub().resolves([]),
+    };
+    Container.set("MedicalRecordRepo", mockMedicalRecordRepo);
 
     let medicalRecordServiceClass = require("../../../src/services/medicalRecordService").default;
     let medicalRecordServiceInstance = Container.get(medicalRecordServiceClass);
@@ -41,7 +41,7 @@ describe("MedicalRecordController Unit Tests", function () {
   it("should return all medical records successfully", async () => {
     const mockRecords: IMedicalRecordDTO[] = [
       {
-        id: "1234", medicalRecordNumber: "MR-001", medicalConditions: ["Condition1"], allergies: ["Allergy1"], description: "Description1"
+        id: "1234", medicalRecordNumber: "MR-001", medicalConditions: ["Condition1"], allergies: ["Allergy1"], description: "Description1",
       },
     ];
 
@@ -100,5 +100,175 @@ describe("MedicalRecordController Unit Tests", function () {
 
     // Assert
     sinon.assert.calledOnce(next as sinon.SinonStub);
+  });
+
+  it("should create a medical record successfully", async () => {
+    const medicalRecordDTO: IMedicalRecordDTO = {
+      id: "202412000001",
+      medicalRecordNumber: "202412000001",
+      medicalConditions: ['FA14.0'],
+      allergies: ['FA33.0'],
+      description: "Patient has a mild condition.",
+    };
+
+    const req: Partial<Request> = { body: medicalRecordDTO };
+    const res: Partial<Response> = {
+      status: sinon.stub().returnsThis(),
+      json: sinon.stub(),
+    };
+    const next: Partial<NextFunction> = sinon.stub();
+
+    const service = Container.get<IMedicalRecordService>("MedicalRecordService") as IMedicalRecordService;
+    sinon.stub(service, "createMedicalRecord").resolves(Result.ok(medicalRecordDTO));
+
+    const controller = new MedicalRecordController(service);
+
+    // Act
+    await controller.createMedicalRecord(req as Request, res as Response, next as NextFunction);
+
+    // Assert
+    sinon.assert.calledWith(res.json as sinon.SinonStub, medicalRecordDTO);
+    sinon.assert.calledWith(res.status as sinon.SinonStub, 201);
+  });
+
+  it("should return 402 if creating a medical record fails", async () => {
+    const medicalRecordDTO: IMedicalRecordDTO = {
+      id: "202412000001",
+      medicalRecordNumber: "202412000001",
+      medicalConditions: ['FA14.0'],
+      allergies: ['FA33.0'],
+      description: "Patient has a mild condition.",
+    };
+
+    const req: Partial<Request> = { body: medicalRecordDTO };
+    const res: Partial<Response> = {
+      status: sinon.stub().returnsThis(),
+      send: sinon.stub(),
+    };
+    const next: Partial<NextFunction> = sinon.stub();
+
+    const service = Container.get<IMedicalRecordService>("MedicalRecordService") as IMedicalRecordService;
+    sinon.stub(service, "createMedicalRecord").resolves(Result.fail("Failed to create"));
+
+    const controller = new MedicalRecordController(service);
+
+    // Act
+    await controller.createMedicalRecord(req as Request, res as Response, next as NextFunction);
+
+    // Assert
+    sinon.assert.calledWith(res.status as sinon.SinonStub, 402);
+    sinon.assert.calledOnce(res.send as sinon.SinonStub);
+  });
+
+  it("should update a medical record successfully", async () => {
+    const medicalRecordDTO: IMedicalRecordDTO = {
+      id: "202412000001",
+      medicalRecordNumber: "202412000001",
+      medicalConditions: ['FA14.0'],
+      allergies: ['FA33.0'],
+      description: "Patient has a mild condition.",
+    };
+
+    const req: Partial<Request> = { body: medicalRecordDTO };
+    const res: Partial<Response> = {
+      status: sinon.stub().returnsThis(),
+      json: sinon.stub(),
+    };
+    const next: Partial<NextFunction> = sinon.stub();
+
+    const service = Container.get<IMedicalRecordService>("MedicalRecordService") as IMedicalRecordService;
+    sinon.stub(service, "updateMedicalRecord").resolves(Result.ok(medicalRecordDTO));
+
+    const controller = new MedicalRecordController(service);
+
+    // Act
+    await controller.updateMedicalRecord(req as Request, res as Response, next as NextFunction);
+
+    // Assert
+    sinon.assert.calledWith(res.json as sinon.SinonStub, medicalRecordDTO);
+    sinon.assert.calledWith(res.status as sinon.SinonStub, 201);
+  });
+
+  it("should return 404 if updating a medical record fails", async () => {
+    const medicalRecordDTO: IMedicalRecordDTO = {
+      id: "202412000001",
+      medicalRecordNumber: "202412000001",
+      medicalConditions: ['FA14.0'],
+      allergies: ['FA33.0'],
+      description: "Patient has a mild condition.",
+    };
+
+    const req: Partial<Request> = { body: medicalRecordDTO };
+    const res: Partial<Response> = {
+      status: sinon.stub().returnsThis(),
+      send: sinon.stub(),
+    };
+    const next: Partial<NextFunction> = sinon.stub();
+
+    const service = Container.get<IMedicalRecordService>("MedicalRecordService") as IMedicalRecordService;
+    sinon.stub(service, "updateMedicalRecord").resolves(Result.fail("Failed to update"));
+
+    const controller = new MedicalRecordController(service);
+
+    // Act
+    await controller.updateMedicalRecord(req as Request, res as Response, next as NextFunction);
+
+    // Assert
+    sinon.assert.calledWith(res.status as sinon.SinonStub, 404);
+    sinon.assert.calledOnce(res.send as sinon.SinonStub);
+  });
+
+  it("should export medical records successfully", async () => {
+    const mockExportInfo = {
+      medicalRecordNumber: "202412000001",
+      filepath: "/some/path",
+      pass: "password",
+    };
+
+    const req: Partial<Request> = { body: mockExportInfo };
+    const res: Partial<Response> = {
+      status: sinon.stub().returnsThis(),
+      json: sinon.stub(),
+    };
+    const next: Partial<NextFunction> = sinon.stub();
+
+    const service = Container.get<IMedicalRecordService>("MedicalRecordService") as IMedicalRecordService;
+    sinon.stub(service, "exportMedicalRecord").resolves(Result.ok("/some/path/Medical_Record.zip"));
+
+    const controller = new MedicalRecordController(service);
+
+    // Act
+    await controller.exportMedicalRecords(req as Request, res as Response, next as NextFunction);
+
+    // Assert
+    sinon.assert.calledWith(res.json as sinon.SinonStub, "/some/path/Medical_Record.zip");
+    sinon.assert.calledWith(res.status as sinon.SinonStub, 201);
+  });
+
+  it("should return 404 if exporting medical records fails", async () => {
+    const mockExportInfo = {
+      medicalRecordNumber: "202412000001",
+      filepath: "/some/path",
+      pass: "password",
+    };
+
+    const req: Partial<Request> = { body: mockExportInfo };
+    const res: Partial<Response> = {
+      status: sinon.stub().returnsThis(),
+      send: sinon.stub(),
+    };
+    const next: Partial<NextFunction> = sinon.stub();
+
+    const service = Container.get<IMedicalRecordService>("MedicalRecordService") as IMedicalRecordService;
+    sinon.stub(service, "exportMedicalRecord").resolves(Result.fail("Failed to export"));
+
+    const controller = new MedicalRecordController(service);
+
+    // Act
+    await controller.exportMedicalRecords(req as Request, res as Response, next as NextFunction);
+
+    // Assert
+    sinon.assert.calledWith(res.status as sinon.SinonStub, 404);
+    sinon.assert.calledOnce(res.send as sinon.SinonStub);
   });
 });
