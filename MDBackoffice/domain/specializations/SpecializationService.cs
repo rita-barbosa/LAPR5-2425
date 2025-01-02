@@ -54,7 +54,7 @@ namespace MDBackoffice.Domain.Specializations
             await this._unitOfWork.CommitAsync();
         }
 
-        public async Task<SpecializationDto> EditSpecialization(EditSpecializationDto dto)
+        public virtual async Task<SpecializationDto> EditSpecialization(EditSpecializationDto dto)
         {
             var spec = await _repo.GetByIdAsync(new SpecializationCode(dto.Code)) ?? throw new BusinessRuleValidationException("No specialization was found for the given code.");
 
