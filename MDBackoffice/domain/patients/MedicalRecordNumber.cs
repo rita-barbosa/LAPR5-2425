@@ -6,17 +6,18 @@ namespace MDBackoffice.Domain.Patients
     public class MedicalRecordNumber : EntityId
     {
         public MedicalRecordNumber(string seqNumber, bool isUnfinished)
-              : base($"{DateTime.Now.Year}{DateTime.Now.Month}{seqNumber}")
+            : base($"{DateTime.Now.Year}{DateTime.Now.Month.ToString("D2")}{seqNumber}")
         {
             if (seqNumber.Length != 6 || !int.TryParse(seqNumber, out _))
             {
                 throw new BusinessRuleValidationException("Sequential number must be a 5-digit number.");
             }
-            if (isUnfinished) //just because can have same constructor paramenters
+            if (isUnfinished) 
             {
                 return;
             }
         }
+
         public MedicalRecordNumber(string value)
                  : base(value)
         {

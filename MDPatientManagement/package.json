@@ -65,6 +65,7 @@
     "shallow-equal-object": "^1.1.1",
     "sinon": "^7.5.0",
     "sinon-chai": "^3.3.0",
+    "tmp": "^0.2.3",
     "typedi": "^0.10.0",
     "winston": "^3.2.1"
   },

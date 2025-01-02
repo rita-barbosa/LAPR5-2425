@@ -94,7 +94,7 @@ namespace MDBackofficeTests.controllertests
                 "16:00",
                 "2024-07-08",
                 "2024-07-08",
-                new List<string> { "D202400001" }
+                new List<string> { "D202500001" }
             );
 
             var appointmentId = Guid.NewGuid();
@@ -107,7 +107,7 @@ namespace MDBackofficeTests.controllertests
                 "16:00:00",
                 "2024-07-08",
                 "2024-07-08",
-                new List<string> { "D202400001" }
+                new List<string> { "D202500001" }
             );
 
             var context = new DefaultHttpContext();
@@ -164,7 +164,7 @@ namespace MDBackofficeTests.controllertests
                  "16:00:00",
                  "2024-07-08",
                  "2024-07-08",
-                 new List<string> { "D202400001" }
+                 new List<string> { "D202500001" }
             );       
             var updatedAppointment = new AppointmentDto(
                 Guid.NewGuid(),
@@ -175,7 +175,7 @@ namespace MDBackofficeTests.controllertests
                  "16:00:00",
                  "08/07/2024 00:00:00",
                  "08/07/2024 00:00:00",
-                 new List<string> { "D202400001" }
+                 new List<string> { "D202500001" }
             );         
 
             _serviceMock.Setup(x => x.UpdateAsync(updateDto)).ReturnsAsync(updatedAppointment);

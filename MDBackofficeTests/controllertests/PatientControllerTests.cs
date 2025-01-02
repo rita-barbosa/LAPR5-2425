@@ -106,7 +106,7 @@ namespace MDBackofficeTests.controllertests
         public async Task DeletePatientProfile_ReturnsOkResult()
         {
             //Arrange
-            var id = "202410000001";
+            var id = "202501000001";
             var dtoMock = new EditPatientDto
             (
                 "Rita Barbosa",
@@ -158,7 +158,7 @@ namespace MDBackofficeTests.controllertests
               "2004-12-15");
 
             var patientMock = new Mock<Patient>("first", "last", "first last", "country, 12345, street test", "female", "+123", "12345678", "98765432", "email@email.com", "2000-10-10", "000001");
-            var id = "202412000001";
+            var id = "202501000001";
 
             var dtoResult = new PatientDto("Rita Barbosa", "+351 910000000", "ritabarbosa@email.com", "Test, 1234-234, Test Test", "2004-12-15", id);
             var context = new DefaultHttpContext();
@@ -217,7 +217,7 @@ namespace MDBackofficeTests.controllertests
             string email = "exampleemail@gmail.com";
             string gender = "Male";
             string date = "2004-12-15";
-            string medicalRecordNumber = "202411000001";
+            string medicalRecordNumber = "202501000001";
 
             PatientListingFilterParametersDto listingFilterParametersDto
                 = new PatientListingFilterParametersDto(
@@ -234,7 +234,7 @@ namespace MDBackofficeTests.controllertests
             };
 
             PatientQueryParametersDto dto = new PatientQueryParametersDto(listingFilterParametersDtosList);
-            var id = "202411000001";
+            var id = "202501000001";
 
             List<PatientDto> result = new List<PatientDto>();
             var dtoResult = new PatientDto("Rita Barbosa", "+351 910000000", "ritabarbosa@email.com", "Test, 1234-234, Test Test", "2004-12-15", id);
@@ -286,7 +286,7 @@ namespace MDBackofficeTests.controllertests
             userMock.Setup(u => u.PasswordHash).Returns(password);
 
             var token = "test-token";
-            var idPatient = "202412000001";
+            var idPatient = "202501000001";
 
             var dtoResult = new PatientDto("Rita Barbosa", "+351 910000000", newEmail, "Test, 1234-234, Test Test", "2000-10-10", idPatient);
 
@@ -322,6 +322,35 @@ namespace MDBackofficeTests.controllertests
             Assert.Equal(dtoResult.Address, returnedPatient.Address);
             Assert.Equal(dtoResult.DateBirth, returnedPatient.DateBirth);
             Assert.Equal(dtoResult.PatientId, returnedPatient.PatientId);
+        }
+
+        [Fact]
+        public async Task DownloadMedicalRecord_ReturnsOkPatient()
+        {
+            // Arrange
+            var dtoMock = new DownloadMedicalRecordDto(
+                "202411000001",
+                "Abcde12345!");
+                
+            var context = new DefaultHttpContext();
+            context.Request.Headers["Authorization"] = "Bearer valid-token";
+            _controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = context
+            };
+            _userServiceMock.Setup(_userService => _userService.CheckUserRole("valid-token", "Patient")).Returns(false);
+            _userServiceMock.Setup(_userService => _userService.GetLoggedInEmail("valid-token")).Returns("ritabarbosa@email.com");
+            _userServiceMock.Setup(_userService => _userService.ConfirmUserPasswordAsync("ritabarbosa@email.com", dtoMock.Password)).ReturnsAsync(true);
+            _repoMock.Setup(_repoPatMock => _repoPatMock.GetMedicalRecordNumberOfPatientWithEmail("ritabarbosa@email.com")).ReturnsAsync(It.IsAny<MedicalRecordNumber>());
+            _patientMRAMock.Setup(m => m.ExportMedicalRecordData(It.IsAny<MedicalRecordNumber>(), It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync("expected/file.pdf");
+
+            // Act
+            var result = await _controller.DownloadMedicalRecord(dtoMock);
+
+            // Assert
+            var okResult = Assert.IsType<OkObjectResult>(result.Result);
+            var resturnedString = Assert.IsType<string>(okResult.Value);
+            Assert.Equal("expected/file.pdf", resturnedString);
         }
     }
 }

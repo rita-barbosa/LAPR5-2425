@@ -39,7 +39,7 @@ namespace MDBackofficeTests.controllertests
                 "16:00:00",               
                 "2024-04-04",              
                 "2024-04-04",              
-                new List<string> { "D202400001" } 
+                new List<string> { "D202500001" } 
             );
 
             var id = "test id";
@@ -50,9 +50,9 @@ namespace MDBackofficeTests.controllertests
                 "R102",
                  "14:00:00",
                  "16:00:00",
-                 "04/04/2024 00:00:00",
-                 "04/04/2024 00:00:00",
-                 new List<string> { "D202400001" }
+                 "4/4/2024 12:00:00 AM",
+                 "4/4/2024 12:00:00 AM",
+                 new List<string> { "D202500001" }
             );
 
 
@@ -149,8 +149,14 @@ namespace MDBackofficeTests.controllertests
             Assert.Equal(dto.RoomNumber, result.RoomNumber);
             Assert.Equal(dto.StartTime, result.StartTime);
             Assert.Equal(dto.EndTime, result.EndTime);
-            Assert.Equal(dto.StartDate, result.StartDate);
-            Assert.Equal(dto.EndDate, result.EndDate);
+            Assert.Equal(
+                DateTime.Parse(dto.StartDate).ToString("MM/dd/yyyy HH:mm"),
+                DateTime.Parse(result.StartDate).ToString("MM/dd/yyyy HH:mm")
+            );
+            Assert.Equal(
+                DateTime.Parse(dto.EndDate).ToString("MM/dd/yyyy HH:mm"),
+                DateTime.Parse(result.EndDate).ToString("MM/dd/yyyy HH:mm")
+            );
 
             Assert.NotNull(result.Staffs);
             Assert.Equal(dto.Staffs.Count, result.Staffs.Count);
@@ -198,7 +204,7 @@ namespace MDBackofficeTests.controllertests
                 "16:00:00",
                 "2024-04-04",
                 "2024-04-04",
-                new List<string> { "D202400001" }
+                new List<string> { "D202500001" }
             );
 
             // Expected updated appointment DTO
@@ -209,9 +215,9 @@ namespace MDBackofficeTests.controllertests
                 "R201",
                 "14:00:00",
                 "16:00:00",
-                "04/04/2024 00:00:00",
-                "04/04/2024 00:00:00",
-                new List<string> { "D202400001" }
+                "4/4/2024 12:00:00 AM",
+                "4/4/2024 12:00:00 AM",
+                new List<string> { "D202500001" }
             );
 
             // Mock repository behaviors
@@ -226,7 +232,7 @@ namespace MDBackofficeTests.controllertests
                     "2024-06-01",
                     "O202400001",
                     "Test operation",
-                    "202412000001",
+                    "202501000001",
                     "operation-type-id-1"
                 ));
 
@@ -294,9 +300,14 @@ namespace MDBackofficeTests.controllertests
             Assert.Equal(expectedAppointment.RoomNumber, result.RoomNumber);
             Assert.Equal(expectedAppointment.StartTime, result.StartTime);
             Assert.Equal(expectedAppointment.EndTime, result.EndTime);
-            Assert.Equal(expectedAppointment.StartDate, result.StartDate);
-            Assert.Equal(expectedAppointment.EndDate, result.EndDate);
-
+            Assert.Equal(
+                DateTime.Parse(expectedAppointment.StartDate).ToString("MM/dd/yyyy HH:mm"),
+                DateTime.Parse(result.StartDate).ToString("MM/dd/yyyy HH:mm")
+            );
+            Assert.Equal(
+                DateTime.Parse(expectedAppointment.EndDate).ToString("MM/dd/yyyy HH:mm"),
+                DateTime.Parse(result.EndDate).ToString("MM/dd/yyyy HH:mm")
+            );
             Assert.NotNull(result.Staffs);
             Assert.Equal(expectedAppointment.Staffs.Count, result.Staffs.Count);
             for (int i = 0; i < expectedAppointment.Staffs.Count; i++)

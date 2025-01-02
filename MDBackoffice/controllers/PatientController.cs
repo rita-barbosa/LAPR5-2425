@@ -100,7 +100,7 @@ namespace MDBackoffice.Controllers
                 }
                 var patient = await _service.DownloadMedicalRecord(dto, token);
 
-                return Ok(new { patient });
+                return Ok(patient);
             }
             catch (BusinessRuleValidationException ex)
             {

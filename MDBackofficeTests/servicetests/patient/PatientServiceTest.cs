@@ -138,7 +138,7 @@ public class PatientServiceTests
                   "2004-12-15");
 
             var patientMock = new Mock<Patient>("first", "last", "first last", "country, 12345, street test", "female", "+123", "12345678", "98765432", "email@email.com", "2000-10-10", "000001");
-            var id = "202412000001";
+            var id = "202501000001";
             
             var dtoResult = new PatientDto("Rita Barbosa", "+351 910000000", "ritabarbosa@email.com", "Test, 1234-234, Test Test", "2004-12-15",id);
   
@@ -164,7 +164,7 @@ public class PatientServiceTests
     public async Task DeletePatientProfile_ReturnsTask()
     {
         // Arrange
-        var id = "202410000001";
+        var id = "202501000001";
         var dtoMock = new EditPatientDto
         (
             "Rita Barbosa",
@@ -205,7 +205,7 @@ public class PatientServiceTests
     public async Task DeletePatientProfile_ReturnsBusinessRuleValidationException() 
     {
         // Arrange
-        var id = "202411000001";
+        var id = "202501000001";
         var dtoMock = new EditPatientDto
         (
             "Rita Barbosa",
@@ -264,7 +264,7 @@ public class PatientServiceTests
             userMock.Setup(u => u.PasswordHash).Returns(password);
 
             var token = "test-token";
-            var idPatient = "202412000001";
+            var idPatient = "202501000001";
 
             var dtoResult = new PatientDto("Rita Barbosa", "+351 910000000", newEmail, "Test, 1234-234, Test Test", "2000-10-10", idPatient);
 
@@ -357,7 +357,7 @@ public class PatientServiceTests
         string email = "exampleemail@gmail.com";
         string gender = "male";
         string date = "2004-12-15";
-        string medicalRecordNumber = "202410000001";
+        string medicalRecordNumber = "202501000001";
 
         PatientListingFilterParametersDto listingFilterParametersDto
             = new PatientListingFilterParametersDto(
@@ -374,7 +374,7 @@ public class PatientServiceTests
             };
 
         PatientQueryParametersDto dto = new PatientQueryParametersDto(listingFilterParametersDtosList);
-        var id = "202410000001";
+        var id = "202501000001";
 
         var patientMock = new Mock<Patient>("Duarte", "Matos", "Duarte Matos", "country, 12345, street test", "male", "+123", "12345678", "98765432", "exampleemail@gmail.com", "2004-12-15", "000001");
 
@@ -391,4 +391,27 @@ public class PatientServiceTests
         Assert.Single(patients);
     }
 
+     [Fact]
+        public async Task DownloadMedicalRecord_ReturnsString()
+        {
+            // Arrange
+            var dtoMock = new DownloadMedicalRecordDto(
+                "202411000001",
+                "Abcde12345!");
+                
+ 
+            _userServiceMock.Setup(_userService => _userService.GetLoggedInEmail("valid-token")).Returns("ritabarbosa@email.com");
+            _userServiceMock.Setup(_userService => _userService.ConfirmUserPasswordAsync("ritabarbosa@email.com", dtoMock.Password)).ReturnsAsync(true);
+            _repoMock.Setup(_repoPatMock => _repoPatMock.GetMedicalRecordNumberOfPatientWithEmail("ritabarbosa@email.com")).ReturnsAsync(It.IsAny<MedicalRecordNumber>());
+            _patientMRAMock.Setup(m => m.ExportMedicalRecordData(It.IsAny<MedicalRecordNumber>(), It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync("expected/file.pdf");
+
+            // Act
+            var result = await _service.DownloadMedicalRecord(dtoMock, "valid-token");
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.IsType<string>(result);
+            Assert.Equal("expected/file.pdf", result);
+        }
+        
 }

@@ -121,9 +121,9 @@ public class OperationRequestServiceTests
     public async Task AddAsync_ReturnsOperationRequest()
     {
         // Arrange
-        var staffId = "D202400001";
-        var opTyId = "tumor removal";
-        var patientId = "202412000001";
+        var staffId = "D202500001";
+            var opTyId = "tumor removal";
+            var patientId = "202501000001";
         var dtoMock = new CreatingOperationRequestDto
         ("2024-12-31",
         "Elective",
@@ -203,9 +203,9 @@ public class OperationRequestServiceTests
     public async Task GetOperationRequestByFiltersAsync_ReturnsCorrectOperationRequestDtos()
     {
         // Arrange
-        var staffId = "D202400001";
-        var opTyId = "tumor removal";
-        var patientId = "202410000001";
+        var staffId = "D202500001";
+            var opTyId = "tumor removal";
+            var patientId = "202501000001";
         var email = "email@email.com";
         var priority = "Elective";
         var name = "John Doe";
@@ -283,9 +283,9 @@ public class OperationRequestServiceTests
     public async Task DeleteOperationRequest_ReturnsOkResponse()
     {
         // Arrange
-        var staffId = "D202400001";
-        var opTyId = "tumor removal";
-        var patientId = "202410000001";
+        var staffId = "D202500001";
+            var opTyId = "tumor removal";
+            var patientId = "202501000001";
         var email = "email@email.com";
 
         var staffMock = new Mock<Staff>("00001", "country, 12345, street test", "12345", "first", "last", "first last", "email@email.com", "+123", "12345678", "doctor", "251010300");
@@ -348,9 +348,9 @@ public class OperationRequestServiceTests
     public async Task DeleteOperationRequestFromPatient_ReturnsOkResponse()
     {
         // Arrange
-        var staffId = "D202400001";
-        var opTyId = "tumor removal";
-        var patientId = "202410000001";
+        var staffId = "D202500001";
+            var opTyId = "tumor removal";
+            var patientId = "202501000001";
         var email = "email@email.com";
 
         var staffMock = new Mock<Staff>("00001", "country, 12345, street test", "12345", "first", "last", "first last", "email@email.com", "+123", "12345678", "doctor", "251010300");

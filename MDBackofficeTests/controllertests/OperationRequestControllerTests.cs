@@ -117,9 +117,9 @@ namespace MDBackofficeTests.controllertests
             };
             _userServiceMock.Setup(_userService => _userService.CheckUserRole("valid-token", "Doctor")).Returns(false);
 
-            var staffId = "D202400001";
+            var staffId = "D202500001";
             var opTyId = "tumor removal";
-            var patientId = "202410000001";
+            var patientId = "202501000001";
             var dtoMock = new CreatingOperationRequestDto
             ("2024-12-31",
             "Elective",
@@ -185,9 +185,9 @@ namespace MDBackofficeTests.controllertests
             // Set up the User claims
             var emailClaim = "email@email.com";
 
-            var staffId = "D202400001";
+            var staffId = "D202500001";
             var opTyId = "tumor removal";
-            var patientId = "202410000001";
+            var patientId = "202501000001";
             var email = "email@email.com";
             var priority = "Elective";
             var name = "John Doe";
@@ -287,9 +287,9 @@ namespace MDBackofficeTests.controllertests
             _userServiceMock.Setup(_userService => _userService.GetLoggedInEmail("valid-token")).Returns(emailClaim);
 
             var id = Guid.NewGuid();
-            var staffId = "D202400001";
+            var staffId = "D202500001";
             var opTyId = "tumor removal";
-            var patientId = "202410000001";
+            var patientId = "202501000001";
             var email = "email@email.com";
             var priority = "Elective";
             var name = "John Doe";
@@ -358,9 +358,9 @@ namespace MDBackofficeTests.controllertests
             _userServiceMock.Setup(_userService => _userService.GetLoggedInEmail("valid-token")).Returns(emailClaim);
 
             var id = Guid.NewGuid();
-            var staffId = "D202400001";
+            var staffId = "D202500001";
             var opTyId = "tumor removal";
-            var patientId = "202410000001";
+            var patientId = "202501000001";
             var email = "email@email.com";
             var priority = "Elective";
             var name = "John Doe";
@@ -428,9 +428,9 @@ namespace MDBackofficeTests.controllertests
             var identity = new ClaimsIdentity(claims, "TestAuthType");
             var claimsPrincipal = new ClaimsPrincipal(identity);
 
-            var staffId = "D202400001";
+            var staffId = "D202500001";
             var opTyId = "tumor removal";
-            var patientId = "202410000001";
+            var patientId = "202501000001";
             var email = "email@email.com";
             var password = "NewPass00_d";
 
@@ -510,9 +510,9 @@ namespace MDBackofficeTests.controllertests
             // Set up the User claims
             var emailClaim = "email@email.com";
 
-            var staffId = "D202400001";
+            var staffId = "D202500001";
             var opTyId = "tumor removal";
-            var patientId = "202410000001";
+            var patientId = "202501000001";
             var email = "email@email.com";
             var password = "NewPass00_d";
 

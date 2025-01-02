@@ -106,4 +106,13 @@ The diagrams can be found in the [team decision views folder](../../team-decisio
 
 ## 6. Testing
 
-//TO BE DONE
+This functionality was tested with:
+
+- Unit tests for the controller. 
+- Unit tests for the service.
+- Unit tests for the room type entity.
+- Integration tests for controller and service.
+- Integration tests for service and domain.
+- Integration tests with Postman.
+- E2E tests.
+ 

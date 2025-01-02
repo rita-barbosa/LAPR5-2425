@@ -121,9 +121,9 @@ namespace MDBackofficeTests.integrationtests.operationrequests
             _userServiceMock.Setup(_userService => _userService.DecodeJwtToken("valid-token")).Returns((emailClaim, new List<string> { "Doctor" }));
 
 
-            var staffId = "D202400001";
+            var staffId = "D202500001";
             var opTyId = "tumor removal";
-            var patientId = "202410000001";
+            var patientId = "202501000001";
             var email = "email@email.com";
             var password = "NewPass00_d";
 
@@ -211,9 +211,9 @@ namespace MDBackofficeTests.integrationtests.operationrequests
             _userServiceMock.Setup(_userService => _userService.DecodeJwtToken("valid-token")).Returns((emailClaim, new List<string> { "Doctor" }));
 
 
-            var staffId = "D202400001";
+            var staffId = "D202500001";
             var opTyId = "tumor removal";
-            var patientId = "202410000001";
+            var patientId = "202501000001";
             var email = "email@email.com";
             var password = "NewPass00_d";
 
@@ -281,9 +281,9 @@ namespace MDBackofficeTests.integrationtests.operationrequests
                                                         _repoPatMock.Object, _repoOpTypeMock.Object, _userServiceMock.Object, _schedulerAdapterMock.Object, _roomServiceMock.Object, _appointmentServiceMock.Object, _specServiceMock.Object);
 
 
-            var staffId = "D202400001";
+            var staffId = "D202500001";
             var opTyId = "tumor removal";
-            var patientId = "202410000001";
+            var patientId = "202501000001";
             var email = "email@email.com";
 
             var staffMock = new Mock<Staff>("00001", "country, 12345, street test", "12345", "first", "last", "first last", "email@email.com", "+123", "12345678", "doctor", "25841209");
@@ -350,9 +350,9 @@ namespace MDBackofficeTests.integrationtests.operationrequests
                                                    _repoPatMock.Object, _repoOpTypeMock.Object, _userServiceMock.Object, _schedulerAdapterMock.Object, _roomServiceMock.Object, _appointmentServiceMock.Object, _specServiceMock.Object);
 
 
-            var staffId = "D202400001";
+            var staffId = "D202500001";
             var opTyId = "tumor removal";
-            var patientId = "202410000001";
+            var patientId = "202501000001";
             var email = "email@email.com";
 
             var staffMock = new Mock<Staff>("00001", "country, 12345, street test", "12345", "first", "last", "first last", "email@email.com", "+123", "12345678", "doctor", "25001907");
