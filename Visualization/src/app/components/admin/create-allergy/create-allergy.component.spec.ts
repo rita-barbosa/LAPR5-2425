@@ -73,30 +73,24 @@ describe('CreateAllergyComponent', () => {
   });
 
   it('should clear the form and reset allergy on clearForm', () => {
-    // Set some values in the allergy object
     component.allergy = {
       code: 'A01',
       designation: 'Test Allergy',
       description: 'Test Description',
     };
 
-    // Spy on the resetForm method of the NgForm
     const resetFormSpy = spyOn(component.allergyForm, 'resetForm');
 
-    // Call clearForm
     component.clearForm();
 
-    // Check if allergy is reset
     expect(component.allergy).toEqual({
       code: '',
       designation: '',
       description: '',
     });
 
-    // Ensure resetForm was called
     expect(component.allergyForm.resetForm).toHaveBeenCalled();
 
-    // Check if input fields have invalid placeholder removed
     const inputs = document.querySelectorAll('.input-field input');
     inputs.forEach(input => {
       expect(input.classList).not.toContain('invalid-placeholder');
