@@ -96,9 +96,9 @@ namespace MDBackofficeTests.integrationtests.operationrequests
                                                     _repoPatMock.Object, _repoOpTypeMock.Object, _userServiceMock.Object, _schedulerAdapterMock.Object, _roomServiceMock.Object, _appointmentServiceMock.Object, _specServiceMock.Object);
 
             var _controller = new OperationRequestController(_service, _userServiceMock.Object);
-            var staffId = "D202400001";
+            var staffId = "D202500001";
             var opTyId = "tumor removal";
-            var patientId = "202410000001";
+            var patientId = "202501000001";
             var dtoMock = new CreatingOperationRequestDto
             ("2024-12-31",
                 "Elective",
@@ -164,9 +164,9 @@ namespace MDBackofficeTests.integrationtests.operationrequests
         public async Task AddAsync_ReturnsOperationRequest_IntegrationServiceDomain()
         {
             // Pass mocked dependencies to OperationRequestService
-            var staffId = "D202400001";
+            var staffId = "D202500001";
             var opTyId = "tumor removal";
-            var patientId = "202412000001";
+            var patientId = "202501000001";
             var dto = new CreatingOperationRequestDto
             ("2024-12-31",
                 "Elective",

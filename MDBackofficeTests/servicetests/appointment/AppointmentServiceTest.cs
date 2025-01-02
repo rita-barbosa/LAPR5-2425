@@ -39,7 +39,7 @@ namespace MDBackofficeTests.controllertests
                 "16:00:00",               
                 "2024-04-04",              
                 "2024-04-04",              
-                new List<string> { "D202400001" } 
+                new List<string> { "D202500001" } 
             );
 
             var id = "test id";
@@ -50,9 +50,9 @@ namespace MDBackofficeTests.controllertests
                 "R102",
                  "14:00:00",
                  "16:00:00",
-                 "04/04/2024 00:00:00",
-                 "04/04/2024 00:00:00",
-                 new List<string> { "D202400001" }
+                 "4/4/2024 12:00:00 AM",
+                 "4/4/2024 12:00:00 AM",
+                 new List<string> { "D202500001" }
             );
 
 
@@ -198,7 +198,7 @@ namespace MDBackofficeTests.controllertests
                 "16:00:00",
                 "2024-04-04",
                 "2024-04-04",
-                new List<string> { "D202400001" }
+                new List<string> { "D202500001" }
             );
 
             // Expected updated appointment DTO
@@ -209,9 +209,9 @@ namespace MDBackofficeTests.controllertests
                 "R201",
                 "14:00:00",
                 "16:00:00",
-                "04/04/2024 00:00:00",
-                "04/04/2024 00:00:00",
-                new List<string> { "D202400001" }
+                "4/4/2024 12:00:00 AM",
+                "4/4/2024 12:00:00 AM",
+                new List<string> { "D202500001" }
             );
 
             // Mock repository behaviors
@@ -226,7 +226,7 @@ namespace MDBackofficeTests.controllertests
                     "2024-06-01",
                     "O202400001",
                     "Test operation",
-                    "202412000001",
+                    "202501000001",
                     "operation-type-id-1"
                 ));
 

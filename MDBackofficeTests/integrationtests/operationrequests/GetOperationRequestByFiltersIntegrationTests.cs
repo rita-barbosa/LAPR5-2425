@@ -117,9 +117,9 @@ namespace MDBackofficeTests.integrationtests.operationrequest
 
             _userServiceMock.Setup(_userService => _userService.DecodeJwtToken("valid-token")).Returns((emailClaim, new List<string> { "Doctor" }));
 
-            var staffId = "D202400001";
+            var staffId = "D202500001";
             var opTyId = "tumor removal";
-            var patientId = "202410000001";
+            var patientId = "202501000001";
             var email = "email@email.com";
             var priority = "Elective";
             var name = "John Doe";
@@ -198,9 +198,9 @@ namespace MDBackofficeTests.integrationtests.operationrequest
         public async Task GetOperationRequestByFiltersAsync_ReturnsCorrectOperationRequestDtos_IntegrationServiceDomain()
         {
             // Arrange
-            var staffId = "D202400001";
+            var staffId = "D202500001";
             var opTyId = "tumor removal";
-            var patientId = "202410000001";
+            var patientId = "202501000001";
             var email = "email@email.com";
             var priority = "Elective";
             var name = "John Doe";
