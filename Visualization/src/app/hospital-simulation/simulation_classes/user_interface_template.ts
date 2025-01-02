@@ -48,15 +48,26 @@ export default class UserInterface {
 
         // Create a directional light instance
         const directionalLight = new THREE.DirectionalLight(0xffffff, 1); // Default white light with full intensity
-        directionalLight.position.set(5, 10, 5); // Set initial position
-        scene.add(directionalLight); // Add the light to the scene
+        directionalLight.castShadow = true; // Enable shadows for the light
+        directionalLight.position.set(10, 10, 15); // Set initial position
+        
+        // Set shadow properties for better performance and quality
+        directionalLight.shadow.mapSize.width = 2048;  // Shadow map resolution (increase for better quality)
+        directionalLight.shadow.mapSize.height = 2048; // Shadow map resolution (increase for better quality)
+        directionalLight.shadow.camera.near = 5;
+        directionalLight.shadow.camera.far = 50;
+        directionalLight.shadow.camera.left = -20;
+        directionalLight.shadow.camera.right = 20;
+        directionalLight.shadow.camera.top = 10;
+        directionalLight.shadow.camera.bottom = -10;
+        directionalLight.shadow.radius = 4;  // Larger value for softer shadows
+        directionalLight.shadow.bias = -0.00005;
 
+        scene.add(directionalLight); // Add the light to the scene
+    
         // Object for GUI controls
         const directionalLightSettings = {
             color: `#${directionalLight.color.getHexString()}`,
-            x: directionalLight.position.x,
-            y: directionalLight.position.y,
-            z: directionalLight.position.z,
         };
 
         // Add GUI controls for the directional light
@@ -64,9 +75,9 @@ export default class UserInterface {
             directionalLight.color.set(color);
         });
         directionalLightFolder.add(directionalLight, "intensity", 0.0, 2.0, 0.1); // Intensity control
-        directionalLightFolder.add(directionalLightSettings, "x", -20, 20, 0.1);
-        directionalLightFolder.add(directionalLightSettings, "y", -20, 20, 0.1);
-        directionalLightFolder.add(directionalLightSettings, "z", -20, 20, 0.1);
+        directionalLightFolder.add(directionalLight.position, "x", 0, 20, 0.1);
+        directionalLightFolder.add(directionalLight.position, "y", 0, 20, 0.1);
+        directionalLightFolder.add(directionalLight.position, "z", -20, 20, 0.1);
 
         // Create the working day time folder
         this.timeSettings = { hours: 0 }; // Starting at 0 (midnight)
