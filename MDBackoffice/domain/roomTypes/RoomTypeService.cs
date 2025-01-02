@@ -18,7 +18,7 @@ namespace MDBackoffice.Domain.RoomTypes
             _repo = repo;
         }
 
-        public async Task<RoomTypeDto> AddAsync(RoomTypeDto dto)
+        public virtual async Task<RoomTypeDto> AddAsync(RoomTypeDto dto)
         {
             var roomType = new RoomType(dto.Code, dto.Designation, dto.Description);
             await _repo.AddAsync(roomType);
