@@ -114,5 +114,6 @@ This functionality was tested with:
 - Integration tests for controller and service.
 - Integration tests for service and domain.
 - Integration tests with Postman.
+- Unit tests for the visualization component
 - E2E tests.
  
