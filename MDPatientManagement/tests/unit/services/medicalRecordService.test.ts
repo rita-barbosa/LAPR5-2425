@@ -14,6 +14,7 @@ import { IMedicalRecordQueryFilterParameters } from "../../../src/dto/IMedicalRe
 import fs from 'fs-extra';
 import Minizip from "minizip-asm.js";
 import { IExportMedicalRecordDTO } from "../../../src/dto/IExportMedicalRecordDTO";
+import * as tmp from 'tmp';
 
 
 describe("MedicalRecordService Unit Tests", function () {
@@ -37,6 +38,18 @@ describe("MedicalRecordService Unit Tests", function () {
     let medicalRecordRepoClass = require("../../../src/repos/medicalRecordRepo").default;
     let medicalRecordRepoInstance = Container.get(medicalRecordRepoClass);
     Container.set("MedicalRecordRepo", medicalRecordRepoInstance);
+
+    const medicalConditionRepoInstance = {
+      findByDomainId: sandbox.stub().resolves({ designation: "Condition1" }),
+      findByDesignation: sandbox.stub().resolves({ id: 'FA14.0', designation: "Asthma" }),
+    };
+    Container.set("MedicalConditionRepo", medicalConditionRepoInstance);
+
+    const allergyRepoInstance = {
+      findByCode: sandbox.stub().resolves({ designation: { value: "Allergy1" } }),
+      findByDesignation: sandbox.stub().resolves({ code: 'FA33.0', designation: "Peanuts" }),
+    };
+    Container.set("AllergyRepo", allergyRepoInstance);
   });
 
   afterEach(() => {
@@ -52,11 +65,11 @@ describe("MedicalRecordService Unit Tests", function () {
       allergies: ["BZ02.2"],
       description: "Patient has a mild condition.",
     };
-  
+
     const medicalRecordRepoInstance = Container.get("MedicalRecordRepo") as IMedicalRecordRepo;
     const medicalConditionRepoInstance = Container.get("MedicalConditionRepo") as IMedicalConditionRepo;
     const allergyRepoInstance = Container.get("AllergyRepo") as IAllergyRepo;
-  
+
     const medicalRecordMock = {
       id: "202501000001",
       medicalRecordNumber: "202501000001",
@@ -64,18 +77,18 @@ describe("MedicalRecordService Unit Tests", function () {
       allergies: ["BZ02.2"],
       description: "Patient has a mild condition.",
     };
-  
+
     sinon.stub(medicalRecordRepoInstance, "findByDomainId").resolves(null);
     sinon.stub(medicalRecordRepoInstance, "save").resolves();
     sinon.stub(MedicalRecordMap, "toDTO").callsFake(() => medicalRecordMock);
-  
+
     const service = new MedicalRecordService(medicalRecordRepoInstance, medicalConditionRepoInstance, allergyRepoInstance);
     const result = await service.createMedicalRecord(medicalRecordDTO);
-  
+
     expect(result.isSuccess).to.be.true;
     expect(result.getValue().medicalRecordNumber).to.equal("202501000001");
   });
-  
+
 
   it("should update an existing medical record successfully", async () => {
     const medicalRecordDTO: IMedicalRecordDTO = {
@@ -205,14 +218,12 @@ describe("MedicalRecordService Unit Tests", function () {
       allergies: ['FA33.0'],
       description: "Patient has a mild condition.",
     };
-    
+
     const medicalRecordRepoInstance = Container.get("MedicalRecordRepo") as IMedicalRecordRepo;
     const medicalConditionRepoInstance = Container.get("MedicalConditionRepo") as IMedicalConditionRepo;
     const allergyRepoInstance = Container.get("AllergyRepo") as IAllergyRepo;
 
     const existingRecord = MedicalRecord.create(medicalRecordDTO).getValue();
-    sinon.stub(medicalConditionRepoInstance, "findByDesignation").resolves({ id: 'FA14.0', designation: "Asthma" });
-    sinon.stub(allergyRepoInstance, "findByDesignation").resolves({ code: 'FA33.0', designation: "Peanuts" });
     sinon.stub(medicalRecordRepoInstance, "findAllByParameters").resolves([existingRecord]);
 
     const service = new MedicalRecordService(medicalRecordRepoInstance, medicalConditionRepoInstance, allergyRepoInstance);
@@ -222,45 +233,87 @@ describe("MedicalRecordService Unit Tests", function () {
     expect(result.getValue()).to.have.lengthOf.above(0);
   });
 
+    it("should export a medical record successfully", async () => {
+        const medicalRecordRepoInstance = Container.get("MedicalRecordRepo") as IMedicalRecordRepo;
+        const medicalConditionRepoInstance = Container.get("MedicalConditionRepo") as IMedicalConditionRepo;
+        const allergyRepoInstance = Container.get("AllergyRepo") as IAllergyRepo;
 
-  // it("should export a medical record as a PDF", async () => {
-  //   const exportInfo: IExportMedicalRecordDTO = {
-  //     medicalRecordNumber: "202501000001",
-  //     filepath: "/some/path",
-  //     pass: "password",
-  //   };
-  
-  //   const medicalRecord = {
-  //     id: "202501000001",
-  //     medicalRecordNumber: "202501000001",
-  //     medicalConditions: ["FA14.0"],
-  //     allergies: ["FA33.0"],
-  //     description: "Patient has a mild condition.",
-  //   };
-  
-  //   const medicalRecordRepoInstance = Container.get("MedicalRecordRepo") as IMedicalRecordRepo;
-  //   const medicalConditionRepoInstance = Container.get("MedicalConditionRepo") as IMedicalConditionRepo;
-  //   const allergyRepoInstance = Container.get("AllergyRepo") as IAllergyRepo;
-  
-  //   sinon.stub(medicalRecordRepoInstance, "findByDomainId").resolves(medicalRecord);
-  //   sinon.stub(MedicalRecordMap, "toDTO").callsFake((record) => ({
-  //     id: record.id,
-  //     medicalRecordNumber: record.medicalRecordNumber,
-  //     medicalConditions: record.medicalConditions,
-  //     allergies: record.allergies,
-  //     description: record.description,
-  //   }));
-  //   sinon.stub(fs, "writeFileSync").resolves();
-  
-  //   // Mock Minizip instance
-  //   const minizipStub = sinon.createStubInstance(Minizip);
-  //   minizipStub.zip.returns(new Uint8Array());
-  //   sinon.stub(Minizip.prototype, "zip").value(minizipStub.zip);
-  
-  //   const service = new MedicalRecordService(medicalRecordRepoInstance, medicalConditionRepoInstance, allergyRepoInstance);
-  //   const result = await service.exportMedicalRecord(exportInfo);
-  
-  //   expect(result.isSuccess).to.be.true;
-  // });
+        const mockMedicalRecord = {
+            id: "1234",
+            medicalRecordNumber: "MR-001",
+            medicalConditions: ['FB70.0'],
+            allergies: ['BZ02.2'],
+            description: "Patient has no significant history.",
+        };
 
+        sinon.stub(medicalRecordRepoInstance, "findByDomainId").resolves(mockMedicalRecord);
+
+        const service = new MedicalRecordService(
+            medicalRecordRepoInstance,
+            medicalConditionRepoInstance,
+            allergyRepoInstance
+        );
+
+        const tempDir = tmp.dirSync({ unsafeCleanup: true });
+        const exportInfo = {
+            medicalRecordNumber: "MR-001",
+            filepath: tempDir.name,
+            pass: "1234",
+        };
+
+        const result = await service.exportMedicalRecord(exportInfo);
+
+        expect(result.isSuccess).to.be.true;
+    });
+
+
+    it("should throw an error if the medical record is not found", async () => {
+        const medicalRecordRepo = Container.get("MedicalRecordRepo") as IMedicalRecordRepo;
+        const medicalConditionRepo = Container.get("MedicalConditionRepo") as IMedicalConditionRepo;
+        const allergyRepo = Container.get("AllergyRepo") as IAllergyRepo;
+
+        sinon.stub(medicalRecordRepo, "findByDomainId").resolves(null);
+
+        const service = new MedicalRecordService(
+            medicalRecordRepo,
+            medicalConditionRepo,
+            allergyRepo
+        );
+
+        try {
+            await service.exportMedicalRecord({
+                medicalRecordNumber: "MR-999",
+                filepath: "/fake/path",
+                pass: "password",
+            });
+            throw new Error("Expected method to throw, but it didn't.");
+        } catch (error) {
+            expect(error.message).to.equal("Medical Record wasn't found with this Medical Record Number.");
+        }
+    });
+
+    it("should handle errors during PDF generation", async () => {
+        const medicalRecordRepo = Container.get("MedicalRecordRepo") as IMedicalRecordRepo;
+        const medicalConditionRepo = Container.get("MedicalConditionRepo") as IMedicalConditionRepo;
+        const allergyRepo = Container.get("AllergyRepo") as IAllergyRepo;
+
+        sinon.stub(medicalRecordRepo, "findByDomainId").throws(new Error("PDF generation failed"));
+
+        const service = new MedicalRecordService(
+            medicalRecordRepo,
+            medicalConditionRepo,
+            allergyRepo
+        );
+
+        try {
+            await service.exportMedicalRecord({
+                medicalRecordNumber: "MR-001",
+                filepath: "/fake/path",
+                pass: "password",
+            });
+            throw new Error("Expected method to throw, but it didn't.");
+        } catch (error) {
+            expect(error.message).to.equal("PDF generation failed");
+        }
+    });
 });

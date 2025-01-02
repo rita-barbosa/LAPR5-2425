@@ -271,4 +271,79 @@ describe("MedicalRecordController Unit Tests", function () {
     sinon.assert.calledWith(res.status as sinon.SinonStub, 404);
     sinon.assert.calledOnce(res.send as sinon.SinonStub);
   });
+
+  it("should return 201 and the file path on successful export", async () => {
+    const req: Partial<Request> = {
+      body: {
+        medicalRecordNumber: "MR-001",
+        password: "password123",
+      },
+    };
+    const res: Partial<Response> = {
+      status: sinon.stub().returnsThis(),
+      json: sinon.stub(),
+    };
+    const next: Partial<NextFunction> = sinon.stub();
+  
+    const service = Container.get<IMedicalRecordService>("MedicalRecordService") as IMedicalRecordService;
+    sinon.stub(service, "exportMedicalRecord").resolves(Result.ok("/path/to/exported/file.pdf"));
+  
+    const controller = new MedicalRecordController(service);
+  
+    // Act
+    await controller.exportMedicalRecords(req as Request, res as Response, next as NextFunction);
+  
+    // Assert
+    sinon.assert.calledWith(res.status as sinon.SinonStub, 201);
+    sinon.assert.calledWith(res.json as sinon.SinonStub, "/path/to/exported/file.pdf");
+  });
+  
+  it("should return 404 if export fails", async () => {
+    const req: Partial<Request> = {
+      body: {
+        medicalRecordNumber: "MR-001",
+        password: "password123",
+      },
+    };
+    const res: Partial<Response> = {
+      status: sinon.stub().returnsThis(),
+      send: sinon.stub(),
+    };
+    const next: Partial<NextFunction> = sinon.stub();
+  
+    const service = Container.get<IMedicalRecordService>("MedicalRecordService") as IMedicalRecordService;
+    sinon.stub(service, "exportMedicalRecord").resolves(Result.fail("Export failed"));
+  
+    const controller = new MedicalRecordController(service);
+  
+    // Act
+    await controller.exportMedicalRecords(req as Request, res as Response, next as NextFunction);
+  
+    // Assert
+    sinon.assert.calledWith(res.status as sinon.SinonStub, 404);
+    sinon.assert.calledOnce(res.send as sinon.SinonStub);
+  });
+  
+  it("should call next with an error if an exception occurs", async () => {
+    const req: Partial<Request> = {
+      body: {
+        medicalRecordNumber: "MR-001",
+        password: "password123",
+      },
+    };
+    const res: Partial<Response> = {};
+    const next: Partial<NextFunction> = sinon.stub();
+  
+    const service = Container.get<IMedicalRecordService>("MedicalRecordService") as IMedicalRecordService;
+    sinon.stub(service, "exportMedicalRecord").throws(new Error("Unexpected error"));
+  
+    const controller = new MedicalRecordController(service);
+  
+    // Act
+    await controller.exportMedicalRecords(req as Request, res as Response, next as NextFunction);
+  
+    // Assert
+    sinon.assert.calledOnce(next as sinon.SinonStub);
+  });
+  
 });
