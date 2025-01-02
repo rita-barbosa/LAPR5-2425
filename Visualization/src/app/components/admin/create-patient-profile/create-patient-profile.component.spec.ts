@@ -47,6 +47,9 @@ describe('CreatePatientProfileComponent', () => {
       address: '123 Main St',
       gender: 'Male',
       dateBirth: '2000-01-01',
+      medicalConditions : [],
+      allergies: [],
+      description: ''
     };
 
     const form = {
@@ -66,7 +69,10 @@ describe('CreatePatientProfileComponent', () => {
       '123 Main St',
       '0987654321',
       'Male',
-      '2000-01-01'
+      '2000-01-01',
+      [],
+      [],
+      ''
     );
   });
 
@@ -92,6 +98,9 @@ describe('CreatePatientProfileComponent', () => {
       address: '123 Main St',
       gender: 'Male',
       dateBirth: '2000-01-01',
+      medicalConditions : [],
+      allergies: [],
+      description: ''
     };
     spyOn(component.patientForm, 'resetForm');
 
@@ -109,6 +118,9 @@ describe('CreatePatientProfileComponent', () => {
       address: '',
       gender: '',
       dateBirth: '',
+      medicalConditions : [],
+      allergies: [],
+      description: ''
     });
     expect(component.patientForm.resetForm).toHaveBeenCalled();
   });
