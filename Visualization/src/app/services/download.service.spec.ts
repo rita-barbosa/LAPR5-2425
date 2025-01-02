@@ -9,12 +9,12 @@ describe('DownloadService', () => {
 
   beforeEach(() => {
       TestBed.configureTestingModule({
-        imports: [HttpClientModule],  
-        providers: [MessageService]  
+        imports: [HttpClientModule],
+        providers: [MessageService]
       });
       service = TestBed.inject(DownloadService);
     });
-  
+
     it('should be created', () => {
       expect(service).toBeTruthy();
     });
