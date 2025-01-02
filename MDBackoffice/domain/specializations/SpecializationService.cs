@@ -36,7 +36,7 @@ namespace MDBackoffice.Domain.Specializations
             return new SpecializationDto { Code = specialization.Id.Value, Denomination = specialization.Denomination.ToString(), Description = specialization.Description.ToString() };
         }
 
-        public async Task<SpecializationDto> AddAsync(SpecializationDto dto)
+        public virtual async Task<SpecializationDto> AddAsync(SpecializationDto dto)
         {
             var specialization = new Specialization(dto.Code, dto.Denomination, dto.Description);
 
