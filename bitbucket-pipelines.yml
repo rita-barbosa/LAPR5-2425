@@ -1,7 +1,7 @@
 pipelines:
   default:
     - step:
-        name: 'Build and Test Node.js Application'
+        name: 'Build and Test MDPatientManagement'
         image: node:18
         caches:
           - node
@@ -14,7 +14,7 @@ pipelines:
         artifacts:
           - MDPatientManagement/test-reports/** # Adjust this path if necessary
     - step:
-        name: 'Build and Test .NET Application'
+        name: 'Build and Test MDBackoffice'
         image: mcr.microsoft.com/dotnet/sdk:8.0
         caches:
           - dotnetcore
