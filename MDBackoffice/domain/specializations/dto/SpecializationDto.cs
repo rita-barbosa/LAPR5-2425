@@ -9,5 +9,6 @@ namespace MDBackoffice.Domain.Specializations
         public string Denomination { get; set; }
         public string Description { get; set; }
 
+
     }
 }
