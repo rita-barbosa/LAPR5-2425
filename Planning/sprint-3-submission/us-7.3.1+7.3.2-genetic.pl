@@ -12,14 +12,19 @@
 :- dynamic agenda_operation_room/3.
 :- dynamic agenda_operation_room1/3.
 :- dynamic agenda_operation_room_aux/3.
-:- dynamic better_sol/5. %dynamic and auxiliary fact to storethe better solution in a certain moment
-:- dynamic final_time_heuristics/1.
-:- dynamic earliest_surgery/3.
 %%
 :-dynamic occupied_time/2. % occupied_time(roomId, time).
 :-dynamic operation_assigment/2. % operation_assigment(opId, roomId).
 :-dynamic room_in_scheduling/1.
+:-dynamic surgeries/1.
 
+reference_value(1100).
+time_limit(10).
+population(2).
+generations(10).
+prob_crossover(0.5).
+prob_mutation(0.25).
+mix_percentage(0.2).
 
 staff(d001,doctor,orthopaedist,[so2,so3,so4]).
 staff(d002,doctor,orthopaedist,[so2,so3,so4]).
@@ -106,18 +111,6 @@ assignment_surgery(so100008,d004).
 assignment_surgery(so100008,n003).
 assignment_surgery(so100008,a001).
 
-% surgeries(NTasks).
-%surgeries(4).  %% HAS TO BE AT LEAST 4!!
-:-dynamic surgeries/1.
-reference_value(1100).
-time_limit(10).
-population(2).
-generations(10).
-prob_crossover(0.5).
-prob_mutation(0.25).
-mix_percentage(0.2).
-
-% parameters initialization
 
 
 initialize:-write('Number of generations to consider stabilization: '),read(NG), 			
@@ -271,9 +264,13 @@ bchange([X*VX,Y*VY|L1],[Y*VY|L2]):-
 bchange([X|L1],[X|L2]):-bchange(L1,L2).
 
 update_best_individual([X*VX|_]):-
+    update_best_individual1(X*VX).
+
+update_best_individual1(X*VX):-
     better(_,Value,_,_),
     Value > VX,
     retractall(better(_,_,_,_)),
+    obtain_schedule(X),
     findall(Doctor,assignment_surgery(_,Doctor),LDoctors1),
     remove_equals(LDoctors1,LDoctors),
     get_staff_agenda(LDoctors,LDAgendas),
@@ -281,6 +278,8 @@ update_best_individual([X*VX|_]):-
     agenda_operation_room1(Room,_,AgendaR),
     asserta(better(X,VX,LDAgendas,AgendaR)).
 
+obtain_schedule(VX):-
+    evaluate(VX,_).
 
 %-OBTAINS DOCTOR AGENDAS---------------------------------------------
 get_staff_agenda([],[]).
