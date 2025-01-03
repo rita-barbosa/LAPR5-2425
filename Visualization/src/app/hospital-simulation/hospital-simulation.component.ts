@@ -117,6 +117,9 @@ export class HospitalSimulationComponent implements AfterViewInit {
     this.scene.background = new THREE.Color(0xa0a0a0);
 
     this.renderer = new THREE.WebGLRenderer({ canvas: this.canvas });
+    this.renderer.autoClear = false;
+    this.renderer.shadowMap.enabled = true;
+    this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     this.renderer.setSize(this.canvas.clientWidth, this.canvas.clientHeight);
     this.renderer.setPixelRatio(devicePixelRatio);
     document.body.appendChild(this.renderer.domElement);
@@ -303,27 +306,37 @@ export class HospitalSimulationComponent implements AfterViewInit {
     return null;
 }
 
-  private createModel(modelUrl: string, scale: any): Promise<THREE.Group> {
-    let model = new THREE.Group();
-    const loader = new GLTFLoader();
-    return new Promise((resolve, reject) => {
-      loader.load(
-        modelUrl,
-        (gltf) => {
-          model = gltf.scene;
-          model.scale.copy(scale);
-          resolve(model);
-        },
-        (xhr) => {
-          console.log((xhr.loaded / xhr.total) * 100 + '% loaded');
-        },
-        (error) => {
-          console.error('An error occurred while loading the model:', error);
-          reject(error);
-        }
-      );
-    });
-  }
+private createModel(modelUrl: string, scale: any): Promise<THREE.Group> {
+  let model = new THREE.Group();
+  const loader = new GLTFLoader();
+  return new Promise((resolve, reject) => {
+    loader.load(
+      modelUrl,
+      (gltf) => {
+        model = gltf.scene;
+        model.scale.copy(scale);
+
+        // Traverse through all objects in the model's scene
+        model.traverse((child) => {
+          if (child instanceof THREE.Mesh) {
+            // Ensure mesh casts and receives shadows
+            child.castShadow = true;
+            child.receiveShadow = true;
+          }
+        });
+
+        resolve(model);
+      },
+      (xhr) => {
+        console.log((xhr.loaded / xhr.total) * 100 + '% loaded');
+      },
+      (error) => {
+        console.error('An error occurred while loading the model:', error);
+        reject(error);
+      }
+    );
+  });
+}
 
   private async loadLayout(data: any): Promise<void> {
     this.ground = new Ground(data.groundTextureUrl, data.size).object;
@@ -376,6 +389,8 @@ export class HospitalSimulationComponent implements AfterViewInit {
           bedObject.scale.set(0.03, 0.03, 0.025);
           bedObject.name = "Surgical_Bed";
           bedObject.rotation.y = Math.PI / 2;
+          bedObject.castShadow = true;
+          bedObject.receiveShadow = true;
           this.layout.add(bedObject);
           this.objectsToIntersect.push(bedObject);
         }
@@ -388,6 +403,8 @@ export class HospitalSimulationComponent implements AfterViewInit {
           doorObject.scale.set(0.7, 1, 0.6);
           doorObject.rotation.y = Math.PI;
           doorObject.name = "North Door";
+          doorObject.castShadow = true;
+          doorObject.receiveShadow = true;
           this.layout.add(doorObject);
           this.objectsToIntersect.push(doorObject);
         }
@@ -399,6 +416,8 @@ export class HospitalSimulationComponent implements AfterViewInit {
           bedObject.scale.set(0.03, 0.03, 0.025);
           bedObject.name = "Surgical_Bed";
           bedObject.rotation.y = - Math.PI / 2;
+          bedObject.castShadow = true;
+          bedObject.receiveShadow = true;
           this.layout.add(bedObject);
           this.objectsToIntersect.push(bedObject);
         }
@@ -411,6 +430,8 @@ export class HospitalSimulationComponent implements AfterViewInit {
           doorObject.scale.set(0.7, 1, 0.6);
           doorObject.name = "South Door";
           doorObject.rotation.y = Math.PI;
+          doorObject.castShadow = true;
+          doorObject.receiveShadow = true;
           this.layout.add(doorObject);
           this.objectsToIntersect.push(doorObject);
 
@@ -426,6 +447,8 @@ export class HospitalSimulationComponent implements AfterViewInit {
           doorObject.scale.set(0.7, 1, 0.6);
           doorObject.rotation.y = Math.PI / 2;
           doorObject.name = "West Door";
+          doorObject.castShadow = true;
+          doorObject.receiveShadow = true;
           this.layout.add(doorObject);
           this.objectsToIntersect.push(doorObject);
 
@@ -436,10 +459,12 @@ export class HospitalSimulationComponent implements AfterViewInit {
           const doorObject = this.door.clone();
           doorObject.position.set(i - data.size.width / 2, -1.25, j - data.size.height / 2 - 0.4);
           doorObject.position.x += 0.95;
-           doorObject.position.z += 0.4;
+          doorObject.position.z += 0.4;
           doorObject.scale.set(0.7, 1, 0.6);
           doorObject.rotation.y = Math.PI / 2;
           doorObject.name = "East Door";
+          doorObject.castShadow = true;
+          doorObject.receiveShadow = true;
           this.layout.add(doorObject);
           this.objectsToIntersect.push(doorObject);
 
