@@ -1,5 +1,4 @@
 % DATA
-
 :-dynamic agenda_operation_room1/3.
 :-dynamic room_in_scheduling/1.
 :-dynamic occupied_time/2. % occupied_time(roomId, time).
@@ -31,8 +30,6 @@ distribute_rooms(Day) :-
     findall(OpCode, surgery_id(OpCode, _), OperationsList),
     findall(Room, agenda_operation_room(Room, Day, _), RoomsList),    % Find all rooms with agendas
     assert_occupied_times(RoomsList),     % Calculate and assert occupied time for each room
-    write('Operationa='),write(OperationsList),nl,
-    write('Rooms='),write(RoomsList),nl,
     distribute_operations_round_robin1(OperationsList, RoomsList),!,
     print_operation_assignments.
 
