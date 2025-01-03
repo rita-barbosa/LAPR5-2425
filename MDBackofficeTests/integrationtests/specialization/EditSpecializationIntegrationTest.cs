@@ -25,10 +25,10 @@ using MDBackoffice.Domain.Specializations;
 
 namespace MDBackofficeTests.controllertests
 {
-    public class SpecializationControllerTests
+    public class EditSpecializationIntegrationTest
     {
 
-        private readonly Mock<SpecializationService> _service;
+        private readonly SpecializationService _service;
         private readonly Mock<IUnitOfWork> _unitOfWorkMock = new Mock<IUnitOfWork>();
         private readonly Mock<ISpecializationRepository> _repoMock = new Mock<ISpecializationRepository>();
         private readonly SpecializationController _controller;
@@ -38,7 +38,7 @@ namespace MDBackofficeTests.controllertests
         private readonly Mock<ILoginAdapter> _loginAdapterMock;
 
 
-        public SpecializationControllerTests()
+        public EditSpecializationIntegrationTest()
         {
             Mock<LogService> _logServiceMock = new Mock<LogService>(new Mock<IUnitOfWork>().Object, new Mock<ILogRepository>().Object);
 
@@ -62,103 +62,12 @@ namespace MDBackofficeTests.controllertests
                                                                new Mock<IUserConfirmation<User>>().Object);
             _userServiceMock = new Mock<UserService>(_userManagerMock.Object, roleManagerMock.Object, _logServiceMock.Object, signinManagerMock.Object, _emailServiceMock.Object, _configurationMock.Object, tokenServiceMock.Object, _loginAdapterMock.Object);
 
-            _service = new Mock<SpecializationService>(_unitOfWorkMock.Object, _repoMock.Object);
-            _controller = new SpecializationController(_service.Object, _userServiceMock.Object);
+            _service = new SpecializationService(_unitOfWorkMock.Object, _repoMock.Object);
+            _controller = new SpecializationController(_service, _userServiceMock.Object);
         }
 
         [Fact]
-        public async Task CreateSpecialization_Returns_CreatedResult()
-        {
-            //Arrage
-            var dtoMock = new SpecializationDto{Code = "10101000", Denomination = "orthopaedics", Description = "The treatment or study of bones that have not grown correctly or that have been damaged."};
-            var context = new DefaultHttpContext();
-            context.Request.Headers["Authorization"] = "Bearer valid-token";
-            _controller.ControllerContext = new ControllerContext
-            {
-                HttpContext = context
-            };
-            _userServiceMock.Setup(_userService => _userService.CheckUserRole("valid-token", "Admin")).Returns(false);
-            _unitOfWorkMock.Setup(u => u.CommitAsync()).ReturnsAsync(1);
-            _service.Setup(u => u.AddAsync(dtoMock)).ReturnsAsync(dtoMock);
-            
-            //Act
-            var result = await _controller.Create(dtoMock);
-
-            //Assert
-            var actionResult = Assert.IsType<ActionResult<SpecializationDto>>(result);
-        }
-
-        [Fact]
-        public async Task GetSpecializationsCode_Returns_CreatedResult()
-        {
-            //Arrage
-            var dtoMock = new SpecializationDto{Code = "10101000", Denomination = "orthopaedics", Description = "The treatment or study of bones that have not grown correctly or that have been damaged."};
-            var listMock = new List<SpecializationDto>();
-            var context = new DefaultHttpContext();
-            context.Request.Headers["Authorization"] = "Bearer valid-token";
-            _controller.ControllerContext = new ControllerContext
-            {
-                HttpContext = context
-            };
-            _userServiceMock.Setup(_userService => _userService.CheckUserRole("valid-token", "Admin")).Returns(false);
-            _unitOfWorkMock.Setup(u => u.CommitAsync()).ReturnsAsync(1);
-            _service.Setup(u => u.GetSpecializationsByFiltersAsync(It.IsAny<string?>(), It.IsAny<string?>(), It.IsAny<string?>())).ReturnsAsync(listMock);
-            
-            //Act
-            var result = await _controller.GetSpecializationsByFilters(dtoMock.Code, null, null);
-
-            //Assert
-            var actionResult = Assert.IsType<ActionResult<List<SpecializationDto>>>(result);
-        }
-
-        [Fact]
-        public async Task GetSpecializationsDenomination_Returns_CreatedResult()
-        {
-            //Arrage
-            var dtoMock = new SpecializationDto{Code = "10101000", Denomination = "orthopaedics", Description = "The treatment or study of bones that have not grown correctly or that have been damaged."};
-            var listMock = new List<SpecializationDto>();
-            var context = new DefaultHttpContext();
-            context.Request.Headers["Authorization"] = "Bearer valid-token";
-            _controller.ControllerContext = new ControllerContext
-            {
-                HttpContext = context
-            };
-            _userServiceMock.Setup(_userService => _userService.CheckUserRole("valid-token", "Admin")).Returns(false);
-            _unitOfWorkMock.Setup(u => u.CommitAsync()).ReturnsAsync(1);
-            _service.Setup(u => u.GetSpecializationsByFiltersAsync(It.IsAny<string?>(), It.IsAny<string?>(), It.IsAny<string?>())).ReturnsAsync(listMock);
-            
-            //Act
-            var result = await _controller.GetSpecializationsByFilters(null, dtoMock.Denomination, null);
-
-            //Assert
-            var actionResult = Assert.IsType<ActionResult<List<SpecializationDto>>>(result);
-        }
-
-        [Fact]
-        public async Task GetSpecializationsDescription_Returns_CreatedResult()
-        {
-            //Arrage
-            var dtoMock = new SpecializationDto{Code = "10101000", Denomination = "orthopaedics", Description = "The treatment or study of bones that have not grown correctly or that have been damaged."};
-            var listMock = new List<SpecializationDto>();
-            var context = new DefaultHttpContext();
-            context.Request.Headers["Authorization"] = "Bearer valid-token";
-            _controller.ControllerContext = new ControllerContext
-            {
-                HttpContext = context
-            };
-            _userServiceMock.Setup(_userService => _userService.CheckUserRole("valid-token", "Admin")).Returns(false);
-            _unitOfWorkMock.Setup(u => u.CommitAsync()).ReturnsAsync(1);
-            _service.Setup(u => u.GetSpecializationsByFiltersAsync(It.IsAny<string?>(), It.IsAny<string?>(), It.IsAny<string?>())).ReturnsAsync(listMock);
-            
-            //Act
-            var result = await _controller.GetSpecializationsByFilters(null, null, dtoMock.Description);
-
-            //Assert
-            var actionResult = Assert.IsType<ActionResult<List<SpecializationDto>>>(result);
-        }
-
-        [Fact]
-        public async Task EditSpecializationDenomination_Returns_CreatedResult()
+        public async Task EditSpecializationDenomination_Returns_CreatedResult_ControllerService()
         {
             //Arrage
             var dtoMock = new EditSpecializationDto("10101000","orthopaedics","");
@@ -172,8 +81,8 @@ namespace MDBackofficeTests.controllertests
             };
             _userServiceMock.Setup(_userService => _userService.CheckUserRole("valid-token", "Admin")).Returns(false);
             _unitOfWorkMock.Setup(u => u.CommitAsync()).ReturnsAsync(1);
-            _service.Setup(u => u.EditSpecialization(dtoMock)).ReturnsAsync(dtoMock1);
-            
+            _repoMock.Setup(u => u.GetByIdAsync(new SpecializationCode("10101000"))).ReturnsAsync(specMock);
+
             //Act
             var result = await _controller.EditSpecialization(dtoMock);
 
@@ -182,7 +91,7 @@ namespace MDBackofficeTests.controllertests
         }
 
         [Fact]
-        public async Task EditSpecializationDescription_Returns_CreatedResult()
+        public async Task EditSpecializationDescription_Returns_CreatedResult_ControllerService()
         {
             //Arrage
             var dtoMock = new EditSpecializationDto("10101000","","aooga");
@@ -196,7 +105,7 @@ namespace MDBackofficeTests.controllertests
             };
             _userServiceMock.Setup(_userService => _userService.CheckUserRole("valid-token", "Admin")).Returns(false);
             _unitOfWorkMock.Setup(u => u.CommitAsync()).ReturnsAsync(1);
-            _service.Setup(u => u.EditSpecialization(dtoMock)).ReturnsAsync(dtoMock1);
+            _repoMock.Setup(u => u.GetByIdAsync(new SpecializationCode("10101000"))).ReturnsAsync(specMock);
             
             //Act
             var result = await _controller.EditSpecialization(dtoMock);
@@ -206,7 +115,7 @@ namespace MDBackofficeTests.controllertests
         }
 
         [Fact]
-        public async Task EditSpecialization_Returns_CreatedResult()
+        public async Task EditSpecialization_Returns_CreatedResult_ControllerService()
         {
             //Arrage
             var dtoMock = new EditSpecializationDto("10101000","orthopaedics","aooga");
@@ -220,13 +129,86 @@ namespace MDBackofficeTests.controllertests
             };
             _userServiceMock.Setup(_userService => _userService.CheckUserRole("valid-token", "Admin")).Returns(false);
             _unitOfWorkMock.Setup(u => u.CommitAsync()).ReturnsAsync(1);
-            _service.Setup(u => u.EditSpecialization(dtoMock)).ReturnsAsync(dtoMock1);
+            _repoMock.Setup(u => u.GetByIdAsync(new SpecializationCode("10101000"))).ReturnsAsync(specMock);
             
             //Act
             var result = await _controller.EditSpecialization(dtoMock);
 
             //Assert
             var actionResult = Assert.IsType<ActionResult<SpecializationDto>>(result);
+        }
+
+        [Fact]
+        public async Task EditSpecializationDenomination_Returns_CreatedResult_ServiceDomain()
+        {
+            //Arrage
+            var dtoMock = new EditSpecializationDto("10101000","orthopaedics","");
+            var dtoMock1 = new SpecializationDto{Code = "10101000", Denomination = "orthopaedics", Description = "smt"};
+            var specMock = new Specialization("10101000", "smt", "smt");
+            _userServiceMock.Setup(_userService => _userService.CheckUserRole("valid-token", "Admin")).Returns(false);
+            _unitOfWorkMock.Setup(u => u.CommitAsync()).ReturnsAsync(1);
+            _repoMock.Setup(u => u.GetByIdAsync(new SpecializationCode("10101000"))).ReturnsAsync(specMock);
+            
+            //Act
+            var result = await _service.EditSpecialization(dtoMock);
+
+            //Assert
+            var actionResult = Assert.IsType<SpecializationDto>(result);
+            Assert.Equal(result.Code, dtoMock1.Code);
+            Assert.Equal(result.Denomination, dtoMock1.Denomination);
+            Assert.Equal(result.Description, dtoMock1.Description);
+            Assert.NotNull(result);
+            _repoMock.Verify(r => r.GetByIdAsync(It.IsAny<SpecializationCode>()), Times.Once);
+            _unitOfWorkMock.Verify(u => u.CommitAsync(), Times.Once);
+        }
+
+        [Fact]
+        public async Task EditSpecializationDescription_Returns_CreatedResult_ServiceDomain()
+        {
+            //Arrage
+            var dtoMock = new EditSpecializationDto("10101000","","aooga");
+            var dtoMock1 = new SpecializationDto{Code = "10101000", Denomination = "smt", Description = "aooga"};
+            var specMock = new Specialization("10101000", "smt", "smt");
+
+            _userServiceMock.Setup(_userService => _userService.CheckUserRole("valid-token", "Admin")).Returns(false);
+            _unitOfWorkMock.Setup(u => u.CommitAsync()).ReturnsAsync(1);
+            _repoMock.Setup(u => u.GetByIdAsync(new SpecializationCode("10101000"))).ReturnsAsync(specMock);
+            
+            //Act
+            var result = await _service.EditSpecialization(dtoMock);
+
+            //Assert
+            var actionResult = Assert.IsType<SpecializationDto>(result);
+            Assert.Equal(result.Code, dtoMock1.Code);
+            Assert.Equal(result.Denomination, dtoMock1.Denomination);
+            Assert.Equal(result.Description, dtoMock1.Description);
+            Assert.NotNull(result);
+            _repoMock.Verify(r => r.GetByIdAsync(It.IsAny<SpecializationCode>()), Times.Once);
+            _unitOfWorkMock.Verify(u => u.CommitAsync(), Times.Once);
+        }
+
+        [Fact]
+        public async Task EditSpecialization_Returns_CreatedResult_ServiceDomain()
+        {
+            //Arrage
+            var dtoMock = new EditSpecializationDto("10101000","orthopaedics","aooga");
+            var dtoMock1 = new SpecializationDto{Code = "10101000", Denomination = "orthopaedics", Description = "aooga"};
+            var specMock = new Specialization("10101000", "smt", "smt");
+            _userServiceMock.Setup(_userService => _userService.CheckUserRole("valid-token", "Admin")).Returns(false);
+            _unitOfWorkMock.Setup(u => u.CommitAsync()).ReturnsAsync(1);
+            _repoMock.Setup(u => u.GetByIdAsync(new SpecializationCode("10101000"))).ReturnsAsync(specMock);
+            
+            //Act
+            var result = await _service.EditSpecialization(dtoMock);
+
+            //Assert
+            var actionResult = Assert.IsType<SpecializationDto>(result);
+            Assert.Equal(result.Code, dtoMock1.Code);
+            Assert.Equal(result.Denomination, dtoMock1.Denomination);
+            Assert.Equal(result.Description, dtoMock1.Description);
+            Assert.NotNull(result);
+            _repoMock.Verify(r => r.GetByIdAsync(It.IsAny<SpecializationCode>()), Times.Once);
+            _unitOfWorkMock.Verify(u => u.CommitAsync(), Times.Once);
         }
 
     }
