@@ -144,6 +144,108 @@ namespace MDBackofficeTests.servicetests.specialization
             Assert.Equal(result.Description, dtoMock1.Description);
         }
 
+        [Fact]
+        public async Task GetSpecializationsCode_Returns_CreatedResult()
+        {
+            //Arrage
+            var dtoMock1 = new SpecializationDto{Code = "10101000", Denomination = "orthopaedics", Description = "The treatment or study of bones that have not grown correctly or that have been damaged."};
+            var dtoMock2 = new SpecializationDto{Code = "10101010", Denomination = "cardiology", Description = "The treatment or study of the heart."};
+            var listMock = new List<SpecializationDto>
+            {
+                dtoMock1,
+                dtoMock2
+            };
+            var specMock1 = new Mock<Specialization>("10101000", "orthopaedics", "The treatment or study of bones that have not grown correctly or that have been damaged.");
+            var specMock2 = new Mock<Specialization>("10101010", "cardiology", "The treatment or study of the heart.");
+            var listspecMock = new List<Specialization>
+            {
+                specMock1.Object,
+                specMock2.Object
+            };
+            _userServiceMock.Setup(_userService => _userService.CheckUserRole("valid-token", "Admin")).Returns(false);
+            _unitOfWorkMock.Setup(u => u.CommitAsync()).ReturnsAsync(1);
+            _repoMock.Setup(u => u.FindAllConditioned(dtoMock1.Code, null, null)).ReturnsAsync(listspecMock);
+           
+            //Act
+            var result = await _service.GetSpecializationsByFiltersAsync(dtoMock1.Code, null, null);
+
+            //Assert
+            var actionResult = Assert.IsType<List<SpecializationDto>>(result);
+            Assert.Equal(result.ElementAt(0).Code, dtoMock1.Code);
+            Assert.Equal(result.ElementAt(0).Denomination, dtoMock1.Denomination);
+            Assert.Equal(result.ElementAt(0).Description, dtoMock1.Description);
+            Assert.Equal(result.ElementAt(1).Code, dtoMock2.Code);
+            Assert.Equal(result.ElementAt(1).Denomination, dtoMock2.Denomination);
+            Assert.Equal(result.ElementAt(1).Description, dtoMock2.Description);
+        }
+
+        [Fact]
+        public async Task GetSpecializationsDenomination_Returns_CreatedResult()
+        {
+            //Arrage
+            var dtoMock1 = new SpecializationDto{Code = "10101000", Denomination = "orthopaedics", Description = "The treatment or study of bones that have not grown correctly or that have been damaged."};
+            var dtoMock2 = new SpecializationDto{Code = "10101010", Denomination = "cardiology", Description = "The treatment or study of the heart."};
+            var listMock = new List<SpecializationDto>
+            {
+                dtoMock1,
+                dtoMock2
+            };
+            var specMock1 = new Mock<Specialization>("10101000", "orthopaedics", "The treatment or study of bones that have not grown correctly or that have been damaged.");
+            var specMock2 = new Mock<Specialization>("10101010", "cardiology", "The treatment or study of the heart.");
+            var listspecMock = new List<Specialization>
+            {
+                specMock1.Object,
+                specMock2.Object
+            };
+            _userServiceMock.Setup(_userService => _userService.CheckUserRole("valid-token", "Admin")).Returns(false);
+            _unitOfWorkMock.Setup(u => u.CommitAsync()).ReturnsAsync(1);
+            _repoMock.Setup(u => u.FindAllConditioned(null, dtoMock1.Denomination, null)).ReturnsAsync(listspecMock);
+           
+            //Act
+            var result = await _service.GetSpecializationsByFiltersAsync(null, dtoMock1.Denomination, null);
+
+            //Assert
+            Assert.Equal(result.ElementAt(0).Code, dtoMock1.Code);
+            Assert.Equal(result.ElementAt(0).Denomination, dtoMock1.Denomination);
+            Assert.Equal(result.ElementAt(0).Description, dtoMock1.Description);
+            Assert.Equal(result.ElementAt(1).Code, dtoMock2.Code);
+            Assert.Equal(result.ElementAt(1).Denomination, dtoMock2.Denomination);
+            Assert.Equal(result.ElementAt(1).Description, dtoMock2.Description);
+        }
+
+        [Fact]
+        public async Task GetSpecializationsDescription_Returns_CreatedResult()
+        {
+            //Arrage
+            var dtoMock1 = new SpecializationDto{Code = "10101000", Denomination = "orthopaedics", Description = "The treatment or study of bones that have not grown correctly or that have been damaged."};
+            var dtoMock2 = new SpecializationDto{Code = "10101010", Denomination = "cardiology", Description = "The treatment or study of the heart."};
+            var listMock = new List<SpecializationDto>
+            {
+                dtoMock1,
+                dtoMock2
+            };
+            var specMock1 = new Mock<Specialization>("10101000", "orthopaedics", "The treatment or study of bones that have not grown correctly or that have been damaged.");
+            var specMock2 = new Mock<Specialization>("10101010", "cardiology", "The treatment or study of the heart.");
+            var listspecMock = new List<Specialization>
+            {
+                specMock1.Object,
+                specMock2.Object
+            };
+            _userServiceMock.Setup(_userService => _userService.CheckUserRole("valid-token", "Admin")).Returns(false);
+            _unitOfWorkMock.Setup(u => u.CommitAsync()).ReturnsAsync(1);
+            _repoMock.Setup(u => u.FindAllConditioned(null, null, dtoMock1.Description)).ReturnsAsync(listspecMock);
+           
+            //Act
+            var result = await _service.GetSpecializationsByFiltersAsync(null, null, dtoMock1.Description);
+
+            //Assert
+            Assert.Equal(result.ElementAt(0).Code, dtoMock1.Code);
+            Assert.Equal(result.ElementAt(0).Denomination, dtoMock1.Denomination);
+            Assert.Equal(result.ElementAt(0).Description, dtoMock1.Description);
+            Assert.Equal(result.ElementAt(1).Code, dtoMock2.Code);
+            Assert.Equal(result.ElementAt(1).Denomination, dtoMock2.Denomination);
+            Assert.Equal(result.ElementAt(1).Description, dtoMock2.Description);
+        }
 
     }
 }

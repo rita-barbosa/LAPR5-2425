@@ -71,7 +71,7 @@ namespace MDBackoffice.Domain.Specializations
             return new SpecializationDto { Code = spec.Id.Value, Denomination = spec.Denomination.ToString(), Description = spec.Description.ToString() };
         }
 
-        public async Task<List<SpecializationDto>> GetSpecializationsByFiltersAsync(string? code, string? denomination, string? description)
+        public virtual async Task<List<SpecializationDto>> GetSpecializationsByFiltersAsync(string? code, string? denomination, string? description)
         {
             var specs = await _repo.FindAllConditioned(code, denomination, description);
 
