@@ -7,6 +7,20 @@
   * [3. Analysis](#3-analysis)
     * [Plan Structure:](#plan-structure)
   * [4. Disaster Recovery Plan](#4-disaster-recovery-plan)
+  * [1. Goals](#1-goals)
+  * [2. Critical Services and MBCO Targets](#2-critical-services-and-mbco-targets)
+  * [3. Emergency Response Procedures](#3-emergency-response-procedures)
+    * [3.1 Activation](#31-activation)
+    * [3.2 Initial Response](#32-initial-response)
+  * [4. Backup and Recovery Procedures](#4-backup-and-recovery-procedures)
+    * [4.1 Data Backup](#41-data-backup)
+    * [4.2 Recovery Steps](#42-recovery-steps)
+  * [5. Hot Site Plan](#5-hot-site-plan)
+    * [5.1 Alternate Site](#51-alternate-site)
+    * [5.2 Data Synchronization](#52-data-synchronization)
+  * [6. Full System Restoration Steps](#6-full-system-restoration-steps)
+  * [7. Regular Testing and Updates](#7-regular-testing-and-updates)
+  * [8. Observations and Considerations](#8-observations-and-considerations)
   * [5. Observations](#5-observations)
 <!-- TOC -->
 
@@ -46,6 +60,7 @@ A DR (disaster recovery) plan ensures that key operations can continue or resume
 - Outline **system restoration steps** to return to pre-disruption status.
 
 ### Plan Structure:
+
 1. **Goals**: Define the main objectives of the DR plan.
 2. **Application Profile**: Identify critical services and their roles.
 3. **Backup Procedures**: Describe methods to secure essential data.
@@ -54,9 +69,95 @@ A DR (disaster recovery) plan ensures that key operations can continue or resume
 6. **Hot Site Plan**: Outline alternative site activation.
 7. **Full System Restoration**: Provide instructions for complete recovery.
 
+---
+
 ## 4. Disaster Recovery Plan
 
-> TBD
+## 1. Goals
+
+The primary goals of this Disaster Recovery (DR) Plan are:
+
+1. Ensure continuity of critical hospital management services during and after a disruption.
+2. Meet the Minimum Business Continuity Objective (MBCO) defined for the hospital environment.
+3. Provide clear, actionable steps for recovery of services to pre-disruption status.
+
+## 2. Critical Services and MBCO Targets
+
+The following critical services and their corresponding Minimum Business Continuity Objectives (MBCO) will guide the recovery process:
+
+| **Service**                  | **MTD**   | **MTPD**   | **Minimum Operation Goal**                               |
+|------------------------------|-----------|------------|----------------------------------------------------------|
+| Login                        | 1 minute  | 30 minutes | Ensure authorized access 24/7 with minimal downtime.     |
+| Emergency Operation Requests | Immediate | 5 minutes  | Process emergency requests within 5 minutes.             |
+| Operation Scheduling Changes | 2 minutes | 10 minutes | Process updates within an acceptable delay for accuracy. |
+| Internal Network Access      | 1 minute  | 30 minutes | Maintain connectivity for access to core modules.        |
+| VPN Access                   | 2 minutes | 15 minutes | Ensure secure remote access for key staff with fallback. |
+
+## 3. Emergency Response Procedures
+
+### 3.1 Activation
+
+1. **Incident Identification:** Recognize disruption through automated alerts or reports.
+2. **Notification:** Alert stakeholders (IT, hospital management, critical staff).
+3. **DR Team Activation:** Mobilize the Disaster Recovery Team to implement the plan.
+
+### 3.2 Initial Response
+
+1. Assess the scope of the disruption (technical, environmental, or security-related).
+2. Prioritize actions based on affected critical services.
+3. Execute immediate containment measures to limit damage (e.g., isolating affected systems).
+
+## 4. Backup and Recovery Procedures
+
+### 4.1 Data Backup
+
+- **Backup Frequency:** Data is backed up daily at 2:30 AM, with a full backup performed every Sunday at the same time, 2:30 AM.
+- **Backup Methods:** Use redundant cloud storage with offsite replication.
+- **Verification:** Conduct regular checks to ensure backups are functional.
+
+### 4.2 Recovery Steps
+
+1. **Data Restoration:** Use verified backups to recover lost or corrupted data.
+2. **Database Recovery:** Prioritize core databases supporting critical services.
+3. **Test Restored Data:** Validate data integrity and functionality post-recovery.
+
+## 5. Hot Site Plan
+
+### 5.1 Alternate Site
+
+- **Location:** Pre-configured hot site located within a secure radius.
+- **Infrastructure:**
+  - Servers, storage, and networking equipment matching primary data center.
+  - Pre-installed hospital management software.
+- **Activation Time:** Ready for use within 30 minutes of disruption notification.
+
+### 5.2 Data Synchronization
+
+- Continuous replication of data to ensure hot site is current.
+- Regular testing to validate hot site readiness.
+
+## 6. Full System Restoration Steps
+
+1. **Damage Assessment:** Evaluate affected infrastructure and identify restoration needs.
+2. **Rebuild Systems:** Reinstall and reconfigure operating systems, applications, and services.
+3. **Restore Data:** Use latest backups to reinstate critical data.
+4. **Test Restored Systems:** Validate full functionality and operability of all critical services.
+5. **Transition:** Redirect users back to the primary infrastructure post-validation.
+6. **Post-Incident Review:** Document lessons learned and update the DR Plan.
+
+## 7. Regular Testing and Updates
+
+- **Testing Schedule:** Conduct quarterly drills to test the effectiveness of the DR plan.
+- **Updates:** Revise the plan annually or as system changes occur.
+- **Training:** Provide regular training for the DR Team and key staff.
+
+## 8. Observations and Considerations
+
+- Regular audits are essential to ensure compliance with MBCO targets.
+- Expand testing to include various disruption scenarios.
+- Maintain clear communication channels during a disruption.
+
+---
 
 ## 5. Observations
 
