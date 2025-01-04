@@ -51,13 +51,21 @@ namespace MDBackoffice.Domain.Appointments
 
             List<Staff> staffs = new List<Staff>();
             var isStaffAvailable = true;
+            var usedStaffIds = new List<string>();
             
             foreach(RequiredStaff requiredStaff in requiredStaffList){
                 Function function = requiredStaff.Function;
                 SpecializationCode specialization = requiredStaff.SpecializationId;
                 NumberStaff numberStaff = requiredStaff.StaffQuantity;
-               
+
+                int staffAddedForThisRequirement = 0;
+        
                 foreach(string sta in dto.StaffList){
+
+                    if (usedStaffIds.Contains(sta)) {
+                        continue;
+                    }
+
                    Staff staff = await this._repoSta.GetByIdAsync(new StaffId(sta)) ??
                         throw new BusinessRuleValidationException("Staff is invalid.");
 
@@ -65,18 +73,26 @@ namespace MDBackoffice.Domain.Appointments
                     
                     if(staff.Function.Equals(function) && staff.SpecializationId.Equals(specialization))
                     {                      
-                        if (staffs.Count <  numberStaff.NumberRequired){
-                          staffs.Add(staff);
+                        if (staffAddedForThisRequirement <  numberStaff.NumberRequired){
+                            staffs.Add(staff);
+                            staffAddedForThisRequirement++;
+                            usedStaffIds.Add(sta);
                         }
                     } 
-                    if (staffs.Count >=  numberStaff.NumberRequired){
+                    if (staffAddedForThisRequirement >=  numberStaff.NumberRequired){
                         break;
                     }
                 }
-                if (staffs.Count <  numberStaff.NumberRequired){
+                if (staffAddedForThisRequirement <  numberStaff.NumberRequired){
                     throw new BusinessRuleValidationException("Not enough staff available for this surgery.");
                 }
-            }          
+            }
+
+            if (usedStaffIds.Count != dto.StaffList.Count)
+            {
+                throw new BusinessRuleValidationException("The are more staff than the ones required for this surgery.");
+            }
+
             if (!isStaffAvailable)
             {
                 throw new BusinessRuleValidationException("One or more staff members are not available for the selected time.");

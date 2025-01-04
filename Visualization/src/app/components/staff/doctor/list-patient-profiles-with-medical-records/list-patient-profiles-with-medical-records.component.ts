@@ -141,11 +141,8 @@ fetchAllergies() {
     this.service.getFilteredMedicalRecords(this.filterParameters).subscribe({
       next: (records) => {
         this.medicalRecords = records;
-        console.log('Filtered Medical Records:', this.medicalRecords);
-
 
         this.medicalRecordNumbers = this.medicalRecords.map(record => record.medicalRecordNumber);
-
 
         this.fetchPatientProfilesByMedicalRecordNumber();
       },
@@ -156,7 +153,6 @@ fetchAllergies() {
   }
 
   fetchPatientProfilesByMedicalRecordNumber(): void {
-    console.log('Medical Record Numbers:', this.medicalRecordNumbers);
 
     const patientQueryParameters: PatientQueryParameters = {
       queryfilters: this.medicalRecordNumbers.map((recordNumber) => ({
