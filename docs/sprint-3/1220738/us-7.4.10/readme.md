@@ -57,9 +57,6 @@ The SSH server must be configured to:
 
 1. Accept only public key authentication.
 2. Deny password-based login attempts.
-3. Log all access attempts (successful and failed).
-
-All SSH login attempts will be logged in **/var/log/auth.log** or an equivalent location to provide an audit trail and facilitate monitoring of access to the VM.
 
 ## 4. Design
 
@@ -84,7 +81,7 @@ ssh-keygen -t rsa -b 4096 -C "connectMDBackoffice"
 ssh-copy-id -i ~/.ssh/id_ed25519.pub root@vs251.dei.isep.ipp.pt
 ´´´´
 
-Secondly, the settings for the ssh server are chnaged to allow public key access, to allow only root login with certificates and to not allow password login:
+Secondly, the settings for the ssh server are changed to allow public key access, to allow only root login with certificates and to not allow password login:
 
 ´´´´
 #       $OpenBSD: sshd_config,v 1.103 2018/04/09 20:41:22 tj Exp $
@@ -145,7 +142,7 @@ AuthorizedKeysFile      .ssh/authorized_keys .ssh/authorized_keys2
 #IgnoreRhosts yes
 
 # To disable tunneled clear text passwords, change to no here!
-PasswordAuthentication no
+PasswordAuthentication yes
 #PermitEmptyPasswords no
 
 # Change to yes to enable challenge-response passwords (beware issues with

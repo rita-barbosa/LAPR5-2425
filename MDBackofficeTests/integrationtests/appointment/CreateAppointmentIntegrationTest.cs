@@ -93,7 +93,7 @@ namespace MDBackofficeTests.integrationtests.appointment
 
             _userServiceMock
                 .Setup(_userService => _userService.CheckUserRole("valid-token", "Doctor"))
-                .Returns(true);
+                .Returns(false);
 
 
 

@@ -38,10 +38,17 @@ export class SurgeryAppointmentService {
     };
 
     this.http.post<SurgeryAppointment>(url, surgAppointment, this.httpOptions)
-      .pipe(catchError(this.handleError<SurgeryAppointment>('Create surgery appointment')))
-      .subscribe(data => {
-        this.log(`Surgery Appointment was successfully created.`);
-      });
+        .pipe(
+            catchError((error: any) => {
+                this.log(`Create surgery appointment failed: ${error.error?.message || 'An unexpected error occurred.'}`);
+                return of(null);
+            })
+        )
+        .subscribe(data => {
+            if (data) {
+                this.log('Surgery Appointment was successfully created.');
+            }
+        });
   }
 
   public getAllStaffs() {
