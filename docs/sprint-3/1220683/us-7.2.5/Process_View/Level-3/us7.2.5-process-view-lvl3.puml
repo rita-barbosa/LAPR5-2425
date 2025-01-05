@@ -15,10 +15,10 @@ activate ROUTE
 ROUTE -> CTRL: getAllMedicalConditions()
 activate CTRL
 
-CTRL ->  SVC: GetAllAsync()
+CTRL ->  SVC: getAllMedicalConditions()
 activate SVC
 
-SVC -> REPO : GetAllAsysnc()
+SVC -> REPO : findAll()
 activate REPO
 
 REPO --> SVC : medicalConditionList

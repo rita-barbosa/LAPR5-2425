@@ -17,10 +17,10 @@ activate ROUTE
 ROUTE -> CTRL: GetAllAllergies()
 activate CTRL
 
-CTRL ->  SVC: GetAllAsync()
+CTRL ->  SVC: getAllAllergies()
 activate SVC
 
-SVC -> REPO : GetAllAsync()
+SVC -> REPO : findAll()
 activate REPO
 
 REPO --> SVC : allergies
@@ -47,18 +47,18 @@ end alt
 
 |||
 
-[o-> ROUTE: PUT /api/put-EditAllergy
+[o-> ROUTE: PATCH /api/update-allergy
 activate ROUTE
 
 ROUTE -> UpdateDTO **
 
-ROUTE -> CTRL: EditAllergy(AllergyUpdateDto)
+ROUTE -> CTRL: updateAllergy(AllergyUpdateDto)
 activate CTRL
 
-CTRL ->  SVC: EditAllergy(AllergyUpdateDto)
+CTRL ->  SVC: updateAllergy(AllergyUpdateDto)
 activate SVC
 
-SVC -> REPO : GetAllergyById(AllergyUpdateDto.code)
+SVC -> REPO : findByCode(AllergyUpdateDto.code)
 activate REPO
 
 REPO --> SVC : allergy
@@ -69,6 +69,18 @@ activate ALL
 
 ALL --> SVC
 deactivate ALL
+
+SVC -> ALL : changeDesignation(AllergyUpdateDto.designation)
+activate ALL
+
+ALL --> SVC
+deactivate ALL
+
+SVC -> REPO : save(allergy)
+activate REPO
+
+REPO --> SVC
+deactivate REPO
 
 SVC --> CTRL: success
 deactivate SVC

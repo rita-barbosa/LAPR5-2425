@@ -4,18 +4,13 @@ title "US 7.2.2 - Process View [Level 3] MDPatientManagement"
 
 autonumber
 participant "Routing" as ROUTE <<route>>
-participant "CreateAllergyDto" as DTO <<dto>>
 participant "AllergyController" as CTRL <<controller>>
 participant "AllergyService" as SVC <<service>>
+participant "AllergyDTO" as DTO <<dto>>
 participant "Allergy" as ALL <<domain>>
 participant "AllergyRepository" as REPO <<repository>>
 
-participant "<<service>>\n LogService" as LogServ
-participant "<<domain>>\n Log" as Log
-participant "<<repository>>\n LogRepository" as LogRepo
-
-
-[o-> ROUTE: POST(json) /api/create-Allergy
+[o-> ROUTE: POST(json) /api/Allergy/create-Allergy
 activate ROUTE
 
 ROUTE -> DTO **: create(json)
@@ -23,42 +18,24 @@ ROUTE -> DTO **: create(json)
 ROUTE -> CTRL: create(allergyDto)
 activate CTRL
 
-CTRL ->  SVC: AddAsync(allergyDto)
+CTRL ->  SVC: createAllergy(allergyDto)
 activate SVC
 
-SVC -> ALL ** : Allergy(code, designation, description)
+SVC -> ALL ** : create(code, designation, description)
 
-SVC -> REPO : AddAsync(allergy)
+SVC -> REPO : save(allergy)
 activate REPO
 
 REPO --> SVC : allergy
 deactivate REPO
 
-|||
-
-SVC -> LogServ : CreateCreateLog(allergyCode, allergyClass, logDescription)
-activate LogServ
-
-LogServ -> Log ** : Log(getSequentialNumber(), objectClass, objectReference, 1, description)
-note right
-1 represents the
-Log type - Creation
-end note
-
-LogServ -> LogRepo : AddAsync(log)
-activate LogRepo
-
-LogRepo --> LogServ : log
-deactivate LogRepo
-
-LogServ --> SVC : log
-deactivate LogServ
+SVC -> DTO : toDTO(allergy)
 
 
-SVC --> CTRL: allergy
+SVC --> CTRL: allergyDto
 deactivate SVC
 
-CTRL --> ROUTE: allergy
+CTRL --> ROUTE: allergyDto
 deactivate CTRL
 
 alt 

@@ -134,15 +134,57 @@ The diagrams can be found in the [team decision views folder](../../team-decisio
 
 ### 4.2. Tests
 
-_// To do //_
+This functionality was tested with:
+
+* Unit tests for the controller.
+* Unit tests for the service.
+* Unit tests for the allergy entity.
+* Integration tests for controller and service.
+* Integration tests with Postman.
+* Unit tests for the visualization component
 
 
 ## 5. Implementation
 
-> TBD
+To integrate the medical record with the patient viewing and management, we do exactly like US 6.2.9, but when we fetch
+the patient profiles we also fetch the medical records.
+
+When a patient profile is selected, then a button appears showing the medical record with the same medical record number.
+
+```
+ngOnInit(): void {
+    this.addFilter();
+    this.fetchAllergies();
+    this.fetchMedicalConditions();
+    this.fetchPatients();
+    this.fetchPatientsMedicalRecords();
+}
+```
+
+```
+fetchPatientsMedicalRecords(): void {
+  this.service.getAllMedicalRecords().subscribe({
+    next: (data) => { (this.medicalRecords = data),
+    console.log(this.medicalRecords) },
+    error: (error) => console.error('Error fetching medical records:', error),
+  });
+}
+```
+
+```
+toggleMedicalRecord(patient: PatientWithId): void {
+        this.fullPatient = patient;
+        this.fullPatientMedicalRecord = this.medicalRecords.find(record => record.id === patient.patientId)!;
+        this.medicalRecord = this.fullPatientMedicalRecord;
+        this.showMedicalRecord = true;
+        this.editingMedicalRecord = false;
+  }
+```
 
 ## 6. Integration/Demonstration
 
-> TBD
+This feature is available only to users that are Doctors, under the Patient dropdown, as "Patient Medical Records".
 
 ## 7. Observations
+
+Other features such as edition and search for medical conditions and allergies where also integrated into this feature.

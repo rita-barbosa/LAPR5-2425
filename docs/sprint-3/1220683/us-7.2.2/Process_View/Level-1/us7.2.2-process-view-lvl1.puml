@@ -11,7 +11,7 @@ participant "<<system (C4)>>\n Healthcare System" as SYS
 BACK -> SYS : wants to add a new allergy
 activate SYS
 
-SYS --> BACK : asks for allergy data (SNOMED code, designation, description (optional))
+SYS --> BACK : asks for allergy data (code, designation, description (optional))
 deactivate SYS
 activate BACK
 
