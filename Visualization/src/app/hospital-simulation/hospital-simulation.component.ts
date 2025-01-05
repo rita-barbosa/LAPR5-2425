@@ -17,6 +17,13 @@ import { Room } from '../domain/room';
 import { UserInfo } from 'src/app/domain/user-info';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { SurgeryAppointmentService } from '../services/surgery-appointment.service';
+import { AppointmentWithoutStaff } from '../domain/appointment-without-staff';
+import { OperationRequest } from '../domain/OperationRequest';
+import { OperationRequestService } from '../services/operation-request.service';
+import { PatientService } from '../services/patient.service';
+import { Patient } from '../domain/Patient';
+import { PatientWithId } from '../domain/patient-with-id';
 
 type CameraParameters = {
   view: string;
@@ -49,7 +56,7 @@ export class HospitalSimulationComponent implements AfterViewInit {
   @ViewChild('myCanvas') private canvasRef!: ElementRef<HTMLCanvasElement>;
   storedToken = localStorage.getItem('user');
 
-  constructor(private roomService: RoomService) {}
+  constructor(private roomService: RoomService, private appointmentService: SurgeryAppointmentService, private operationRequestService: OperationRequestService, private patientService: PatientService) {}
 
   private get canvas(): HTMLCanvasElement {
     return this.canvasRef.nativeElement;
@@ -59,6 +66,9 @@ export class HospitalSimulationComponent implements AfterViewInit {
 
   overlayInfoVisible = false;
   private selectedRoom: string | null = null;
+  appointment: AppointmentWithoutStaff | null = null;
+  operationRequest: OperationRequest | null = null;
+  patient: PatientWithId | null = null;
   roomIDs !: string[];
   rooms : Room[] = [];
   roomDetails: Room | null = null;
@@ -238,10 +248,10 @@ export class HospitalSimulationComponent implements AfterViewInit {
             }
         }
     } else {
-        
+
             this.hideTooltip();
             this.INTERSECTED = null;
-        
+
     }
 }
 
@@ -516,7 +526,7 @@ private createModel(modelUrl: string, scale: any): Promise<THREE.Group> {
     this.renderer!.domElement.addEventListener("wheel", (event) => this.mouseWheel(event));
     document.addEventListener("mousemove", event => {
       const rect = this.canvas.getBoundingClientRect();
-  
+
       this.mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
       this.mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
   });
@@ -546,7 +556,7 @@ private createModel(modelUrl: string, scale: any): Promise<THREE.Group> {
         this.selectedRoom = this.INTERSECTED?.name;
         this.moveCameraToRoomCenter(targetPosition, this.selectedRoom);
         this.updateRoomInfoOverlay(this.selectedRoom);
-    } 
+    }
 }
 
 moveCameraToRoomCenter(targetPosition: THREE.Vector3 | undefined, selectedRoom: string) {
@@ -622,19 +632,75 @@ updateRoomInfoOverlay(selectedRoom: string) {
   this.roomDetails = this.rooms.find(r => r.roomNumber === roomId) || null;
 
   if (this.roomDetails) {
+    if (this.roomDetails.maintenanceSlots && this.roomDetails.maintenanceSlots.length > 0) {
+      const currentSlot = this.roomDetails.maintenanceSlots.find(slot => {
+        const slotHour = parseInt(slot.startTime.split(':')[0], 10);
+        return slotHour === this.workDayTime;
+      });
+
+      if (currentSlot) {
+        const startDate = currentSlot.startDate.split(' ')[0];
+        const endDate = currentSlot.endDate.split(' ')[0];
+        const startTime = currentSlot.startTime.split(':').slice(0, 2).join(':');
+        const endTime = currentSlot.endTime.split(':').slice(0, 2).join(':');
+
+        this.appointmentService.getAppointmentFromRoom(this.roomDetails.roomNumber, startTime, endTime, startDate, endDate
+        ).subscribe({
+          next: (data) => {
+            this.appointment = data;
+
+            if(this.appointment != null){
+              this.operationRequestService.getOperationRequestById(this.appointment!.operationRequestId
+              ).subscribe({
+                next: (data) => {
+                  this.operationRequest = data;
+
+                  if(this.operationRequest != null){
+                    this.patientService.getPatientById(this.operationRequest!.patientId
+                    ).subscribe({
+                      next: (data) => {
+                        this.patient = data;
+                      },
+                      error: (error) => {
+                        console.log("No patient:", error);
+                        this.patient = null;
+                      }
+                    });
+                  }
+                },
+                error: (error) => {
+                  console.log("There are no appointment at that time:", error);
+                  this.operationRequest = null;
+                }
+              });
+            }
+          },
+          error: (error) => {
+            console.log("There are no appointment at that time");
+            this.appointment = null;
+          }
+        });
+      } else {
+        console.log("No matching slot found for the current time:", this.workDayTime);
+      }
+    } else {
+      console.log("No maintenance slots available for the room.");
+    }
+
     this.roomDetails.maintenanceSlots = this.roomDetails?.maintenanceSlots.map(slot => ({
       ...slot,
       startDate: slot.startDate.split(' ')[0],
       startTime: slot.startTime.split(':').slice(0, 2).join(':'),
       endDate: slot.endDate.split(' ')[0],
       endTime: slot.endTime.split(':').slice(0, 2).join(':')
-  }));
-    console.log(this.roomDetails.maintenanceSlots);
+    }));
+
     console.log("Room information updated:", this.roomDetails);
   } else {
     console.error("The Room with RoomId was not found:", roomId);
   }
 }
+
 
 
 
@@ -906,17 +972,17 @@ updateRoomInfoOverlay(selectedRoom: string) {
   onResize(): void {
       this.resize();
   }
-  
+
   private resize(): void {
       const width = this.canvas.clientWidth;
       const height = this.canvas.clientHeight;
-  
+
       // Update renderer size
       this.renderer!.setSize(width, height);
-  
+
       // Update camera aspect ratio and projection matrix
       this.camera!.aspect = width / height;
       this.camera!.updateProjectionMatrix();
   }
-  
+
 }

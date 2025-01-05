@@ -14,9 +14,9 @@ activate UPP
 UPP -> PS : CreateSurgeryAppointment(surgeryAppointmentInformation)
 activate PS
 
-PS ->o] : POST: api/SurgeryAppointment/Create
+PS ->o] : POST: api/Appointment
 
-PS <--o] : Created(SurgeryAppointmentDto)
+PS <--o] : Ok(appointment)
 
 PS --> UPP: success
 deactivate PS

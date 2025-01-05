@@ -26,7 +26,7 @@ opt search filters appliance
     DOC-> UI : applies search filters
     activate UI
 
-        UI -> BACK : getFilterMedicalRecordsList(json)
+        UI -> BACK : getFilteredMedicalRecords(json)
         activate BACK
 
         BACK --> UI : filtered medical records list

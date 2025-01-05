@@ -12,15 +12,19 @@ activate DOC
 DOC-> UI : asks to edit patient medical record
 activate UI
 
-'check if this part should be done to the backoffice instead
 UI -> BACK : getPatientProfiles()
 activate BACK
 
 BACK --> UI : PatientProfilesList
 deactivate BACK
 
+UI -> BACK : getMedicalRecords()
+activate BACK
 
-DOC <-- UI : shows list of patient profiles
+BACK --> UI : medicalRecordsList
+deactivate BACK
+
+DOC <-- UI : shows list of patient profiles\n and their medical records
 deactivate UI
 
 
@@ -31,7 +35,7 @@ DOC <-- UI : shows the patient medical record
 deactivate UI
 
 
-DOC -> UI : edits patient medical record\n (medical conditions and allergies)
+DOC -> UI : edits patient medical record
 activate UI
 
 UI -> BACK : editPatientMedicalRecord(json)

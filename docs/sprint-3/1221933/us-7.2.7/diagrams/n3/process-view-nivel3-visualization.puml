@@ -15,9 +15,9 @@ activate UPP
 UPP -> PS : getAllMedicalRecords()
 activate PS
 
-PS ->o] : GET: api/get-patients
+PS ->o] : GET: api/medicalRecord/get-all-medical-records
 
-PS <--o] : Ok(token)
+PS <--o] : Ok(medicalRecordsDTOList)
 
 PS --> UPP: success
 deactivate PS
@@ -29,12 +29,12 @@ opt search filters appliance
     USER-> UPP : applies search filters
     activate UPP
 
-        UPP -> PS : getFilterMedicalRecordsList(json)
+        UPP -> PS : getFilteredMedicalRecords(json)
         activate PS
 
-        PS ->o] : GET: /api/MedicalRecord/MedicalRecordList
+        PS ->o] : GET: /api/medicalRecord/get-filtered-medical-records
 
-        PS <--o] : Ok(token)
+        PS <--o] : Ok(filterMedicalRecordsDTOList)
 
         PS --> UPP : filtered medical records list
         deactivate PS
