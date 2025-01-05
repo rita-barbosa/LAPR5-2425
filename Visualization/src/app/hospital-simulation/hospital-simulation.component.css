@@ -1,7 +1,7 @@
 /* General Reset */
 :host {
     display: block;
-    height: 110vh;
+    height: auto; /* Let height adjust based on content */
     width: 100vw;
 }
 
@@ -10,17 +10,43 @@ body {
     margin: 0;
 }
 
-/* Parent container for centering canvas and other elements */
+/* Parent container for canvas */
 #parent {
     display: flex;
-    align-items: center;
     justify-content: center;
-    position: absolute;
-    top: 0;
-    left: 50%;
-    transform: translateX(-50%);
+    align-items: center;
     width: 100%;
-    z-index: 10;
+    margin: 20px auto; /* Add spacing above the canvas */  
+}
+
+/* Canvas Styling */
+canvas {
+    display: block;
+    width: 83%;
+    height: auto; /* Let the height adjust based on content */
+    margin: 0 auto;
+    margin-left: 200px;
+}
+
+/* Overlay Styling */
+#roomInfoOverlay {
+    width: calc(85% - 200px); /* Align width with the canvas */
+    max-width: 750px; /* Limit maximum width */
+    margin: 28px auto; /* Center overlay with spacing above and below */
+    margin-left: 200px;
+    padding: 16px;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    font-family: Arial, sans-serif;
+    font-size: 16px;
+}
+
+/* Subwindows Panel Styles */
+#subwindows-panel {
+    position: relative;
+    width: auto; /* Adjust width to content */
 }
 
 /* Title Styles */
@@ -38,80 +64,3 @@ body {
     margin-left: 14%; /* Aligns title with canvas */
     max-width: 50%; /* Limits the title width */
 }
-
-/* Subwindows Panel Styles */
-#subwindows-panel {
-    position: relative;
-    z-index: 1;
-    width: auto; /* Adjusts width to content */
-}
-
-/* Table Styles */
-th,
-td {
-    overflow: hidden;
-    border: 1px solid black;
-}
-
-/* Anchor Styles */
-a {
-    color: white;
-}
-
-/* Input Fields for View and Projection */
-#view,
-#projection {
-    width: 18ch;
-    font-size: 1.5vmin;
-}
-
-/* Input Fields for Other Controls */
-#click,
-#js,
-#vertical,
-#distance,
-#zoom {
-    width: 10ch;
-    font-size: 1.5vmin;
-}
-
-/* Invalid Input Styles */
-input:invalid {
-    background-color: pink;
-}
-
-/* Canvas Styling */
-canvas {
-    position: relative;
-    display: block;
-    width: 85%;
-    height: 85%;
-    margin-top: -43%;
-    margin-left: 14%;
-    z-index: 0;
-}
-
-#roomInfoOverlay {
-    position: fixed;
-    top: 20%;
-    left: 50%;
-    transform: translate(-50%, -20%);
-    background-color: white;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    padding: 16px;
-    z-index: 1000;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    display: block;
-  }
-  .overlay {
-    position: fixed; 
-    top: 10%; 
-    left: 50%; 
-    transform: translateX(-50%); 
-    background-color: rgba(255, 255, 255, 0.9);
-    padding: 1rem;
-    border-radius: 8px;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
-    z-index: 9999; 
-  }
