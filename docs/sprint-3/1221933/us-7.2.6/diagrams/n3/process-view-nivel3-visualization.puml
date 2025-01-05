@@ -7,6 +7,7 @@ autonumber
 actor "Doctor" as USER
 participant "EditMedicalRecord" as UPP <<component>>
 participant "PatientService" as PS <<service>>
+participant "MedicalRecordService" as MRS <<service>>
 
 activate USER
 USER -> UPP : asks to edit patient medical profile
@@ -22,7 +23,17 @@ PS <--o] : Ok(token)
 PS --> UPP: success
 deactivate PS
 
-UPP --> USER: shows list of patient profiles
+UPP -> MRS : getMedicalRecords()
+activate MRS
+
+MRS ->o] : GET: api/get-medicalRecordss
+
+MRS <--o] : Ok(token)
+
+MRS --> UPP: success
+deactivate MRS
+
+UPP --> USER: shows list of patient profiles\n and their medical records
 deactivate UPP
 
 USER-> UPP : selects a patient profile
@@ -31,18 +42,18 @@ activate UPP
 USER <-- UPP : shows the patient medical record
 deactivate UPP
 
-USER -> UPP : asks to edit patient medical record\n (medical conditions and allergies)
+USER -> UPP : asks to edit patient medical record
 activate UPP
 
-UPP -> PS : editPatientMedicalRecord(json)
-activate PS
+UPP -> MRS : editPatientMedicalRecord(json)
+activate MRS
 
-PS ->o] : PUT: api/edit-patient-medical-record
+MRS ->o] : PUT: api/edit-patient-medical-record
 
-PS <--o] : Accepted(MedicalRecordDto)
+MRS <--o] : Accepted(MedicalRecordDto)
 
-PS --> UPP: success
-deactivate PS
+MRS --> UPP: success
+deactivate MRS
 
 UPP --> USER: success
 deactivate UPP

@@ -19,7 +19,7 @@ activate SYS
 SYS --> DOC : shows the patient medical record
 deactivate SYS
 
-DOC -> SYS : edits patient medical record\n (medical conditions and allergies)
+DOC -> SYS : edits patient medical record
 activate SYS
 
 SYS --> DOC : confirms the update of the patient medical record
