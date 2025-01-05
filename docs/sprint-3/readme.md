@@ -97,6 +97,12 @@ To ensure smooth project management and progress tracking, we've implemented the
 8. **Daily Logs:** Each team member will maintain daily logs to track and document their work. This helps in providing
    transparency and allows for better progress tracking, ensuring that everyone is contributing to the project
    consistently.
+9. **Deadlines:** The team established the following deadlines:
+    * Analysis: 04/12/2024
+    * Design: 11/12/2024
+    * Implementation: 23/12/2024
+    * Tests: 29/12/2024
+    * Reports: 05/01/2025
 
 These practices have been put in place to enhance team collaboration, ensure timely delivery of tasks, and maintain
 high-quality standards throughout the project.
@@ -111,18 +117,21 @@ The Definition of Done (DoD) ensures that items are fully completed and meet qua
 
 ## Sprint Retrospective
 
-* **Burndown Chart**
-![Burndown Chart]()
-
 * **What Went Well:**
-//Todo
+  * Our teamwork was highly effective, ensuring seamless collaboration and maintaining productivity.
+  * Based on earlier discussions, we successfully set up essential components at the start of the implementation phase—an improvement from the previous sprint.
+  * We addressed issues earlier in the process, leading to quicker resolutions and reducing potential delays.
+  * As planned, we focused on tasks directly related to course assessments, helping us avoid feeling overwhelmed.
 
 * **Challenges Faced:**
-//Todo
+  * The holiday period impacted our ability to fully meet the implementation and testing deadlines. However, this did not cause setbacks as we were ahead of schedule.
 
 * **Areas for Improvement:**
-//Todo
+  * Although this was the final sprint, we recognize the need to enhance our ability to meet deadlines and plan our work more effectively.
 
-## [Self-Assessment]()
+* **Burndown Chart**
+![Burndown Chart](burndown-chart.png)
 
-## [Honor Pledge]()
+## [Self-Assessment](3dg-g38-self-assessment.pdf)
+
+## [Honor Pledge](3dg-g38-honors-pledge.pdf)
