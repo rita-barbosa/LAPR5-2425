@@ -547,7 +547,7 @@ namespace MDBackoffice.Domain.OperationRequests
             var appointmentDto = new CreatingAppointmentDto(opRequestId, roomNumber, slot.StartTime,
                slot.EndTime, slot.StartDate, slot.EndDate, staffList);
 
-            await _appointService.CreateAppointment(appointmentDto);
+            await _appointService.CreateAppointmentScheduler(appointmentDto);
         }
 
         private List<SlotsDto> CalculateFreeSlots(List<SlotsDto> busySlots, int startOfDay, int endOfDay)
