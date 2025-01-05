@@ -18,7 +18,6 @@
     * [4.2. Tests](#42-tests)
   * [5. Implementation](#5-implementation)
   * [6. Integration/Demonstration](#6-integrationdemonstration)
-  * [7. Observations](#7-observations)
 <!-- TOC -->
 
 
@@ -76,10 +75,12 @@ it's diagram was deemed irrelevant.
 #### Level 3
 
 - _Visualization_
+
 ![us7.2.16-process-view-visualization-lvl3.svg](Process_View/Level-3/us7.2.16-process-view-visualization-lvl3.svg)
 
 
 - _MDPatientManagement_
+
 ![us7.2.16-process-view-lvl3.svg](Process_View/Level-3/us7.2.16-process-view-lvl3.svg)
 
 #### 4.1.3 Development View
@@ -128,6 +129,9 @@ _// To do //_
 
 ## 6. Integration/Demonstration
 
-> TBD
+This feature is accessible only to Admin users, under Allergy, as "Edit Allergy".
 
-## 7. Observations
+After selecting an allergy, inputting new information, and submitting, a message will appear regarding the success or
+failure of the edition.
+
+![edit-allergies.png](edit-allergies.png)

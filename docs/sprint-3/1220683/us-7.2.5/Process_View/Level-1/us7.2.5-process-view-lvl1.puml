@@ -8,7 +8,13 @@ autonumber
 actor "Doctor" as BACK
 participant "<<system (C4)>>\n Healthcare System" as SYS
 
-BACK -> SYS : wants search for a medical condition
+BACK -> SYS : selects a medical record
+activate SYS
+
+SYS --> BACK : presents medical record
+deactivate SYS
+
+BACK -> SYS : wants search for a medical condition to add to the medical record
 activate SYS
 
 SYS --> BACK : presents a list of medical conditions in the system

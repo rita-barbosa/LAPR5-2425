@@ -110,10 +110,12 @@ it's diagram was deemed irrelevant.
 #### Level 3
 
 - _Visualization_
+
 ![us7.2.2-process-view-visualization-lvl3.svg](Process_View/Level-3/us7.2.2-process-view-visualization-lvl3.svg)
 
 
 - _MDPatientManagement_
+
 ![us7.2.2-process-view-lvl3.svg](Process_View/Level-3/us7.2.2-process-view-lvl3.svg)
 
 #### 4.1.3 Development View
@@ -128,7 +130,7 @@ The diagrams can be found in the [team decision views folder](../../team-decisio
 
 > #### **Repository Pattern**
 >
->* **Components:** AllergyRepository, LogRepository
+>* **Components:** AllergyRepository
 >
 > The repositories are responsible for data access and retrieval, separating the logic for interacting with the database
 > from the services and other layers. This pattern helps in abstracting the persistence logic.
@@ -136,7 +138,7 @@ The diagrams can be found in the [team decision views folder](../../team-decisio
 
 > #### **DTO (Data Transfer Object) Pattern**
 >
->* **Components:** MedicalConditionDto
+>* **Components:** AllergyDto
 >
 > DTOs are used to transfer data between layers, especially from the controller layer to the service layer or vice versa.
 > The purpose is to carry data in a structured and decoupled way without exposing internal entity representations directly.
@@ -145,22 +147,111 @@ The diagrams can be found in the [team decision views folder](../../team-decisio
 
 > #### **Facade Pattern**
 >
->* **Components:** LogService, AllergyService
+>* **Components:** AllergyService
 >
 > These services act as a Facade to simplify interaction with lower-level components like repositories. The Controller
 > interacts with these service facades, keeping the complexity hidden from the higher layers.
 
 ### 4.2. Tests
 
-_// To do //_
+This functionality was tested with:
+
+* Unit tests for the controller.
+* Unit tests for the service.
+* Unit tests for the allergy entity.
+* Integration tests for controller and service.
+* Integration tests with Postman.
+* Unit tests for the visualization component
+* E2E tests.
 
 
 ## 5. Implementation
 
-> TBD
+This feature has an Angular component with a form for submission.
+
+```
+onSubmit(form: NgForm): void {
+  if (form.valid) {
+    this.isSubmitted = true;
+    this.service.createAllergy(this.allergy.code, this.allergy.designation, this.allergy.description!);
+  } else {
+    this.isSubmitted = false;
+  }
+}
+```
+Once this form is submitted, the allergy service is responsible for making the request to the MDPatientManagement module
+and receiving its response.
+
+```
+public createAllergy(code : string, designation : string, description : string) {
+  const url = `${this.theServerURL}/Allergy/create-allergy`;
+  let allergy: Allergy = {
+    code : code,
+    designation: designation,
+    description: description
+  };
+
+  this.http.post<Allergy>(url, allergy, this.httpOptions)
+    .pipe(catchError(this.handleError<Allergy>('Create allergy')))
+    .subscribe(data => {
+      this.log(`Allergy: ${data.designation} was successfully created.`);
+    });
+}
+```
+
+In the MDPatientManagement module, first we check, in routes, if the user making the request is an administrator and if 
+the request body as the required structure. If so, then we proceed.
+
+In AllergyRoute:
+```
+route.post('/create-allergy',
+    middlewares.isAuth,
+    middlewares.isAuthz(["Admin"]),
+    celebrate({
+      body: Joi.object({
+        code : Joi.string().required(),
+        designation : Joi.string().required(),
+        description : Joi.string()
+      })
+    }),
+    (req, res, next) => ctrl.createAllergy(req, res, next) );
+```
+
+In AllergyService:
+
+```
+async createAllergy(allergyDTO: IAllergyDTO): Promise<Result<IAllergyDTO>> {
+  try {
+
+    const allergyOrError = await Allergy.create( allergyDTO );
+    if (allergyOrError.isFailure) {
+      return Result.fail<IAllergyDTO>(allergyOrError.errorValue());
+    }
+
+    const allergyResult = allergyOrError.getValue();
+
+    await this.allergyRepo.save(allergyResult);
+
+    const allergyDTOResult = AllergyMap.toDTO( allergyResult ) as IAllergyDTO;
+    return Result.ok<IAllergyDTO>( allergyDTOResult )
+  } catch (e) {
+    throw e;
+  }
+}
+```
 
 ## 6. Integration/Demonstration
 
-> TBD
+To run this feature, one must be logged in with an Admin account. This feature is accessible through the Admin sidebar,
+Allergy dropdown, "Create Allergy".
+
+
+![create-allergy-ui.png](create-allergy-ui.png)
+
+Fill in the input fields with valid and submit. A message will appear regarding the success of failure of the submission.
+
+
 
 ## 7. Observations
+
+Between ICD-11 and SNOMED code types, we chose ICD-11.

@@ -18,7 +18,6 @@
     * [4.2. Tests](#42-tests)
   * [5. Implementation](#5-implementation)
   * [6. Integration/Demonstration](#6-integrationdemonstration)
-  * [7. Observations](#7-observations)
 <!-- TOC -->
 
 
@@ -121,9 +120,11 @@ it's diagram was deemed irrelevant.
 #### Level 3
 
 - _Visualization_
+
 ![process view level 3 - visualization](./Process_View/Level-3/us7.2.5-process-view-visualization-lvl3.svg)
 
 - _MDPatientManagement_
+
   ![process view level 3 - backoffice](./Process_View/Level-3/us7.2.5-process-view-lvl3.svg)
 
 #### 4.1.3 Development View
@@ -165,15 +166,88 @@ The diagrams can be found in the [team decision views folder](../../team-decisio
 
 ### 4.2. Tests
 
-_// To do //_
+This functionality was tested with:
 
+* Unit tests for the controller.
+* Unit tests for the service.
+* Unit tests for the allergy entity.
+* Integration tests for controller and service.
+* Integration tests with Postman.
+* Unit tests for the visualization component
 
 ## 5. Implementation
 
-> TBD
+For this feature, all medical conditions are fetched.
+
+```
+public getAllMedicalConditions(): Observable<MedicalCondition[]> {
+  const url = `${this.theServerURL}/medicalCondition/get-all-medical-conditions`;
+
+  return this.http.get<MedicalCondition[]>(url, this.httpOptions)
+    .pipe(
+      map((data: MedicalCondition[]) => data.map(condition => condition), ),
+      catchError(this.handleError<MedicalCondition[]>('Get Medical Condition', []))
+    );
+}
+```
+
+When a doctor adds a medical condition to a patient's medical record, a dropdown menu is displayed, allowing the doctor to choose the desired condition.
+
+```
+ <div>
+          <p-dropdown [options]="allMedicalConditionsDesignations" #inputRef placeholder="Select Medical Condition">
+          </p-dropdown>
+          <button type="button" (click)="addMedicalCondition(inputRef.value)">Add</button>
+        </div>
+
+        <br>
+```
+
+```
+addMedicalCondition(inputValue: string): void {
+    console.log(inputValue);
+    if (inputValue.trim()) {
+      const fullCondition = this.allFullMedicalConditions.find(
+        (condition) => condition.designation.toLowerCase() === inputValue.toLowerCase()
+      );
+
+      if (fullCondition) {
+        const conditionExists = this.medicalRecord.medicalConditions.some(
+          (condition) => condition.designation.toLowerCase() === fullCondition.designation.toLowerCase()
+        );
+
+        if (!conditionExists) {
+          this.medicalRecord.medicalConditions.push({ ...fullCondition });
+        } else {
+          console.warn('Condition already exists in the list.');
+          this.message.messageService.add('Condition already exists in the list.')
+        }
+      } else {
+        console.warn('Condition not found in data.');
+        this.message.messageService.add('Condition not found in data.')
+      }
+    }
+  }
+```
+
+Once selected, the chosen condition is temporarily added to the medical record until the doctor confirms the completion of the editing process.
+
+```
+<div *ngFor="let condition of medicalRecord.medicalConditions; let i = index" class="blue-panel">
+          <p><strong>Designation:</strong> {{ condition.designation || '-' }}</p>
+          <p><strong>Description:</strong> {{ condition.description || 'No description.' }}</p>
+          <p><strong>Symptoms:</strong> {{ condition.symptoms || 'No symptons described.' }}</p>
+          <button (click)="removeMedicalCondition(i)">Remove</button>
+          <br>
+        </div>
+
+```
 
 ## 6. Integration/Demonstration
 
-> TBD
+For this functionality, all the medical conditions are retrieved.
 
-## 7. Observations
+When a doctor is adding a medical condition to a medical record, a dropdown appears for the doctor to select the medical
+condition it desires.
+
+If selected, a new entry is added to the medical record temporarily, until edition completion confirmation is obtained.
