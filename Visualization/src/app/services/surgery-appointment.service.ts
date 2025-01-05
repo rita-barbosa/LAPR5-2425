@@ -7,6 +7,8 @@ import { SurgeryAppointment } from '../domain/SurgeryAppointment';
 import { UpdateAppointment } from '../domain/update-appointment';
 import { FullAppointment } from '../domain/full-appointment';
 import { StaffWithFunction } from '../domain/staff-with-function';
+import { AppointmentWithoutStaff } from '../domain/appointment-without-staff';
+import { RoomInfo } from '../domain/room-info';
 
 @Injectable({
   providedIn: 'root'
@@ -38,10 +40,17 @@ export class SurgeryAppointmentService {
     };
 
     this.http.post<SurgeryAppointment>(url, surgAppointment, this.httpOptions)
-      .pipe(catchError(this.handleError<SurgeryAppointment>('Create surgery appointment')))
-      .subscribe(data => {
-        this.log(`Surgery Appointment was successfully created.`);
-      });
+        .pipe(
+            catchError((error: any) => {
+                this.log(`Create surgery appointment failed: ${error.error?.message || 'An unexpected error occurred.'}`);
+                return of(null);
+            })
+        )
+        .subscribe(data => {
+            if (data) {
+                this.log('Surgery Appointment was successfully created.');
+            }
+        });
   }
 
   public getAllStaffs() {
@@ -88,6 +97,31 @@ export class SurgeryAppointmentService {
       .pipe(catchError(this.handleError<FullAppointment[]>('Get Appointments', []))
       );
   }
+
+  public getAppointmentFromRoom(roomNumber: string, startTime: string, endTime: string, startDate: string, endDate: string){
+    const url = `${this.theServerURL}/Appointment/get-by-roomInfo`;
+    const roomInfo: RoomInfo = {
+      roomNumber: roomNumber,
+      startTime: startTime,
+      endTime: endTime,
+      startDate: this.formatDate(startDate), 
+    endDate: this.formatDate(endDate)
+    };
+
+    return this.http.post<AppointmentWithoutStaff>(url, roomInfo, this.httpOptions)
+    .pipe(
+      catchError(error => {
+        console.log("Não é um agendamento válido");
+        return of(null);
+      })
+    );
+  }
+
+  private formatDate(date: string): string {
+    const [day, month, year] = date.split('/').map(Number);
+    return `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+  }
+
 
   //------------------------/------------------------/------------------------
   private handleError<T>(operation = 'operation', result?: T) {

@@ -16,8 +16,6 @@
       * [Development View](#development-view)
       * [Physical View](#physical-view)
     * [4.2. Applied Patterns](#42-applied-patterns)
-  * [5. Implementation](#5-implementation)
-  * [6. Testing](#6-testing)
 <!-- TOC -->
 
 
@@ -31,7 +29,7 @@ This is the first time this US is being worked on.
 
 **Acceptance Criteria:**
 
-**US 7.2.6.1:** Doctors can only update the information regarding the Medical Conditions and Allergies in the Patient
+**US 7.2.6.1:** Doctors can only update the information regarding the Medical Conditions, Allergies and Description in the Patient
 Medical Record.
 
 **US 7.2.6.2:** Doctors should use Allergies and Medical Conditions previously created.
@@ -103,13 +101,14 @@ Medical Record.
 ## 3. Analysis
 
 
-This functionality centers in the edit of the allergies and medical condition information on a patient medical record,
+This functionality centers in the edit of the allergies, medical conditions and description information on a patient medical record,
 by the Doctor.
 
 First the Doctor will choose the Patient he wants to edit the medical record and then select it. Then can be selected the
 follow editable fields:
 - allergies
 - medical condition
+- description
 
 
 ### Domain Model
@@ -141,6 +140,9 @@ The diagrams are available in the [team decision views folder](../../team-decisi
 
 - _Visualization_<br>
   ![Process View - Level 3](diagrams/n3/process-view-nivel3-visualization.svg)
+
+- _MDBackoffice_<br>
+  ![Process View - Level 3](diagrams/n3/process-view-nivel3-mdbackoffice.svg)
 
 
 - _MDPatientManagement_<br>
@@ -180,11 +182,3 @@ The diagrams are available in the [team decision views folder](../../team-decisi
 >
 > These services function as a facade, simplifying the interaction with lower-level components such as repositories.
 > The controller communicates with these service facades, concealing the complexity from the upper layers.
-
-## 5. Implementation
-
-//TO BE DONE
-
-## 6. Testing
-
-//TO BE DONE

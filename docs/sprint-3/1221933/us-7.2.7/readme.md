@@ -16,8 +16,6 @@
       * [Development View](#development-view)
       * [Physical View](#physical-view)
     * [4.2. Applied Patterns](#42-applied-patterns)
-  * [5. Implementation](#5-implementation)
-  * [6. Testing](#6-testing)
 <!-- TOC -->
 
 
@@ -63,7 +61,10 @@ Conditions and Allergies.
 > nd a free text section. Assuming that allergies, for instance, appear at the top, how would the search results be 
 > displayed to the user?
 >
->**Answer**: 
+>**Answer**: As indicated, the patient's Medical Record is a complex object with several subobjects. When the user 
+> queries the medical record, they should be able to view each section of it and have the possibility to search within 
+> each section. For example, the medical record page shows a table with allergy entries, another table with medical 
+> condition entries, another table with free-text entries, and so on.
 
 
 ## 3. Analysis
@@ -144,11 +145,3 @@ The diagrams are available in the [team decision views folder](../../team-decisi
 > These services function as a facade, simplifying the interaction with lower-level components such as repositories.
 > The controller communicates with these service facades, concealing the complexity from the upper layers.
 
-
-## 5. Implementation
-
-//TO BE DONE
-
-## 6. Testing
-
-//TO BE DONE

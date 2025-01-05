@@ -7,8 +7,6 @@
   * [3. Analysis](#3-analysis)
   * [4. Design](#4-design)
     * [4.1. Realization](#41-realization)
-  * [5. Implementation](#5-implementation)
-  * [6. Testing](#6-testing)
 <!-- TOC -->
 
 
@@ -28,6 +26,29 @@ updated information about the selected room.
 **Dependencies/References:**
 
 **US 6.5.1:** The 3D model should be created.
+
+**Client Clarifications:**
+
+>**Question:** Is US 7.5.2 related to 7.5.1, which refers to selecting a room with picking and then opening an overlay 
+> with the "i" key in 7.5.2?
+>Or, for example, our "player" enters a room and presses "i," and it shows the information?
+>
+>**Answer**: The project requirements do not reference any "player," but you imagine it could refer to the robot from 
+> the "Thumb Raiser" project or something equivalent. The requirements state that the selection of a surgery room 
+> should be made using the picking technique (7.5.1), and when the user presses the "i" key, an overlay with information
+> about the selected room should appear (7.5.2).
+>
+> You should start by implementing what these two requirements establish. Then, considering that you've decided to 
+> include a "player" in the scene, you should also implement an alternative room selection method: when the "player" 
+> enters a room, it becomes the new selected room, and pressing the "i" key will display information related to it.
+ 
+
+>**Question:** In the US "As a healthcare staff member, whenever I press the “i” key, I want to display/hide
+> an overlay containing updated information about the selected room."
+>
+>**Answer**: Room identification
+>Status
+>If occupied, patient and surgery details
 
 ## 3. Analysis
 
@@ -56,12 +77,3 @@ If a room is selected, the overlay provides real-time data such as:
 If no room is selected, the overlay displays a message prompting the user to select a room. The information 
 updates dynamically to ensure accuracy, and the overlay integrates seamlessly with the 3D model, reflecting any changes 
 in selection.
-
-
-## 5. Implementation
-
-//TO BE DONE
-
-## 6. Testing
-
-//TO BE DONE

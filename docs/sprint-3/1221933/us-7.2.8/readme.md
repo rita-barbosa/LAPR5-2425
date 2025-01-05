@@ -16,8 +16,6 @@
       * [Development View](#development-view)
       * [Physical View](#physical-view)
     * [4.2. Applied Patterns](#42-applied-patterns)
-  * [5. Implementation](#5-implementation)
-  * [6. Testing](#6-testing)
 <!-- TOC -->
 
 
@@ -152,7 +150,7 @@ The diagrams are available in the [team decision views folder](../../team-decisi
 
 > #### **Repository Pattern**
 >
->* **Components:** AppointmentRepository, OperationRequestRepository, RoomRepository, StaffRepository
+>* **Components:** AppointmentRepository, OperationRequestRepository, OperationTypeRepository, RoomRepository, StaffRepository
 >
 > The repositories handle data access and retrieval, isolating the database interaction logic from services and other
 > layers. This approach abstracts the persistence logic, promoting separation of concerns.
@@ -174,11 +172,3 @@ The diagrams are available in the [team decision views folder](../../team-decisi
 > These services function as a facade, simplifying the interaction with lower-level components such as repositories.
 > The controller communicates with these service facades, concealing the complexity from the upper layers.
 
-
-## 5. Implementation
-
-//TO BE DONE
-
-## 6. Testing
-
-//TO BE DONE

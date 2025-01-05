@@ -7,13 +7,11 @@ autonumber
 
 participant "route:\nMedicalRecordRoute" as ROUTE
 participant "controller:\nMedicalRecordController" as CTRL
-participant "query:\nMedicalRecordQueryParametersDto" as QueryDTO
+participant "query:\nIMedicalRecordQueryFilterParametersDto" as QueryDTO
 
 participant "service:\nMedicalRecordService" as SER
 participant "repository:\nMedicalRecordRepo" as REPO
 participant "dto:\nMedicalRecordDTO" as DTO
-participant "domain:\nMedicalRecord" as MEDREC
-
 
 [o-> ROUTE : GET()
 activate ROUTE
@@ -53,31 +51,31 @@ activate CTRL
 
 CTRL -> QueryDTO ** : toDTO(json)
 
-CTRL -> SER : FilterMedicalRecords(queryParametersDTO)
+CTRL -> SER : GetMedicalRecordsByFilters(queryParametersDTO)
 activate SER
 
+SER -> SER : convertDesignationsToIds(queryParametersDTO)
+activate SER
+SER --> SER :
+deactivate SER
 
-SER -> REPO : FilterMedicalRecords(queryParametersDTO)
+SER -> REPO : FindAllByParameters(queryParametersDTO)
 activate REPO
 
 REPO --> SER : medicalRecordsList
 deactivate REPO
 
     loop for all the medical records in the list
-        SER -> DTO ** : toDTO(operationType)
+        SER -> DTO ** : toDTO(medicalRecord)
     end loop
 
 SER --> CTRL : filterMedicalRecordsDTOList
 deactivate SER
 
-CTRL -> CTRL : json(MedicalRecordsDTOList)
-activate CTRL
+CTRL --> ROUTE : filterMedicalRecordsDTOList
 deactivate CTRL
 
-CTRL --> ROUTE : json
-deactivate CTRL
-
-<-- ROUTE : ok(json)
+<-- ROUTE : ok(filterMedicalRecordsDTOList)
 deactivate ROUTE
 
 @enduml

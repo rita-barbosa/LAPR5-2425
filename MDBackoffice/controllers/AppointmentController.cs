@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Authorization;
 using MDBackoffice.Domain.Appointments;
 using MDBackoffice.Domain.Shared;
 using MDBackoffice.Domain.Users;
+using MDBackoffice.Domain.Rooms;
+using Newtonsoft.Json;
 
 namespace MDBackoffice.Controllers
 {
@@ -30,7 +32,7 @@ namespace MDBackoffice.Controllers
             {
                 var token = HttpContext.Request.Headers.Authorization.ToString()?.Split(' ')[1];
 
-                if (string.IsNullOrWhiteSpace(token) || !_userSvc.CheckUserRole(token, "Doctor"))
+                if (string.IsNullOrWhiteSpace(token) || _userSvc.CheckUserRole(token, "Doctor"))
                 {
                     return BadRequest(new { message = "Invalid authorization or user role." });
                 }
@@ -102,6 +104,29 @@ namespace MDBackoffice.Controllers
             {
                 return BadRequest(new { V = $"An unexpected error occurred: {ex.Message}" });
             }
+        }
+
+        // Get: api/Appointment/get-by-roomInfo
+        [HttpPost("get-by-roomInfo")]
+        public async Task<ActionResult<AppointmentWithoutStaffDto>> GetAppointmentForSimulation(AppointmentRoomInfoDto roomInfoDto)
+        {
+            try
+            {
+                var dto = await _service.GetAppointmentForSimulation(roomInfoDto);
+                return Ok(dto.Value);
+            }
+            catch (BusinessRuleValidationException ex)
+            {
+                return BadRequest(new
+                {
+                    ex.Message
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { V = $"An unexpected error occurred: {ex.Message}" });
+            }
+
         }
 
     }

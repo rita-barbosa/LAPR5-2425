@@ -12,6 +12,7 @@ participant "controller:\nAppointmentController" as CTRL
 participant "service:\nAppointmentService" as SER
 participant "repository:\nAppointmentRepository" as REPO
 participant "repository:\nOperationRequestRepository" as OpReqREPO
+participant "repository:\nOperationTypeRepository" as OpTyREPO
 participant "repository:\nRoomRepository" as RoomREPO
 participant "repository:\nStaffRepository" as StaffREPO
 participant "domain:\nAppointment" as APP
@@ -31,15 +32,41 @@ SER -> OpReqREPO : GetByIdAsync(operationRequestId)
 activate OpReqREPO
 deactivate OpReqREPO
 
+SER -> OpTyREPO : GetByIdAsync(operationTypeId)
+activate OpTyREPO
+deactivate OpTyREPO
+
+SER -> OpTyREPO : GetRequiredStaffByOperationTypeIdAsync(operationTypeId)
+activate OpTyREPO
+
+OpTyREPO --> SER : requiredStaffList
+deactivate OpTyREPO
+
+loop for each required staff
+
+loop for each staff on the dto staff list
+SER -> StaffREPO : GetByIdAsync(staffId)
+activate StaffREPO
+deactivate StaffREPO
+
+alt if staffIsAvailable and function and specialization are the same as the requiredStaff
+SER -> SER : staffList.Add(staff)
+activate SER
+SER --> SER :
+deactivate SER
+|||
+
+end alt
+end loop
+
+
 SER -> RoomREPO : GetByIdAsync(RoomNumber)
 activate RoomREPO
 deactivate RoomREPO
 
-loop for each staff on the list
-SER -> StaffREPO : GetByIdAsync(staffId)
-activate StaffREPO
-deactivate StaffREPO
-end loop
+SER -> RoomREPO : IsRoomAvailableAsync(room)
+activate RoomREPO
+deactivate RoomREPO
 
 
 SER -> APP **: create(status, operationRequestId, roomNumber, startTim, endTime, startDate, endDate, staffList)

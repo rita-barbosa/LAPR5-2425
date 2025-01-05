@@ -119,7 +119,7 @@ namespace MDBackofficeTests.controllertests
 
             _userServiceMock
                 .Setup(_userService => _userService.CheckUserRole("valid-token", "Doctor"))
-                .Returns(true);
+                .Returns(false);
 
             _serviceMock.Setup(_service => _service.AddAsync(createDto)).ReturnsAsync(dto);
 

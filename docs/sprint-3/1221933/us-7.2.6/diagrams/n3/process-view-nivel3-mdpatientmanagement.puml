@@ -7,76 +7,80 @@ autonumber
 
 participant "route:\nEditPatientMedicalRecordRoute" as ROUTE
 participant "dto:\nEditMedicalRecordDTO" as UpdateDTO
-participant "controller:\nPatientController" as CTRL
+participant "controller:\nMedicalRecordController" as CTRL
 
 participant "service:\nMedicalRecordService" as MEDSER
 participant "repository:\nMedicalRecordRepo" as MEDREPO
 participant "dto:\nMedicalRecordDTO" as MEDDTO
 participant "domain:\nMedicalRecord" as MEDREC
 
-participant "service:\nPatientService" as SER
-participant "repository:\nPatientRepo" as REPO
-participant "dto:\nPatientDTO" as DTO
-'participant "domain:\nPatient" as Patient
 
 [o-> ROUTE : GET()
 activate ROUTE
 
-ROUTE -> CTRL : getPatientProfiles()
+ROUTE -> CTRL : getMedicalRecords()
 activate CTRL
 
-CTRL -> SER : getPatientProfiles()
-activate SER
+CTRL -> MEDSER : getMedicalRecords()
+activate MEDSER
 
-SER -> REPO : findAll()
-activate REPO
+MEDSER -> MEDREPO : findAll()
+activate MEDREPO
 
-REPO --> SER : PatientProfilesList
-deactivate REPO
+MEDREPO --> MEDSER : MedicalRecords
+deactivate MEDREPO
 
 loop for all the profiles in the list
-SER -> DTO ** : toDTO(PatientProfile)
+MEDSER -> MEDDTO ** : toDTO(medicalRecord)
 
 
 end loop
 
-SER --> CTRL : patientProfileDTOList
-deactivate SER
+MEDSER --> CTRL : medicalRecordDTOList
+deactivate MEDSER
 
-CTRL --> ROUTE : patientProfileDTOList
+CTRL --> ROUTE : medicalRecordDTOList
 deactivate CTRL
 
-<- ROUTE : ok(patientProfileDTOList)
+<- ROUTE : ok(medicalRecordDTOList)
 deactivate ROUTE
 
 |||
 
-[o-> ROUTE : PUT(json)
+[o-> ROUTE : PATCH(json)
 activate ROUTE
 
 ROUTE -> UpdateDTO ** : toDTO(json)
 
 
-ROUTE -> CTRL : editPatientMedicalRecord(id, editMedicalRecordDto)
+ROUTE -> CTRL : updateMedicalRecord(editMedicalRecordDto)
 activate CTRL
 
-CTRL -> MEDSER : UpdateAsync(id, editMedicalRecordDto)
+CTRL -> MEDSER : updateMedicalRecord(editMedicalRecordDto)
 activate MEDSER
 
-MEDSER -> REPO : GetByIdAsync(id)
-activate REPO
+MEDSER -> MEDREPO : findByDomainId(medicalRecordNumber)
+activate MEDREPO
 
-REPO --> MEDSER : patient
-deactivate REPO
+MEDREPO --> MEDSER : medicalRecord
+deactivate MEDREPO
 
 opt Check and update Medical Record fields
-MEDSER -> MEDREC : ChangeMedicalCondition(medicalCondition)
+MEDSER -> MEDREC : ChangeMedicalCondition(medicalConditions)
 activate MEDREC
 deactivate MEDREC
 
-MEDSER -> MEDREC : ChangeAllergy(Allergy)
+MEDSER -> MEDREC : ChangeAllergy(Allergys)
 activate MEDREC
 deactivate MEDREC
+
+MEDSER -> MEDREC : ChangeDescription(Description)
+activate MEDREC
+deactivate MEDREC
+
+MEDSER -> MEDREPO : save(medicalRecord)
+activate MEDREPO
+deactivate MEDREPO
 
 end opt
 
