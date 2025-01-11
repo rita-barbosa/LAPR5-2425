@@ -186,7 +186,7 @@ namespace MDBackoffice.Controllers
             {
                 var token = HttpContext.Request.Headers.Authorization.ToString()?.Split(' ')[1];
 
-                if (string.IsNullOrWhiteSpace(token) || _userService.CheckUserRole(token, "Admin")) 
+                if (string.IsNullOrWhiteSpace(token) || _userService.CheckUserRole(token, "Admin"))
                 {
                     return BadRequest("Invalid authorization or user role.");
                 }
@@ -210,29 +210,25 @@ namespace MDBackoffice.Controllers
 
         // Delete Patient Account Request: api/Delete-PatientAccountDeletionRequest
         [HttpDelete("Delete-PatientAccountDeletionRequest")]
-        [Authorize(Policy = "Patient")]
+        //[Authorize(Policy = "Patient")]
         public async Task<ActionResult> DeletePatientAccountRequest()
         {
-            IActionResult result = await GetUserInfo();
+            var token = HttpContext.Request.Headers.Authorization.ToString()?.Split(' ')[1];
 
-            // string email2 = "mangoboy.xv@gmail.com";
-            // string id2 = "9edc6a2d-bb8b-4466-83e2-c96b4bd94eec";
-            // string password2 = "Abcde12345!";
-
-            // var userInfo2 = new { Id = id2, Email = email2, Password = password2 };
-            // var result = new OkObjectResult(userInfo2);
-
-            if (result is OkObjectResult okResult)
+            if (string.IsNullOrWhiteSpace(token) || _userService.CheckUserRole(token, "Patient"))
             {
-                var userInfo = okResult.Value;
+                return BadRequest("Invalid authorization or user role.");
+            }
 
-                string? email = userInfo?.GetType().GetProperty("Email")?.GetValue(userInfo, null)?.ToString();
-                string? userId = userInfo?.GetType().GetProperty("Id")?.GetValue(userInfo, null)?.ToString();
-
-                var token = await _tokenService.CreateAccountDeletionToken(email);
-
+            var result = _userService.DecodeJwtToken(token);
+            if (result.Email != null)
+            {
+                string? email = result.Email;
+                var user = await _userService.FindByEmailAsync(email);        
+                var userId = _userService.GetUserId(user);
+                var tokenDel = await _tokenService.CreateAccountDeletionToken(email);
                 var baseUrl = "http://localhost:4200";
-                var link = $"{baseUrl}/confirm-patient-account-deletion?userId={userId}&token={token.TokenId}";
+                var link = $"{baseUrl}/confirm-patient-account-deletion?userId={userId.Result}&token={tokenDel.TokenId}";
 
                 _patientService.ConfirmPatientAccountDeletionEmail(link, email);
 
@@ -313,7 +309,7 @@ namespace MDBackoffice.Controllers
             {
                 await _userService.ResetPassword(email);
 
-                return Ok(new { message ="Password reset email was sent!"});
+                return Ok(new { message = "Password reset email was sent!" });
             }
             catch (BusinessRuleValidationException ex)
             {
@@ -332,7 +328,7 @@ namespace MDBackoffice.Controllers
             {
                 if (await _userService.UpdatePassword(email, token, confirmEmailUserDto.NewPassword))
                 {
-                    return Ok(new { message ="Password was changed successfully."});
+                    return Ok(new { message = "Password was changed successfully." });
                 }
                 else
                 {

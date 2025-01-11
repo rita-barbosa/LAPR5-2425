@@ -199,6 +199,11 @@ namespace MDBackoffice.Domain.Users
         {
             return await _userManager.FindByEmailAsync(userEmail);
         }
+          public async Task<string> GetUserId(User user)
+        {
+            return await _userManager.GetUserIdAsync(user);
+        }
+
 
         private async Task<IdentityResult> UpdateAsync(User user)
         {

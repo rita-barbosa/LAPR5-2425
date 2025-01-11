@@ -20,20 +20,24 @@
 
 reference_value(1100).
 time_limit(10).
-population(2).
+population(6).
 generations(10).
-prob_crossover(0.5).
-prob_mutation(0.25).
+prob_crossover(1).
+prob_mutation(0.01).
 mix_percentage(0.2).
 
 staff(d001,doctor,orthopaedist,[so2,so3,so4]).
 staff(d002,doctor,orthopaedist,[so2,so3,so4]).
 staff(d003,doctor,orthopaedist,[so2,so3,so4]).
 staff(d004,doctor,anaesthetist,[so2,so3,so4]).
+staff(d005,doctor,orthopaedist,[so2,so3,so4]).
+staff(d006,doctor,anaesthetist,[so2,so3,so4]).
 staff(n001,nurse,instrumenting,[so2,so3,so4]).
 staff(n002,nurse,circulating,[so2,so3,so4]). 
 staff(n003,nurse,anaesthetist,[so2,so3,so4]).
+staff(n004,nurse,anaesthetist,[so2,so3,so4]).
 staff(a001,assistant,medical,[so2,so3,so4]).
+staff(a002,assistant,medical,[so2,so3,so4]).
 
 agenda_staff(d001,20241028,[(720,790,m01),(1080,1140,c01)]).
 agenda_staff(d002,20241028,[(850,900,m02),(901,960,m03),(1380,1440,c02)]).
@@ -44,18 +48,28 @@ agenda_staff(n002,20241028,[(850,900,m02),(940,980,c04)]).
 agenda_staff(n003,20241028,[(1010,1070,m01),(1080,1140,c01)]).
 agenda_staff(a001,20241028,[(850,900,m02),(1380,1440,c02)]).
 
+agenda_staff(d005,20241028,[]).
+agenda_staff(d006,20241028,[]).
+agenda_staff(n004,20241028,[]).
+agenda_staff(a002,20241028,[]).
+
 timetable(d001,20241028,(480,1200)).
 timetable(d002,20241028,(500,1440)).
 timetable(d003,20241028,(530,1320)).
 timetable(d004,20241028,(300,1400)).
+timetable(d005,20241028,(530,1320)).
+timetable(d006,20241028,(300,1400)).
 
 timetable(n001,20241028,(480,1200)).
 timetable(n002,20241028,(500,1400)).
 timetable(n003,20241028,(400,1320)).
+timetable(n004,20241028,(400,1320)).
+
 timetable(a001,20241028,(500,1440)).
+timetable(a002,20241028,(500,1440)).
 
 agenda_operation_room(r101,20241028,[(720, 850, mnt0002)]). %180 + 30
-agenda_operation_room(r102,20241028,[(720, 850, mnt0002),(1080, 1110, cnt1003)]). %60 + 30
+agenda_operation_room(r102,20241028,[(720, 850, mnt0002)]). %60 + 30
 agenda_operation_room(r301,20241028,[(720, 780, mnt0002), (1080, 1110, cnt1003)]). %60 + 30
 
 surgery(so2,45,60,45).
@@ -86,20 +100,20 @@ assignment_surgery(so100003,d004).
 assignment_surgery(so100003,n003).
 assignment_surgery(so100003,a001).
 
-assignment_surgery(so100004,d003).
-assignment_surgery(so100004,d004).
-assignment_surgery(so100004,n003).
-assignment_surgery(so100004,a001).
+assignment_surgery(so100004,d005).
+assignment_surgery(so100004,d006).
+assignment_surgery(so100004,n004).
+assignment_surgery(so100004,a002).
 
-assignment_surgery(so100005,d003).
-assignment_surgery(so100005,d004).
-assignment_surgery(so100005,n003).
-assignment_surgery(so100005,a001).
+assignment_surgery(so100005,d005).
+assignment_surgery(so100005,d006).
+assignment_surgery(so100005,n004).
+assignment_surgery(so100005,a002).
 
-assignment_surgery(so100006,d003).
-assignment_surgery(so100006,d004).
-assignment_surgery(so100006,n003).
-assignment_surgery(so100006,a001).
+assignment_surgery(so100006,d005).
+assignment_surgery(so100006,d006).
+assignment_surgery(so100006,n004).
+assignment_surgery(so100006,a002).
 
 assignment_surgery(so100007,d003).
 assignment_surgery(so100007,d004).
@@ -483,8 +497,8 @@ schedule_operations_in_rooms([Room | RestRooms]):-
             better(X,VX,AgS,AgR),
             (
                 VX \== 1441, 
-                write("Alert: was able to schedule all surgeries of room "), write(Room),write(">> Schedule"),write(X),nl,
-                write('Staff='),write(AgS),nl,write('Room='),write(AgR),nl,!
+                nl,write("Alert: was able to schedule all surgeries of room "), write(Room),write(">> Schedule: "),write(X),nl,
+                write('> Staff= '),write(AgS),nl,write('> Room= '),write(AgR),nl,!
             ; 
                 write(">> Warning: was not able to schedule surgeries of room "),write(Room), write(" Therefore, the following surgeries were not scheduled: "),write(SurgeryList),nl
             )

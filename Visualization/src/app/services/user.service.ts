@@ -48,7 +48,7 @@ export class UserService {
   httpOptions = {
     headers: new HttpHeaders({
       'Content-Type': 'application/json',
-       Authorization: `Bearer ${this.token}`
+       'Authorization' : `Bearer ${this.token}`
     })
    };
   constructor(private messageService: MessageService, private http: HttpClient, private router: Router) { }
@@ -140,8 +140,7 @@ export class UserService {
           catchError(this.handleError('Send patient account deletion email'))
         }
       }
-
-      );
+    );
   }
 
   resetPassword(email: string) {

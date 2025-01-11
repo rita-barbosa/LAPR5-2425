@@ -16,9 +16,9 @@
 surgeries(3).  %% HAS TO BE AT LEAST 4!!
 
 % parameters initialization
-reference_value(1100).
-time_limit(10).
-population(2).
+reference_value(1200).
+time_limit(3).
+population(5).
 generations(10).
 prob_crossover(0.5).
 prob_mutation(0.25).
